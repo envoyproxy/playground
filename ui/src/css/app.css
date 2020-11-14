@@ -1,0 +1,57 @@
+.App {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.App-header,
+.App-footer {
+    min-height: 5vh;
+    vertical-align: middle;
+    font-size: 1.2em;
+}
+
+.App-left,
+.App-content,
+.App-right {
+    min-height: 90vh;
+}
+
+.App-content {
+    background-color: #efefef;
+}
+
+.App-left,
+.App-right {
+    background-color: #eee;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.control-pane {
+    height: 45vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.control-pane-scroll {
+    overflow-y: auto;
+}
+
+.canvas {
+    background: white;
+    box-shadow: inset 0 0 5px #aaa;
+    margin-top: 3px;
+}
+
+.bg-dark {
+    background-color: #ccc !important;
+}
+
+.border-dark {
+    border-color: #999 !important;
+}

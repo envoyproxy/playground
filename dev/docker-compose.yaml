@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+
+  control:
+    privileged: true
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile-playground-control
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ../control:/code/control
+    - ../services.yaml:/services.yaml
+    - ../services:/services
+    ports:
+    - 8000:8000
+
+  ui:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile-playground-ui
+    ports:
+    - 8081:3000
+    volumes:
+    - ../ui:/app

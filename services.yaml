@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    labels:
+      envoy.playground.service: "PostgreSQL"
+      envoy.playground.logo: "postgres.svg"
+
+  redis:
+    image: redis:latest
+    labels:
+      envoy.playground.service: "Redis"
+      envoy.playground.logo: "redis.svg"
+
+  python:
+    image: redis:latest
+    labels:
+      envoy.playground.service: "Python"
+      envoy.playground.logo: "python.png"
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+    labels:
+      envoy.playground.service: "Jaeger"
+      envoy.playground.logo: "jaeger.svg"
+
+  zipkin:
+    image: openzipkin/zipkin
+    labels:
+      envoy.playground.service: "Zipkin"
+      envoy.playground.logo: "zipkin.svg"
+
+  mariadb:
+    image: mariadb:latest
+    labels:
+      envoy.playground.service: "Mariadb"
+      envoy.playground.logo: "mariadb.svg"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
+  http-echo:
+    image: mendhak/http-https-echo
+    labels:
+      envoy.playground.service: "HTTP echo"
+      envoy.playground.logo: "http-echo.svg"
+    environment:
+      HTTPS_PORT: 0
+
+  https-echo:
+    image: mendhak/http-https-echo
+    labels:
+      envoy.playground.service: "HTTPS echo"
+      envoy.playground.logo: "https-echo.svg"
+    environment:
+      HTTP_PORT: 0

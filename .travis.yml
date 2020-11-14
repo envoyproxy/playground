@@ -1,0 +1,16 @@
+# https://travis-ci.org/#!/phlax/envoy-playground
+
+script:
+  - make test
+  - make build
+
+before_deploy:
+  - echo $DOCKER_ACCESS_TOKEN | docker login -u phlax --password-stdin
+
+deploy:
+  provider: script
+  script: make publish
+  skip_cleanup: true
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(main)$
