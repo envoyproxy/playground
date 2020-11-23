@@ -54,6 +54,10 @@ class PlaygroundAPI(object):
         data = await request.json()
         # print("ADD RECV", data)
         # todo: remove prefixes in js
+        mappings = [
+            [m['mapping_from'], m['mapping_to']]
+            for m
+            in data.get('port_mappings', [])]
         mounts = {
             "/etc/envoy": await self.populate_volume(
                 'proxy',
@@ -81,7 +85,7 @@ class PlaygroundAPI(object):
         result = await self.client.create_proxy(
             data["name"],
             mounts,
-            data.get('port_mappings', {}),
+            mappings,
             data.get('logging', {}))
         return web.json_response(dict(message="OK"))
 
@@ -243,12 +247,20 @@ class PlaygroundAPI(object):
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
+        container = await self.client.client.containers.get(event["id"])
+        ports = container['HostConfig']['PortBindings'] or {}
+        port_mappings = [
+            {'mapping_from': v[0]['HostPort'],
+             'mapping_to': k.split('/')[0]}
+            for k, v in ports.items()]
         await self.publish(
             ws,
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
+                 image=event['Actor']['Attributes']['image'],
                  name=event["Actor"]["Attributes"]["name"],
+                 port_mappings=port_mappings,
                  status=event["status"]))
 
     async def handle_container_started(self, ws, event: dict) -> None:

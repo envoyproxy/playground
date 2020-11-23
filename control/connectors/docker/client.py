@@ -123,7 +123,8 @@ class PlaygroundDockerClient(object):
         container = await self.client.containers.create_or_replace(
             config=self._get_proxy_config(
                 name,
-                mounts),
+                mounts,
+                mappings),
             name=name)
         await container.start()
 
@@ -220,7 +221,13 @@ class PlaygroundDockerClient(object):
     def _get_proxy_config(
             self,
             name: str,
-            mounts: dict) -> dict:
+            mounts: dict,
+            port_mappings: list) -> dict:
+        # todo: handle udp etc
+        port_bindings = {
+            f"{internal}/tcp": [{"HostPort": f"{host}"}]
+            for host, internal
+            in port_mappings}
         return {
             'Image': self._envoy_image,
             "AttachStdin": False,
@@ -232,6 +239,7 @@ class PlaygroundDockerClient(object):
                 "envoy.playground.proxy": name,
             },
             "HostConfig": {
+                "PortBindings": port_bindings,
                 "Binds": [
                     '%s:%s' % (v.name, k)
                     for k, v
@@ -269,7 +277,17 @@ class PlaygroundDockerClient(object):
                 name=resource["Labels"][label],
                 id=resource["Id"][:10])
 
+            # todo move these bits outa here
+            if name == "proxy":
+                _resource['image'] = resource['Image']
+                _resource['port_mappings'] = [
+                    {'mapping_from': m.get('PublicPort'),
+                     'mapping_to': m.get('PrivatePort')}
+                    for m
+                    in resource['Ports']]
+
             if name == "service":
+                _resource['image'] = resource['Image']
                 _resource["service_type"] = resource["Labels"]["envoy.playground.service.type"]
 
             if name == "network":

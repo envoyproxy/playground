@@ -72,6 +72,23 @@ class BaseResources extends React.PureComponent {
             onSubmit: this.createResource};
     }
 
+    handleItem = (v) => {
+        if (v instanceof Array) {
+            return (
+                <>
+                  {v.map((_v, i) => {
+                      return (
+                          <div key={i}>
+                            <div >{_v.mapping_from}</div>
+                            <div >{_v.mapping_to}</div>
+                          </div>);
+                  })}
+                </>
+            );
+        }
+        return <div>{v}</div>;
+    };
+
     render () {
         const {logo, resources, title} = this.props;
         let headerLogo = logo;
@@ -86,7 +103,6 @@ class BaseResources extends React.PureComponent {
             }
             return logo;
         };
-
         return (
 	    <section className="control-pane">
               <header className="pt-1 pb-1 bg-light">
@@ -115,7 +131,7 @@ class BaseResources extends React.PureComponent {
                               return (
                                   <dl className="row m-0 bg-light p-0 small" key={index}>
                                     <dt className="col col-sm-4 bg-light text-right text-dark m-0">{k}</dt>
-                                    <dd className="col col-sm-8 bg-white m-0">{v}</dd>
+                                    <dd className="col col-sm-8 bg-white m-0">{this.handleItem(v)}</dd>
                                   </dl>
 		              );
 	                  })}

@@ -42,7 +42,7 @@ export default class PlaygroundSocket {
             if (eventData.resource === "proxy") {
                 const form = this.store.getState().form.value;
                 const {name: formName} = form;
-                const {id, name, status, logs} = eventData;
+                const {id, name, port_mappings, image, status, logs} = eventData;
                 const proxies = {};
                 if (status === "creating") {
                     if (formName && formName === name) {
@@ -51,7 +51,7 @@ export default class PlaygroundSocket {
                         this.store.dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
-                    proxies[name] = {name, id};
+                    proxies[name] = {name, id, port_mappings, image};
                     this.store.dispatch(updateProxies({proxies}));
                     if (formName && formName === name) {
                         this.store.dispatch(updateForm({status}));
@@ -77,7 +77,7 @@ export default class PlaygroundSocket {
             } else {
                 const form = this.store.getState().form.value;
                 const {service_type, name: formName, status: formStatus, ...formData} = form;
-                const {id, name, status, logs} = eventData;
+                const {id, name, image, status, logs} = eventData;
                 const services = {};
 
                 // console.log("SERVICE INCOMING", eventData);
@@ -90,7 +90,7 @@ export default class PlaygroundSocket {
                         this.store.dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
-                    services[name] = {name, id, service_type};
+                    services[name] = {name, id, image, service_type};
                     this.store.dispatch(updateServices({services}));
                     if (formName && formName === name) {
                         this.store.dispatch(updateForm({status}));
