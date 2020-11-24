@@ -1,7 +1,11 @@
 import asyncio
 import os
+from collections import OrderedDict
+from typing import Optional, Union
 
 import aiodocker
+from aiodocker.containers import DockerContainers
+from aiodocker.networks import DockerNetworks
 
 from connectors.docker.events import PlaygroundDockerEvents
 
@@ -35,8 +39,7 @@ class PlaygroundDockerClient(object):
             self,
             volume: str,
             mount: str,
-            files: dict) -> None:
-        # mount_config = self._get_mount_config(volume)
+            files: Union[dict, OrderedDict]) -> None:
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(volume, v, mount, k)
@@ -118,8 +121,8 @@ class PlaygroundDockerClient(object):
             self,
             name: str,
             mounts: dict,
-            mappings,
-            logging) -> None:
+            mappings: list,
+            logging: dict) -> None:
         container = await self.client.containers.create_or_replace(
             config=self._get_proxy_config(
                 name,
@@ -128,7 +131,11 @@ class PlaygroundDockerClient(object):
             name=name)
         await container.start()
 
-    async def create_network(self, name, proxies=None, services=None) -> None:
+    async def create_network(
+            self,
+            name: str,
+            proxies: Optional[list] = None,
+            services: Optional[list] = None) -> None:
         network = await self.client.networks.create(
             dict(name="__playground_%s" % name,
                  labels={"envoy.playground.network": name}))
@@ -144,7 +151,8 @@ class PlaygroundDockerClient(object):
     async def edit_network(
             self,
             id: str,
-            proxies=None, services=None) -> None:
+            proxies: Optional[list] = None,
+            services: Optional[list] = None) -> None:
         network = await self.client.networks.get(id)
         info = await network.show()
         containers = {
@@ -165,13 +173,14 @@ class PlaygroundDockerClient(object):
             if service['name'] in disconnect:
                 await network.disconnect({"Container": service["id"]})
 
-    async def image_exists(self, image_tag):
+    async def image_exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
         for image in await self.client.images.list():
             if image_tag in (image['RepoTags'] or []):
                 return True
+        return False
 
-    async def pull_image(self, image_tag):
+    async def pull_image(self, image_tag: str) -> None:
         await self.client.images.pull(image_tag)
 
     async def create_service(
@@ -276,7 +285,7 @@ class PlaygroundDockerClient(object):
 
     async def _list_resources(
             self,
-            resources,
+            resources: Union[DockerContainers, DockerNetworks],
             name: str) -> list:
         _resources = []
         label = "%s.%s" % (self._envoy_label, name)

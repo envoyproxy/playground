@@ -27,17 +27,18 @@ class PlaygroundAPI(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
+    # todo, consider using faster json implementation
     def _json_loader(self, content):
         return json.loads(content, object_pairs_hook=OrderedDict)
 
     def _json_dumper(self, content):
-        return json.dumps(content, object_pairs_hook=OrderedDict)
+        return json.dumps(content)
 
     async def load_json(self, request):
         return await request.json(loads=self._json_loader)
 
-    async def dump_json(self, content):
-        return await web.json_response(content, dumps=self._json_dumper)
+    def dump_json(self, content):
+        return web.json_response(content, dumps=self._json_dumper)
 
     async def add_network(self, request: Request) -> Response:
         data = await self.load_json(request)
@@ -59,8 +60,9 @@ class PlaygroundAPI(object):
         # create volume
         volume = await self.client.create_volume(container_type, name, mount)
 
-        # create container with volume
-        container = await self.client.write_volume(volume.name, mount, files)
+        if files:
+            # write files into the volume
+            await self.client.write_volume(volume.name, mount, files)
 
         return volume
 
@@ -88,16 +90,18 @@ class PlaygroundAPI(object):
                 'proxy',
                 data['name'],
                 'certs',
-                {k: v.split(',')[1]
-                 for k, v
-                 in data.get("certs", {}).items()}),
+                OrderedDict(
+                    (k, v.split(',')[1])
+                    for k, v
+                    in data.get("certs", {}).items())),
             '/binary': await self.populate_volume(
                 'proxy',
                 data['name'],
                 'binary',
-                {k: v.split(',')[1]
-                 for k, v
-                 in data.get("binaries", {}).items()}),
+                OrderedDict(
+                    (k, v.split(',')[1])
+                    for k, v
+                    in data.get("binaries", {}).items())),
             '/logs': await self.client.create_volume('proxy', data['name'], 'logs')}
 
         # create the proxy
