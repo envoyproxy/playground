@@ -165,6 +165,15 @@ class PlaygroundDockerClient(object):
             if service['name'] in disconnect:
                 await network.disconnect({"Container": service["id"]})
 
+    async def image_exists(self, image_tag):
+        # this is not v efficient, im wondering if there is a way to search.
+        for image in await self.client.images.list():
+            if image_tag in (image['RepoTags'] or []):
+                return True
+
+    async def pull_image(self, image_tag):
+        await self.client.images.pull(image_tag)
+
     async def create_service(
             self,
             name: str,
@@ -179,6 +188,7 @@ class PlaygroundDockerClient(object):
             "%s=%s" % (k, v)
             for k, v
             in service_config.get("environment", {}).items()]
+
         container = await self.client.containers.create_or_replace(
             config=self._get_service_config(service_type, image, name, environment),
             name=name)
