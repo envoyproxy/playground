@@ -5,7 +5,7 @@ import Layout from '../layout';
 import {ModalContext, APIContext} from "./context";
 import store, {
     updateMeta, updateServices, updateProxies, updateNetworks,
-    updateServiceTypes
+    updateServiceTypes, updateIcons
 } from "./store";
 
 /* css */
@@ -29,7 +29,8 @@ export default class App extends React.PureComponent {
             updateServiceTypes(data),
             updateServices(data),
             updateProxies(data),
-            updateNetworks(data)];
+            updateNetworks(data),
+            updateIcons(data)];
         for (const update of initialUpdates) {
             store.dispatch(update);
         }

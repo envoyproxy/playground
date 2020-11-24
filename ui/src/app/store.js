@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 import {staticAddress} from '../app/constants';
+import {getRndInteger} from '../utils';
 
 
 const metaSlice = createSlice({
@@ -19,19 +20,106 @@ const metaSlice = createSlice({
 export const {updateMeta} = metaSlice.actions;
 
 
+const getX = (resource) => {
+    if (resource === 'cloud') {
+        return getRndInteger(200, 400);
+    } else {
+        const beforeOrAfter = getRndInteger(0, 1);
+        if (beforeOrAfter === 0) {
+            return getRndInteger(getXyIcons()[1], 200);
+        } else {
+            return getRndInteger(400, getXY()[0] - getXyIcons()[0]);
+        }
+    }
+};
+
+const getXY = () => {
+    return [600, 400];
+}
+
+const getXyIcons = () => {
+    return [50, 50];
+}
+
+const getY = (resource) => {
+    if (resource === 'cloud') {
+        return getRndInteger(100, 300);
+    } else {
+        const beforeOrAfter = getRndInteger(0, 1);
+        if (beforeOrAfter === 0) {
+            return getRndInteger(this.xyIcons[1], 100);
+        } else {
+            return getRndInteger(300, this.xy[1] - this.xyIcons[1]);
+        }
+    }
+};
+
 const UISlice = createSlice({
     name: 'ui',
     initialState: {
         value: {modal: null}
     },
+
     reducers: {
         updateUI: (state, action) => {
             state.value = {...state.value, ...action.payload};
         },
+
+        updateIcons: (state, action) => {
+            const {networks={}, services={}, proxies={}} = action.payload;
+            const {connections=[], resources={}} = state.value;
+            console.log("ICONS", action.payload);
+            let changed = false;
+            // remove missing items
+            for (const k of Object.keys(resources)) {
+                const resourceType = k.split(':')[0];
+                const resourceName = k.split(':').pop();
+                const _check = {network: networks, service: services, proxy: proxies};
+            for (const [_k, _v] of Object.entries(_check)) {
+                if (resourceType === _k && !_v[resourceName]) {
+                    delete resources[k];
+                    changed = true;
+                }
+            }
+            }
+            // add new items
+            for (const k of Object.keys(networks)) {
+                if (!resources['network:' + k]) {
+                    resources['network:' + k] = [getX('cloud'), getY('cloud')];
+                    changed = true;
+                }
+            }
+            for (const [k, v] of Object.entries(services)) {
+                if (!resources['service:' + v.service_type + ':' + k]) {
+                    resources['service:' + v.service_type + ':' + k] = [getX(), getY()];
+                    changed = true;
+                }
+            }
+            for (const k of Object.keys(proxies)) {
+                if (!resources['proxy:' + k]) {
+                    resources['proxy:' + k] = [getX(), getY()];
+                    changed = true;
+                }
+            }
+            for (const [k, v] of Object.entries(networks)) {
+                for (const service of v.services || []) {
+                    connections.push([
+                        ...resources['network:' + k].map(v => v + 25),
+                        ...resources['service:' + services[service].service_type + ':' + service].map(v => v + 25)]);
+                }
+
+                for (const proxy of v.proxies || []) {
+                    connections.push([
+                        ...resources['network:' + k].map(v => v + 25),
+                        ...resources['proxy:' + proxy].map(v => v + 25)]);
+                }
+            }
+            state.value = {...state.value, connections, resources};
+        }
     }
 });
 
-export const {updateUI} = UISlice.actions;
+export const {updateUI, updateIcons} = UISlice.actions;
 
 
 const proxySlice = createSlice({
