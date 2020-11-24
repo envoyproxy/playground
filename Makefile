@@ -2,6 +2,8 @@
 
 SHELL := /bin/bash
 
+export PLAYGROUND_VERSION=$$PLAYGROUND_VERSION
+
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") || :
 
@@ -14,13 +16,13 @@ run: clean
 		envoy-playground
 
 run-published: clean
-	docker pull phlax/envoy-playground:alpha
+	docker pull phlax/envoy-playground:$$PLAYGROUND_VERSION
 	docker run -d \
 		--name envoy-playground \
 		--privileged \
 		-p 8000:8080 \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		phlax/envoy-playground:alpha
+		phlax/envoy-playground:$$PLAYGROUND_VERSION
 
 shell:
 	docker run -it --rm \
@@ -32,8 +34,8 @@ build:
 	docker build -t envoy-playground .
 
 publish:
-	docker tag envoy-playground phlax/envoy-playground:alpha
-	docker push phlax/envoy-playground:alpha
+	docker tag envoy-playground phlax/envoy-playground:$$PLAYGROUND_VERSION
+	docker push phlax/envoy-playground:$$PLAYGROUND_VERSION
 
 exec:
 	docker exec -it --workdir /code envoy-playground bash
