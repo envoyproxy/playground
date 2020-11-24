@@ -40,6 +40,10 @@ class PlaygroundDockerClient(object):
             volume: str,
             mount: str,
             files: Union[dict, OrderedDict]) -> None:
+
+        if not await self.image_exists(self._mount_image):
+            await self.pull_image(self._mount_image)
+
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(volume, v, mount, k)
