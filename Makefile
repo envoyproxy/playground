@@ -44,13 +44,16 @@ test:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		--workdir /code/control \
 		--entrypoint /bin/sh \
-			control -c 'pytest --flake8 --coverage tests/api.py'
+			control -c 'pytest --flake8 --coverage tests/api.py' \
+		|| exit 1
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		-e CI=1 \
-			ui yarn install
+			ui yarn install \
+		|| exit 1
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		-e CI=1 \
-			ui yarn test --coverage
+			ui yarn test --coverage \
+		|| exit `
 
 dev-control:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
