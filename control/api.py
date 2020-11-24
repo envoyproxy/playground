@@ -1,7 +1,9 @@
 import asyncio
 import base64
 import functools
+import json
 import os
+from collections import OrderedDict
 
 import yaml
 
@@ -25,8 +27,14 @@ class PlaygroundAPI(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
+    def _json_loader(self, content):
+        return json.loads(content, object_pairs_hook=OrderedDict)
+
+    async def load_json(self, request):
+        return await request.json(loads=self._json_loader)
+
     async def add_network(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.create_network(
             data["name"],
             proxies=data.get('proxies', []),
@@ -34,7 +42,7 @@ class PlaygroundAPI(object):
         return web.json_response(dict(message="OK"))
 
     async def edit_network(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.edit_network(
             data["id"],
             proxies=data.get('proxies', []),
@@ -51,7 +59,7 @@ class PlaygroundAPI(object):
         return volume
 
     async def add_proxy(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         # print("ADD RECV", data)
 
         # todo: move client._envoy_image here
@@ -102,7 +110,7 @@ class PlaygroundAPI(object):
             pass
 
     async def add_service(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         data['service_config'] = self.service_types[data["service_type"]]
 
         if not await self.client.image_exists(data['service_config']['image']):
@@ -122,17 +130,17 @@ class PlaygroundAPI(object):
         return web.json_response(dict(message="OK"))
 
     async def delete_network(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.delete_network(data["name"])
         return web.json_response(dict(message="OK"))
 
     async def delete_proxy(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.delete_proxy(data["name"])
         return web.json_response(dict(message="OK"))
 
     async def delete_service(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.delete_service(data["name"])
         return web.json_response(dict(message="OK"))
 
@@ -176,17 +184,17 @@ class PlaygroundAPI(object):
             await self.client.events.unsubscribe(hashed)
 
     async def get_network(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.get_network(data["name"])
         return web.json_response(result)
 
     async def get_proxy(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.get_proxy(data["name"])
         return web.json_response(result)
 
     async def get_service(self, request: Request) -> Response:
-        data = await request.json()
+        data = await self.load_json(request)
         result = await self.client.get_service(data["name"])
         return web.json_response(result)
 
