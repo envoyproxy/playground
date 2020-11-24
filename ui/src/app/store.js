@@ -47,9 +47,9 @@ const getY = (resource) => {
     } else {
         const beforeOrAfter = getRndInteger(0, 1);
         if (beforeOrAfter === 0) {
-            return getRndInteger(this.xyIcons[1], 100);
+            return getRndInteger(getXyIcons()[1], 100);
         } else {
-            return getRndInteger(300, this.xy[1] - this.xyIcons[1]);
+            return getRndInteger(300, getXY()[1] - getXyIcons()[1]);
         }
     }
 };
@@ -65,56 +65,71 @@ const UISlice = createSlice({
             state.value = {...state.value, ...action.payload};
         },
 
-        updateIcons: (state, action) => {
+        addIcon: (state, action) => {
             const {networks={}, services={}, proxies={}} = action.payload;
             const {connections=[], resources={}} = state.value;
-            console.log("ICONS", action.payload);
             let changed = false;
+            const containers = {};
+        },
+
+        updateIcons: (state, action) => {
+            const {networks={}, services={}, proxies={}, resources: updates={}} = action.payload;
+            const {resources: _resources={}} = state.value;
+            console.log('UPDATE ICONS');
+            let changed = false;
+            const containers = {};
+            const connections = [];
+            const resources = {..._resources, ...updates};
+
             // remove missing items
             for (const k of Object.keys(resources)) {
                 const resourceType = k.split(':')[0];
                 const resourceName = k.split(':').pop();
                 const _check = {network: networks, service: services, proxy: proxies};
-            for (const [_k, _v] of Object.entries(_check)) {
-                if (resourceType === _k && !_v[resourceName]) {
-                    delete resources[k];
-                    changed = true;
+                for (const [_k, _v] of Object.entries(_check)) {
+                    if (resourceType === _k && !_v[resourceName]) {
+                        delete resources[k];
+                    }
                 }
-            }
             }
             // add new items
             for (const k of Object.keys(networks)) {
                 if (!resources['network:' + k]) {
                     resources['network:' + k] = [getX('cloud'), getY('cloud')];
-                    changed = true;
                 }
             }
             for (const [k, v] of Object.entries(services)) {
                 if (!resources['service:' + v.service_type + ':' + k]) {
                     resources['service:' + v.service_type + ':' + k] = [getX(), getY()];
-                    changed = true;
+                    containers[v.id] = {...v};
+                    containers[v.id] = {type: 'service', ...v};
                 }
             }
-            for (const k of Object.keys(proxies)) {
+            for (const [k, v] of Object.entries(proxies)) {
                 if (!resources['proxy:' + k]) {
                     resources['proxy:' + k] = [getX(), getY()];
-                    changed = true;
+                    containers[v.id] = {type: 'proxy', ...v};
                 }
             }
             for (const [k, v] of Object.entries(networks)) {
-                for (const service of v.services || []) {
+                console.log("NETWORK", k, v);
+                for(const service of v.services || []) {
                     connections.push([
-                        ...resources['network:' + k].map(v => v + 25),
-                        ...resources['service:' + services[service].service_type + ':' + service].map(v => v + 25)]);
+                        ...resources['network:' + k].map(_v => _v + 25),
+                        ...resources['service:' + services[service].service_type + ':' + service].map(_v => _v + 25)]);
+                }
+                for(const proxy of v.proxies || []) {
+                        connections.push([
+                            ...resources['network:' + k].map(_v => _v + 25),
+                            ...resources['proxy:' + proxy].map(_v => _v + 25)]);
                 }
 
-                for (const proxy of v.proxies || []) {
-                    connections.push([
-                        ...resources['network:' + k].map(v => v + 25),
-                        ...resources['proxy:' + proxy].map(v => v + 25)]);
-                }
             }
-            state.value = {...state.value, connections, resources};
+            state.value = {
+                ...state.value,
+                connections,
+                ...{resources: {...resources}},
+            };
         }
     }
 });

@@ -11,7 +11,7 @@ import EnvoyLogo from '../images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
 
-import {updateUI} from '../app/store';
+import {updateIcons} from '../app/store';
 
 
 class ResourceImage extends React.Component {
@@ -21,6 +21,7 @@ class ResourceImage extends React.Component {
         const {
             x: startX, y: startY,
             resources: _resources,
+            networks, proxies, services, store,
             icon, name, dispatch, ...props} = this.props;
         const {x, y} = this.state;
         return (
@@ -37,11 +38,10 @@ class ResourceImage extends React.Component {
                       isDragging: true
                   });
               }}
-              onDragEnd={e => {
-                  // console.log("UPDATE STATE", name, dispatch);
-                  const resources = {..._resources};
+              onDragEnd={async e => {
+                  const resources = {};
                   resources[name] = [e.target.x(), e.target.y()];
-                  dispatch(updateUI({resources}));
+                  await dispatch(updateIcons({networks, proxies, services, resources}));
               }}
             />);
     };
@@ -89,6 +89,9 @@ export class BaseCloudContent extends React.PureComponent {
                         icon={icon}
                         dispatch={dispatch}
                         resources={resources}
+			networks={networks}
+			services={services}
+			proxies={proxies}
                         key={i}
                         name={k}
                         x={v[0]}

@@ -29,11 +29,12 @@ export default class App extends React.PureComponent {
             updateServiceTypes(data),
             updateServices(data),
             updateProxies(data),
-            updateNetworks(data),
-            updateIcons(data)];
+            updateNetworks(data)];
         for (const update of initialUpdates) {
-            store.dispatch(update);
+            await store.dispatch(update);
         }
+        const {network, proxy, service} = store.getState();
+        await store.dispatch(updateIcons({networks: network.value, proxies: proxy.value, services: service.value}));
     }
 
     render () {
