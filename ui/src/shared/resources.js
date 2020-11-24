@@ -35,8 +35,9 @@ class BaseResources extends React.PureComponent {
 
     createResource = async () => {
         // send API request to create resource
-        const {api, form} = this.props;
-        const {valid, ...data} = form;
+        const {api, dispatch, form} = this.props;
+        const {valid, status, ...data} = form;
+        dispatch(updateForm({status: 'initializing'}));
         await this.context.post('/' + api + '/add', data);
     };
 
@@ -47,8 +48,6 @@ class BaseResources extends React.PureComponent {
     };
 
     editResource = async (evt) => {
-        // open modal and send API request to fetch resource
-        // todo: use existing data from dump to create form ?
         const {api, dispatch, resources} = this.props;
         dispatch(updateForm({...resources[evt.target.title], edit: true}));
         dispatch(updateUI({modal: api}));

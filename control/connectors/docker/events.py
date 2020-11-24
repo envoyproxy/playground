@@ -19,7 +19,7 @@ class PlaygroundDockerEvents(object):
             event_action = event['Action']
             if debug:
                 print(f">>> EVENT ({event_type}:{event_action})")
-            if debug and event_type in debug or []:
+            if debug and event_type in (debug or []):
                 print(f">>> EVENT ({event_type})")
                 print(event)
                 print()

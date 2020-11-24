@@ -53,6 +53,11 @@ class PlaygroundAPI(object):
     async def add_proxy(self, request: Request) -> Response:
         data = await request.json()
         # print("ADD RECV", data)
+
+        # todo: move client._envoy_image here
+        if not await self.client.image_exists(self.client._envoy_image):
+            await self.client.pull_image(self.client._envoy_image)
+
         # todo: remove prefixes in js
         mappings = [
             [m['mapping_from'], m['mapping_to']]
@@ -89,9 +94,20 @@ class PlaygroundAPI(object):
             data.get('logging', {}))
         return web.json_response(dict(message="OK"))
 
+    async def handle_image(self, ws, event):
+        if event['Action'] == 'pull':
+            # todo: if image is one configured for envoy or services
+            #  then emit a signal to ui. This will be more useful
+            #  when socket events are fixed.
+            pass
+
     async def add_service(self, request: Request) -> Response:
         data = await request.json()
         data['service_config'] = self.service_types[data["service_type"]]
+
+        if not await self.client.image_exists(data['service_config']['image']):
+            await self.client.pull_image(data['service_config']['image'])
+
         result = await self.client.create_service(**data)
         return web.json_response(dict(message="OK"))
 
@@ -145,6 +161,7 @@ class PlaygroundAPI(object):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         handler = dict(
+            image=functools.partial(self.handle_image, ws),
             container=functools.partial(self.handle_container, ws),
             network=functools.partial(self.handle_network, ws))
         hashed = str(hash(ws))

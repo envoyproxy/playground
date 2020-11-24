@@ -109,11 +109,13 @@ export class ProxyStarting extends React.PureComponent {
     render () {
         const {form, status, success} = this.props;
         const {name} = form;
-        let message = <span>Creating volumes for Envoy proxy ({name})...</span>;
         let color = 'info';
+        let message = <span>Pulling container image for Envoy proxy ({name})...</span>;
         if (success) {
             message = <span>Envoy proxy has started ({name})!</span>;
             color = 'success';
+        } else if (status === 'creating') {
+            message = <span>Creating volumes for Envoy proxy ({name})...</span>;
         } else if (status === 'start') {
             message = <span>Starting Envoy proxy container ({name})...</span>;
         }
@@ -179,15 +181,15 @@ export class ProxyModal extends React.Component {
     }
 
     render () {
-        const {form, status} = this.props;
+        const {form} = this.props;
         const {success} = this.state;
-
+        const {status} = form;
         if (success) {
             return (
                 <ProxyStarting success={success} form={form} status={status} />);
         }
 
-        if (status === 'creating' || status === 'start') {
+        if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }

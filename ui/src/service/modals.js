@@ -109,11 +109,13 @@ export class ServiceStarting extends React.PureComponent {
     render () {
         const {form, status, success} = this.props;
         const {name} = form;
-        let message = <span>Creating volumes for service ({name})...</span>;
         let color = 'info';
+        let message = <span>Pulling container image for service ({name})...</span>;
         if (success) {
             message = <span>Service has started ({name})!</span>;
             color = 'success';
+        } else if (status === 'creating') {
+            message = <span>Creating volumes for service ({name})...</span>;
         } else if (status === 'start') {
             message = <span>Starting service container ({name})...</span>;
         }
@@ -177,7 +179,7 @@ export class ServiceModal extends React.Component {
                 <ServiceStarting success={success} form={form} status={status} />);
         }
 
-        if (status === 'creating' || status === 'start') {
+        if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
