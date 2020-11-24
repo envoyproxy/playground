@@ -84,7 +84,7 @@ export class PortMappingListForm extends React.PureComponent {
                           </Col>
                           <Col sm={4} className="m-0 p-0 border-bottom">
                             <div className="p-2 bg-white">
-                              {(mapping_type || 'TCP/UDP').toUpperCase()}
+                              {(mapping_type && mapping_type.toUpperCase() || 'Generic TCP')}
                             </div>
                           </Col>
                         </Row>);
@@ -107,7 +107,7 @@ export class BasePortMappingForm extends React.Component {
         mapping_type: undefined};
 
     onClick = (evt) => {
-        const {mapping_from, mapping_to, mapping_type} = this.state;
+        const {mapping_from=10000, mapping_to=10000, mapping_type} = this.state;
         const {dispatch, form} = this.props;
         const {port_mappings=[]} = form;
         const newMappings = [...port_mappings, {mapping_from, mapping_to, mapping_type}];
@@ -145,8 +145,8 @@ export class BasePortMappingForm extends React.Component {
                       onChange={this.onChange}
                       id="mapping_from"
                       name="mapping_from"
-                      value={mapping_from || ''}
-                      placeholder="From" />
+                      value={mapping_from || 10000}
+                      placeholder="10000" />
                   </Col>
                   <Col sm={2}>
                     <Input
@@ -154,18 +154,17 @@ export class BasePortMappingForm extends React.Component {
                       onChange={this.onChange}
                       id="mapping_to"
                       name="mapping_to"
-                      value={mapping_to || ''}
-                      placeholder="To" />
+                      value={mapping_to || 10000}
+                      placeholder="10000" />
                   </Col>
                   <Col sm={3}>
                     <CustomInput
                       type="select"
                       id="mapping_type"
                       onChange={this.onChange}
-                      value={mapping_type }
+                      value={mapping_type}
                       name="mapping_type">
-                      <option>Type hint...</option>
-                      <option>Generic TCP/UDP (default)</option>
+                      <option>Generic TCP (default)</option>
                       <option value="http">HTTP</option>
                       <option value="https">HTTPS</option>
                     </CustomInput>
