@@ -30,8 +30,14 @@ class PlaygroundAPI(object):
     def _json_loader(self, content):
         return json.loads(content, object_pairs_hook=OrderedDict)
 
+    def _json_dumper(self, content):
+        return json.dumps(content, object_pairs_hook=OrderedDict)
+
     async def load_json(self, request):
         return await request.json(loads=self._json_loader)
+
+    async def dump_json(self, content):
+        return await web.json_response(content, dumps=self._json_dumper)
 
     async def add_network(self, request: Request) -> Response:
         data = await self.load_json(request)
@@ -39,7 +45,7 @@ class PlaygroundAPI(object):
             data["name"],
             proxies=data.get('proxies', []),
             services=data.get('services', []))
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def edit_network(self, request: Request) -> Response:
         data = await self.load_json(request)
@@ -47,7 +53,7 @@ class PlaygroundAPI(object):
             data["id"],
             proxies=data.get('proxies', []),
             services=data.get('services', []))
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def populate_volume(self, container_type, name, mount, files):
         # create volume
@@ -100,7 +106,7 @@ class PlaygroundAPI(object):
             mounts,
             mappings,
             data.get('logging', {}))
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def handle_image(self, ws, event):
         if event['Action'] == 'pull':
@@ -117,7 +123,7 @@ class PlaygroundAPI(object):
             await self.client.pull_image(data['service_config']['image'])
 
         result = await self.client.create_service(**data)
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def clear(self, request: Request) -> Response:
         resources = (
@@ -127,37 +133,37 @@ class PlaygroundAPI(object):
         for _resources, remove in resources:
             for resource in await _resources():
                 await remove(resource['name'])
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def delete_network(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.delete_network(data["name"])
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def delete_proxy(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.delete_proxy(data["name"])
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def delete_service(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.delete_service(data["name"])
-        return web.json_response(dict(message="OK"))
+        return self.dump_json(dict(message="OK"))
 
     async def dump_resources(self, request: Request) -> Response:
-        proxies = {}
+        proxies = OrderedDict()
         for proxy in await self.client.list_proxies():
             proxies[proxy["name"]] = proxy
 
-        networks = {}
+        networks = OrderedDict()
         for network in await self.client.list_networks():
             networks[network["name"]] = network
 
-        services = {}
+        services = OrderedDict()
         for service in await self.client.list_services():
             services[service["name"]] = service
 
-        return web.json_response(
+        return self.dump_json(
             dict(version=self.client._envoy_image,
                  proxies=proxies,
                  services=services,
@@ -186,17 +192,17 @@ class PlaygroundAPI(object):
     async def get_network(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.get_network(data["name"])
-        return web.json_response(result)
+        return self.dump_json(result)
 
     async def get_proxy(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.get_proxy(data["name"])
-        return web.json_response(result)
+        return self.dump_json(result)
 
     async def get_service(self, request: Request) -> Response:
         data = await self.load_json(request)
         result = await self.client.get_service(data["name"])
-        return web.json_response(result)
+        return self.dump_json(result)
 
     async def handle_container(self, ws, event: dict) -> None:
         handlers = ["destroy", "start", "die"]
@@ -389,4 +395,4 @@ class PlaygroundAPI(object):
                 mount)
 
     async def publish(self, ws, event: dict) -> None:
-        await ws.send_json(event)
+        await ws.send_json(event, dumps=self._json_dumper)

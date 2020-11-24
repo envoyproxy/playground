@@ -234,10 +234,10 @@ class PlaygroundDockerClient(object):
             mounts: dict,
             port_mappings: list) -> dict:
         # todo: handle udp etc
-        port_bindings = {
-            f"{internal}/tcp": [{"HostPort": f"{host}"}]
+        port_bindings = OrderedDict(
+            (f"{internal}/tcp", [{"HostPort": f"{host}"}])
             for host, internal
-            in port_mappings}
+            in port_mappings)
         return {
             'Image': self._envoy_image,
             "AttachStdin": False,
