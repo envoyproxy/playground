@@ -62,7 +62,7 @@ Start the container and browse to http://localhost:8000
 
 Add Envoy proxies and set their configuration.
 
-https://phlax.github.io/envoy-playground/screencasts/create-proxies.webm
+https://phlax.github.io/playground/screencasts/create-proxies.webm
 
 ### Create some services
 
