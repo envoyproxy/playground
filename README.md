@@ -1,7 +1,5 @@
 # Envoy playground
 
-[![Build Status](https://travis-ci.org/phlax/envoy-playground.svg?branch=main)](https://travis-ci.org/phlax/envoy-playground)
-
 The Envoy playground allows you to experiment with proxies, services and networks using Docker.
 
 This is useful for learning or testing Envoy configurations and network architectures.
@@ -64,7 +62,7 @@ Start the container and browse to http://localhost:8000
 
 Add Envoy proxies and set their configuration.
 
-https://phlax.github.io/envoy-playground/screencasts/create-proxies.webm
+https://phlax.github.io/playground/screencasts/create-proxies.webm
 
 ### Create some services
 
@@ -91,8 +89,8 @@ Clear all of the toys away.
 ### Clone the git repo
 
 ```console
-$ git clone git@github.com:phlax/envoy-playground
-$ cd envoy-playground
+$ git clone git@github.com:envoyproxy/playground
+$ cd playground
 ```
 
 ### Start the control and ui servers in dev mode

@@ -11,7 +11,7 @@ export class GithubSnippet extends React.PureComponent {
         return (
             <>
               <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
-	      <a href="https://github.com/phlax/envoy-playground">https://github.com/phlax/envoy-playground</a>
+	      <a href="https://github.com/envoyproxy/playground">https://github.com/envoyproxy/playground</a>
             </>);
     }
 }
