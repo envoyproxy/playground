@@ -41,16 +41,7 @@ exec:
 	docker exec -it --workdir /code envoy-playground bash
 
 test:
-	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
-		--workdir /code/control \
-		--entrypoint /bin/sh \
-			control -c 'pytest tests/api.py'
-	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
-		-e CI=1 \
-			ui yarn install
-	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
-		-e CI=1 \
-			ui yarn test --coverage
+	./scripts/runtests.sh
 
 dev-control:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
