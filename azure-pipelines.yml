@@ -10,13 +10,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - script: |
     make test
-    # make build
-  displayName: 'Run a multi-line script'
+  displayName: 'Run test suites'
+
+- script: |
+    make build
+  displayName: 'Build the production Docker image'
 
 - script: |
     bash <(curl -s https://codecov.io/bash)
