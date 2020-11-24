@@ -11,7 +11,7 @@ import EnvoyLogo from '../images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
 
-import {updateUI} from '../app/store';
+import {updateIcons} from '../app/store';
 
 
 class ResourceImage extends React.Component {
@@ -21,6 +21,7 @@ class ResourceImage extends React.Component {
         const {
             x: startX, y: startY,
             resources: _resources,
+            networks, proxies, services, store,
             icon, name, dispatch, ...props} = this.props;
         const {x, y} = this.state;
         return (
@@ -37,11 +38,10 @@ class ResourceImage extends React.Component {
                       isDragging: true
                   });
               }}
-              onDragEnd={e => {
-                  // console.log("UPDATE STATE", name, dispatch);
-                  const resources = {..._resources};
+              onDragEnd={async e => {
+                  const resources = {};
                   resources[name] = [e.target.x(), e.target.y()];
-                  dispatch(updateUI({resources}));
+                  await dispatch(updateIcons({networks, proxies, services, resources}));
               }}
             />);
     };
@@ -59,98 +59,9 @@ export class BaseCloudContent extends React.PureComponent {
         parentRef: PropTypes.object.isRequired,
     });
 
-    getRndInteger = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1) ) + min;
-    }
-
-    getX = (resource) => {
-        if (resource === 'cloud') {
-            return this.getRndInteger(200, 400);
-        } else {
-            const beforeOrAfter = this.getRndInteger(0, 1);
-            if (beforeOrAfter === 0) {
-                return this.getRndInteger(this.xyIcons[1], 200);
-            } else {
-                return this.getRndInteger(400, this.xy[0] - this.xyIcons[0]);
-            }
-        }
-    };
-
-    get xy () {
-        return [600, 400];
-    }
-
-    get xyIcons () {
-        return [50, 50];
-    }
-
-    getY = (resource) => {
-        if (resource === 'cloud') {
-            return this.getRndInteger(100, 300);
-        } else {
-            const beforeOrAfter = this.getRndInteger(0, 1);
-            if (beforeOrAfter === 0) {
-                return this.getRndInteger(this.xyIcons[1], 100);
-            } else {
-                return this.getRndInteger(300, this.xy[1] - this.xyIcons[1]);
-            }
-        }
-    };
-
     get icons () {
-        // THIS IS CAUSING A MEM LEAK - MOVE TO willUpdateProps or somesuch
         const {dispatch, networks, proxies, services, service_types, ui} = this.props;
-        const {resources: _resources={}} = ui;
-        const resources = {..._resources};
-        let changed = false;
-        // remove missing items
-        for (const k of Object.keys(resources)) {
-            const resourceType = k.split(':')[0];
-            const resourceName = k.split(':').pop();
-            const _check = {network: networks, service: services, proxy: proxies};
-            for (const [_k, _v] of Object.entries(_check)) {
-                if (resourceType === _k && !_v[resourceName]) {
-                    delete resources[k];
-                    changed = true;
-                }
-            }
-        }
-        // add new items
-        for (const k of Object.keys(networks)) {
-            if (!resources['network:' + k]) {
-                resources['network:' + k] = [this.getX('cloud'), this.getY('cloud')];
-                changed = true;
-            }
-        }
-        for (const [k, v] of Object.entries(services)) {
-            if (!resources['service:' + v.service_type + ':' + k]) {
-                resources['service:' + v.service_type + ':' + k] = [this.getX(), this.getY()];
-                changed = true;
-            }
-        }
-        for (const k of Object.keys(proxies)) {
-            if (!resources['proxy:' + k]) {
-                resources['proxy:' + k] = [this.getX(), this.getY()];
-                changed = true;
-            }
-        }
-        if (changed) {
-            dispatch(updateUI({resources}));
-        }
-        const connections = [];
-        for (const [k, v] of Object.entries(networks)) {
-            for (const service of v.services) {
-                connections.push([
-                    ...resources['network:' + k].map(v => v + 25),
-                    ...resources['service:' + services[service].service_type + ':' + service].map(v => v + 25)]);
-            }
-
-            for (const proxy of v.proxies) {
-                connections.push([
-                    ...resources['network:' + k].map(v => v + 25),
-                    ...resources['proxy:' + proxy].map(v => v + 25)]);
-            }
-        }
+        const {connections=[], resources={}} = ui;
         return (
             <>
               {connections.map((coords, i) => {
@@ -178,6 +89,9 @@ export class BaseCloudContent extends React.PureComponent {
                         icon={icon}
                         dispatch={dispatch}
                         resources={resources}
+			networks={networks}
+			services={services}
+			proxies={proxies}
                         key={i}
                         name={k}
                         x={v[0]}
@@ -185,6 +99,7 @@ export class BaseCloudContent extends React.PureComponent {
                       />);
               })}
             </>);
+
     }
 
     render () {

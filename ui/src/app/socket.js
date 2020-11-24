@@ -1,7 +1,7 @@
 import {
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
-    removeService, updateServices
+    removeService, updateServices, updateIcons
 } from "../app/store";
 
 
@@ -21,22 +21,36 @@ export default class PlaygroundSocket {
 
     }
 
-    onMessage = (event) => {
+    refreshIcons = async () => {
+        const {dispatch} = this.store;
+        const {network, service, proxy} = this.store.getState();
+        await dispatch(updateIcons({
+            services: service.value,
+            proxies: proxy.value,
+            networks: network.value,
+        }));
+    }
+
+    onMessage = async (event) => {
+        const {dispatch} = this.store;
         const eventData = JSON.parse(event.data);
         // console.log("INCOMING", eventData);
         if (eventData.type === "network") {
             if (eventData.action === "destroy") {
-                this.store.dispatch(removeNetwork(eventData.id));
+                await dispatch(removeNetwork(eventData.id));
+                this.refreshIcons();
             } else if (eventData.action === "create") {
-                this.store.dispatch(updateNetworks(eventData));
-                this.store.dispatch(updateUI({modal: null}));
-                this.store.dispatch(clearForm());
+                await dispatch(updateNetworks(eventData));
+                await dispatch(updateUI({modal: null}));
+                await dispatch(clearForm());
+                this.refreshIcons();
             } else if (eventData.action === "connect" || eventData.action === "disconnect") {
                 const {service, proxy} = this.store.getState();
-                this.store.dispatch(updateNetworks({
+                await dispatch(updateNetworks({
                     services: service.value,
                     proxies: proxy.value,
                     ...eventData}));
+                await this.refreshIcons();
             }
         } else if (eventData.type === "container") {
             if (eventData.resource === "proxy") {
@@ -45,31 +59,36 @@ export default class PlaygroundSocket {
                 const {id, name, port_mappings, image, status, logs} = eventData;
                 const proxies = {};
                 if (status === "creating") {
+                    proxies[name] = {name};
+                    await dispatch(updateProxies({proxies}));
+                    this.refreshIcons();
                     if (formName && formName === name) {
-                        proxies[name] = {name};
-                        this.store.dispatch(updateProxies({proxies}));
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
                     proxies[name] = {name, id, port_mappings, image};
-                    this.store.dispatch(updateProxies({proxies}));
+                    await dispatch(updateProxies({proxies}));
+                    this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "exited") {
-                    this.store.dispatch(removeProxy(eventData.id));
+                    await dispatch(removeProxy(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "destroy") {
-                    this.store.dispatch(removeProxy(eventData.id));
+                    await dispatch(removeProxy(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "die") {
-                    this.store.dispatch(removeProxy(eventData.id));
+                    await dispatch(removeProxy(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === eventData.name) {
-                        this.store.dispatch(updateForm({status, logs}));
+                        await dispatch(updateForm({status, logs}));
                     }
                 } else {
                     // console.log("UNHANDLED INCOMING", eventData);
@@ -79,36 +98,37 @@ export default class PlaygroundSocket {
                 const {service_type, name: formName, status: formStatus, ...formData} = form;
                 const {id, name, image, status, logs} = eventData;
                 const services = {};
-
-                // console.log("SERVICE INCOMING", eventData);
-
                 if (status === "creating") {
+                    services[name] = {name, service_type};
+                    await dispatch(updateServices({services}));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        // console.log('CREATE SERVICE', formData);
-                        services[name] = {name, service_type};
-                        this.store.dispatch(updateServices({services}));
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
                     services[name] = {name, id, image, service_type};
-                    this.store.dispatch(updateServices({services}));
+                    await dispatch(updateServices({services}));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "exited") {
-                    this.store.dispatch(removeService(eventData.id));
+                    await dispatch(removeService(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "destroy") {
-                    this.store.dispatch(removeService(eventData.id));
+                    await dispatch(removeService(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === name) {
-                        this.store.dispatch(updateForm({status}));
+                        await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "die") {
-                    this.store.dispatch(removeService(eventData.id));
+                    await dispatch(removeService(eventData.id));
+                    await this.refreshIcons();
                     if (formName && formName === eventData.name) {
-                        this.store.dispatch(updateForm({status, logs}));
+                        await dispatch(updateForm({status, logs}));
                     }
                 } else {
                     // console.log("UNHANDLED INCOMING", eventData);
