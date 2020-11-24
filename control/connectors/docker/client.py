@@ -40,6 +40,10 @@ class PlaygroundDockerClient(object):
             volume: str,
             mount: str,
             files: Union[dict, OrderedDict]) -> None:
+
+        if not await self.image_exists(self._mount_image):
+            await self.pull_image(self._mount_image)
+
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(volume, v, mount, k)
@@ -175,12 +179,16 @@ class PlaygroundDockerClient(object):
 
     async def image_exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
+        if ":" not in image_tag:
+            image_tag = f"{image_tag}:latest"
         for image in await self.client.images.list():
             if image_tag in (image['RepoTags'] or []):
                 return True
         return False
 
     async def pull_image(self, image_tag: str) -> None:
+        if ":" not in image_tag:
+            image_tag = f"{image_tag}:latest"
         await self.client.images.pull(image_tag)
 
     async def create_service(
