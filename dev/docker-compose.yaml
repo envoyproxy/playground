@@ -9,6 +9,7 @@ services:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - ../control:/code/control
+    - ../.coverage:/code/control/coverage
     - ../services.yaml:/services.yaml
     - ../services:/services
     ports:
@@ -22,3 +23,4 @@ services:
     - 8081:3000
     volumes:
     - ../ui:/app
+    - ../.coverage:/app/coverage

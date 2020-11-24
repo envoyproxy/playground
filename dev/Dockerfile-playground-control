@@ -4,8 +4,8 @@ RUN pip3 install -q \
 	aiodocker \
 	aiohttp \
 	aiohttp_cors \
-	coverage \
 	pytest-asyncio \
+	pytest-cov \
 	pytest-flake8 \
 	pyyaml
 RUN mkdir /code
