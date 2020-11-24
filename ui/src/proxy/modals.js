@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import {Alert, Button, Col, Label, Row} from 'reactstrap';
 
-import {AliasForm, PortMappingForm} from '../shared/forms';
+import {PortMappingForm} from '../shared/forms';
 import {ActionCopy} from '../shared/actions';
 import {PlaygroundTabs} from '../shared/tabs';
 import {clearForm, updateForm, updateUI} from '../app/store';
@@ -153,8 +153,6 @@ export class ProxyModal extends React.Component {
                 <ProxyCertificatesForm />),
             Binaries: (
                 <ProxyBinariesForm />),
-            Aliases: (
-                <AliasForm />),
             Ports: (
                 <PortMappingForm />)
         };
