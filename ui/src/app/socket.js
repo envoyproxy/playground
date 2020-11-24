@@ -4,21 +4,17 @@ import {
     removeService, updateServices
 } from "../app/store";
 
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
 
 export default class PlaygroundSocket {
 
     constructor(address, store) {
         this.store = store;
-        this.ws = new WebSocket(address);
+        this.address = address;
+        this.ws = new ReconnectingWebSocket(address);
         this.addListeners();
-    }
-
-    onOpen = () => {
-        this.ws.send('Hello Server!');
-    }
-
-    onClose = () => {
-
+        this._state = 'starting';
     }
 
     onMessage = (event) => {
@@ -118,16 +114,8 @@ export default class PlaygroundSocket {
     }
 
     addListeners = () => {
-        this.ws.addEventListener('open', (event) => {
-            this.onOpen(event);
-        });
-
         this.ws.addEventListener('message', (event) => {
             this.onMessage(event);
-        });
-
-        this.ws.addEventListener('close', (event) => {
-            this.onClose(event);
         });
     }
 }
