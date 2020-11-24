@@ -179,12 +179,16 @@ class PlaygroundDockerClient(object):
 
     async def image_exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
+        if ":" not in image_tag:
+            image_tag = f"{image_tag}:latest"
         for image in await self.client.images.list():
             if image_tag in (image['RepoTags'] or []):
                 return True
         return False
 
     async def pull_image(self, image_tag: str) -> None:
+        if ":" not in image_tag:
+            image_tag = f"{image_tag}:latest"
         await self.client.images.pull(image_tag)
 
     async def create_service(
