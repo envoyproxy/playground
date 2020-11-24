@@ -15,7 +15,7 @@ steps:
 
 - script: |
     make test
-    make build
+    # make build
   displayName: 'Run a multi-line script'
 
 - script: |
