@@ -44,7 +44,7 @@ test:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		--workdir /code/control \
 		--entrypoint /bin/sh \
-			control -c 'pytest tests/api.py'
+			control -c 'pytest --flake8 --coverage tests/api.py'
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		-e CI=1 \
 			ui yarn install

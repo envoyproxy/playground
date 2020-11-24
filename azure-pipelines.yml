@@ -17,3 +17,7 @@ steps:
     make test
     make build
   displayName: 'Run a multi-line script'
+
+- script: |
+    bash <(curl -s https://codecov.io/bash)
+  displayName: 'Upload to codecov.io'

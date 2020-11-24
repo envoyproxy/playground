@@ -1,6 +1,13 @@
 FROM python:3.8-slim
 
-RUN pip3 install -q aiodocker aiohttp aiohttp_cors pyyaml pytest-asyncio
+RUN pip3 install -q \
+	aiodocker \
+	aiohttp \
+	aiohttp_cors \
+	coverage \
+	pytest-asyncio \
+	pytest-flake8 \
+	pyyaml
 RUN mkdir /code
 ADD ./control /code
 ENTRYPOINT ["python3", "/code/control/run.py"]
