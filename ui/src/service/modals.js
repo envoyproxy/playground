@@ -8,7 +8,6 @@ import {connect} from 'react-redux';
 
 import {Alert, Button, Col, Label, Row} from 'reactstrap';
 
-import {AliasForm} from '../shared/forms';
 import {ActionCopy} from '../shared/actions';
 import {PlaygroundTabs} from '../shared/tabs';
 import {clearForm, updateForm, updateUI} from '../app/store';
@@ -145,8 +144,6 @@ export class ServiceModal extends React.Component {
         return {
             Service: (
                 <ServiceForm />),
-            Aliases: (
-                <AliasForm />),
         };
     }
 

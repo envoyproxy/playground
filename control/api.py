@@ -74,7 +74,7 @@ class PlaygroundAPI(object):
         if not await self.client.image_exists(self.client._envoy_image):
             await self.client.pull_image(self.client._envoy_image)
 
-        # todo: remove prefixes in js
+        # todo: remove binary/cert prefixes in js
         mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
