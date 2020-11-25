@@ -112,8 +112,7 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
 
     async componentDidMount () {
         const {dispatch, form, service_types} = this.props;
-        const {service_type} = form;
-        const {configuration} = form;
+        const {configuration, service_type} = form;
         if (configuration) {
             return;
         }
@@ -125,6 +124,19 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
         }
     }
 
+    onHighlight = (code) => {
+        const {form, service_types} = this.props;
+        const {service_type} = form;
+        if (!service_type) {
+            return code;
+        }
+        const configHighlight  = service_types[service_type]['labels']['envoy.playground.config.highlight'];
+        if (!configHighlight) {
+            return code;
+        }
+        return highlight(code, languages[configHighlight]);
+    }
+
     render () {
         const {form} = this.props;
         const {configuration=''} = form;
@@ -134,7 +146,7 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
                   className="border bg-secondary"
                   value={configuration}
                   onValueChange={this.onConfigChange}
-                  highlight={code => highlight(code, languages.py)}
+                  highlight={this.onHighlight}
                   padding={10}
                   name="configuration"
                   id="configuration"

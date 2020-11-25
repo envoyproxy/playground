@@ -59,10 +59,9 @@ if __name__ == "__main__":
                 show_index=True)]
         app.add_routes(routes)
     else:
-        allowed = CORS_ALLOWED
         cors.add(
             app.router.add_static('/static', "/services"),
-            {allowed: aiohttp_cors.ResourceOptions(
+            {CORS_ALLOWED: aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers=("X-Custom-Server-Header",),
                 allow_headers=("X-Requested-With", "Content-Type"),
