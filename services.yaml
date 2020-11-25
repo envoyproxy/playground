@@ -16,11 +16,14 @@ services:
   python:
     image: phlax/aiohttp
     labels:
-      envoy.playground.service: "Python"
+      envoy.playground.service: "Python (asyncio)"
       envoy.playground.logo: "python.png"
+      envoy.playground.descriptions: |
+        Python/asyncio image with aiohttp and aio-libs
       envoy.playground.config.path: "/code/control/run.py"
       envoy.playground.config.type: "python"
       envoy.playground.config.default: "run.py"
+      envoy.playground.config.highlight: "py"
 
   jaeger:
     image: jaegertracing/all-in-one
