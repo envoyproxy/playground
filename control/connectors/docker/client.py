@@ -321,8 +321,6 @@ class PlaygroundDockerClient(object):
             "envoy.playground.service": name,
             "envoy.playground.service.type": service_type,
         }
-        if mounts:
-            labels['envoy.playground.service.config'] = 'true'
         return {
             'Image': image,
             "AttachStdin": False,
