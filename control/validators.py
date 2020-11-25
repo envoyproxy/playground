@@ -36,6 +36,11 @@ class AddNetworkValidator(Validator):
 @attr.s
 class EditNetworkValidator(Validator):
 
+    # v: exists
+    # v: length
+    # v: valid chars for uuid
+    id = attr.ib()
+
     # v: length
     # v: proxy dicts
     proxies = attr.ib(default=[])
@@ -43,11 +48,6 @@ class EditNetworkValidator(Validator):
     # v: length
     # v: service dicts
     services = attr.ib(default=[])
-
-    # v: exists
-    # v: length
-    # v: valid chars for uuid
-    id = attr.ib()
 
 
 @attr.s
