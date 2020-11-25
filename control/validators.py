@@ -1,6 +1,8 @@
 
 from collections import OrderedDict
 
+import attr
+
 
 # Request validators
 # ------------------
@@ -13,158 +15,124 @@ from collections import OrderedDict
 
 class Validator(object):
 
-    def __init__(self, data):
+    def __init__(self, **data):
         self._data = data
 
 
+@attr.s
 class AddNetworkValidator(Validator):
+
+    # v: valid chars for name
+    # v: length
+    name = attr.ib()
+    # v: length
+    # v: proxy dicts
+    proxies = attr.ib(default=[])
+    # v: length
+    # v: service dicts
+    services = attr.ib(default=[])
+
+
+@attr.s
+class EditNetworkValidator(Validator):
 
     # v: length
     # v: proxy dicts
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
+    proxies = attr.ib(default=[])
 
     # v: length
     # v: service dicts
-    @property
-    def services(self):
-        return self._data.get('services', [])
+    services = attr.ib(default=[])
+
+    # v: exists
+    # v: length
+    # v: valid chars for uuid
+    id = attr.ib()
+
+
+@attr.s
+class AddProxyValidator(Validator):
 
     # v: exists
     # v: length
     # v: valid chars a-Z_-.
     # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
-
-
-class EditNetworkValidator(Validator):
-
-    # v: length
-    # v: proxy dicts
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
-
-    # v: length
-    # v: service dicts
-    @property
-    def services(self):
-        return self._data.get('services', [])
-
-    # v: exists
-    # v: length
-    # v: valid chars for uuid
-    @property
-    def id(self):
-        return self._data['id']
-
-
-class AddProxyValidator(Validator):
-
-    # v: length
-    # v: port_mapping dicts
-    # v: mapping to/from are in valid ranges
-    @property
-    def port_mappings(self):
-        return self._data.get('port_mappings', [])
+    name = attr.ib()
 
     # v: exists
     # v: length
     # v: valid yaml
     # v: valid envoy config ?
-    @property
-    def configuration(self):
-        return self._data['configuration']
+    configuration = attr.ib()
 
-    # v: exists
     # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
+    # v: port_mapping dicts
+    # v: mapping to/from are in valid ranges
+    port_mappings = attr.ib(default=[])
 
     # v: length
     # v: valid keys
     # v: length of values
-    @property
-    def certs(self):
-        return self._data.get('certs', {})
+    certs = attr.ib(default=OrderedDict())
 
     # v: length
     # v: valid keys
     # v: length of values
-    @property
-    def binaries(self):
-        return self._data.get('binaries', {})
+    binaries = attr.ib(default=OrderedDict())
 
     # v: option/s
-    @property
-    def logging(self):
-        return self._data.get('logging', {})
+    logging = attr.ib(default=OrderedDict())
 
 
+@attr.s
 class AddServiceValidator(Validator):
 
-    # v: length
-    @property
-    def configuration(self):
-        return self._data['configuration']
 
     # v: exists
     # v: length
     # v: valid chars a-Z_-.
     # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
+    name = attr.ib()
 
     # v: exists
-    # v: length
+    # v: length and length of values
     # v: valid chars
-    @property
-    def service_type(self):
-        return self._data['service_type']
+    service_type = attr.ib()
+
+    # v: length
+    configuration = attr.ib(default='')
 
     # v: length
     # v: valid keys (length, chars)
     # v: valid values (length)
-    @property
-    def env(self):
-        return self._data.get('vars', OrderedDict())
+    env = attr.ib(default=OrderedDict())
 
 
+@attr.s
 class DeleteServiceValidator(Validator):
 
     # v: exists
     # v: length
     # v: valid chars a-Z_-.
     # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
+    name = attr.ib()
 
 
+@attr.s
 class DeleteNetworkValidator(Validator):
 
     # v: exists
     # v: length
     # v: valid chars a-Z_-.
     # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
+    name = attr.ib()
 
 
+@attr.s
 class DeleteProxyValidator(Validator):
 
     # v: exists
     # v: length
     # v: valid chars a-Z_-.
     # v: no double ^^
-    @property
-    def name(self):
-        return self._data['name']
+    name = attr.ib()

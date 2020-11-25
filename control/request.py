@@ -14,4 +14,4 @@ class PlaygroundRequest(object):
         return json.loads(content, object_pairs_hook=OrderedDict)
 
     async def load_data(self):
-        self.data = self._validator(await self._request.json(loads=self._json_loader))
+        self.data = self._validator(**await self._request.json(loads=self._json_loader))
