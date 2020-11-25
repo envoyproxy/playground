@@ -103,7 +103,6 @@ const UISlice = createSlice({
                 }
             }
             for (const [k, v] of Object.entries(networks)) {
-                console.log("NETWORK", k, v);
                 for(const service of v.services || []) {
                     connections.push([
                         ...resources['network:' + k].map(_v => _v + 25),
