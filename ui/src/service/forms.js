@@ -102,7 +102,7 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
     });
 
     get messages () {
-        return ["Information about adding service"];
+        return ["Add configuration for the service"];
     }
 
     onConfigChange = async (code) => {
