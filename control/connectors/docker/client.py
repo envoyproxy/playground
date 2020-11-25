@@ -199,6 +199,7 @@ class PlaygroundDockerClient(object):
             name: str,
             service_config: dict,
             service_type: str,
+            mounts: dict,
             aliases=None) -> None:
         image = service_config.get("image")
         if not image:
@@ -211,7 +212,11 @@ class PlaygroundDockerClient(object):
 
         container = await self.client.containers.create_or_replace(
             config=self._get_service_config(
-                service_type, image, name, environment),
+                service_type,
+                image,
+                name,
+                environment,
+                mounts),
             name=name)
         await container.start()
 
@@ -280,7 +285,8 @@ class PlaygroundDockerClient(object):
             service_type,
             image: str,
             name: str,
-            environment: dict) -> dict:
+            environment: dict,
+            mounts: dict) -> dict:
         return {
             'Image': image,
             "AttachStdin": False,
@@ -292,7 +298,12 @@ class PlaygroundDockerClient(object):
             "Labels": {
                 "envoy.playground.service": name,
                 "envoy.playground.service.type": service_type,
-            }}
+            },
+            "HostConfig": {
+                "Binds": [
+                    '%s:%s' % (v.name, k)
+                    for k, v
+                    in mounts.items()]}}
 
     async def _list_resources(
             self,
