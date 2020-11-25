@@ -15,12 +15,81 @@ from aiodocker.exceptions import DockerError
 from connectors.docker.client import PlaygroundDockerClient
 
 from decorators import api, method_decorator
+from request import PlaygroundRequest
 
 
-class PlaygroundRequest(object):
+class AddNetworkValidator(object):
 
-    def __init__(self, request):
-        self.request = request
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def proxies(self):
+        return self._data.get('proxies', [])
+
+    @property
+    def services(self):
+        return self._data.get('services', [])
+
+    @property
+    def name(self):
+        return self._data['name']
+
+
+class EditNetworkValidator(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def proxies(self):
+        return self._data.get('proxies', [])
+
+    @property
+    def services(self):
+        return self._data.get('services', [])
+
+    @property
+    def id(self):
+        return self._data['id']
+
+
+class AddProxyValidator(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def proxies(self):
+        return self._data.get('proxies', [])
+
+    @property
+    def services(self):
+        return self._data.get('services', [])
+
+    @property
+    def port_mappings(self):
+        return self._data.get('port_mappings', [])
+
+    @property
+    def configuration(self):
+        return self._data['configuration']
+
+    @property
+    def name(self):
+        return self._data['name']
+
+    @property
+    def certs(self):
+        return self._data.get('certs', {})
+
+    @property
+    def binaries(self):
+        return self._data.get('binaries', {})
+
+    @property
+    def logging(self):
+        return self._data.get('logging', {})
 
 
 class PlaygroundAPI(object):
@@ -48,20 +117,20 @@ class PlaygroundAPI(object):
     def dump_json(self, content):
         return web.json_response(content, dumps=self._json_dumper)
 
-    async def add_network(self, request: Request) -> Response:
-        data = await self.load_json(request)
+    @method_decorator(api(validator=AddNetworkValidator))
+    async def add_network(self, request: PlaygroundRequest) -> Response:
         await self.client.create_network(
-            data["name"],
-            proxies=data.get('proxies', []),
-            services=data.get('services', []))
+            request.data.name,
+            proxies=request.data.proxies,
+            services=request.data.services)
         return self.dump_json(dict(message="OK"))
 
-    async def edit_network(self, request: Request) -> Response:
-        data = await self.load_json(request)
+    @method_decorator(api(validator=EditNetworkValidator))
+    async def edit_network(self, request: PlaygroundRequest) -> Response:
         await self.client.edit_network(
-            data["id"],
-            proxies=data.get('proxies', []),
-            services=data.get('services', []))
+            request.data.id,
+            proxies=request.data.proxies,
+            services=request.data.services)
         return self.dump_json(dict(message="OK"))
 
     async def populate_volume(self, container_type, name, mount, files):
@@ -74,10 +143,8 @@ class PlaygroundAPI(object):
 
         return volume
 
-    async def add_proxy(self, request: Request) -> Response:
-        data = await self.load_json(request)
-        # print("ADD RECV", data)
-
+    @method_decorator(api(validator=AddProxyValidator))
+    async def add_proxy(self, request: PlaygroundRequest) -> Response:
         # todo: move client._envoy_image here
         if not await self.client.image_exists(self.client._envoy_image):
             await self.client.pull_image(self.client._envoy_image)
@@ -86,39 +153,39 @@ class PlaygroundAPI(object):
         mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
-            in data.get('port_mappings', [])]
+            in request.data.port_mappings]
         mounts = {
             "/etc/envoy": await self.populate_volume(
                 'proxy',
-                data['name'],
+                request.data.name,
                 'envoy',
                 {'envoy.yaml': base64.b64encode(
-                    data.get("configuration", "").encode('utf-8')).decode()}),
+                    request.data.configuration.encode('utf-8')).decode()}),
             "/certs": await self.populate_volume(
                 'proxy',
-                data['name'],
+                request.data.name,
                 'certs',
                 OrderedDict(
                     (k, v.split(',')[1])
                     for k, v
-                    in data.get("certs", {}).items())),
+                    in request.data.certs.items())),
             '/binary': await self.populate_volume(
                 'proxy',
-                data['name'],
+                request.data.name,
                 'binary',
                 OrderedDict(
                     (k, v.split(',')[1])
                     for k, v
-                    in data.get("binaries", {}).items())),
+                    in request.data.binaries.items())),
             '/logs': await self.client.create_volume(
-                'proxy', data['name'], 'logs')}
+                'proxy', request.data.name, 'logs')}
 
         # create the proxy
         await self.client.create_proxy(
-            data["name"],
+            request.data.name,
             mounts,
             mappings,
-            data.get('logging', {}))
+            request.data.logging)
         return self.dump_json(dict(message="OK"))
 
     async def handle_image(self, ws, event):
@@ -178,8 +245,8 @@ class PlaygroundAPI(object):
         await self.client.delete_service(data["name"])
         return self.dump_json(dict(message="OK"))
 
-    @method_decorator(api(validator="xyz"))
-    async def dump_resources(self, request: Request) -> Response:
+    @method_decorator(api)
+    async def dump_resources(self, request: PlaygroundRequest) -> Response:
         proxies = OrderedDict()
         for proxy in await self.client.list_proxies():
             proxies[proxy["name"]] = proxy

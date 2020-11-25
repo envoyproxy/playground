@@ -1,10 +1,10 @@
 
 from functools import partial, update_wrapper, wraps
 
+from request import PlaygroundRequest
+
 
 # Method decoration taken from the django project
-
-
 def _update_method_wrapper(_wrapper, decorator):
     # _multi_decorate()'s bound_method isn't available in this scope. Cheat by
     # using it on a dummy function.
@@ -86,10 +86,12 @@ def api(original_fun=None, validator=None):
     def _api(fun):
 
         @wraps(fun)
-        def wrapped_fun(*args, **kwargs):
+        async def wrapped_fun(request):
             if validator:
-                return fun(*args, **kwargs)
-            return fun(*args, **kwargs)
+                request = PlaygroundRequest(request, validator=validator)
+                await request.load_data()
+                return await fun(request)
+            return await fun(PlaygroundRequest(request))
         return wrapped_fun
 
     if original_fun:
