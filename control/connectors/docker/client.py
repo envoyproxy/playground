@@ -1,4 +1,5 @@
 
+import asyncio
 import os
 from collections import OrderedDict
 from typing import Optional, Union
@@ -233,15 +234,45 @@ class PlaygroundDockerClient(object):
         for container in await self.client.containers.list():
             if "envoy.playground.proxy" in container["Labels"]:
                 if "/%s" % name in container["Names"]:
+                    volumes = [
+                        v['Name']
+                        for v in container['Mounts']]
                     await container.stop()
-                    await container.delete()
+                    await container.wait()
+                    await container.delete(v=True)
+                    if volumes:
+                        _volumes = await self.client.volumes.list()
+                        for volume in _volumes['Volumes']:
+                            volume_name = volume['Name']
+                            if volume_name not in volumes:
+                                continue
+                            volume_delete = self.client._query(
+                                    f"volumes/{volume_name}",
+                                    method="DELETE")
+                            async with volume_delete:
+                                pass
 
     async def delete_service(self, name: str) -> None:
         for container in await self.client.containers.list():
             if "envoy.playground.service" in container["Labels"]:
                 if "/%s" % name in container["Names"]:
+                    volumes = [
+                        v['Name']
+                        for v in container['Mounts']]
                     await container.stop()
-                    await container.delete()
+                    await container.wait()
+                    await container.delete(v=True, force=True)
+                    if volumes:
+                        _volumes = await self.client.volumes.list()
+                        for volume in _volumes['Volumes']:
+                            volume_name = volume['Name']
+                            if volume_name not in volumes:
+                                continue
+                            volume_delete = self.client._query(
+                                    f"volumes/{volume_name}",
+                                    method="DELETE")
+                            async with volume_delete:
+                                pass
 
     async def _get_resource(
             self,
@@ -286,6 +317,12 @@ class PlaygroundDockerClient(object):
             name: str,
             environment: dict,
             mounts: dict) -> dict:
+        labels = {
+            "envoy.playground.service": name,
+            "envoy.playground.service.type": service_type,
+        }
+        if mounts:
+            labels['envoy.playground.service.config'] = 'true'
         return {
             'Image': image,
             "AttachStdin": False,
@@ -294,10 +331,7 @@ class PlaygroundDockerClient(object):
             "Tty": False,
             "OpenStdin": False,
             "Env": environment,
-            "Labels": {
-                "envoy.playground.service": name,
-                "envoy.playground.service.type": service_type,
-            },
+            "Labels": labels,
             "HostConfig": {
                 "Binds": [
                     '%s:%s' % (v.name, k)

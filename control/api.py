@@ -133,15 +133,15 @@ class PlaygroundAPI(object):
             config_dir = os.path.dirname(config_path)
             config_fname = os.path.basename(config_path)
             data['mounts'] = OrderedDict(
-                (config_dir, await self.populate_volume(
+                ((config_dir, await self.populate_volume(
                     'service',
                     data['name'],
                     'config',
                     {config_fname: base64.b64encode(
-                        data.pop("configuration", "").encode('utf-8')).decode()}), ))
+                        data.pop("configuration", "").encode('utf-8')).decode()})), ))
         else:
             data['mounts'] = OrderedDict()
-        data['environment'] = data.pop('vars')
+        data['environment'] = data.pop('vars', OrderedDict())
         await self.client.create_service(**data)
         return self.dump_json(dict(message="OK"))
 
@@ -239,12 +239,6 @@ class PlaygroundAPI(object):
             await getattr(
                 self,
                 'handle_container_%s' % event['Action'])(ws, event)
-            cleanup_proxy = (
-                "envoy.playground.proxy" in event['Actor']['Attributes']
-                and event["status"] == "destroy")
-            if cleanup_proxy:
-                await self.cleanup_volumes(
-                    'proxy', event["Actor"]["Attributes"]["name"])
         elif is_proxy_create_container:
             await self.handle_proxy_creation(ws, event)
 
@@ -266,7 +260,7 @@ class PlaygroundAPI(object):
         container = await self.client.client.containers.get(event["id"])
         try:
             logs = await container.log(stdout=True, stderr=True)
-            await container.delete(force=True)
+            await container.delete(force=True, v=True)
         except DockerError:
             # most likely been killed
             logs = []
@@ -408,13 +402,6 @@ class PlaygroundAPI(object):
                      networks={
                          name: dict(name=name, id=nid[:10],
                                     containers=containers)}))
-
-    async def cleanup_volumes(self, resource, name):
-        for mount in ['envoy', 'certs', 'binary', 'logs']:
-            await self.client.remove_volume(
-                resource,
-                name,
-                mount)
 
     async def publish(self, ws, event: dict) -> None:
         await ws.send_json(event, dumps=self._json_dumper)
