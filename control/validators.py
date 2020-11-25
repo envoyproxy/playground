@@ -120,3 +120,24 @@ class EditServiceValidator(Validator):
     @property
     def name(self):
         return self._data['name']
+
+
+class DeleteServiceValidator(Validator):
+
+    @property
+    def name(self):
+        return self._data['name']
+
+
+class DeleteNetworkValidator(Validator):
+
+    @property
+    def name(self):
+        return self._data['name']
+
+
+class DeleteProxyValidator(Validator):
+
+    @property
+    def name(self):
+        return self._data['name']

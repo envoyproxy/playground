@@ -17,9 +17,9 @@ from connectors.docker.client import PlaygroundDockerClient
 from decorators import api, method_decorator
 from request import PlaygroundRequest
 from validators import (
-    AddNetworkValidator, EditNetworkValidator,
-    AddProxyValidator, EditProxyValidator,
-    AddServiceValidator, EditServiceValidator)
+    AddNetworkValidator, DeleteNetworkValidator, EditNetworkValidator,
+    AddProxyValidator, DeleteProxyValidator, EditProxyValidator,
+    AddServiceValidator, DeleteServiceValidator, EditServiceValidator)
 
 
 
@@ -162,19 +162,19 @@ class PlaygroundAPI(object):
                 await remove(resource['name'])
         return self.dump_json(dict(message="OK"))
 
-    async def delete_network(self, request: Request) -> Response:
-        data = await self.load_json(request)
-        await self.client.delete_network(data["name"])
+    @method_decorator(api(validator=DeleteNetworkValidator))
+    async def delete_network(self, request: PlaygroundRequest) -> Response:
+        await self.client.delete_network(request.data.name)
         return self.dump_json(dict(message="OK"))
 
-    async def delete_proxy(self, request: Request) -> Response:
-        data = await self.load_json(request)
-        await self.client.delete_proxy(data["name"])
+    @method_decorator(api(validator=DeleteProxyValidator))
+    async def delete_proxy(self, request: PlaygroundRequest) -> Response:
+        await self.client.delete_proxy(request.data.name)
         return self.dump_json(dict(message="OK"))
 
-    async def delete_service(self, request: Request) -> Response:
-        data = await self.load_json(request)
-        await self.client.delete_service(data["name"])
+    @method_decorator(api(validator=DeleteServiceValidator))
+    async def delete_service(self, request: PlaygroundRequest) -> Response:
+        await self.client.delete_service(request.data.name)
         return self.dump_json(dict(message="OK"))
 
     @method_decorator(api)
