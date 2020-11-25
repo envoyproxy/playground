@@ -2,6 +2,15 @@
 from collections import OrderedDict
 
 
+# Request validators
+# ------------------
+#
+# These are purely schematic validators, eg they dont check for the existence or uniqueness of names
+#
+# Although the ui will do some pre-validation in the forms, there still needs to be some tests
+# for validation beyond what is done here.
+#
+
 class Validator(object):
 
     def __init__(self, data):
