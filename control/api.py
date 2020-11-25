@@ -16,80 +16,11 @@ from connectors.docker.client import PlaygroundDockerClient
 
 from decorators import api, method_decorator
 from request import PlaygroundRequest
+from validators import (
+    AddNetworkValidator, EditNetworkValidator,
+    AddProxyValidator, EditProxyValidator,
+    AddServiceValidator, EditServiceValidator)
 
-
-class AddNetworkValidator(object):
-
-    def __init__(self, data):
-        self._data = data
-
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
-
-    @property
-    def services(self):
-        return self._data.get('services', [])
-
-    @property
-    def name(self):
-        return self._data['name']
-
-
-class EditNetworkValidator(object):
-
-    def __init__(self, data):
-        self._data = data
-
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
-
-    @property
-    def services(self):
-        return self._data.get('services', [])
-
-    @property
-    def id(self):
-        return self._data['id']
-
-
-class AddProxyValidator(object):
-
-    def __init__(self, data):
-        self._data = data
-
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
-
-    @property
-    def services(self):
-        return self._data.get('services', [])
-
-    @property
-    def port_mappings(self):
-        return self._data.get('port_mappings', [])
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-    @property
-    def certs(self):
-        return self._data.get('certs', {})
-
-    @property
-    def binaries(self):
-        return self._data.get('binaries', {})
-
-    @property
-    def logging(self):
-        return self._data.get('logging', {})
 
 
 class PlaygroundAPI(object):
@@ -195,9 +126,10 @@ class PlaygroundAPI(object):
             #  when socket events are fixed.
             pass
 
-    async def add_service(self, request: Request) -> Response:
-        data = await self.load_json(request)
-        service_config = self.service_types[data["service_type"]]
+    @method_decorator(api(validator=AddServiceValidator))
+    async def add_service(self, request: PlaygroundRequest) -> Response:
+        data = dict(name=request.data.name, service_type=request.data.service_type)
+        service_config = self.service_types[request.data.service_type]
 
         data['image'] = service_config.get("image")
         if not await self.client.image_exists(data['image']):
@@ -210,13 +142,13 @@ class PlaygroundAPI(object):
             data['mounts'] = OrderedDict(
                 ((config_dir, await self.populate_volume(
                     'service',
-                    data['name'],
+                    request.data.name,
                     'config',
                     {config_fname: base64.b64encode(
-                        data.pop("configuration", "").encode('utf-8')).decode()})), ))
+                        request.data.configuration.encode('utf-8')).decode()})), ))
         else:
             data['mounts'] = OrderedDict()
-        data['environment'] = data.pop('vars', OrderedDict())
+        data['environment'] = request.data.env
         await self.client.create_service(**data)
         return self.dump_json(dict(message="OK"))
 
