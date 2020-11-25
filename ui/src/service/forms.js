@@ -26,7 +26,7 @@ class BaseServiceForm extends React.PureComponent {
     });
 
     get messages () {
-        return ["Information about adding service"];
+        return ["Select a service type below, and give the service a name"];
     }
 
     onChange = async (evt) => {
