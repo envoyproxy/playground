@@ -14,6 +14,14 @@ from aiodocker.exceptions import DockerError
 
 from connectors.docker.client import PlaygroundDockerClient
 
+from decorators import api, method_decorator
+
+
+class PlaygroundRequest(object):
+
+    def __init__(self, request):
+        self.request = request
+
 
 class PlaygroundAPI(object):
     _services_yaml = "/services.yaml"
@@ -170,6 +178,7 @@ class PlaygroundAPI(object):
         await self.client.delete_service(data["name"])
         return self.dump_json(dict(message="OK"))
 
+    @method_decorator(api(validator="xyz"))
     async def dump_resources(self, request: Request) -> Response:
         proxies = OrderedDict()
         for proxy in await self.client.list_proxies():
