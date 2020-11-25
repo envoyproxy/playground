@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {ServiceConfigurationForm, ServiceForm} from './forms';
+import {ServiceConfigurationForm, ServiceEnvironmentForm, ServiceForm} from './forms';
 
 import {connect} from 'react-redux';
 
@@ -145,7 +145,9 @@ export class BaseServiceModal extends React.Component {
         const {form, service_types} = this.props;
         const {service_type} = form;
         let showConfig = false;
-        const tabs = {Service: <ServiceForm />};
+        const tabs = {
+            Service: <ServiceForm />,
+            Environment:  <ServiceEnvironmentForm service_type={service_type} />};
         if (service_type) {
             const {configuration} = service_types[service_type];
             const configPath  = service_types[service_type]['labels']['envoy.playground.config.path'];

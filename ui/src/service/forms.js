@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col, CustomInput, Input} from 'reactstrap';
+import {Button, Col, CustomInput, Input, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
@@ -16,6 +16,8 @@ import {
     PlaygroundFormGroupRow} from '../shared/forms';
 
 import {updateForm} from '../app/store';
+
+import {ActionRemove} from '../shared/actions';
 
 
 class BaseServiceForm extends React.PureComponent {
@@ -171,3 +173,155 @@ const mapStateToProps = function(state, other) {
 
 const ServiceConfigurationForm = connect(mapStateToProps)(BaseServiceConfigurationForm);
 export {ServiceConfigurationForm};
+
+
+export class ServiceEnvironmentListForm extends React.PureComponent {
+    static propTypes = exact({
+        vars: PropTypes.array,
+    });
+
+    render () {
+        const {vars={}} = this.props;
+        const onDelete = null;
+        const title = '';
+        return (
+            <Row className="mt-2 pb-3">
+              <Col>
+                <Row className="pl-5 pr-5">
+                  <Col sm={1} className="m-0 p-0">
+                    <div className="p-1 bg-dark">
+                      <span>&nbsp;</span>
+                    </div>
+                  </Col>
+                  <Col sm={6} className="m-0 p-0">
+                    <div className="p-1 bg-dark">
+                      Variable name
+                    </div>
+                  </Col>
+                  <Col sm={5} className="m-0 p-0">
+                    <div className="p-1 bg-dark">
+                      Variable value
+                    </div>
+                  </Col>
+                </Row>
+                {Object.entries(vars).map(([k, v], index) => {
+                    return (
+                        <Row key={index} className="pl-5 pr-5">
+                          <Col sm={1} className="m-0 p-0">
+                            <div className="p-2 bg-white">
+                              <ActionRemove
+                                title={title}
+                                name={title}
+                                remove={evt => this.onDelete(evt, onDelete)} />
+                            </div>
+                          </Col>
+                          <Col sm={6} className="m-0 p-0 border-bottom">
+                            <div className="p-2 bg-white">
+                              {k}
+                            </div>
+                          </Col>
+                          <Col sm={5} className="m-0 p-0 border-bottom">
+                            <div className="p-2 bg-white">
+                              {v + ''}
+                            </div>
+                          </Col>
+                        </Row>);
+                })}
+              </Col>
+            </Row>);
+    }
+}
+
+
+export class BaseServiceEnvironmentForm extends React.Component {
+    static propTypes = exact({
+        dispatch: PropTypes.func,
+        form: PropTypes.object.isRequired,
+    });
+
+    state = {value: '', network: ''};
+
+    onClick = async (evt) => {
+        const {value, key} = this.state;
+        const {dispatch, form} = this.props;
+        const {vars: _vars={}} = form;
+        const vars = {..._vars};
+        vars[key] = value;
+        this.setState({value: '', key: ''});
+        await dispatch(updateForm({vars}));
+    }
+
+    onChange = (evt) => {
+        const update = {};
+        update[evt.target.name] = evt.target.value;
+        this.setState({...update});
+    }
+
+    get messages () {
+        return [
+            "Add network vars for your proxy.",
+            "Your proxy will be addressable by other proxies or services with this value",
+            "You can restrict which networks an value is used for with a glob match, default is *",
+        ];
+    }
+
+    async componentDidUpdate(prevProps) {
+        const {dispatch, service_type, service_types} = this.props;
+        if (service_type !== prevProps.service_type) {
+            const {environment: vars} =  service_types[service_type];
+            await dispatch(updateForm({vars}));
+        }
+    }
+
+    render () {
+        const {value, key} = this.state;
+        const {form} = this.props;
+        const {vars={}} = form;
+        return (
+            <PlaygroundForm messages={this.messages}>
+              <PlaygroundFormGroup>
+                <PlaygroundFormGroupRow
+                  label="value"
+                  title="Add value">
+                  <Col sm={3}>
+                    <Input
+                      type="text"
+                      onChange={this.onChange}
+                      value={key}
+                      id="key"
+                      name="key"
+                      placeholder="Variable name" />
+                  </Col>
+                  <Col sm={4}>
+                    <Input
+                      type="text"
+                      onChange={this.onChange}
+                      value={value}
+                      id="value"
+                      name="value"
+                      placeholder="Variable value" />
+                  </Col>
+                  <Col sm={2}>
+                    <Button
+                      color="success"
+                      onClick={this.onClick}>+</Button>
+                  </Col>
+                </PlaygroundFormGroupRow>
+                <ServiceEnvironmentListForm vars={{...vars}} />
+              </PlaygroundFormGroup>
+            </PlaygroundForm>
+        );
+    }
+}
+
+
+const mapEnvFormStateToProps = function(state) {
+    return {
+        form: state.form.value,
+        service_types: state.service_type.value,
+    };
+}
+
+
+const ServiceEnvironmentForm = connect(mapEnvFormStateToProps)(BaseServiceEnvironmentForm);
+export {ServiceEnvironmentForm}

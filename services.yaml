@@ -50,15 +50,7 @@ services:
   http-echo:
     image: mendhak/http-https-echo
     labels:
-      envoy.playground.service: "HTTP echo"
+      envoy.playground.service: "HTTP/S echo"
       envoy.playground.logo: "http-echo.svg"
     environment:
       HTTPS_PORT: 0
-
-  https-echo:
-    image: mendhak/http-https-echo
-    labels:
-      envoy.playground.service: "HTTPS echo"
-      envoy.playground.logo: "https-echo.svg"
-    environment:
-      HTTP_PORT: 0

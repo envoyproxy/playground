@@ -197,19 +197,18 @@ class PlaygroundDockerClient(object):
     async def create_service(
             self,
             name: str,
-            service_config: dict,
+            environment: OrderedDict,
+            image: str,
             service_type: str,
-            mounts: dict,
+            mounts: OrderedDict,
             aliases=None) -> None:
-        image = service_config.get("image")
         if not image:
             # todo: add build logic
             return
         environment = [
             "%s=%s" % (k, v)
             for k, v
-            in service_config.get("environment", {}).items()]
-
+            in environment.items()]
         container = await self.client.containers.create_or_replace(
             config=self._get_service_config(
                 service_type,

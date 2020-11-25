@@ -122,24 +122,26 @@ class PlaygroundAPI(object):
 
     async def add_service(self, request: Request) -> Response:
         data = await self.load_json(request)
-        data['service_config'] = self.service_types[data["service_type"]]
+        service_config = self.service_types[data["service_type"]]
 
-        if not await self.client.image_exists(data['service_config']['image']):
-            await self.client.pull_image(data['service_config']['image'])
+        data['image'] = service_config.get("image")
+        if not await self.client.image_exists(data['image']):
+            await self.client.pull_image(data['image'])
 
-        config_path = data['service_config']['labels'].get('envoy.playground.config.path')
+        config_path = service_config['labels'].get('envoy.playground.config.path')
         if config_path:
             config_dir = os.path.dirname(config_path)
             config_fname = os.path.basename(config_path)
-            data['mounts'] = {
-                config_dir: await self.populate_volume(
+            data['mounts'] = OrderedDict(
+                (config_dir, await self.populate_volume(
                     'service',
                     data['name'],
                     'config',
                     {config_fname: base64.b64encode(
-                        data.pop("configuration", "").encode('utf-8')).decode()})}
+                        data.pop("configuration", "").encode('utf-8')).decode()}), ))
         else:
-            data['mounts'] = {}
+            data['mounts'] = OrderedDict()
+        data['environment'] = data.pop('vars')
         await self.client.create_service(**data)
         return self.dump_json(dict(message="OK"))
 
