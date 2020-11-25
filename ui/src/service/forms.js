@@ -6,6 +6,11 @@ import {connect} from 'react-redux';
 
 import {Col, CustomInput, Input} from 'reactstrap';
 
+import Editor from 'react-simple-code-editor';
+import {highlight, languages} from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-python';
+
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../shared/forms';
@@ -87,3 +92,70 @@ const mapFormStateToProps = function(state) {
 
 const ServiceForm = connect(mapFormStateToProps)(BaseServiceForm);
 export {ServiceForm};
+
+
+export class BaseServiceConfigurationForm extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        form: PropTypes.object.isRequired,
+        service_types: PropTypes.object.isRequired,
+    });
+
+    get messages () {
+        return ["Information about adding service"];
+    }
+
+    onConfigChange = async (code) => {
+        const {dispatch} = this.props;
+        dispatch(updateForm({configuration: code}));
+    }
+
+    async componentDidMount () {
+        const {dispatch, form, service_types} = this.props;
+        const {service_type} = form;
+        const {configuration} = form;
+        if (configuration) {
+            return;
+        }
+        const configDefault  = service_types[service_type]['labels']['envoy.playground.config.default'];
+        if (configDefault) {
+            const response = await fetch('http://localhost:8000/static/' + service_type + '/' + configDefault);
+            const content = await response.text();
+            await dispatch(updateForm({configuration: content}));
+        }
+    }
+
+    render () {
+        const {form} = this.props;
+        const {configuration=''} = form;
+        return (
+            <div>
+                <Editor
+                  className="border bg-secondary"
+                  value={configuration}
+                  onValueChange={this.onConfigChange}
+                  highlight={code => highlight(code, languages.py)}
+                  padding={10}
+                  name="configuration"
+                  id="configuration"
+                  ref={(textarea) => this.textArea = textarea}
+                  style={{
+                      fontFamily: '"Fira code", "Fira Mono", monospace',
+                        fontSize: 12,
+                  }}
+                />
+            </div>
+        );
+    }
+}
+
+
+const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+        service_types: state.service_type.value
+    };
+}
+
+const ServiceConfigurationForm = connect(mapStateToProps)(BaseServiceConfigurationForm);
+export {ServiceConfigurationForm};

@@ -57,7 +57,14 @@ if __name__ == "__main__":
                 '/',
                 "/code/build",
                 show_index=True)]
+        app.add_routes(routes)
     else:
-        routes = [web.static('/static', "/services")]
-    app.add_routes(routes)
+        allowed = CORS_ALLOWED
+        cors.add(
+            app.router.add_static('/static', "/services"),
+            {allowed: aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600)})
     web.run_app(app)

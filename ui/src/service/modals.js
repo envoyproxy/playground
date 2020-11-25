@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {ServiceForm} from './forms';
+import {ServiceConfigurationForm, ServiceForm} from './forms';
 
 import {connect} from 'react-redux';
 
@@ -132,19 +132,28 @@ export class ServiceStarting extends React.PureComponent {
 }
 
 
-export class ServiceModal extends React.Component {
+export class BaseServiceModal extends React.Component {
     static propTypes = exact({
         status: PropTypes.string.isRequired,
+        service_types: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
     });
 
     state = {success: false};
 
     get tabs () {
-        return {
-            Service: (
-                <ServiceForm />),
-        };
+        const {form, service_types} = this.props;
+        const {service_type} = form;
+        let showConfig = false;
+        const tabs = {Service: <ServiceForm />};
+        if (service_type) {
+            const {configuration} = service_types[service_type];
+            const configPath  = service_types[service_type]['labels']['envoy.playground.config.path'];
+            if (configPath) {
+                tabs['Configuration'] = <ServiceConfigurationForm />;
+            }
+        }
+        return tabs;
     }
 
     updateStatus = () => {
@@ -194,3 +203,14 @@ export class ServiceModal extends React.Component {
         );
     }
 }
+
+
+const mapModalStateToProps = function(state, other) {
+    return {
+        service_types: state.service_type.value,
+        form: state.form.value,
+    };
+}
+
+const ServiceModal = connect(mapModalStateToProps)(BaseServiceModal);
+export {ServiceModal};
