@@ -43,7 +43,8 @@ exec:
 test:
 	./scripts/runtests.sh
 
-dev-control:
+dev-control: clean
+	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		-p 8000:8080 \
 			control

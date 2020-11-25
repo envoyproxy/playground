@@ -4,6 +4,7 @@ RUN pip3 install -q \
 	aiodocker \
 	aiohttp \
 	aiohttp_cors \
+	attrs \
 	pytest-asyncio \
 	pytest-cov \
 	pytest-flake8 \
