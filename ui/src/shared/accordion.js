@@ -45,7 +45,7 @@ export default class Accordion extends React.Component {
 
     render() {
 	const {open} = this.state;
-        const {children, logo} = this.props;
+        const {editable, children, logo} = this.props;
 	return (
 	    <div className="container p-0 control-pane-scroll">
 	      {children.map((child, index) => {
@@ -68,11 +68,13 @@ export default class Accordion extends React.Component {
                             name={title}
                             className="float-right ml-2 mr-2"
                             remove={evt => this.onDelete(evt, onDelete)} />
-                          <ActionEdit
-                            title={title}
-                            className="float-right ml-2 mr-2"
-                            edit={evt => this.onEdit(evt, onEdit)} />
-                        </CardHeader>
+                          {editable &&
+                           <ActionEdit
+                             title={title}
+                             className="float-right ml-2 mr-2"
+                             edit={evt => this.onEdit(evt, onEdit)} />
+                          }
+                           </CardHeader>
 			<Collapse isOpen={open === index}>
 		          <CardBody className="p-0">
                             {content}

@@ -89,7 +89,7 @@ class BaseResources extends React.PureComponent {
     };
 
     render () {
-        const {logo, resources, title} = this.props;
+        const {editable, logo, resources, title} = this.props;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();
@@ -117,6 +117,7 @@ class BaseResources extends React.PureComponent {
                   add={this.addResource} />
               </header>
               <Accordion
+                editable={editable}
                 logo={_logo}>
 	        {Object.entries(resources).map(([name, content], index) => {
 		    return (

@@ -31,6 +31,7 @@ export class BaseNetworkResources extends React.PureComponent {
               title="Networks"
               logo={CloudLogo}
               modals={modals}
+              editable={true}
               modal={NetworkModal}
               modalTitle={this.modalTitle}
               modalAction="Create network"
