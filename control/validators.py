@@ -19,14 +19,22 @@ class Validator(object):
 
 class AddNetworkValidator(Validator):
 
+    # v: length
+    # v: proxy dicts
     @property
     def proxies(self):
         return self._data.get('proxies', [])
 
+    # v: length
+    # v: service dicts
     @property
     def services(self):
         return self._data.get('services', [])
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']
@@ -34,14 +42,21 @@ class AddNetworkValidator(Validator):
 
 class EditNetworkValidator(Validator):
 
+    # v: length
+    # v: proxy dicts
     @property
     def proxies(self):
         return self._data.get('proxies', [])
 
+    # v: length
+    # v: service dicts
     @property
     def services(self):
         return self._data.get('services', [])
 
+    # v: exists
+    # v: length
+    # v: valid chars for uuid
     @property
     def id(self):
         return self._data['id']
@@ -49,53 +64,44 @@ class EditNetworkValidator(Validator):
 
 class AddProxyValidator(Validator):
 
+    # v: length
+    # v: port_mapping dicts
+    # v: mapping to/from are in valid ranges
     @property
     def port_mappings(self):
         return self._data.get('port_mappings', [])
 
+    # v: exists
+    # v: length
+    # v: valid yaml
+    # v: valid envoy config ?
     @property
     def configuration(self):
         return self._data['configuration']
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']
 
+    # v: length
+    # v: valid keys
+    # v: length of values
     @property
     def certs(self):
         return self._data.get('certs', {})
 
+    # v: length
+    # v: valid keys
+    # v: length of values
     @property
     def binaries(self):
         return self._data.get('binaries', {})
 
-    @property
-    def logging(self):
-        return self._data.get('logging', {})
-
-
-class EditProxyValidator(Validator):
-
-    @property
-    def port_mappings(self):
-        return self._data.get('port_mappings', [])
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-    @property
-    def certs(self):
-        return self._data.get('certs', {})
-
-    @property
-    def binaries(self):
-        return self._data.get('binaries', {})
-
+    # v: option/s
     @property
     def logging(self):
         return self._data.get('logging', {})
@@ -103,36 +109,40 @@ class EditProxyValidator(Validator):
 
 class AddServiceValidator(Validator):
 
+    # v: length
     @property
     def configuration(self):
         return self._data['configuration']
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']
 
+    # v: exists
+    # v: length
+    # v: valid chars
     @property
     def service_type(self):
         return self._data['service_type']
 
+    # v: length
+    # v: valid keys (length, chars)
+    # v: valid values (length)
     @property
     def env(self):
         return self._data.get('vars', OrderedDict())
 
 
-class EditServiceValidator(Validator):
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-
 class DeleteServiceValidator(Validator):
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']
@@ -140,6 +150,10 @@ class DeleteServiceValidator(Validator):
 
 class DeleteNetworkValidator(Validator):
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']
@@ -147,6 +161,10 @@ class DeleteNetworkValidator(Validator):
 
 class DeleteProxyValidator(Validator):
 
+    # v: exists
+    # v: length
+    # v: valid chars a-Z_-.
+    # v: no double ^^
     @property
     def name(self):
         return self._data['name']

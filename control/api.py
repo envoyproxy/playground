@@ -18,9 +18,8 @@ from decorators import api, method_decorator
 from request import PlaygroundRequest
 from validators import (
     AddNetworkValidator, DeleteNetworkValidator, EditNetworkValidator,
-    AddProxyValidator, DeleteProxyValidator, EditProxyValidator,
-    AddServiceValidator, DeleteServiceValidator, EditServiceValidator)
-
+    AddProxyValidator, DeleteProxyValidator,
+    AddServiceValidator, DeleteServiceValidator)
 
 
 class PlaygroundAPI(object):
