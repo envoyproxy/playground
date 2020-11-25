@@ -14,10 +14,13 @@ services:
       envoy.playground.logo: "redis.svg"
 
   python:
-    image: redis:latest
+    image: phlax/aiohttp
     labels:
       envoy.playground.service: "Python"
       envoy.playground.logo: "python.png"
+      envoy.playground.config.path: "/code/control/run.py"
+      envoy.playground.config.type: "python"
+      envoy.playground.config.default: "run.py"
 
   jaeger:
     image: jaegertracing/all-in-one
