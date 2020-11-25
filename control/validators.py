@@ -1,9 +1,14 @@
 
+import re
 from collections import OrderedDict
 
 import attr
 
 from exceptions import ValidationError
+
+
+# this will give total 20, 10 per proxies/services
+MAX_NETWORK_CONNECTIONS = 10
 
 
 # Request validators
@@ -15,33 +20,58 @@ from exceptions import ValidationError
 # for validation beyond what is done here.
 #
 
-class Validator(object):
-
-    def __init__(self, **data):
-        self._data = data
-
 
 @attr.s
-class AddNetworkValidator(Validator):
+class AddNetworkValidator(object):
+    match_regex = re.compile(r"[A-Za-z0-9\-\._]+")
 
-    # v: valid chars for name
     name = attr.ib()
-
-    @name.validator
-    def check(self, attribute, value):
-        if len(value) > 5:
-            raise ValidationError('name', 'Name should be less than 32 chars')
-
-    # v: length
-    # v: proxy dicts
     proxies = attr.ib(default=[])
-    # v: length
-    # v: service dicts
     services = attr.ib(default=[])
 
+    @name.validator
+    def check_name(self, attribute, value):
+        if len(value) > 32:
+            raise ValidationError(
+                'name',
+                'Name should be no more than 32 chars')
+        matched = self.match_regex.fullmatch(value)
+        if not matched:
+            raise ValidationError(
+                'name',
+                'Name should only contain a-Z, 0-9, `_`, `-`, and `.`')
+        invalid_double_patterns = ['.', '_', '-']
+        for char in invalid_double_patterns:
+            if char * 2 in value:
+                raise ValidationError(
+                    'name',
+                    'Name should not have `_`, `-`, or `.` repeated in sequence.')
+
+    @proxies.validator
+    def check_proxies(self, attribute, value):
+        if len(value) > MAX_NETWORK_CONNECTIONS:
+            raise ValidationError(
+                'proxies',
+                f'No more than {MAX_NETWORK_CONNECTIONS} connections from a network to a proxy')
+        if any(type(item) != str for item in value):
+            raise ValidationError(
+                'proxies',
+                f'Invalid proxy network configuration')
+
+    @services.validator
+    def check_services(self, attribute, value):
+        if len(value) > MAX_NETWORK_CONNECTIONS:
+            raise ValidationError(
+                'services',
+                f'No more than {MAX_NETWORK_CONNECTIONS} connections from a network to a proxy')
+        if any(type(item) != str  for item in value):
+            raise ValidationError(
+                'services',
+                f'Invalid service network configuration')
+
 
 @attr.s
-class EditNetworkValidator(Validator):
+class EditNetworkValidator(object):
 
     # v: exists
     # v: length
@@ -58,7 +88,7 @@ class EditNetworkValidator(Validator):
 
 
 @attr.s
-class AddProxyValidator(Validator):
+class AddProxyValidator(object):
 
     # v: exists
     # v: length
@@ -92,7 +122,7 @@ class AddProxyValidator(Validator):
 
 
 @attr.s
-class AddServiceValidator(Validator):
+class AddServiceValidator(object):
 
 
     # v: exists
@@ -116,7 +146,7 @@ class AddServiceValidator(Validator):
 
 
 @attr.s
-class DeleteServiceValidator(Validator):
+class DeleteServiceValidator(object):
 
     # v: exists
     # v: length
@@ -126,7 +156,7 @@ class DeleteServiceValidator(Validator):
 
 
 @attr.s
-class DeleteNetworkValidator(Validator):
+class DeleteNetworkValidator(object):
 
     # v: exists
     # v: length
@@ -136,7 +166,7 @@ class DeleteNetworkValidator(Validator):
 
 
 @attr.s
-class DeleteProxyValidator(Validator):
+class DeleteProxyValidator(object):
 
     # v: exists
     # v: length
