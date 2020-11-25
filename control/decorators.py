@@ -1,7 +1,38 @@
 
+import json
+from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
 
+from aiohttp import web
+
+from exceptions import ValidationError
 from request import PlaygroundRequest
+
+
+def api(original_fun=None, validator=None):
+
+    def _api(fun):
+
+        @wraps(fun)
+        async def wrapped_fun(request):
+            if validator:
+                request = PlaygroundRequest(request, validator=validator)
+                try:
+                    await request.load_data()
+                except ValidationError as e:
+                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
+                    return web.HTTPBadRequest(
+                        reason="Invalid request data",
+                        body=errors,
+                        content_type='application/json')
+                return await fun(request)
+            return await fun(PlaygroundRequest(request))
+        return wrapped_fun
+
+    if original_fun:
+        return _api(original_fun)
+
+    return _api
 
 
 # Method decoration taken from the django project
@@ -79,22 +110,3 @@ def method_decorator(decorator, name=''):
     obj = decorator if hasattr(decorator, '__name__') else decorator.__class__
     _dec.__name__ = 'method_decorator(%s)' % obj.__name__
     return _dec
-
-
-def api(original_fun=None, validator=None):
-
-    def _api(fun):
-
-        @wraps(fun)
-        async def wrapped_fun(request):
-            if validator:
-                request = PlaygroundRequest(request, validator=validator)
-                await request.load_data()
-                return await fun(request)
-            return await fun(PlaygroundRequest(request))
-        return wrapped_fun
-
-    if original_fun:
-        return _api(original_fun)
-
-    return _api

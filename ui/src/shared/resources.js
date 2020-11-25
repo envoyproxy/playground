@@ -36,9 +36,12 @@ class BaseResources extends React.PureComponent {
     createResource = async () => {
         // send API request to create resource
         const {api, dispatch, form} = this.props;
-        const {errors, valid, status, ...data} = form;
-        dispatch(updateForm({status: 'initializing'}));
-        await this.context.post('/' + api + '/add', data);
+        const {errors: _errors, valid, validation, status, ...data} = form;
+        await dispatch(updateForm({status: 'initializing'}));
+        const {errors} = await this.context.post('/' + api + '/add', data);
+        if (errors) {
+            await dispatch(updateForm({validation: errors}));
+        }
     };
 
     deleteResource = async (name) => {

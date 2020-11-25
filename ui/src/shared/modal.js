@@ -120,7 +120,7 @@ export class BaseModalWidget extends React.PureComponent {
     render () {
         const {className, dispatch, ui, form} = this.props;
         const {modal} = ui;
-        const {status} = form;
+        const {status, validation} = form;
         const isOpen = Boolean(modal);
         return (
             <>
@@ -131,6 +131,7 @@ export class BaseModalWidget extends React.PureComponent {
                 className={className}>
                 {isOpen &&
                  <ModalParts
+                   errors={validation}
                    status={status || ''}
                    dispatch={dispatch}
                    form={form}

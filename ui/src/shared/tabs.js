@@ -19,7 +19,7 @@ export class PlaygroundTabs extends React.Component {
     }
 
     render () {
-        const {tab} = this.state;
+        let {tab} = this.state;
         const {tabs} = this.props;
         return (
             <div>

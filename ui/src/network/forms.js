@@ -198,9 +198,10 @@ class BaseNetworkForm extends React.PureComponent {
 
     render () {
         const {form} = this.props;
-        const {name} = form;
+        const {name, validation} = form;
         return (
-            <PlaygroundForm messages={this.messages}>
+            <PlaygroundForm
+              messages={this.messages}>
               <PlaygroundFormGroup>
                 <Row>
                   <Label sm={3}  for="name" className="text-right">

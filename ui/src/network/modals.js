@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert} from 'reactstrap';
+import {Alert, Col, Row} from 'reactstrap';
 
 import {PlaygroundTabs} from '../shared/tabs';
 import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
@@ -60,13 +60,35 @@ export class NetworkModal extends React.PureComponent {
     }
 
     render () {
-        const {status} = this.props;
+        const {form, status} = this.props;
+        const {validation} = form;
         if (status === "creating") {
             return <NetworkCreating />;
         }
         return (
-            <PlaygroundTabs
-              tabs={this.tabs} />
+            <>
+              {validation &&
+               <Alert color="danger">
+                 {Object.entries(validation).map(([k, v], i) => {
+                     return (
+                         <Row>
+                           <Col sm={1} className="font-weight-bold">
+                             &nbsp;
+                           </Col>
+                           <Col sm={2} className="font-weight-bold">
+                             {k}
+                           </Col>
+                           <Col sm={9}>
+                             {v}
+                           </Col>
+                         </Row>
+                     );
+                 })}
+               </Alert>
+              }
+              <PlaygroundTabs
+                tabs={this.tabs} />
+            </>
         );
     }
 }

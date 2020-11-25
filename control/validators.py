@@ -3,6 +3,8 @@ from collections import OrderedDict
 
 import attr
 
+from exceptions import ValidationError
+
 
 # Request validators
 # ------------------
@@ -23,8 +25,13 @@ class Validator(object):
 class AddNetworkValidator(Validator):
 
     # v: valid chars for name
-    # v: length
     name = attr.ib()
+
+    @name.validator
+    def check(self, attribute, value):
+        if len(value) > 5:
+            raise ValidationError('name', 'Name should be less than 32 chars')
+
     # v: length
     # v: proxy dicts
     proxies = attr.ib(default=[])
