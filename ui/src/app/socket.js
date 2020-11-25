@@ -91,7 +91,7 @@ export default class PlaygroundSocket {
                 }
             } else {
                 const form = this.store.getState().form.value;
-                const {service_type, name: formName, status: formStatus, ...formData} = form;
+                const {service_type, name: formName} = form;
                 const {id, name, image, status, logs} = eventData;
                 const services = {};
                 if (status === "creating") {

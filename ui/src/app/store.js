@@ -65,18 +65,9 @@ const UISlice = createSlice({
             state.value = {...state.value, ...action.payload};
         },
 
-        addIcon: (state, action) => {
-            const {networks={}, services={}, proxies={}} = action.payload;
-            const {connections=[], resources={}} = state.value;
-            let changed = false;
-            const containers = {};
-        },
-
         updateIcons: (state, action) => {
             const {networks={}, services={}, proxies={}, resources: updates={}} = action.payload;
             const {resources: _resources={}} = state.value;
-            console.log('UPDATE ICONS');
-            let changed = false;
             const containers = {};
             const connections = [];
             const resources = {..._resources, ...updates};

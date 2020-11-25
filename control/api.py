@@ -42,7 +42,7 @@ class PlaygroundAPI(object):
 
     async def add_network(self, request: Request) -> Response:
         data = await self.load_json(request)
-        result = await self.client.create_network(
+        await self.client.create_network(
             data["name"],
             proxies=data.get('proxies', []),
             services=data.get('services', []))
@@ -50,7 +50,7 @@ class PlaygroundAPI(object):
 
     async def edit_network(self, request: Request) -> Response:
         data = await self.load_json(request)
-        result = await self.client.edit_network(
+        await self.client.edit_network(
             data["id"],
             proxies=data.get('proxies', []),
             services=data.get('services', []))
@@ -102,10 +102,11 @@ class PlaygroundAPI(object):
                     (k, v.split(',')[1])
                     for k, v
                     in data.get("binaries", {}).items())),
-            '/logs': await self.client.create_volume('proxy', data['name'], 'logs')}
+            '/logs': await self.client.create_volume(
+                'proxy', data['name'], 'logs')}
 
         # create the proxy
-        result = await self.client.create_proxy(
+        await self.client.create_proxy(
             data["name"],
             mounts,
             mappings,
@@ -126,7 +127,7 @@ class PlaygroundAPI(object):
         if not await self.client.image_exists(data['service_config']['image']):
             await self.client.pull_image(data['service_config']['image'])
 
-        result = await self.client.create_service(**data)
+        await self.client.create_service(**data)
         return self.dump_json(dict(message="OK"))
 
     async def clear(self, request: Request) -> Response:
@@ -141,17 +142,17 @@ class PlaygroundAPI(object):
 
     async def delete_network(self, request: Request) -> Response:
         data = await self.load_json(request)
-        result = await self.client.delete_network(data["name"])
+        await self.client.delete_network(data["name"])
         return self.dump_json(dict(message="OK"))
 
     async def delete_proxy(self, request: Request) -> Response:
         data = await self.load_json(request)
-        result = await self.client.delete_proxy(data["name"])
+        await self.client.delete_proxy(data["name"])
         return self.dump_json(dict(message="OK"))
 
     async def delete_service(self, request: Request) -> Response:
         data = await self.load_json(request)
-        result = await self.client.delete_service(data["name"])
+        await self.client.delete_service(data["name"])
         return self.dump_json(dict(message="OK"))
 
     async def dump_resources(self, request: Request) -> Response:
@@ -227,7 +228,8 @@ class PlaygroundAPI(object):
                 "envoy.playground.proxy" in event['Actor']['Attributes']
                 and event["status"] == "destroy")
             if cleanup_proxy:
-                await self.cleanup_volumes('proxy', event["Actor"]["Attributes"]["name"])
+                await self.cleanup_volumes(
+                    'proxy', event["Actor"]["Attributes"]["name"])
         elif is_proxy_create_container:
             await self.handle_proxy_creation(ws, event)
 
@@ -312,7 +314,8 @@ class PlaygroundAPI(object):
             to_publish = {
                 "services": {
                     show["Name"].strip(os.path.sep): dict(
-                        service_type=show["Config"]["Labels"]["envoy.playground.service.type"],
+                        service_type=show["Config"]["Labels"][
+                            "envoy.playground.service.type"],
                         name=show["Name"].strip(os.path.sep),
                         id=show["Id"][:10])}}
         to_publish.update(

@@ -1,4 +1,4 @@
-import asyncio
+
 import os
 from collections import OrderedDict
 from typing import Optional, Union
@@ -64,7 +64,9 @@ class PlaygroundDockerClient(object):
         return {
             'Image': self._mount_image,
             'Name': name,
-            "Cmd": ['sh', '-c', f'echo \"$MOUNT_CONTENT\" | base64 -d > {target}'],
+            "Cmd": [
+                'sh', '-c',
+                f'echo \"$MOUNT_CONTENT\" | base64 -d > {target}'],
             "Env": [
                 f"MOUNT_CONTENT={content}"],
             "AttachStdin": False,
@@ -90,8 +92,9 @@ class PlaygroundDockerClient(object):
             container_type: str,
             name: str,
             mount: str) -> None:
-        volume_config = await self._get_volume_config(container_type, name, mount)
-        return  await self.client.volumes.create(volume_config)
+        volume_config = await self._get_volume_config(
+            container_type, name, mount)
+        return await self.client.volumes.create(volume_config)
 
     async def remove_volume(
             self,
@@ -101,7 +104,7 @@ class PlaygroundDockerClient(object):
         volume_name = f"envoy_playground__{container_type}__{name}__{mount}"
         delete_context = self.client._query(
             f"volumes/{volume_name}",
-        method="DELETE")
+            method="DELETE")
         async with delete_context:
             pass
 
@@ -207,7 +210,8 @@ class PlaygroundDockerClient(object):
             in service_config.get("environment", {}).items()]
 
         container = await self.client.containers.create_or_replace(
-            config=self._get_service_config(service_type, image, name, environment),
+            config=self._get_service_config(
+                service_type, image, name, environment),
             name=name)
         await container.start()
 
@@ -240,7 +244,6 @@ class PlaygroundDockerClient(object):
             resources: dict,
             resource_type: str,
             name: str) -> dict:
-        label = "%s.%s" % (self._envoy_label, resource_type)
         resource = await resources.get("__playground_%s" % name)
         content = await resource.show()
         return dict(name=name, id=content["Id"][:10])
@@ -315,7 +318,8 @@ class PlaygroundDockerClient(object):
 
             if name == "service":
                 _resource['image'] = resource['Image']
-                _resource["service_type"] = resource["Labels"]["envoy.playground.service.type"]
+                _resource["service_type"] = resource["Labels"][
+                    "envoy.playground.service.type"]
 
             if name == "network":
                 _actual_network = await resources.get(resource["Id"])
