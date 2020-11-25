@@ -29,6 +29,25 @@ const code =
     ...
 `;
 
+// VALIDATION REQUIRED
+//  - code:
+//      - is set
+//      - valid yaml
+//      - not too long, and not too short
+//      - ideally valid envoy config
+//  - name
+//      - is set
+//      - valid chars, not too long/short
+//      - unique
+//  - certs
+//      - number of files
+//      - length of each file
+//      - valid file extensions for certs ?
+//      - valid filenames
+//  - binaries
+//      - number of files
+//      - size of each file
+//      - valid filenames
 
 export class BaseProxyForm extends React.PureComponent {
     static propTypes = exact({
@@ -54,18 +73,34 @@ export class BaseProxyForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch} = this.props;
-        dispatch(updateForm({name: evt.currentTarget.value}));
+        const {dispatch, form} = this.props;
+        const {errors: _errors={}} = form;
+        const {value: name=''} = evt.currentTarget;
+        let _fieldErrors = [];
+        const errors = {..._errors};
+        if (name.length > 32) {
+            _fieldErrors.push('Name is too long, max 32 characters');
+        }
+        const alphanumeric = /^[0-9a-zA-Z\-_\.]+$/;
+        if (name.length > 0 && !name.match(alphanumeric)) {
+            _fieldErrors.push('Incorrect characters, a-Z and `.`,`_` or `-` only please');
+        }
+        if (name.indexOf('__') !== -1 || name.indexOf('--') !== -1 || name.indexOf('..') !== -1) {
+            _fieldErrors.push('No funny business, only one in a sequence of `.`, `_`, or `-` please');
+        }
+        errors.name = _fieldErrors;
+        dispatch(updateForm({name, errors}));
     }
 
     onConfigChange = async (code) => {
+        // TODO: validate yaml config as yaml, and length.
         const {dispatch} = this.props;
         dispatch(updateForm({configuration: code}));
     }
 
     render () {
         const {form} = this.props;
-        const {configuration=code, name} = form;
+        const {configuration=code, name, errors={}} = form;
         return (
             <PlaygroundForm messages={this.messages}>
               <PlaygroundFormGroup>
@@ -80,6 +115,9 @@ export class BaseProxyForm extends React.PureComponent {
                       value={name || ""}
                       onChange={this.onChange}
                       placeholder="Enter proxy name" />
+                    {(errors.name && errors.name.length > 0) &&
+                     <div>Errors! {errors.name}</div>
+                    }
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>

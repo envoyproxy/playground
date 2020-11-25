@@ -9,6 +9,15 @@ import {PlaygroundForm, PlaygroundFormGroup} from '../shared/forms';
 import {updateForm} from '../app/store';
 
 
+// VALIDATION REQUIRED
+//  - config:
+//      - not too long
+//  - name
+//      - is set
+//      - valid chars, not too long/short
+//      - unique
+
+
 export class BaseNetworkProxiesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
