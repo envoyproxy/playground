@@ -1,7 +1,5 @@
-import os
 
 from aiohttp import web
-import aiohttp_cors
 
 
 app = web.Application()
