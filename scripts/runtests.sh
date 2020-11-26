@@ -18,9 +18,8 @@ py_tests () {
     # Python
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose build control
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
-		--workdir /code/control \
 		--entrypoint /bin/sh \
-		control -c 'pytest --flake8 --cov=. --cov-append --cov-report=xml:coverage/coverage.xml tests/*py'
+		control -c 'pytest --flake8 --cov=. --cov-append --cov-report=xml:coverage/coverage.xml playground/control/tests/*py'
 }
 
 js_tests
