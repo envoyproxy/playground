@@ -8,7 +8,8 @@ services:
       dockerfile: dev/Dockerfile-playground-control
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - ../control:/code/control
+    - ../playground:/code/playground
+    - ../setup.py:/code/setup.py
     - ../.coverage:/code/control/coverage
     - ../services.yaml:/services.yaml
     - ../services:/services

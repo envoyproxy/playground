@@ -12,11 +12,11 @@ from aiohttp.web import Request, Response
 
 from aiodocker.exceptions import DockerError
 
-from connectors.docker.client import PlaygroundDockerClient
+from .connectors.docker.client import PlaygroundDockerClient
 
-from decorators import api, method_decorator
-from request import PlaygroundRequest
-from validators import (
+from .decorators import api, method_decorator
+from .request import PlaygroundRequest
+from .validators import (
     AddNetworkValidator, DeleteNetworkValidator, EditNetworkValidator,
     AddProxyValidator, DeleteProxyValidator, EditProxyValidator,
     AddServiceValidator, DeleteServiceValidator, EditServiceValidator)
