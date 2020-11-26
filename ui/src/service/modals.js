@@ -109,6 +109,7 @@ export class ServiceStarting extends React.PureComponent {
         const {form, status, success} = this.props;
         const {name} = form;
         let color = 'info';
+
         let message = <span>Pulling container image for service ({name})...</span>;
         if (success) {
             message = <span>Service has started ({name})!</span>;
@@ -143,16 +144,17 @@ export class BaseServiceModal extends React.Component {
 
     get tabs () {
         const {form, service_types} = this.props;
-        const {service_type} = form;
+        const {errors, name, service_type} = form;
         let showConfig = false;
-        const tabs = {
-            Service: <ServiceForm />,
-            Environment:  <ServiceEnvironmentForm service_type={service_type} />};
-        if (service_type) {
-            const {configuration} = service_types[service_type];
-            const configPath  = service_types[service_type]['labels']['envoy.playground.config.path'];
-            if (configPath) {
-                tabs['Configuration'] = <ServiceConfigurationForm />;
+        const tabs = {Service: <ServiceForm />};
+        if (service_type && service_type !== undefined) {
+            if (name.length > 2 && !errors.name) {
+                const {configuration} = service_types[service_type];
+                const configPath  = service_types[service_type]['labels']['envoy.playground.config.path'];
+                if (configPath) {
+                    tabs.Configuration = <ServiceConfigurationForm />;
+                }
+                tabs.Environment = <ServiceEnvironmentForm service_type={service_type} />;
             }
         }
         return tabs;
@@ -185,9 +187,11 @@ export class BaseServiceModal extends React.Component {
 
         if (success) {
             return (
-                <ServiceStarting success={success} form={form} status={status} />);
+                <ServiceStarting
+                  success={success}
+                  form={form}
+                  status={status} />);
         }
-
         if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);

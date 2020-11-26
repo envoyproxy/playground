@@ -332,31 +332,6 @@ class PlaygroundAPI(object):
                  port_mappings=port_mappings,
                  status=event["status"]))
 
-    async def handle_container_started(self, ws, event: dict) -> None:
-        await asyncio.sleep(1)
-        container = await self.client.client.containers.get(event["id"])
-        show = await container.show()
-        if "envoy.playground.proxy" in show["Config"]["Labels"]:
-            to_publish = {
-                "proxies": {
-                    show["Name"].strip(os.path.sep): dict(
-                        name=show["Name"].strip(os.path.sep),
-                        id=show["Id"][:10])}}
-        elif "envoy.playground.service" in show["Config"]["Labels"]:
-            to_publish = {
-                "services": {
-                    show["Name"].strip(os.path.sep): dict(
-                        service_type=show["Config"]["Labels"][
-                            "envoy.playground.service.type"],
-                        name=show["Name"].strip(os.path.sep),
-                        id=show["Id"][:10])}}
-        to_publish.update(
-            dict(type="container",
-                 id=show["Id"],
-                 name=show["Name"],
-                 status=show["State"]["Status"]))
-        await self.publish(ws, to_publish)
-
     async def handle_network(self, ws, event: dict) -> None:
         handlers = ["destroy", "create", "connect", "disconnect"]
         if event['Action'] in handlers:

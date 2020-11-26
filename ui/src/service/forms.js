@@ -48,22 +48,33 @@ class BaseServiceForm extends React.PureComponent {
     onChange = async (evt) => {
         const {dispatch, form, services, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
+        let {service_type, name=''} = form;
         let valid = true;
         const errors = {name: []};
-        if (evt.currentTarget.value.length < parseInt(min_name_length)) {
+
+        if (evt.target.name == 'service_type') {
+            service_type = evt.target.value;
+        } else {
+            name = evt.currentTarget.value.toLowerCase();
+        }
+
+        if (!service_type) {
             valid = false;
         }
-        if (evt.currentTarget.value.length > parseInt(max_name_length)) {
+
+        if (name.length < parseInt(min_name_length)) {
+            valid = false;
+        }
+        if (name.length > parseInt(max_name_length)) {
             valid = false;
             errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
         }
         for (const forbidden of ['..', '--', '__']) {
-            if (evt.currentTarget.value.indexOf(forbidden) !== -1) {
+            if (name.indexOf(forbidden) !== -1) {
                 valid = false;
                 errors.name.push('Network name cannot contain \'' + forbidden + '\'');
             }
         }
-        const name = evt.currentTarget.value.toLowerCase();
         if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
             valid = false;
             errors.name.push('Network name contains forbidden characters');
@@ -76,7 +87,7 @@ class BaseServiceForm extends React.PureComponent {
         if (valid) {
             delete errors.name;
         }
-        dispatch(updateForm({errors, valid, name}));
+        dispatch(updateForm({errors, valid, name, service_type}));
     }
 
     render () {
@@ -119,7 +130,7 @@ class BaseServiceForm extends React.PureComponent {
                       name="service_type"
                       value={service_type}
                       onChange={this.onChange}>
-                      <option>Select a service type</option>
+                      <option value="">Select a service type</option>
                       {Object.entries(service_types).map(([k, v], index) => {
                           return (
                               <option value={k} key={index}>{v.title}</option>);
@@ -319,8 +330,12 @@ export class BaseServiceEnvironmentForm extends React.Component {
     async componentDidUpdate(prevProps) {
         const {dispatch, service_type, service_types} = this.props;
         if (service_type !== prevProps.service_type) {
-            const {environment: vars} =  service_types[service_type];
-            await dispatch(updateForm({vars}));
+            if (service_type && service_type !== undefined) {
+                const {environment: vars} =  service_types[service_type];
+                await dispatch(updateForm({vars}));
+            } else {
+                await dispatch(updateForm({vars: {}}));
+            }
         }
     }
 
