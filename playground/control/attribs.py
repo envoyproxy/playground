@@ -93,7 +93,7 @@ class EditNetworkAttribs(object):
     async def validate(self, api):
         networks = await api.client.list_networks()
 
-        for self.id not in [n['id'] for n in networks]:
+        if self.id not in [n['id'] for n in networks]:
             raise PlaygroundError(
                 f'Unrecognized network id {self.id}.', self)
 
