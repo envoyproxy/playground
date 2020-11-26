@@ -58,6 +58,7 @@ class PlaygroundAPI(object):
 
     @method_decorator(api(attribs=EditNetworkAttribs))
     async def edit_network(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         await self.client.edit_network(
             request.data.id,
             proxies=request.data.proxies,
@@ -76,6 +77,7 @@ class PlaygroundAPI(object):
 
     @method_decorator(api(attribs=AddProxyAttribs))
     async def add_proxy(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         # todo: move client._envoy_image here
         if not await self.client.image_exists(self.client._envoy_image):
             await self.client.pull_image(self.client._envoy_image)
@@ -128,6 +130,7 @@ class PlaygroundAPI(object):
 
     @method_decorator(api(attribs=AddServiceAttribs))
     async def add_service(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         data = dict(name=request.data.name, service_type=request.data.service_type)
         service_config = self.service_types[request.data.service_type]
 
@@ -164,16 +167,19 @@ class PlaygroundAPI(object):
 
     @method_decorator(api(attribs=DeleteNetworkAttribs))
     async def delete_network(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         await self.client.delete_network(request.data.name)
         return self.dump_json(dict(message="OK"))
 
     @method_decorator(api(attribs=DeleteProxyAttribs))
     async def delete_proxy(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         await self.client.delete_proxy(request.data.name)
         return self.dump_json(dict(message="OK"))
 
     @method_decorator(api(attribs=DeleteServiceAttribs))
     async def delete_service(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         await self.client.delete_service(request.data.name)
         return self.dump_json(dict(message="OK"))
 

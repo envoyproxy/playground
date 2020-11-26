@@ -64,15 +64,19 @@ class EditNetworkAttribs(object):
     # v: service dicts
     services = attr.ib(default=[])
 
+    async def validate(self, api):
+        pass
+
 
 @attr.s
 class AddProxyAttribs(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+    name = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
 
     # v: exists
     # v: length
@@ -98,16 +102,18 @@ class AddProxyAttribs(object):
     # v: option/s
     logging = attr.ib(default=OrderedDict())
 
+    async def validate(self, api):
+        pass
 
 @attr.s
 class AddServiceAttribs(object):
-
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+    name = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
 
     # v: exists
     # v: length and length of values
@@ -122,32 +128,46 @@ class AddServiceAttribs(object):
     # v: valid values (length)
     env = attr.ib(default=OrderedDict())
 
+    async def validate(self, api):
+        pass
 
 @attr.s
 class DeleteServiceAttribs(object):
+    name = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
 
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+    async def validate(self, api):
+        pass
 
 
 @attr.s
 class DeleteNetworkAttribs(object):
+    name = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
 
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+    async def validate(self, api):
+        pass
 
 
 @attr.s
 class DeleteProxyAttribs(object):
+    name = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
 
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+    async def validate(self, api):
+        pass
