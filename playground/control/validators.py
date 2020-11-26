@@ -6,6 +6,7 @@ import attr
 @attr.s(repr=False, slots=True, hash=True)
 class _LengthValidator(object):
     _repr = "<instance_of validator for length {length!r}>"
+
     length = attr.ib()
 
     _err_gt = (
@@ -23,6 +24,20 @@ class _LengthValidator(object):
     _err_eq = (
         "length of '{name}' must be equal to {length!r} (got {value!r} that is "
         "{actual!r}).")
+
+    def __call__(self, inst, attr, value):
+        if self.length.startswith('>'):
+            return self._gt(inst, attr, value)
+        elif self.length.startswith('<'):
+            return self._gt(inst, attr, value)
+        elif self.length.startswith('>='):
+            return self._gte(inst, attr, value)
+        elif self.length.startswith('<='):
+            return self._gte(inst, attr, value)
+        return self._gte(inst, attr, value)
+
+    def __repr__(self):
+        return self._repr.format(length=self.length)
 
     def _type_error(self, msg, attr, value, length):
         return TypeError(
@@ -54,21 +69,6 @@ class _LengthValidator(object):
     def _eq(self, inst, attr, value):
         if not len(value) == int(self.length):
             raise self._type_error(self._err_eq, attr, value, self.length)
-
-    def __call__(self, inst, attr, value):
-        if self.length.startswith('>'):
-            return self._gt(inst, attr, value)
-        elif self.length.startswith('<'):
-            return self._gt(inst, attr, value)
-        elif self.length.startswith('>='):
-            return self._gte(inst, attr, value)
-        elif self.length.startswith('<='):
-            return self._gte(inst, attr, value)
-        else:
-            return self._gte(inst, attr, value)
-
-    def __repr__(self):
-        return self._repr.format(length=self.length)
 
 
 def has_length(length):
