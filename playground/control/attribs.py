@@ -3,10 +3,10 @@ import re
 from collections import OrderedDict
 
 import attr
-from attr.validators import instance_of, matches_re, is_well_formed
+from attr.validators import instance_of, matches_re
 
 from .exceptions import PlaygroundError, ValidationError
-from .validators import has_length, all_members
+from .validators import has_length, all_members, is_well_formed
 
 
 # this will give total 20, 10 per proxies/services
