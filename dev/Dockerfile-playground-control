@@ -1,17 +1,9 @@
 FROM python:3.8-slim
 
-RUN pip3 install -q \
-	aiodocker \
-	aiohttp \
-	aiohttp_cors \
-	attrs \
-	pytest-asyncio \
-	pytest-cov \
-	pytest-flake8 \
-	pyyaml
 RUN mkdir /code
 ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
-RUN pip install -e .
+RUN pip install -e . \
+	pip install -e .[test]
 ENTRYPOINT ["playground"]

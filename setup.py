@@ -7,15 +7,20 @@
 from setuptools import setup
 
 
-install_requires = []
+install_requires = [
+    "aiodocker",
+    "aiohttp",
+    "aiohttp_cors",
+    "attrs",
+    "pyyaml",
+    "pytest-asyncio"]
 
 extras_require = {}
 extras_require['test'] = [
     "pytest",
     "pytest-mock",
     "pytest-flake8",
-    "pytest-coverage",
-    "codecov"]
+    "pytest-cov"]
 
 # TODO: Fix classifiers
 setup(
