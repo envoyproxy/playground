@@ -12,6 +12,11 @@ import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
 
 
+// VALIDATION REQUIRED
+//  - alias:
+//      - valid network alias
+
+
 export class AliasListForm extends React.PureComponent {
     static propTypes = exact({
         aliases: PropTypes.array,

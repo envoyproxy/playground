@@ -11,6 +11,12 @@ import EnvoyLogo from '../../images/envoy.svg';
 import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
 
+// VALIDATION REQUIRED
+//  - port from:
+//      - int in port range
+//      - not a port obviously already taken - ie the site, api or any known existing listening ports
+//  - port from
+//      - int in port range
 
 export class PortMappingListForm extends React.PureComponent {
     static propTypes = exact({

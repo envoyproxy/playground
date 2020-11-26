@@ -20,6 +20,20 @@ import {updateForm} from '../app/store';
 import {ActionRemove} from '../shared/actions';
 
 
+// VALIDATION REQUIRED
+//  - config:
+//      - not too long
+//  - name
+//      - is set
+//      - valid chars, not too long/short
+//      - unique
+//  - service_type
+//      - is set
+//  - env key
+//      - valid chars not too long/short
+//  - env value
+//      - not too long
+
 class BaseServiceForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,

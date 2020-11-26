@@ -9,6 +9,15 @@ import {PlaygroundForm, PlaygroundFormGroup} from '../shared/forms';
 import {updateForm} from '../app/store';
 
 
+// VALIDATION REQUIRED
+//  - config:
+//      - not too long
+//  - name
+//      - is set
+//      - valid chars, not too long/short
+//      - unique
+
+
 export class BaseNetworkProxiesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -189,9 +198,10 @@ class BaseNetworkForm extends React.PureComponent {
 
     render () {
         const {form} = this.props;
-        const {name} = form;
+        const {name, validation} = form;
         return (
-            <PlaygroundForm messages={this.messages}>
+            <PlaygroundForm
+              messages={this.messages}>
               <PlaygroundFormGroup>
                 <Row>
                   <Label sm={3}  for="name" className="text-right">
