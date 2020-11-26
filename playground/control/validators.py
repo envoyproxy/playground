@@ -88,7 +88,7 @@ class _AllMembersValidator(object):
         """
         for member in value:
             if not self.members(member):
-                raise MembersError(
+                raise TypeError(
                     "'{name}' member did not match `{members}` (got {value!r} that is a "
                     "{actual!r}).".format(
                         name=attr.name,
