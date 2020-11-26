@@ -14,9 +14,9 @@ from aiodocker.exceptions import DockerError
 
 from .connectors.docker.client import PlaygroundDockerClient
 
-from decorators import api, method_decorator
-from request import PlaygroundRequest
-from attribs import (
+from .decorators import api, method_decorator
+from .request import PlaygroundRequest
+from .attribs import (
     AddNetworkAttribs, DeleteNetworkAttribs, EditNetworkAttribs,
     AddProxyAttribs, DeleteProxyAttribs,
     AddServiceAttribs, DeleteServiceAttribs)
@@ -49,6 +49,7 @@ class PlaygroundAPI(object):
 
     @method_decorator(api(attribs=AddNetworkAttribs))
     async def add_network(self, request: PlaygroundRequest) -> Response:
+        await request.validate(self)
         await self.client.create_network(
             request.data.name,
             proxies=request.data.proxies,

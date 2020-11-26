@@ -5,47 +5,48 @@ from collections import OrderedDict
 import attr
 from attr.validators import instance_of, matches_re
 
-from exceptions import ValidationError
-from validators import has_length, has_members
+from .exceptions import PlaygroundError, ValidationError
+from .validators import has_length, all_members
 
 
 # this will give total 20, 10 per proxies/services
 MAX_NETWORK_CONNECTIONS = 10
 
-MAX_NAME_LENGTH = 3
+MIN_NAME_LENGTH = 2
+MAX_NAME_LENGTH = 32
 
 
-# Request validators
-# ------------------
-#
-# These are purely schematic validators, eg they dont check for the existence or uniqueness of names
-#
-# Although the ui will do some pre-validation in the forms, there still needs to be some tests
-# for validation beyond what is done here.
-#
+RE_NOT_NAME = r'(?!.*(__|\.\.|\-\-)+.*$)'
+RE_NAME = r'[a-z]+[a-z0-9\.\-_]*$'
 
 
 @attr.s(kw_only=True)
 class AddNetworkAttribs(object):
-
     name = attr.ib(
         validator=[
             instance_of(str),
-            has_length(f'<{MAX_NAME_LENGTH}'),
-            matches_re(r"[A-Za-z0-9\-\._]+")])
+            has_length(f'>={MIN_NAME_LENGTH}'),
+            has_length(f'<={MAX_NAME_LENGTH}'),
+            matches_re(RE_NAME),
+            matches_re(RE_NOT_NAME, func=re.match),])
     proxies = attr.ib(
         default=[],
         validator=[
             instance_of(list),
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
-            has_members(lambda m: type(m) == str)])
+            all_members(lambda m: type(m) == str)])
     services = attr.ib(
         default=[],
         validator=[
             instance_of(list),
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
-            has_members(lambda m: type(m) == str)])
+            all_members(lambda m: type(m) == str)])
 
+    async def validate(self, api):
+        networks = await api.client.list_networks()
+        for network in networks:
+            if network['name'] == self.name:
+                raise PlaygroundError(f'A network with the name {self.name} already exists.', self)
 
 @attr.s
 class EditNetworkAttribs(object):

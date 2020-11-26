@@ -15,3 +15,6 @@ class PlaygroundRequest(object):
 
     async def load_data(self):
         self.data = self._attribs(**await self._request.json(loads=self._json_loader))
+
+    async def validate(self, api):
+        return await self.data.validate(api)

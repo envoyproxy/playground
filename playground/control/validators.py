@@ -10,31 +10,31 @@ class _LengthValidator(object):
     length = attr.ib()
 
     _err_gt = (
-        "'{name}' must be longer than {length!r} (got {value!r} that is "
+        "'{name}' must be longer than {length!r} (got {value!r} with length "
         "{actual!r}).")
     _err_gte = (
-        "'{name}' must be longer or equal to {length!r} (got {value!r} that is "
+        "'{name}' must be longer or equal to {length!r} (got {value!r} with length "
         "{actual!r}).")
     _err_lt = (
-        "length of '{name}' must be less than {length!r} (got {value!r} that is "
+        "length of '{name}' must be less than {length!r} (got {value!r} with length "
         "{actual!r}).")
     _err_lte = (
-        "length of '{name}' must be less than or equal to {length!r} (got {value!r} that is "
+        "length of '{name}' must be less than or equal to {length!r} (got {value!r} with length "
         "{actual!r}).")
     _err_eq = (
-        "length of '{name}' must be equal to {length!r} (got {value!r} that is "
+        "length of '{name}' must be equal to {length!r} (got {value!r} with length "
         "{actual!r}).")
 
     def __call__(self, inst, attr, value):
-        if self.length.startswith('>'):
-            return self._gt(inst, attr, value)
-        elif self.length.startswith('<'):
-            return self._gt(inst, attr, value)
-        elif self.length.startswith('>='):
+        if self.length.startswith('>='):
             return self._gte(inst, attr, value)
         elif self.length.startswith('<='):
-            return self._gte(inst, attr, value)
-        return self._gte(inst, attr, value)
+            return self._lte(inst, attr, value)
+        elif self.length.startswith('>'):
+            return self._gt(inst, attr, value)
+        elif self.length.startswith('<'):
+            return self._lt(inst, attr, value)
+        return self._eq(inst, attr, value)
 
     def __repr__(self):
         return self._repr.format(length=self.length)
@@ -44,7 +44,7 @@ class _LengthValidator(object):
             msg.format(
                 name=attr.name,
                 length=length,
-                actual=value.__class__,
+                actual=len(value),
                 value=value),
             attr,
             self.length,

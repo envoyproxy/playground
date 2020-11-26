@@ -5,8 +5,8 @@ from functools import partial, update_wrapper, wraps
 
 from aiohttp import web
 
-from exceptions import ValidationError
-from request import PlaygroundRequest
+from .exceptions import PlaygroundError, ValidationError
+from .request import PlaygroundRequest
 
 
 def api(original_fun=None, attribs=None):
@@ -25,15 +25,21 @@ def api(original_fun=None, attribs=None):
                         reason="Invalid request data",
                         body=errors,
                         content_type='application/json')
-
-                except TypeError as e:
+                except (TypeError, ValueError) as e:
+                    errors = json.dumps(dict(errors={e.args[1].name: e.args[0]}))
+                    return web.HTTPBadRequest(
+                        reason="Invalid request data",
+                        body=errors,
+                        content_type='application/json')
+                try:
+                    return await fun(request)
+                except PlaygroundError as e:
                     errors = json.dumps(dict(errors={e.args[1].name: e.args[0]}))
                     return web.HTTPBadRequest(
                         reason="Invalid request data",
                         body=errors,
                         content_type='application/json')
 
-                return await fun(request)
             return await fun(PlaygroundRequest(request))
         return wrapped_fun
 
