@@ -183,7 +183,7 @@ class BaseNetworkForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form, networks, meta} = this.props;
+        const {dispatch, networks, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
         let valid = true;
         const errors = {name: []};
@@ -201,7 +201,7 @@ class BaseNetworkForm extends React.PureComponent {
             }
         }
         const name = evt.currentTarget.value.toLowerCase();
-        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9\.\-_]*$/)) {
+        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
             valid = false;
             errors.name.push('Network name contains forbidden characters');
         }
@@ -218,7 +218,7 @@ class BaseNetworkForm extends React.PureComponent {
 
     render () {
         const {form} = this.props;
-        const {edit, errors={}, name, validation} = form;
+        const {edit, errors={}, name} = form;
         return (
             <PlaygroundForm
               messages={this.messages}>
