@@ -3,7 +3,7 @@ import os
 from aiohttp import web
 import aiohttp_cors
 
-from api import PlaygroundAPI
+from .api import PlaygroundAPI
 
 
 CORS_ALLOWED = "http://localhost:5555"
@@ -46,7 +46,7 @@ def _add_endpoint(
             max_age=3600)})
 
 
-if __name__ == "__main__":
+def main():
     for endpoint in endpoints:
         _add_endpoint(*endpoint)
 
@@ -67,3 +67,7 @@ if __name__ == "__main__":
                 allow_headers=("X-Requested-With", "Content-Type"),
                 max_age=3600)})
     web.run_app(app)
+
+
+if __name__ == "__main__":
+    main()
