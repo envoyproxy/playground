@@ -9,15 +9,6 @@ import {PlaygroundForm, PlaygroundFormGroup} from '../shared/forms';
 import {updateForm} from '../app/store';
 
 
-// VALIDATION REQUIRED
-//  - config:
-//      - not too long
-//  - name
-//      - is set
-//      - valid chars, not too long/short
-//      - unique
-
-
 export class BaseNetworkProxiesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -192,7 +183,7 @@ class BaseNetworkForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form, meta} = this.props;
+        const {dispatch, form, networks, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
         let valid = true;
         const errors = {name: []};
@@ -210,10 +201,15 @@ class BaseNetworkForm extends React.PureComponent {
             }
         }
         const name = evt.currentTarget.value.toLowerCase();
-        if (!name.match(/[a-z]+[a-z0-9\.\-_]*$/)) {
+        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9\.\-_]*$/)) {
             valid = false;
             errors.name.push('Network name contains forbidden characters');
         }
+        if (Object.keys(networks).indexOf(name) !== -1) {
+            valid = false;
+            errors.name.push('Network name exists already');
+        }
+
         if (valid) {
             delete errors.name;
         }
@@ -264,6 +260,7 @@ const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
         meta: state.meta.value,
+        networks: state.network.value,
     };
 }
 
