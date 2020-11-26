@@ -46,28 +46,76 @@ class AddNetworkAttribs(object):
 
     async def validate(self, api):
         networks = await api.client.list_networks()
-        # todo: validate that proxy/service names are valid
+
         for network in networks:
             if network['name'] == self.name:
                 raise PlaygroundError(f'A network with the name {self.name} already exists.', self)
 
+        if self.services:
+            # check all of the requested services are present in the service list
+            services = set(
+                s['name']
+                for s
+                in await api.client.list_services())
+            _services = set(self.services)
+            if (services ^ _services) & _services:
+                raise PlaygroundError(f'Connection to unrecognized service requested.', self)
+
+        if self.proxies:
+            # check all of the requested proxies are present in the proxy list
+            proxies = set(
+                s['name']
+                for s
+                in await api.client.list_proxies())
+            _proxies = set(self.proxies)
+            if (proxies ^ _proxies) & _proxies:
+                raise PlaygroundError(f'Connection to unrecognized proxy requested.', self)
+
+
 @attr.s
 class EditNetworkAttribs(object):
-
     id = attr.ib(
         has_length(10),
         matches_re(RE_UUID))
-
-    # v: length
-    # v: proxy dicts
-    proxies = attr.ib(default=[])
-
-    # v: length
-    # v: service dicts
-    services = attr.ib(default=[])
+    proxies = attr.ib(
+        default=[],
+        validator=[
+            instance_of(list),
+            has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
+            all_members(lambda m: type(m) == str)])
+    services = attr.ib(
+        default=[],
+        validator=[
+            instance_of(list),
+            has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
+            all_members(lambda m: type(m) == str)])
 
     async def validate(self, api):
-        pass
+        networks = await api.client.list_networks()
+
+        for self.id not in [n['id'] for n in networks]:
+            raise PlaygroundError(
+                f'Unrecognized network id {self.id}.', self)
+
+        if self.services:
+            # check all of the requested services are present in the service list
+            services = set(
+                s['name']
+                for s
+                in await api.client.list_services())
+            _services = set(self.services)
+            if (services ^ _services) & _services:
+                raise PlaygroundError(f'Connection to unrecognized service requested.', self)
+
+        if self.proxies:
+            # check all of the requested proxies are present in the proxy list
+            proxies = set(
+                s['name']
+                for s
+                in await api.client.list_proxies())
+            _proxies = set(self.proxies)
+            if (proxies ^ _proxies) & _proxies:
+                raise PlaygroundError(f'Connection to unrecognized proxy requested.', self)
 
 
 @attr.s
