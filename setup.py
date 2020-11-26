@@ -39,4 +39,7 @@ setup(
     install_requires=install_requires,
     extras_require=extras_require,
     packages=['playground.control'],
-    include_package_data=True)
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'playground = playground.control.run:main']})

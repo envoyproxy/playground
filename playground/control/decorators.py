@@ -1,7 +1,7 @@
 
 from functools import partial, update_wrapper, wraps
 
-from request import PlaygroundRequest
+from .request import PlaygroundRequest
 
 
 # Method decoration taken from the django project

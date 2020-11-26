@@ -10,5 +10,8 @@ RUN pip3 install -q \
 	pytest-flake8 \
 	pyyaml
 RUN mkdir /code
-ADD ./control /code
-ENTRYPOINT ["python3", "/code/control/run.py"]
+ADD ./playground /code/playground
+ADD ./setup.py /code
+WORKDIR /code
+RUN pip install -e .
+ENTRYPOINT ["playground"]
