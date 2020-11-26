@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {Col, Label, Input, Row} from 'reactstrap';
+import {Alert, Col, Label, Input, Row} from 'reactstrap';
 
 import {PlaygroundForm, PlaygroundFormGroup} from '../shared/forms';
 import {updateForm} from '../app/store';
@@ -192,13 +192,31 @@ class BaseNetworkForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch} = this.props;
-        dispatch(updateForm({name: evt.currentTarget.value}));
+        const {dispatch, form} = this.props;
+        let valid = true;
+        const errors = {name: []};
+        if (evt.currentTarget.value.length < 3) {
+            valid = false;
+        }
+        if (evt.currentTarget.value.length > 32) {
+            valid = false;
+            errors.name.push('Network name too long, maximum 32 chars.');
+        }
+        for (const forbidden of ['..', '--', '__']) {
+            if (evt.currentTarget.value.indexOf(forbidden) !== -1) {
+                valid = false;
+                errors.name.push('Network name cannot contain \'' + forbidden + '\'');
+            }
+        }
+        if (valid) {
+            delete errors.name;
+        }
+        dispatch(updateForm({errors,valid, name: evt.currentTarget.value.toLowerCase()}));
     }
 
     render () {
         const {form} = this.props;
-        const {name, validation} = form;
+        const {edit, errors={}, name, validation} = form;
         return (
             <PlaygroundForm
               messages={this.messages}>
@@ -216,8 +234,17 @@ class BaseNetworkForm extends React.PureComponent {
                       id="name"
                       value={name || ''}
                       placeholder="Enter network name"
+                      disabled={edit}
                       onChange={this.onChange}
                     />
+                    {(errors.name || []).map((e, i) => {
+                        return (
+                            <Alert
+                              className="p-1 mt-2 mb-2"
+                              color="danger"
+                              key={i}>{e}</Alert>
+                        );
+                    })}
                   </Col>
                 </Row>
               </PlaygroundFormGroup>
