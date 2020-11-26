@@ -16,7 +16,7 @@ from .connectors.docker.client import PlaygroundDockerClient
 
 from .decorators import api, method_decorator
 from .request import PlaygroundRequest
-from .validators import (
+from .attrs import (
     AddNetworkValidator, DeleteNetworkValidator, EditNetworkValidator,
     AddProxyValidator, DeleteProxyValidator, EditProxyValidator,
     AddServiceValidator, DeleteServiceValidator, EditServiceValidator)

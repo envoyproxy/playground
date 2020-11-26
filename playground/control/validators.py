@@ -1,143 +1,108 @@
 
-from collections import OrderedDict
+import attr
 
 
-class Validator(object):
+# im really surprised this is not there in lib
+@attr.s(repr=False, slots=True, hash=True)
+class _LengthValidator(object):
+    _repr = "<instance_of validator for length {length!r}>"
 
-    def __init__(self, data):
-        self._data = data
+    length = attr.ib()
 
+    _err_gt = (
+        "'{name}' must be longer than {length!r} (got {value!r} that is "
+        "{actual!r}).")
+    _err_gte = (
+        "'{name}' must be longer or equal to {length!r} (got {value!r} that is "
+        "{actual!r}).")
+    _err_lt = (
+        "length of '{name}' must be less than {length!r} (got {value!r} that is "
+        "{actual!r}).")
+    _err_lte = (
+        "length of '{name}' must be less than or equal to {length!r} (got {value!r} that is "
+        "{actual!r}).")
+    _err_eq = (
+        "length of '{name}' must be equal to {length!r} (got {value!r} that is "
+        "{actual!r}).")
 
-class AddNetworkValidator(Validator):
+    def __call__(self, inst, attr, value):
+        if self.length.startswith('>'):
+            return self._gt(inst, attr, value)
+        elif self.length.startswith('<'):
+            return self._gt(inst, attr, value)
+        elif self.length.startswith('>='):
+            return self._gte(inst, attr, value)
+        elif self.length.startswith('<='):
+            return self._gte(inst, attr, value)
+        return self._gte(inst, attr, value)
 
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
+    def __repr__(self):
+        return self._repr.format(length=self.length)
 
-    @property
-    def services(self):
-        return self._data.get('services', [])
+    def _type_error(self, msg, attr, value, length):
+        return TypeError(
+            msg.format(
+                name=attr.name,
+                length=length,
+                actual=value.__class__,
+                value=value),
+            attr,
+            self.length,
+            value)
 
-    @property
-    def name(self):
-        return self._data['name']
+    def _gt(self, inst, attr, value):
+        if not len(value) > int(self.length.strip('>')):
+            raise self._type_error(self._err_gt, attr, value, self.length.strip('>'))
 
+    def _gte(self, inst, attr, value):
+        if not len(value) >= int(self.length.strip('>=')):
+            raise self._type_error(self._err_gte, attr, value, self.length.strip('>='))
 
-class EditNetworkValidator(Validator):
+    def _lt(self, inst, attr, value):
+        if not len(value) < int(self.length.strip('<')):
+            raise self._type_error(self._err_lt, attr, value, self.length.strip('<'))
 
-    @property
-    def proxies(self):
-        return self._data.get('proxies', [])
+    def _lte(self, inst, attr, value):
+        if not len(value) <= int(self.length.strip('<=')):
+            raise self._type_error(self._err_lte, attr, value, self.length.strip('<='))
 
-    @property
-    def services(self):
-        return self._data.get('services', [])
-
-    @property
-    def id(self):
-        return self._data['id']
-
-
-class AddProxyValidator(Validator):
-
-    @property
-    def port_mappings(self):
-        return self._data.get('port_mappings', [])
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-    @property
-    def certs(self):
-        return self._data.get('certs', {})
-
-    @property
-    def binaries(self):
-        return self._data.get('binaries', {})
-
-    @property
-    def logging(self):
-        return self._data.get('logging', {})
-
-
-class EditProxyValidator(Validator):
-
-    @property
-    def port_mappings(self):
-        return self._data.get('port_mappings', [])
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-    @property
-    def certs(self):
-        return self._data.get('certs', {})
-
-    @property
-    def binaries(self):
-        return self._data.get('binaries', {})
-
-    @property
-    def logging(self):
-        return self._data.get('logging', {})
+    def _eq(self, inst, attr, value):
+        if not len(value) == int(self.length):
+            raise self._type_error(self._err_eq, attr, value, self.length)
 
 
-class AddServiceValidator(Validator):
-
-    @property
-    def configuration(self):
-        return self._data['configuration']
-
-    @property
-    def name(self):
-        return self._data['name']
-
-    @property
-    def service_type(self):
-        return self._data['service_type']
-
-    @property
-    def env(self):
-        return self._data.get('vars', OrderedDict())
+def has_length(length):
+    return _LengthValidator(length)
 
 
-class EditServiceValidator(Validator):
+# this may not be useful - may be due to lack of understanding of attrs
+# seems useful to me, and gets things moving for now
+@attr.s(repr=False, slots=True, hash=True)
+class _AllMembersValidator(object):
+    _repr = "<instance_of validator for membership test {members!r}>"
+    members = attr.ib()
 
-    @property
-    def configuration(self):
-        return self._data['configuration']
+    def __call__(self, inst, attr, value):
+        """
+        We use a callable class to be able to change the ``__repr__``.
+        """
+        for member in value:
+            if not self.members(member):
+                raise TypeError(
+                    "'{name}' member did not match `{members}` (got {value!r} that is a "
+                    "{actual!r}).".format(
+                        name=attr.name,
+                        members=members,
+                        actual=value.__class__,
+                        value=value,
+                    ),
+                    attr,
+                    self.members,
+                    value)
 
-    @property
-    def name(self):
-        return self._data['name']
+    def __repr__(self):
+        return self._repr.format(members=self.members)
 
 
-class DeleteServiceValidator(Validator):
-
-    @property
-    def name(self):
-        return self._data['name']
-
-
-class DeleteNetworkValidator(Validator):
-
-    @property
-    def name(self):
-        return self._data['name']
-
-
-class DeleteProxyValidator(Validator):
-
-    @property
-    def name(self):
-        return self._data['name']
+def all_members(membertest):
+    return _AllMembersValidator(membertest)
