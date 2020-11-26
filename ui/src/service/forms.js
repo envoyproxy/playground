@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Button, Col, CustomInput, Input, Row} from 'reactstrap';
+import {Alert, Button, Col, CustomInput, Input, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
@@ -46,15 +46,42 @@ class BaseServiceForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch} = this.props;
-        const update = {};
-        update[evt.target.name] = evt.target.value;
-        dispatch(updateForm(update));
+        const {dispatch, form, services, meta} = this.props;
+        const {max_name_length, min_name_length} = meta;
+        let valid = true;
+        const errors = {name: []};
+        if (evt.currentTarget.value.length < parseInt(min_name_length)) {
+            valid = false;
+        }
+        if (evt.currentTarget.value.length > parseInt(max_name_length)) {
+            valid = false;
+            errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
+        }
+        for (const forbidden of ['..', '--', '__']) {
+            if (evt.currentTarget.value.indexOf(forbidden) !== -1) {
+                valid = false;
+                errors.name.push('Network name cannot contain \'' + forbidden + '\'');
+            }
+        }
+        const name = evt.currentTarget.value.toLowerCase();
+        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
+            valid = false;
+            errors.name.push('Network name contains forbidden characters');
+        }
+        if (Object.keys(services).indexOf(name) !== -1) {
+            valid = false;
+            errors.name.push('Network name exists already');
+        }
+
+        if (valid) {
+            delete errors.name;
+        }
+        dispatch(updateForm({errors, valid, name}));
     }
 
     render () {
         const {form, service_types} = this.props;
-        const {service_type={}, name} = form;
+        const {service_type={}, name, errors={}} = form;
         return (
             <PlaygroundForm messages={this.messages}>
               <PlaygroundFormGroup>
@@ -70,6 +97,14 @@ class BaseServiceForm extends React.PureComponent {
                       placeholder="Enter service name"
                       onChange={this.onChange}
                     />
+                    {(errors.name || []).map((e, i) => {
+                        return (
+                            <Alert
+                              className="p-1 mt-2 mb-2"
+                              color="danger"
+                              key={i}>{e}</Alert>
+                        );
+                    })}
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>
@@ -103,6 +138,8 @@ const mapFormStateToProps = function(state) {
     return {
         service_types: state.service_type.value,
         form: state.form.value,
+        services: state.proxy.value,
+        meta: state.meta.value,
     };
 };
 

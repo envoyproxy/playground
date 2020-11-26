@@ -116,7 +116,7 @@ class _WellFormedStringValidator(object):
     string_type = attr.ib()
 
     def __call__(self, inst, attr, value):
-        return getattr(self, f'valid_{string_type}')(inst, attr, value)
+        return getattr(self, f'valid_{self.string_type}')(inst, attr, value)
 
     def valid_yaml(self, inst, attr, value):
         try:

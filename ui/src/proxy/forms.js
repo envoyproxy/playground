@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import {
-    CustomInput, Col, Label, Input, Row} from 'reactstrap';
+    Alert, CustomInput, Col, Label, Input, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
@@ -73,23 +73,37 @@ export class BaseProxyForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form} = this.props;
-        const {errors: _errors={}} = form;
-        const {value: name=''} = evt.currentTarget;
-        let _fieldErrors = [];
-        const errors = {..._errors};
-        if (name.length > 32) {
-            _fieldErrors.push('Name is too long, max 32 characters');
+        const {dispatch, form, proxies, meta} = this.props;
+        const {max_name_length, min_name_length} = meta;
+        let valid = true;
+        const errors = {name: []};
+        if (evt.currentTarget.value.length < parseInt(min_name_length)) {
+            valid = false;
         }
-        const alphanumeric = /^[0-9a-zA-Z\-_\.]+$/;
-        if (name.length > 0 && !name.match(alphanumeric)) {
-            _fieldErrors.push('Incorrect characters, a-Z and `.`,`_` or `-` only please');
+        if (evt.currentTarget.value.length > parseInt(max_name_length)) {
+            valid = false;
+            errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
         }
-        if (name.indexOf('__') !== -1 || name.indexOf('--') !== -1 || name.indexOf('..') !== -1) {
-            _fieldErrors.push('No funny business, only one in a sequence of `.`, `_`, or `-` please');
+        for (const forbidden of ['..', '--', '__']) {
+            if (evt.currentTarget.value.indexOf(forbidden) !== -1) {
+                valid = false;
+                errors.name.push('Network name cannot contain \'' + forbidden + '\'');
+            }
         }
-        errors.name = _fieldErrors;
-        dispatch(updateForm({name, errors}));
+        const name = evt.currentTarget.value.toLowerCase();
+        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
+            valid = false;
+            errors.name.push('Network name contains forbidden characters');
+        }
+        if (Object.keys(proxies).indexOf(name) !== -1) {
+            valid = false;
+            errors.name.push('Network name exists already');
+        }
+
+        if (valid) {
+            delete errors.name;
+        }
+        dispatch(updateForm({errors, valid, name}));
     }
 
     onConfigChange = async (code) => {
@@ -115,9 +129,14 @@ export class BaseProxyForm extends React.PureComponent {
                       value={name || ""}
                       onChange={this.onChange}
                       placeholder="Enter proxy name" />
-                    {(errors.name && errors.name.length > 0) &&
-                     <div>Errors! {errors.name}</div>
-                    }
+                    {(errors.name || []).map((e, i) => {
+                        return (
+                            <Alert
+                              className="p-1 mt-2 mb-2"
+                              color="danger"
+                              key={i}>{e}</Alert>
+                        );
+                    })}
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>
@@ -156,6 +175,8 @@ export class BaseProxyForm extends React.PureComponent {
 const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
+        proxies: state.proxy.value,
+        meta: state.meta.value,
     };
 }
 
