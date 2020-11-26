@@ -1,175 +1,79 @@
-
-import re
-from collections import OrderedDict
-
 import attr
 
-from exceptions import ValidationError
+
+@attr.s(repr=False, slots=True, hash=True)
+class _LengthValidator(object):
+    length = attr.ib()
+
+    def __call__(self, inst, attr, value):
+        """
+        We use a callable class to be able to change the ``__repr__``.
+        """
+        if self.length.startswith('>'):
+            if not len(value) > int(self.length.strip('>')):
+                raise TypeError(
+                    "'{name}' must be longer than {length!r} (got {value!r} that is a "
+                    "{actual!r}).".format(
+                        name=attr.name,
+                        length=self.length.strip('>'),
+                        actual=value.__class__,
+                        value=value,
+                    ),
+                    attr,
+                    self.length,
+                    value)
+
+        if self.length.startswith('<'):
+            if not len(value) < int(self.length.strip('<')):
+                raise TypeError(
+                    "length of '{name}' must be less than {length!r} (got {value!r} that is a "
+                    "{actual!r}).".format(
+                        name=attr.name,
+                        length=self.length.strip('<'),
+                        actual=len(value),
+                        value=value,
+                    ),
+                    attr,
+                    self.length,
+                    value)
+
+    def __repr__(self):
+        return "<instance_of validator for length {length!r}>".format(
+            length=self.length
+        )
 
 
-# this will give total 20, 10 per proxies/services
-MAX_NETWORK_CONNECTIONS = 10
+def has_length(length):
+    return _LengthValidator(length)
 
 
-# Request validators
-# ------------------
-#
-# These are purely schematic validators, eg they dont check for the existence or uniqueness of names
-#
-# Although the ui will do some pre-validation in the forms, there still needs to be some tests
-# for validation beyond what is done here.
-#
+@attr.s(repr=False, slots=True, hash=True)
+class _MembersValidator(object):
+    members = attr.ib()
+
+    def __call__(self, inst, attr, value):
+        """
+        We use a callable class to be able to change the ``__repr__``.
+        """
+        for member in value:
+            if not self.members(member):
+                raise MembersError(
+                    "'{name}' member did not match `{members}` (got {value!r} that is a "
+                    "{actual!r}).".format(
+                        name=attr.name,
+                        members=members,
+                        actual=value.__class__,
+                        value=value,
+                    ),
+                    attr,
+                    self.members,
+                    value)
+
+    def __repr__(self):
+        return "<instance_of validator for members {members!r}>".format(
+            members=self.members
+        )
 
 
-@attr.s
-class AddNetworkValidator(object):
-    match_regex = re.compile(r"[A-Za-z0-9\-\._]+")
-
-    name = attr.ib()
-    proxies = attr.ib(default=[])
-    services = attr.ib(default=[])
-
-    @name.validator
-    def check_name(self, attribute, value):
-        if len(value) > 32:
-            raise ValidationError(
-                'name',
-                'Name should be no more than 32 chars')
-        matched = self.match_regex.fullmatch(value)
-        if not matched:
-            raise ValidationError(
-                'name',
-                'Name should only contain a-Z, 0-9, `_`, `-`, and `.`')
-        invalid_double_patterns = ['.', '_', '-']
-        for char in invalid_double_patterns:
-            if char * 2 in value:
-                raise ValidationError(
-                    'name',
-                    'Name should not have `_`, `-`, or `.` repeated in sequence.')
-
-    @proxies.validator
-    def check_proxies(self, attribute, value):
-        if len(value) > MAX_NETWORK_CONNECTIONS:
-            raise ValidationError(
-                'proxies',
-                f'No more than {MAX_NETWORK_CONNECTIONS} connections from a network to a proxy')
-        if any(type(item) != str for item in value):
-            raise ValidationError(
-                'proxies',
-                f'Invalid proxy network configuration')
-
-    @services.validator
-    def check_services(self, attribute, value):
-        if len(value) > MAX_NETWORK_CONNECTIONS:
-            raise ValidationError(
-                'services',
-                f'No more than {MAX_NETWORK_CONNECTIONS} connections from a network to a proxy')
-        if any(type(item) != str  for item in value):
-            raise ValidationError(
-                'services',
-                f'Invalid service network configuration')
-
-
-@attr.s
-class EditNetworkValidator(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars for uuid
-    id = attr.ib()
-
-    # v: length
-    # v: proxy dicts
-    proxies = attr.ib(default=[])
-
-    # v: length
-    # v: service dicts
-    services = attr.ib(default=[])
-
-
-@attr.s
-class AddProxyValidator(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
-
-    # v: exists
-    # v: length
-    # v: valid yaml
-    # v: valid envoy config ?
-    configuration = attr.ib()
-
-    # v: length
-    # v: port_mapping dicts
-    # v: mapping to/from are in valid ranges
-    port_mappings = attr.ib(default=[])
-
-    # v: length
-    # v: valid keys
-    # v: length of values
-    certs = attr.ib(default=OrderedDict())
-
-    # v: length
-    # v: valid keys
-    # v: length of values
-    binaries = attr.ib(default=OrderedDict())
-
-    # v: option/s
-    logging = attr.ib(default=OrderedDict())
-
-
-@attr.s
-class AddServiceValidator(object):
-
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
-
-    # v: exists
-    # v: length and length of values
-    # v: valid chars
-    service_type = attr.ib()
-
-    # v: length
-    configuration = attr.ib(default='')
-
-    # v: length
-    # v: valid keys (length, chars)
-    # v: valid values (length)
-    env = attr.ib(default=OrderedDict())
-
-
-@attr.s
-class DeleteServiceValidator(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
-
-
-@attr.s
-class DeleteNetworkValidator(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
-
-
-@attr.s
-class DeleteProxyValidator(object):
-
-    # v: exists
-    # v: length
-    # v: valid chars a-Z_-.
-    # v: no double ^^
-    name = attr.ib()
+def has_members(members):
+    return _MembersValidator(members)

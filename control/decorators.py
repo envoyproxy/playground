@@ -9,14 +9,14 @@ from exceptions import ValidationError
 from request import PlaygroundRequest
 
 
-def api(original_fun=None, validator=None):
+def api(original_fun=None, attribs=None):
 
     def _api(fun):
 
         @wraps(fun)
         async def wrapped_fun(request):
-            if validator:
-                request = PlaygroundRequest(request, validator=validator)
+            if attribs:
+                request = PlaygroundRequest(request, attribs=attribs)
                 try:
                     await request.load_data()
                 except ValidationError as e:
@@ -25,6 +25,14 @@ def api(original_fun=None, validator=None):
                         reason="Invalid request data",
                         body=errors,
                         content_type='application/json')
+
+                except TypeError as e:
+                    errors = json.dumps(dict(errors={e.args[1].name: e.args[0]}))
+                    return web.HTTPBadRequest(
+                        reason="Invalid request data",
+                        body=errors,
+                        content_type='application/json')
+
                 return await fun(request)
             return await fun(PlaygroundRequest(request))
         return wrapped_fun
