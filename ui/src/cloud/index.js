@@ -10,6 +10,7 @@ import CloudLogo from '../images/cloud.svg';
 import EnvoyLogo from '../images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
+import {Group, Text, Tag, Label} from 'react-konva';
 
 import {updateIcons} from '../app/store';
 
@@ -24,26 +25,49 @@ class ResourceImage extends React.Component {
             networks, proxies, services, store,
             icon, name, dispatch, ...props} = this.props;
         const {x, y} = this.state;
+        const parts = name.split(':');
+        const service_name = parts.pop();
+        const service_type = parts.pop();
+        const resource = service_type + ': ' + service_name;
         return (
-            <KonvaImage
-              {...props}
-              image={icon}
-              x={x || startX}
-              y={y || startY}
-              draggable
-              width={50}
-              height={50}
-              onDragStart={() => {
-                  this.setState({
-                      isDragging: true
-                  });
-              }}
-              onDragEnd={async e => {
-                  const resources = {};
-                  resources[name] = [e.target.x(), e.target.y()];
+            <Group
+                x={x || startX}
+                y={y || startY}
+                draggable
+                width={50}
+                height={50}
+                onDragStart={() => {
+                    this.setState({
+                        isDragging: true
+                    });
+                }}
+                onDragEnd={async e => {
+                    const resources = {};
+                    resources[name] = [e.target.x(), e.target.y()];
                   await dispatch(updateIcons({networks, proxies, services, resources}));
-              }}
-            />);
+                }}>
+              <KonvaImage
+                {...props}
+                image={icon}
+                width={50}
+                height={50}
+              />
+              <Label x={-10} y={30}>
+                <Tag
+                  pointerWidth={10}
+                  stroke="#ccc"
+                  fill="#f3f296"
+                  opacity={0.9} />
+                <Text
+                  y={50}
+                  x={5}
+                  fontSize={18}
+                  text={resource}
+                  fill="#0a0a0a"
+                  padding={5}
+                  fontSize={12} />
+              </Label>
+            </Group>);
     };
 }
 
