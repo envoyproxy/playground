@@ -23,10 +23,6 @@ import {ActionRemove} from '../shared/actions';
 // VALIDATION REQUIRED
 //  - config:
 //      - not too long
-//  - name
-//      - is set
-//      - valid chars, not too long/short
-//      - unique
 //  - service_type
 //      - is set
 //  - env key

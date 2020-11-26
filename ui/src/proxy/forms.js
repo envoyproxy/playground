@@ -35,10 +35,6 @@ const code =
 //      - valid yaml
 //      - not too long, and not too short
 //      - ideally valid envoy config
-//  - name
-//      - is set
-//      - valid chars, not too long/short
-//      - unique
 //  - certs
 //      - number of files
 //      - length of each file
