@@ -8,7 +8,7 @@ import aiodocker
 from aiodocker.containers import DockerContainers
 from aiodocker.networks import DockerNetworks
 
-from connectors.docker.events import PlaygroundDockerEvents
+from .events import PlaygroundDockerEvents
 
 
 class PlaygroundDockerClient(object):

@@ -12,7 +12,7 @@ from aiohttp.web import Request, Response
 
 from aiodocker.exceptions import DockerError
 
-from connectors.docker.client import PlaygroundDockerClient
+from .connectors.docker.client import PlaygroundDockerClient
 
 from decorators import api, method_decorator
 from request import PlaygroundRequest
