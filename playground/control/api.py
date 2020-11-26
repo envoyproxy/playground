@@ -17,6 +17,9 @@ from .connectors.docker.client import PlaygroundDockerClient
 from .decorators import api, method_decorator
 from .request import PlaygroundRequest
 from .attribs import (
+    MIN_NAME_LENGTH, MAX_NAME_LENGTH,
+    MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
+    MAX_NETWORK_CONNECTIONS,
     AddNetworkAttribs, DeleteNetworkAttribs, EditNetworkAttribs,
     AddProxyAttribs, DeleteProxyAttribs,
     AddServiceAttribs, DeleteServiceAttribs)
@@ -198,7 +201,13 @@ class PlaygroundAPI(object):
             services[service["name"]] = service
 
         return self.dump_json(
-            dict(version=self.client._envoy_image,
+            dict(meta=dict(
+                version=self.client._envoy_image,
+                max_network_connections=MAX_NETWORK_CONNECTIONS,
+                min_name_length=MIN_NAME_LENGTH,
+                max_name_length=MAX_NAME_LENGTH,
+                min_config_length=MIN_CONFIG_LENGTH,
+                max_config_length=MAX_CONFIG_LENGTH),
                  proxies=proxies,
                  services=services,
                  service_types=self.service_types,
