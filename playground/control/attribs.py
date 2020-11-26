@@ -3,7 +3,7 @@ import re
 from collections import OrderedDict
 
 import attr
-from attr.validators import instance_of, matches_re
+from attr.validators import instance_of, matches_re, is_well_formed
 
 from .exceptions import PlaygroundError, ValidationError
 from .validators import has_length, all_members
@@ -18,6 +18,7 @@ MAX_NAME_LENGTH = 32
 
 RE_NOT_NAME = r'(?!.*(__|\.\.|\-\-)+.*$)'
 RE_NAME = r'[a-z]+[a-z0-9\.\-_]*$'
+RE_UUID = r'[0-9a-f]+$'
 
 
 @attr.s(kw_only=True)
@@ -51,10 +52,9 @@ class AddNetworkAttribs(object):
 @attr.s
 class EditNetworkAttribs(object):
 
-    # v: exists
-    # v: length
-    # v: valid chars for uuid
-    id = attr.ib()
+    id = attr.ib(
+        has_length(10),
+        matches_re(RE_UUID))
 
     # v: length
     # v: proxy dicts
@@ -78,11 +78,12 @@ class AddProxyAttribs(object):
             matches_re(RE_NAME),
             matches_re(RE_NOT_NAME, func=re.match),])
 
-    # v: exists
-    # v: length
-    # v: valid yaml
-    # v: valid envoy config ?
-    configuration = attr.ib()
+    configuration = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_CONFIG_LENGTH}'),
+            has_length(f'<={MAX_CONFIG_LENGTH}'),
+            is_well_formed('yaml')])
 
     # v: length
     # v: port_mapping dicts
