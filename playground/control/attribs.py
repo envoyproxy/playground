@@ -46,6 +46,7 @@ class AddNetworkAttribs(object):
 
     async def validate(self, api):
         networks = await api.client.list_networks()
+        # todo: validate that proxy/service names are valid
         for network in networks:
             if network['name'] == self.name:
                 raise PlaygroundError(f'A network with the name {self.name} already exists.', self)

@@ -69,7 +69,11 @@ export class ModalParts extends React.PureComponent {
         const {
             modal: Content, onSubmit, onUpdate, form,
             dispatch, action, title, status, icon} = this.props;
-        const {name, edit=false} = form;
+        let disabled = false;
+        const {name, errors={}, edit=false, valid, validation} = form;
+        if (!valid || validation || Object.keys(errors).length > 0) {
+            disabled = true;
+        }
         return (
             <>
               <ModalHeader
@@ -100,6 +104,7 @@ export class ModalParts extends React.PureComponent {
               <ModalFooter className="bg-light">
                 <PlaygroundModalFooter
                   action={action}
+                  disabled={disabled}
                   onSubmit={onSubmit}
                   onClose={this.close} />
               </ModalFooter>

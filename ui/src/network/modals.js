@@ -44,19 +44,25 @@ const NetworkCreating = connect(mapStateToProps)(BaseNetworkCreating);
 export {NetworkCreating};
 
 
-export class NetworkModal extends React.PureComponent {
+export class BaseNetworkModal extends React.PureComponent {
     static propTypes = exact({
         status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
     });
 
     get tabs () {
-        const {onUpdate} = this.props;
-        return {
+        const {form, onUpdate, proxies, services} = this.props;
+        const {name='', errors={}} = form;
+        const tabs = {
             Network: <NetworkForm />,
-            Proxies: <NetworkProxiesForm onUpdate={onUpdate} />,
-            Services: <NetworkServicesForm onUpdate={onUpdate} />,
         };
+        if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
+            tabs.Proxies = <NetworkProxiesForm onUpdate={onUpdate} />;
+        }
+        if ((name.length > 2 && !errors.name) && Object.keys(services).length > 0){
+            tabs.Services = <NetworkServicesForm onUpdate={onUpdate} />;
+        }
+        return tabs;
     }
 
     render () {
@@ -92,3 +98,15 @@ export class NetworkModal extends React.PureComponent {
         );
     }
 }
+
+
+
+const mapModalStateToProps = function(state, other) {
+    return {
+        proxies: state.proxy.value,
+        services: state.service.value,
+    };
+}
+
+const NetworkModal = connect(mapModalStateToProps)(BaseNetworkModal);
+export {NetworkModal};

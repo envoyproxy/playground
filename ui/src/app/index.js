@@ -24,8 +24,9 @@ export default class App extends React.PureComponent {
     async componentDidMount () {
         new PlaygroundSocket(socketAddress, store);
         const data = await api.get("/resources");
+        const {meta} = data;
         const initialUpdates = [
-            updateMeta({version: data.version}),
+            updateMeta(meta),
             updateServiceTypes(data),
             updateServices(data),
             updateProxies(data),

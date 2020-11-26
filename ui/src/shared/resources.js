@@ -27,10 +27,10 @@ class BaseResources extends React.PureComponent {
         modals: PropTypes.object.isRequired,
     });
 
-    addResource = (evt) => {
+    addResource = async (evt) => {
         // open the add resource modal
         const {dispatch, api} = this.props;
-        dispatch(updateUI({modal: api}));
+        await dispatch(updateUI({modal: api}));
     };
 
     createResource = async () => {
@@ -46,8 +46,11 @@ class BaseResources extends React.PureComponent {
 
     deleteResource = async (name) => {
         // send API request to delete resource
-        const {api} = this.props;
-        await this.context.post('/' + api + '/delete', {name});
+        const {api, dispatch} = this.props;
+        const {errors} = await this.context.post('/' + api + '/delete', {name});
+        if (errors) {
+            await dispatch(updateForm({validation: errors}));
+        }
     };
 
     editResource = async (evt) => {
@@ -57,8 +60,12 @@ class BaseResources extends React.PureComponent {
     };
 
     updateResource = async (data) => {
-        const {api} = this.props;
-        await this.context.post('/' + api + '/edit', data);
+        const {api, dispatch} = this.props;
+        const {name, ...update} = data;
+        const {errors} = await this.context.post('/' + api + '/edit', update);
+        if (errors) {
+            await dispatch(updateForm({validation: errors}));
+        }
     };
 
     componentDidMount () {
