@@ -249,6 +249,10 @@ const formSlice = createSlice({
     reducers: {
         updateForm: (state, action) => {
             delete state.value['validation'];
+            const {status} = state.value;
+            if (status && status !== undefined && action.payload.status === 'initializing') {
+                delete action.payload['status'];
+            }
             state.value = {...state.value, ...action.payload};
         },
         clearForm: (state, action) => {

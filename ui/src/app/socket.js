@@ -30,7 +30,6 @@ export default class PlaygroundSocket {
     onMessage = async (event) => {
         const {dispatch} = this.store;
         const eventData = JSON.parse(event.data);
-        // console.log("INCOMING", eventData);
         if (eventData.type === "network") {
             if (eventData.action === "destroy") {
                 await dispatch(removeNetwork(eventData.id));
