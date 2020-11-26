@@ -192,15 +192,16 @@ class BaseNetworkForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form} = this.props;
+        const {dispatch, form, meta} = this.props;
+        const {max_name_length, min_name_length} = meta;
         let valid = true;
         const errors = {name: []};
-        if (evt.currentTarget.value.length < 3) {
+        if (evt.currentTarget.value.length < parseInt(min_name_length)) {
             valid = false;
         }
-        if (evt.currentTarget.value.length > 32) {
+        if (evt.currentTarget.value.length > parseInt(max_name_length)) {
             valid = false;
-            errors.name.push('Network name too long, maximum 32 chars.');
+            errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
         }
         for (const forbidden of ['..', '--', '__']) {
             if (evt.currentTarget.value.indexOf(forbidden) !== -1) {
@@ -208,10 +209,15 @@ class BaseNetworkForm extends React.PureComponent {
                 errors.name.push('Network name cannot contain \'' + forbidden + '\'');
             }
         }
+        const name = evt.currentTarget.value.toLowerCase();
+        if (!name.match(/[a-z]+[a-z0-9\.\-_]*$/)) {
+            valid = false;
+            errors.name.push('Network name contains forbidden characters');
+        }
         if (valid) {
             delete errors.name;
         }
-        dispatch(updateForm({errors,valid, name: evt.currentTarget.value.toLowerCase()}));
+        dispatch(updateForm({errors, valid, name}));
     }
 
     render () {
@@ -257,6 +263,7 @@ class BaseNetworkForm extends React.PureComponent {
 const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
+        meta: state.meta.value,
     };
 }
 
