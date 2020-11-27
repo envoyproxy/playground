@@ -39,13 +39,6 @@ class PlaygroundAPI(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
-    # todo: these are repeated elsewhere, factor out
-    def _json_loader(self, content):
-        return json.loads(content, object_pairs_hook=OrderedDict)
-
-    def _json_dumper(self, content):
-        return json.dumps(content)
-
     async def clear(self, request: Request) -> Response:
         resources = (
             (self.client.list_services, self.client.delete_service),
@@ -54,7 +47,7 @@ class PlaygroundAPI(object):
         for _resources, remove in resources:
             for resource in await _resources():
                 await remove(resource['name'])
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api)
     async def dump_resources(self, request: PlaygroundRequest) -> Response:
@@ -70,7 +63,7 @@ class PlaygroundAPI(object):
         for service in await self.client.list_services():
             services[service["name"]] = service
 
-        return self.json_dump(
+        return web.json_response(
             dict(meta=dict(
                 version=self.client._envoy_image,
                 max_network_connections=MAX_NETWORK_CONNECTIONS,
@@ -81,7 +74,8 @@ class PlaygroundAPI(object):
                  proxies=proxies,
                  services=services,
                  service_types=self.service_types,
-                 networks=networks))
+                 networks=networks),
+            dumps=json.dumps)
 
     async def events(self, request: Request) -> None:
         # todo: dont tie event handling to socket connection
@@ -263,12 +257,6 @@ class PlaygroundAPI(object):
                  name=event["Actor"]["Attributes"]["name"].split('__')[2],
                  status='creating'))
 
-    def json_dump(self, content):
-        return web.json_response(content, dumps=self._json_dumper)
-
-    async def json_load(self, request):
-        return await request.json(loads=self._json_loader)
-
     @method_decorator(api(attribs=AddNetworkAttribs))
     async def network_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
@@ -276,13 +264,13 @@ class PlaygroundAPI(object):
             request.data.name,
             proxies=request.data.proxies,
             services=request.data.services)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=DeleteNetworkAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.client.delete_network(request.data.name)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=EditNetworkAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> Response:
@@ -291,7 +279,7 @@ class PlaygroundAPI(object):
             request.data.id,
             proxies=request.data.proxies,
             services=request.data.services)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def populate_volume(self, container_type, name, mount, files):
         # create volume
@@ -347,16 +335,16 @@ class PlaygroundAPI(object):
             mounts,
             mappings,
             request.data.logging)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=DeleteProxyAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.client.delete_proxy(request.data.name)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def publish(self, ws, event: dict) -> None:
-        await ws.send_json(event, dumps=self._json_dumper)
+        await ws.send_json(event, dumps=json.dumps)
 
     @method_decorator(api(attribs=AddServiceAttribs))
     async def service_add(self, request: PlaygroundRequest) -> Response:
@@ -384,10 +372,10 @@ class PlaygroundAPI(object):
                     {os.path.basename(config_path): config}))
         data['environment'] = request.data.env
         await self.client.create_service(**data)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=DeleteServiceAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.client.delete_service(request.data.name)
-        return self.json_dump(dict(message="OK"))
+        return web.json_response(dict(message="OK"), dumps=json.dumps)
