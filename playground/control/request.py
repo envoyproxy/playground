@@ -1,6 +1,4 @@
 
-from collections import OrderedDict
-
 import rapidjson as json
 
 

@@ -30,7 +30,7 @@ class PlaygroundAPI(object):
     _services_yaml = "/services.yaml"
 
     def __init__(self):
-        self.client = PlaygroundDockerClient()
+        self.connector = PlaygroundDockerClient()
 
     # todo: use a cached property or somesuch.
     @property
@@ -41,9 +41,9 @@ class PlaygroundAPI(object):
 
     async def clear(self, request: Request) -> Response:
         resources = (
-            (self.client.list_services, self.client.delete_service),
-            (self.client.list_proxies, self.client.delete_proxy),
-            (self.client.list_networks, self.client.delete_network))
+            (self.connector.list_services, self.connector.delete_service),
+            (self.connector.list_proxies, self.connector.delete_proxy),
+            (self.connector.list_networks, self.connector.delete_network))
         for _resources, remove in resources:
             for resource in await _resources():
                 await remove(resource['name'])
@@ -52,20 +52,20 @@ class PlaygroundAPI(object):
     @method_decorator(api)
     async def dump_resources(self, request: PlaygroundRequest) -> Response:
         proxies = OrderedDict()
-        for proxy in await self.client.list_proxies():
+        for proxy in await self.connector.list_proxies():
             proxies[proxy["name"]] = proxy
 
         networks = OrderedDict()
-        for network in await self.client.list_networks():
+        for network in await self.connector.list_networks():
             networks[network["name"]] = network
 
         services = OrderedDict()
-        for service in await self.client.list_services():
+        for service in await self.connector.list_services():
             services[service["name"]] = service
 
         return web.json_response(
             dict(meta=dict(
-                version=self.client._envoy_image,
+                version=self.connector._envoy_image,
                 max_network_connections=MAX_NETWORK_CONNECTIONS,
                 min_name_length=MIN_NAME_LENGTH,
                 max_name_length=MAX_NAME_LENGTH,
@@ -86,7 +86,7 @@ class PlaygroundAPI(object):
             container=functools.partial(self.handle_container, ws),
             network=functools.partial(self.handle_network, ws))
         hashed = str(hash(ws))
-        self.client.events.subscribe(hashed, handler, debug=[])
+        self.connector.events.subscribe(hashed, handler, debug=[])
         try:
             while True:
                 await ws.receive()
@@ -94,7 +94,7 @@ class PlaygroundAPI(object):
             # todo: handle this better ?
             print(e)
         finally:
-            await self.client.events.unsubscribe(hashed)
+            await self.connector.events.unsubscribe(hashed)
 
     async def handle_container(self, ws, event: dict) -> None:
         handlers = ["destroy", "start", "die"]
@@ -120,7 +120,7 @@ class PlaygroundAPI(object):
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        container = await self.client.client.containers.get(event["id"])
+        container = await self.connector.client.containers.get(event["id"])
         try:
             logs = await container.log(stdout=True, stderr=True)
             await container.delete(force=True, v=True)
@@ -156,7 +156,7 @@ class PlaygroundAPI(object):
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        container = await self.client.client.containers.get(event["id"])
+        container = await self.connector.client.containers.get(event["id"])
         ports = container['HostConfig']['PortBindings'] or {}
         port_mappings = [
             {'mapping_from': v[0]['HostPort'],
@@ -189,7 +189,7 @@ class PlaygroundAPI(object):
 
     async def handle_network_connect(self, ws, event: dict) -> None:
         nid = event["Actor"]["ID"]
-        network = await self.client.client.networks.get(nid)
+        network = await self.connector.client.networks.get(nid)
         info = await network.show()
         if "envoy.playground.network" in info["Labels"]:
             name = info["Labels"]["envoy.playground.network"]
@@ -208,7 +208,7 @@ class PlaygroundAPI(object):
     async def handle_network_create(self, ws, event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
-        network = await self.client.client.networks.get(nid)
+        network = await self.connector.client.networks.get(nid)
         info = await network.show()
         name = info["Labels"]["envoy.playground.network"]
         if "envoy.playground.network" not in info["Labels"]:
@@ -230,7 +230,7 @@ class PlaygroundAPI(object):
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
         try:
-            network = await self.client.client.networks.get(nid)
+            network = await self.connector.client.networks.get(nid)
             info = await network.show()
         except DockerError:
             return
@@ -260,7 +260,7 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=AddNetworkAttribs))
     async def network_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        await self.client.create_network(
+        await self.connector.create_network(
             request.data.name,
             proxies=request.data.proxies,
             services=request.data.services)
@@ -269,13 +269,13 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=DeleteNetworkAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        await self.client.delete_network(request.data.name)
+        await self.connector.delete_network(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=EditNetworkAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        await self.client.edit_network(
+        await self.connector.edit_network(
             request.data.id,
             proxies=request.data.proxies,
             services=request.data.services)
@@ -283,11 +283,13 @@ class PlaygroundAPI(object):
 
     async def populate_volume(self, container_type, name, mount, files):
         # create volume
-        volume = await self.client.create_volume(container_type, name, mount)
+        volume = await self.connector.create_volume(
+            container_type, name, mount)
 
         if files:
             # write files into the volume
-            await self.client.write_volume(volume.name, mount, files)
+            await self.connector.write_volume(
+                volume.name, mount, files)
 
         return volume
 
@@ -295,8 +297,8 @@ class PlaygroundAPI(object):
     async def proxy_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         # todo: move client._envoy_image here
-        if not await self.client.image_exists(self.client._envoy_image):
-            await self.client.pull_image(self.client._envoy_image)
+        if not await self.connector.image_exists(self.connector._envoy_image):
+            await self.connector.pull_image(self.connector._envoy_image)
 
         # todo: remove binary/cert prefixes in js
         mappings = [
@@ -326,11 +328,11 @@ class PlaygroundAPI(object):
                     (k, v.split(',')[1])
                     for k, v
                     in request.data.binaries.items())),
-            '/logs': await self.client.create_volume(
+            '/logs': await self.connector.create_volume(
                 'proxy', request.data.name, 'logs')}
 
         # create the proxy
-        await self.client.create_proxy(
+        await self.connector.create_proxy(
             request.data.name,
             mounts,
             mappings,
@@ -340,7 +342,7 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=DeleteProxyAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        await self.client.delete_proxy(request.data.name)
+        await self.connector.delete_proxy(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def publish(self, ws, event: dict) -> None:
@@ -355,8 +357,8 @@ class PlaygroundAPI(object):
         service_config = self.service_types[request.data.service_type]
 
         data['image'] = service_config.get("image")
-        if not await self.client.image_exists(data['image']):
-            await self.client.pull_image(data['image'])
+        if not await self.connector.image_exists(data['image']):
+            await self.connector.pull_image(data['image'])
 
         data['mounts'] = OrderedDict()
         config_path = service_config['labels'].get(
@@ -371,11 +373,11 @@ class PlaygroundAPI(object):
                     'config',
                     {os.path.basename(config_path): config}))
         data['environment'] = request.data.env
-        await self.client.create_service(**data)
+        await self.connector.create_service(**data)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=DeleteServiceAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        await self.client.delete_service(request.data.name)
+        await self.connector.delete_service(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
