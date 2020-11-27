@@ -14,7 +14,7 @@ databases and services.
 ---
 > :smiley: **The playground is currently in alpha development.**
 >
-> It should mostly work and do no harm, but has bugs and possible mem leaks.
+> It should mostly work and do no harm, but may have bugs
 >
 > Contributions/issues are welcome.
 ---
