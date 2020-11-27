@@ -5,7 +5,7 @@ services:
     privileged: true
     build:
       context: ..
-      dockerfile: dev/Dockerfile-playground-control
+      dockerfile: composition/Dockerfile-playground-control
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - ../:/code/
@@ -20,7 +20,7 @@ services:
   ui:
     build:
       context: ..
-      dockerfile: dev/Dockerfile-playground-ui
+      dockerfile: composition/Dockerfile-playground-ui
     ports:
     - 8081:3000
     volumes:
