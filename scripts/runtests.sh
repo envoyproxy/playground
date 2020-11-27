@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-mkdir -p .coverage
+mkdir -p .cache/coverage
 
 
 js_tests () {
@@ -19,7 +19,7 @@ py_tests () {
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose build control
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		--entrypoint /bin/sh \
-		control -c 'pytest --flake8 --cov=. --cov-append --cov-report=xml:coverage/coverage.xml playground/control/tests/*py'
+		control -c 'pytest --ignore-glob=*~ --flake8 --cov=. --cov-report=xml:coverage/coverage.xml tests/*py'
 }
 
 js_tests

@@ -8,9 +8,9 @@ services:
       dockerfile: dev/Dockerfile-playground-control
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - ../playground:/code/playground
+    - ../:/code/
+    - ../.cache/coverage:/code/coverage
     - ../setup.py:/code/setup.py
-    - ../.coverage:/code/control/coverage
     - ../services.yaml:/services.yaml
     - ../services:/services
     ports:
@@ -24,4 +24,4 @@ services:
     - 8081:3000
     volumes:
     - ../ui:/app
-    - ../.coverage:/app/coverage
+    - ../.cache/coverage:/app/coverage
