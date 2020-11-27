@@ -21,7 +21,6 @@ export class PlaygroundModalFooter extends React.PureComponent {
 
     render () {
         const {action, editAction, editClose, edit, onClose, disabled=false, onSubmit} = this.props;
-        console.log('EDIT', edit, editAction, editClose);
         let cancelAction = "Cancel";
         let _action = action;
         if (edit) {
