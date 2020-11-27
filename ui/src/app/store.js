@@ -227,6 +227,7 @@ const networkSlice = createSlice({
             for (const [k, v] of Object.entries(action.payload.networks)) {
                 const {containers=[], ...network} = v;
                 _networks[k] = network;
+                console.log('UPDATE NETWORK', containers);
                 for (const container of containers) {
                     for (const service of Object.values(action.payload.services)) {
                         if (service["id"] === container) {
