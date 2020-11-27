@@ -18,18 +18,32 @@ export class PlaygroundModalFooter extends React.PureComponent {
     });
 
     render () {
-        const {action, onClose, disabled=false, onSubmit} = this.props;
+        const {action, editAction, editClose, edit, onClose, disabled=false, onSubmit} = this.props;
+        console.log('EDIT', edit, editAction, editClose);
+        let cancelAction = "Cancel";
+        let _action = action;
+        if (edit) {
+            if (editClose) {
+                cancelAction = editClose;
+            }
+            if (editAction) {
+                _action = editAction;
+            } else {
+                _action = null;
+            }
+        }
+
         return (
             <>
-              {action &&
+              {_action &&
                <Button
                  color="primary"
                  onClick={onSubmit}
-                 disabled={disabled}>{action}</Button>
+                 disabled={disabled}>{_action}</Button>
               }
               <Button
                 color="secondary"
-                onClick={onClose}>Cancel</Button>
+                onClick={onClose}>{cancelAction}</Button>
             </>);
     }
 }
@@ -67,7 +81,7 @@ export class ModalParts extends React.PureComponent {
 
     render () {
         const {
-            modal: Content, onSubmit, onUpdate, form,
+            modal: Content, onSubmit, onUpdate, form, editAction, editClose,
             dispatch, action, title, status, icon} = this.props;
         let disabled = false;
         const {name, errors={}, edit=false, valid, validation} = form;
@@ -104,6 +118,9 @@ export class ModalParts extends React.PureComponent {
               <ModalFooter className="bg-light">
                 <PlaygroundModalFooter
                   action={action}
+                  edit={edit}
+                  editAction={editAction}
+                  editClose={editClose}
                   disabled={disabled}
                   onSubmit={onSubmit}
                   onClose={this.close} />
