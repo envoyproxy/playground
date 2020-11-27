@@ -63,7 +63,7 @@ class BaseResources extends React.PureComponent {
 
     updateResource = async (data) => {
         const {api, dispatch} = this.props;
-        const {name, ...update} = data;
+        const {name, status, ...update} = data;
         const {errors} = await this.context.post('/' + api + '/edit', update);
         if (errors) {
             await dispatch(updateForm({validation: errors}));
