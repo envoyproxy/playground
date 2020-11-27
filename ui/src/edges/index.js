@@ -74,8 +74,6 @@ export class BaseEdgesContent extends React.PureComponent {
     }
 
     render () {
-        const {ui, proxies} = this.props;
-        const {edges} = ui;
         return (
             <div className="canvas">
               <Stage width={600} height={400}>

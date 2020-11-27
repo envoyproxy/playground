@@ -98,7 +98,7 @@ const UISlice = createSlice({
 
             numOfRows = Math.ceil(proxiesWithEdgesCount / numOfCols);
             const boxWidth = width / numOfCols;
-            const boxHeight = width / numOfRows;
+            const boxHeight = height / numOfRows;
 
             console.log("EDGE BOXES", boxWidth, boxHeight);
 
