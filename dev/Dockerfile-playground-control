@@ -5,3 +5,4 @@ ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
 ENTRYPOINT ["./dev/entrypoint.sh"]
+CMD ["playground"]

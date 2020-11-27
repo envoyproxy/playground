@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 
-pip install -e .
-pip install -e .[test]
-exec playground
+pip install -q -e .
+pip install -q -e '.[test]'
+
+exec "$@"

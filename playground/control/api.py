@@ -149,7 +149,8 @@ class PlaygroundAPI(object):
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
-                 name=event["Actor"]["Attributes"]["name"].replace(f'envoy__playground__{resource}__', ''),
+                 name=event["Actor"]["Attributes"]["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
                  status=event["status"]))
 
     async def handle_container_start(self, ws, event: dict) -> None:

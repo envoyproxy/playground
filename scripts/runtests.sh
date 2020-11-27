@@ -40,12 +40,8 @@ js_tests () {
 py_tests () {
     # Python
     _docker_compose build control
-    _docker_compose run \
-		--entrypoint /bin/sh \
-		control -c 'pytest'
-    _docker_compose run \
-		--entrypoint /bin/sh \
-		control -c 'flake8 .'
+    _docker_compose run control pytest
+    _docker_compose run control flake8 .
 }
 
 sh_tests () {
