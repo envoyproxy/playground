@@ -4,6 +4,4 @@ RUN mkdir /code
 ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
-RUN pip install -e . \
-	pip install -e .[test]
-ENTRYPOINT ["playground"]
+ENTRYPOINT ["./dev/entrypoint.sh"]
