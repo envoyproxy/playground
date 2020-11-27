@@ -362,7 +362,10 @@ class PlaygroundDockerClient(object):
                     {'mapping_from': m.get('PublicPort'),
                      'mapping_to': m.get('PrivatePort')}
                     for m
-                    in resource['Ports']]
+                    in resource['Ports']
+                    if m.get('PublicPort')]
+                if not _resource['port_mappings']:
+                    del _resource['port_mappings']
 
             if name == "service":
                 _resource['image'] = resource['Image']
@@ -372,10 +375,11 @@ class PlaygroundDockerClient(object):
             if name == "network":
                 _actual_network = await resources.get(resource["Id"])
                 info = await _actual_network.show()
-                _resource["containers"] = [
-                    container[:10]
-                    for container
-                    in info["Containers"].keys()]
+                if info["Containers"]:
+                    _resource["containers"] = [
+                        container[:10]
+                        for container
+                        in info["Containers"].keys()]
 
             _resources.append(_resource)
         return _resources

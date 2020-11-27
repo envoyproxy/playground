@@ -51,23 +51,28 @@ test:
 dev-control: clean
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--rm \
 		-p 8000:8080 \
 			control
 
 dev-control-sh:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--rm \
 		--entrypoint /bin/bash \
 			control
 
 dev-ui:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--rm \
 		-p 5555:3000 \
 			ui yarn start
 
 dev-ui-test:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--rm \
 		ui yarn test
 
 dev-ui-sh:
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--rm \
 		ui sh

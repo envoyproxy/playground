@@ -227,17 +227,17 @@ const networkSlice = createSlice({
             for (const [k, v] of Object.entries(action.payload.networks)) {
                 const {containers=[], ...network} = v;
                 _networks[k] = network;
-                _networks[k].services = [];
-                _networks[k].proxies = [];
                 for (const container of containers) {
                     for (const service of Object.values(action.payload.services)) {
                         if (service["id"] === container) {
+                            _networks[k].services = _networks[k].services || [];
                             _networks[k].services.push(service["name"]);
                             break;
                         }
                     }
                     for (const proxy of Object.values(action.payload.proxies)) {
                         if (proxy["id"] === container) {
+                            _networks[k].proxies = _networks[k].proxies || [];
                             _networks[k].proxies.push(proxy["name"]);
                             break;
                         }
