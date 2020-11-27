@@ -41,7 +41,7 @@ class PlaygroundDockerClient(object):
                 name,
                 environment,
                 mounts),
-            name=name)
+            name="envoy__playground__service__%s" % name)
         await container.start()
 
     async def create_proxy(
@@ -57,7 +57,7 @@ class PlaygroundDockerClient(object):
                 name,
                 mounts,
                 mappings),
-            name=name)
+            name="envoy__playground__proxy__%s" % name)
         await container.start()
 
     async def create_network(
@@ -97,9 +97,13 @@ class PlaygroundDockerClient(object):
                     await _network.delete()
 
     async def delete_proxy(self, name: str) -> None:
+        # todo: use uuid
         for container in await self.client.containers.list():
             if "envoy.playground.proxy" in container["Labels"]:
-                if "/%s" % name in container["Names"]:
+                name_matches = (
+                    "/envoy__playground__proxy__%s" % name
+                    in container["Names"])
+                if name_matches:
                     volumes = [
                         v['Name']
                         for v in container['Mounts']]
@@ -121,7 +125,10 @@ class PlaygroundDockerClient(object):
     async def delete_service(self, name: str) -> None:
         for container in await self.client.containers.list():
             if "envoy.playground.service" in container["Labels"]:
-                if "/%s" % name in container["Names"]:
+                name_matches = (
+                    "/envoy__playground__service__%s" % name
+                    in container["Names"])
+                if name_matches:
                     volumes = [
                         v['Name']
                         for v in container['Mounts']]
@@ -148,7 +155,9 @@ class PlaygroundDockerClient(object):
         network = await self.client.networks.get(id)
         info = await network.show()
         containers = {
-            container['Name']
+            container['Name'].replace(
+                'envoy__playground__service__', '').replace(
+                    'envoy__playground__proxy__', '')
             for container
             in info["Containers"].values()}
         expected = set(proxies) | set(services)

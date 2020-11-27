@@ -134,7 +134,8 @@ class PlaygroundAPI(object):
                  resource=resource,
                  id=event["id"][:10],
                  logs=logs,
-                 name=event["Actor"]["Attributes"]["name"],
+                 name=event["Actor"]["Attributes"]["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
                  status=event["status"]))
 
     async def handle_container_destroy(self, ws, event: dict) -> None:
@@ -148,7 +149,8 @@ class PlaygroundAPI(object):
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
-                 name=event["Actor"]["Attributes"]["name"],
+                 name=event["Actor"]["Attributes"]["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
                  status=event["status"]))
 
     async def handle_container_start(self, ws, event: dict) -> None:
@@ -169,7 +171,8 @@ class PlaygroundAPI(object):
                  resource=resource,
                  id=event["id"][:10],
                  image=event['Actor']['Attributes']['image'],
-                 name=event["Actor"]["Attributes"]["name"],
+                 name=event["Actor"]["Attributes"]["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
                  port_mappings=port_mappings,
                  status=event["status"]))
 

@@ -16,8 +16,6 @@ class CloudImage extends React.Component {
 
     render () {
         const {icon, name, proxy, x, y, ...props} = this.props;
-        console.log("EDGE ICON", name, proxy);
-
         return (
             <Group
               x={x}
