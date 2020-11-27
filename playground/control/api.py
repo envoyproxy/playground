@@ -1,4 +1,4 @@
-import asyncio
+
 import base64
 import functools
 import os
@@ -361,26 +361,27 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=AddServiceAttribs))
     async def service_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        data = dict(name=request.data.name, service_type=request.data.service_type)
+        data = dict(
+            name=request.data.name,
+            service_type=request.data.service_type)
         service_config = self.service_types[request.data.service_type]
 
         data['image'] = service_config.get("image")
         if not await self.client.image_exists(data['image']):
             await self.client.pull_image(data['image'])
 
-        config_path = service_config['labels'].get('envoy.playground.config.path')
+        data['mounts'] = OrderedDict()
+        config_path = service_config['labels'].get(
+            'envoy.playground.config.path')
         if config_path:
-            config_dir = os.path.dirname(config_path)
-            config_fname = os.path.basename(config_path)
-            data['mounts'] = OrderedDict(
-                ((config_dir, await self.populate_volume(
+            config = base64.b64encode(
+                request.data.configuration.encode('utf-8')).decode()
+            data['mounts'][os.path.dirname(config_path)] = (
+                await self.populate_volume(
                     'service',
                     request.data.name,
                     'config',
-                    {config_fname: base64.b64encode(
-                        request.data.configuration.encode('utf-8')).decode()})), ))
-        else:
-            data['mounts'] = OrderedDict()
+                    {os.path.basename(config_path): config}))
         data['environment'] = request.data.env
         await self.client.create_service(**data)
         return self.json_dump(dict(message="OK"))

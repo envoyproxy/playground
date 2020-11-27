@@ -15,16 +15,20 @@ class _LengthValidator(object):
         "'{name}' must be longer than {length!r} (got {value!r} with length "
         "{actual!r}).")
     _err_gte = (
-        "'{name}' must be longer or equal to {length!r} (got {value!r} with length "
+        "'{name}' must be longer or equal to {length!r} "
+        "(got {value!r} with length "
         "{actual!r}).")
     _err_lt = (
-        "length of '{name}' must be less than {length!r} (got {value!r} with length "
+        "length of '{name}' must be less than {length!r} "
+        "(got {value!r} with length "
         "{actual!r}).")
     _err_lte = (
-        "length of '{name}' must be less than or equal to {length!r} (got {value!r} with length "
+        "length of '{name}' must be less than or equal to {length!r} "
+        "(got {value!r} with length "
         "{actual!r}).")
     _err_eq = (
-        "length of '{name}' must be equal to {length!r} (got {value!r} with length "
+        "length of '{name}' must be equal to {length!r} "
+        "(got {value!r} with length "
         "{actual!r}).")
 
     def __call__(self, inst, attr, value):
@@ -54,23 +58,43 @@ class _LengthValidator(object):
 
     def _gt(self, inst, attr, value):
         if not len(value) > int(self.length.strip('>')):
-            raise self._type_error(self._err_gt, attr, value, self.length.strip('>'))
+            raise self._type_error(
+                self._err_gt,
+                attr,
+                value,
+                self.length.strip('>'))
 
     def _gte(self, inst, attr, value):
         if not len(value) >= int(self.length.strip('>=')):
-            raise self._type_error(self._err_gte, attr, value, self.length.strip('>='))
+            raise self._type_error(
+                self._err_gte,
+                attr,
+                value,
+                self.length.strip('>='))
 
     def _lt(self, inst, attr, value):
         if not len(value) < int(self.length.strip('<')):
-            raise self._type_error(self._err_lt, attr, value, self.length.strip('<'))
+            raise self._type_error(
+                self._err_lt,
+                attr,
+                value,
+                self.length.strip('<'))
 
     def _lte(self, inst, attr, value):
         if not len(value) <= int(self.length.strip('<=')):
-            raise self._type_error(self._err_lte, attr, value, self.length.strip('<='))
+            raise self._type_error(
+                self._err_lte,
+                attr,
+                value,
+                self.length.strip('<='))
 
     def _eq(self, inst, attr, value):
         if not len(value) == int(self.length):
-            raise self._type_error(self._err_eq, attr, value, self.length)
+            raise self._type_error(
+                self._err_eq,
+                attr,
+                value,
+                self.length)
 
 
 def has_length(length):
@@ -91,10 +115,11 @@ class _AllMembersValidator(object):
         for member in value:
             if not self.members(member):
                 raise TypeError(
-                    "'{name}' member did not match `{members}` (got {value!r} that is a "
+                    "'{name}' member did not match `{members}` "
+                    "(got {value!r} that is a "
                     "{actual!r}).".format(
                         name=attr.name,
-                        members=members,
+                        members=value,
                         actual=value.__class__,
                         value=value,
                     ),
@@ -121,7 +146,7 @@ class _WellFormedStringValidator(object):
     def valid_yaml(self, inst, attr, value):
         try:
             yaml.safe_load(value)
-        except yaml.parser.ParserError as e:
+        except yaml.parser.ParserError:
             raise TypeError(
                 "'{name}' Unable to parse as {string_type}".format(
                     name=attr.name,
