@@ -15,6 +15,8 @@ export class PlaygroundModalFooter extends React.PureComponent {
         onClose: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
         disabled: PropTypes.bool,
+        editClose: PropTypes.string,
+        editAction: PropTypes.string,
     });
 
     render () {
