@@ -16,16 +16,13 @@ endpoints = (
     ("/resources", api.dump_resources),
     ("/events", api.events),
     ("/clear", api.clear),
-    ("/network/get", api.get_network, "POST"),
-    ("/network/add", api.add_network, "POST"),
-    ("/network/edit", api.edit_network, "POST"),
-    ("/network/delete", api.delete_network, "POST"),
-    ("/proxy/get", api.get_proxy, "POST"),
-    ("/proxy/add", api.add_proxy, "POST"),
-    ("/proxy/delete", api.delete_proxy, "POST"),
-    ("/service/get", api.get_service, "POST"),
-    ("/service/add", api.add_service, "POST"),
-    ("/service/delete", api.delete_service, "POST"))
+    ("/network/add", api.network_add, "POST"),
+    ("/network/edit", api.network_edit, "POST"),
+    ("/network/delete", api.network_delete, "POST"),
+    ("/proxy/add", api.proxy_add, "POST"),
+    ("/proxy/delete", api.proxy_delete, "POST"),
+    ("/service/add", api.service_add, "POST"),
+    ("/service/delete", api.service_delete, "POST"))
 
 
 async def root_handler(request):
