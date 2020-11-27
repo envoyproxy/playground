@@ -41,7 +41,7 @@ You can run the playground directly with Docker.
 $ docker run -d --rm \
 	--privileged \
 	-v /var/run/docker.sock:/var/run/docker.sock \
-	phlax/envoy-playground:0.0.4-alpha
+	phlax/envoy-playground:0.0.5-alpha
 ```
 
 You can stop the playground with.
