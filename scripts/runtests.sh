@@ -22,5 +22,5 @@ py_tests () {
 		control -c 'pytest'
 }
 
-# js_tests
+js_tests
 py_tests
