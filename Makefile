@@ -4,6 +4,8 @@ SHELL := /bin/bash
 
 export PLAYGROUND_VERSION=0.0.5-alpha
 
+.PHONY: coverage
+
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") || :
 
