@@ -162,14 +162,20 @@ const UISlice = createSlice({
             }
             for (const [k, v] of Object.entries(networks)) {
                 for(const service of v.services || []) {
+                    if (!services[service]) {
+                        continue;
+                    }
                     connections.push([
                         ...resources['network:' + k].map(_v => _v + 25),
                         ...resources['service:' + services[service].service_type + ':' + service].map(_v => _v + 25)]);
                 }
                 for(const proxy of v.proxies || []) {
-                        connections.push([
-                            ...resources['network:' + k].map(_v => _v + 25),
-                            ...resources['proxy:' + proxy].map(_v => _v + 25)]);
+                    if (!proxies[proxy]) {
+                        continue;
+                    }
+                    connections.push([
+                        ...resources['network:' + k].map(_v => _v + 25),
+                        ...resources['proxy:' + proxy].map(_v => _v + 25)]);
                 }
 
             }
