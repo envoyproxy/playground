@@ -46,7 +46,7 @@ exec:
 	docker exec -it --workdir /code envoy-playground bash
 
 test:
-	./scripts/runtests.sh
+	./bin/runtests.sh
 
 dev-control: clean
 	COMPOSE_FILE=./dev/docker-compose.yaml docker-compose build control
