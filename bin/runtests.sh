@@ -20,7 +20,7 @@ trap trap_errors ERR
 trap exit 1 INT
 
 _docker_compose () {
-    COMPOSE_FILE=./dev/docker-compose.yaml docker-compose "$@"
+    COMPOSE_FILE=./composition/docker-compose.yaml docker-compose "$@"
 }
 
 js_tests () {
