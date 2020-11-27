@@ -91,10 +91,11 @@ class BaseResources extends React.PureComponent {
         // create the resource modal
         const {
             api, logo, modal, modals,
+            editAction, editClose,
             modalAction: action,
             modalTitle: title} = this.props;
         modals[api] = {
-            title, modal, action,
+            title, modal, action, editAction, editClose,
             icon: logo,
             onUpdate: this.updateResource,
             onSubmit: this.createResource};
@@ -129,7 +130,8 @@ class BaseResources extends React.PureComponent {
     };
 
     render () {
-        const {editable, logo, resources, title} = this.props;
+        const {
+            editable, logo, resources, title} = this.props;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();

@@ -33,7 +33,6 @@ export class PlaygroundModalFooter extends React.PureComponent {
                 _action = null;
             }
         }
-
         return (
             <>
               {_action &&
