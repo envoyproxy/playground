@@ -22,13 +22,13 @@ export class BaseNetworkProxiesForm extends React.PureComponent {
         return ["Add and remove proxies from this network"];
     }
 
-    onChange = (evt) => {
+    onChange = async (evt) => {
         const {dispatch, form, networks, onUpdate} = this.props;
         const {edit, proxies=[], ...data} = form;
         const {name} =  data;
         let _proxies;
         if (edit) {
-            _proxies = [...networks[name].proxies];
+            _proxies = [...(networks[name].proxies || [])];
         } else {
             _proxies = [...proxies];
         }
@@ -38,9 +38,10 @@ export class BaseNetworkProxiesForm extends React.PureComponent {
             _proxies = _proxies.filter(i => i !== evt.currentTarget.name);
         }
         if (edit) {
-            onUpdate({...data, proxies: _proxies});
+            await dispatch(updateForm({proxies: _proxies}));
+            await onUpdate({...data, proxies: _proxies});
         } else {
-            dispatch(updateForm({proxies: _proxies}));
+            await dispatch(updateForm({proxies: _proxies}));
         }
     };
 
@@ -104,13 +105,13 @@ export class BaseNetworkServicesForm extends React.PureComponent {
         return ["Add and remove services from this network"];
     }
 
-    onChange = (evt) => {
+    onChange = async (evt) => {
         const {dispatch, form, networks, onUpdate} = this.props;
         const {edit, services=[], ...data} = form;
         const {name} =  data;
         let _services;
         if (edit) {
-            _services = [...networks[name].services];
+            _services = [...(networks[name].services || [])];
         } else {
             _services = [...services];
         }
@@ -120,9 +121,10 @@ export class BaseNetworkServicesForm extends React.PureComponent {
             _services = _services.filter(i => i !== evt.currentTarget.name);
         }
         if (edit) {
-            onUpdate({...data, services: _services});
+            await dispatch(updateForm({services: _services}));
+            await onUpdate({...data, services: _services});
         } else {
-            dispatch(updateForm({services: _services}));
+            await dispatch(updateForm({services: _services}));
         }
     };
 

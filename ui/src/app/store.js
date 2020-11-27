@@ -80,8 +80,6 @@ const UISlice = createSlice({
                     }
                 }
             }
-            // console.log('PROXIES WITH EDGES', proxiesWithEdges);
-
             let proxiesWithEdgesCount = proxiesWithEdges.size;
 
             const width = 600;
