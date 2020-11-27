@@ -53,6 +53,13 @@
   "jest": {
     "coverageReporters": [
       "lcov"
-    ]
+    ],
+    "collectCoverageFrom": [
+        "**/*.{js,jsx}",
+	"!**/*.eslintrc.js",
+	"!**/coverage/**",
+	"!**/dist/**",
+	"!**/node_modules/**"
+	]
   }
 }
