@@ -5,7 +5,7 @@ import Layout from '../layout';
 import {ModalContext, APIContext} from "./context";
 import store, {
     updateMeta, updateServices, updateProxies, updateNetworks,
-    updateServiceTypes, updateIcons
+    updateServiceTypes, updateCloud, updateEdges
 } from "./store";
 
 /* css */
@@ -35,7 +35,8 @@ export default class App extends React.PureComponent {
             await store.dispatch(update);
         }
         const {network, proxy, service} = store.getState();
-        await store.dispatch(updateIcons({networks: network.value, proxies: proxy.value, services: service.value}));
+        await store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
+        await store.dispatch(updateEdges({proxies: proxy.value}));
     }
 
     render () {

@@ -65,7 +65,70 @@ const UISlice = createSlice({
             state.value = {...state.value, ...action.payload};
         },
 
-        updateIcons: (state, action) => {
+        updateEdges: (state, action) => {
+            const {proxies={}} = action.payload;
+            const edges = {};
+            let proxiesWithEdges = new Set();
+            for (const [name, proxy] of Object.entries(proxies)) {
+                const {port_mappings=[]} = proxy;
+                for (const mapping of port_mappings) {
+                    const {mapping_from} = mapping;
+                    if (mapping_from) {
+                        const {mapping_to} = mapping;
+                        proxiesWithEdges.add(name);
+                        edges[mapping_from] = {proxy: name, internal: mapping_to};
+                    }
+                }
+            }
+            // console.log('PROXIES WITH EDGES', proxiesWithEdges);
+
+            let proxiesWithEdgesCount = proxiesWithEdges.size;
+
+            const width = 600;
+            const height = 400;
+
+            let numOfRows = 1;
+            let numOfCols = proxiesWithEdgesCount;
+
+            if (proxiesWithEdgesCount > 9) {
+                numOfCols = 4;
+            } else if (proxiesWithEdgesCount > 2) {
+                numOfCols = 3;
+            }
+
+            numOfRows = Math.ceil(proxiesWithEdgesCount / numOfCols);
+            const boxWidth = width / numOfCols;
+            const boxHeight = height / numOfRows;
+
+            console.log("EDGE BOXES", boxWidth, boxHeight);
+
+            let row = 0;
+            let col = 0;
+            for (const proxy of proxiesWithEdges) {
+                let boxOffsetX = col * boxWidth;
+                let boxOffsetY = row * boxHeight;
+                let boxCount = 0;
+                // todo: improve internal box offsets
+                for (const edge of Object.values(edges)) {
+                    if (edge.proxy === proxy) {
+                        edge.x = boxOffsetX + (boxCount * 50) + 10;
+                        edge.y = boxOffsetY + (boxCount * 50) + 10;
+                        boxCount += 1;
+                    }
+                }
+                if (col + 1 === numOfCols) {
+                    col = 0;
+                    row = row + 1;
+                } else {
+                    col = col + 1;
+                }
+            }
+            state.value = {
+                ...state.value,
+                edges};
+        },
+
+        updateCloud: (state, action) => {
             const {networks={}, services={}, proxies={}, resources: updates={}} = action.payload;
             const {resources: _resources={}} = state.value;
             const containers = {};
@@ -124,7 +187,7 @@ const UISlice = createSlice({
     }
 });
 
-export const {updateUI, updateIcons} = UISlice.actions;
+export const {updateUI, updateCloud, updateEdges} = UISlice.actions;
 
 
 const proxySlice = createSlice({
