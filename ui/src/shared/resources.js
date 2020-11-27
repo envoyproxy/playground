@@ -105,9 +105,6 @@ class BaseResources extends React.PureComponent {
             return (
                 <>
                   {v.map((_v, i) => {
-                      if (!_v.mapping_from) {
-                          return '';
-                      }
                       return (
                           <div key={i}>
                             <div >{_v.mapping_from} -> {_v.mapping_to}</div>
