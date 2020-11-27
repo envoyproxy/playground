@@ -130,8 +130,7 @@ class BaseResources extends React.PureComponent {
     };
 
     render () {
-        const {
-            editable, logo, resources, title} = this.props;
+        const {editable, logo, resources, title} = this.props;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();
