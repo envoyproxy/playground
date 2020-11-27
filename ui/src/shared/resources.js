@@ -25,6 +25,7 @@ class BaseResources extends React.PureComponent {
         modalTitle: PropTypes.func.isRequired,
         modalAction: PropTypes.string.isRequired,
         modals: PropTypes.object.isRequired,
+        editable: PropTypes.bool,
     });
 
     addResource = async (evt) => {
