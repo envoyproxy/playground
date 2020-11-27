@@ -28,7 +28,7 @@ export class BaseNetworkProxiesForm extends React.PureComponent {
         const {name} =  data;
         let _proxies;
         if (edit) {
-            _proxies = [...networks[name].proxies];
+            _proxies = [...(networks[name].proxies || [])];
         } else {
             _proxies = [...proxies];
         }
@@ -110,7 +110,7 @@ export class BaseNetworkServicesForm extends React.PureComponent {
         const {name} =  data;
         let _services;
         if (edit) {
-            _services = [...networks[name].services];
+            _services = [...(networks[name].services || [])];
         } else {
             _services = [...services];
         }
