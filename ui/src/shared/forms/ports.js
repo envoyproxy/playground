@@ -90,7 +90,7 @@ export class PortMappingListForm extends React.PureComponent {
                           </Col>
                           <Col sm={4} className="m-0 p-0 border-bottom">
                             <div className="p-2 bg-white">
-                              {(mapping_type && mapping_type.toUpperCase() || 'Generic TCP')}
+                              {((mapping_type && mapping_type.toUpperCase()) || 'Generic TCP')}
                             </div>
                           </Col>
                         </Row>);

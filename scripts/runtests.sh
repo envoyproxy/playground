@@ -12,6 +12,9 @@ js_tests () {
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		-e CI=1 \
 		ui yarn test --coverage
+    COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		-e CI=1 \
+		ui ./node_modules/.bin/eslint --max-warnings 0  src/
 }
 
 py_tests () {
