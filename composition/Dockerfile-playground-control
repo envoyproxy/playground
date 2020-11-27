@@ -4,5 +4,5 @@ RUN mkdir /code
 ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
-ENTRYPOINT ["./dev/entrypoint.sh"]
+ENTRYPOINT ["./composition/entrypoint.sh"]
 CMD ["playground"]
