@@ -12,7 +12,7 @@ import EnvoyLogo from '../images/envoy.svg';
 import {KonvaImage} from '../shared/image';
 import {Group, Text, Tag, Label} from 'react-konva';
 
-import {updateIcons} from '../app/store';
+import {updateCloud} from '../app/store';
 
 
 class ResourceImage extends React.Component {
@@ -40,7 +40,7 @@ class ResourceImage extends React.Component {
                 onDragEnd={async e => {
                     const resources = {};
                     resources[name] = [e.target.x(), e.target.y()];
-                  await dispatch(updateIcons({networks, proxies, services, resources}));
+                  await dispatch(updateCloud({networks, proxies, services, resources}));
                 }}>
               <KonvaImage
                 {...props}

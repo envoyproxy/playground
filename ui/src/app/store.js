@@ -65,7 +65,7 @@ const UISlice = createSlice({
             state.value = {...state.value, ...action.payload};
         },
 
-        updateIcons: (state, action) => {
+        updateCloud: (state, action) => {
             const {networks={}, services={}, proxies={}, resources: updates={}} = action.payload;
             const {resources: _resources={}} = state.value;
             const containers = {};
@@ -124,7 +124,7 @@ const UISlice = createSlice({
     }
 });
 
-export const {updateUI, updateIcons} = UISlice.actions;
+export const {updateUI, updateCloud} = UISlice.actions;
 
 
 const proxySlice = createSlice({

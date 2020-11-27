@@ -1,7 +1,7 @@
 import {
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
-    removeService, updateServices, updateIcons
+    removeService, updateServices, updateCloud
 } from "../app/store";
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -20,7 +20,7 @@ export default class PlaygroundSocket {
     refreshIcons = async () => {
         const {dispatch} = this.store;
         const {network, service, proxy} = this.store.getState();
-        await dispatch(updateIcons({
+        await dispatch(updateCloud({
             services: service.value,
             proxies: proxy.value,
             networks: network.value,
