@@ -13,7 +13,8 @@ install_requires = [
     "aiohttp_cors",
     "attrs",
     "pyyaml",
-    "pytest-asyncio"]
+    "pytest-asyncio",
+    "python-rapidjson"]
 
 extras_require = {}
 extras_require['test'] = [

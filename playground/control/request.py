@@ -1,6 +1,7 @@
 
-import json
 from collections import OrderedDict
+
+import rapidjson as json
 
 
 class PlaygroundRequest(object):
@@ -9,7 +10,6 @@ class PlaygroundRequest(object):
         self._request = request
         self._attribs = attribs
 
-    # todo, consider using faster json implementation
     def _json_loader(self, content):
         return json.loads(content, object_pairs_hook=OrderedDict)
 
