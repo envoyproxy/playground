@@ -7,7 +7,7 @@ import aiodocker
 from aiodocker.containers import DockerContainers
 from aiodocker.networks import DockerNetworks
 
-from .events import PlaygroundDockerEvents
+from playground.control.connectors.docker.events import PlaygroundDockerEvents
 
 
 # TODO: split network/service/proxy classes/instances out
@@ -270,8 +270,10 @@ class PlaygroundDockerClient(object):
         # todo: handle udp etc
         port_bindings = OrderedDict()
         for host, internal in port_mappings:
-            port_bindings[f"{internal}/tcp"] = port_bindings.get(f"{internal}/tcp", [])
-            port_bindings[f"{internal}/tcp"].append({"HostPort": f"{host}"})
+            port_bindings[f"{internal}/tcp"] = port_bindings.get(
+                f"{internal}/tcp", [])
+            port_bindings[f"{internal}/tcp"].append(
+                {"HostPort": f"{host}"})
         return {
             'Image': image,
             "AttachStdin": False,

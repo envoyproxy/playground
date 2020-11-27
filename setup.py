@@ -18,9 +18,9 @@ install_requires = [
 
 extras_require = {}
 extras_require['test'] = [
+    "flake8",
     "pytest",
     "pytest-mock",
-    "pytest-flake8",
     "pytest-cov"]
 
 # TODO: Fix classifiers

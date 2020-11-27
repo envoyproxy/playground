@@ -20,7 +20,10 @@ py_tests () {
     COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
 		--entrypoint /bin/sh \
 		control -c 'pytest'
+    COMPOSE_FILE=./dev/docker-compose.yaml docker-compose run \
+		--entrypoint /bin/sh \
+		control -c 'flake8 .'
 }
 
-js_tests
+# js_tests
 py_tests

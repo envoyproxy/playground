@@ -10,6 +10,7 @@ services:
     - /var/run/docker.sock:/var/run/docker.sock
     - ../:/code/
     - ../.cache/coverage:/code/coverage
+    - ../.cache/control/root/.cache:/root/.cache
     - ../setup.py:/code/setup.py
     - ../services.yaml:/services.yaml
     - ../services:/services
