@@ -28,9 +28,11 @@ def api(original_fun=None, attribs=None):
                         content_type='application/json')
                 except (TypeError, ValueError) as e:
                     if len(e.args) > 1:
-                        errors = json.dumps(dict(errors={e.args[1].name: e.args[0]}))
+                        errors = json.dumps(
+                            dict(errors={e.args[1].name: e.args[0]}))
                     else:
-                        errors = json.dumps(dict(errors={'playground': e.args[0]}))
+                        errors = json.dumps(
+                            dict(errors={'playground': e.args[0]}))
                     return web.HTTPBadRequest(
                         reason="Invalid request data",
                         body=errors,
@@ -38,7 +40,8 @@ def api(original_fun=None, attribs=None):
                 try:
                     return await fun(request)
                 except PlaygroundError as e:
-                    errors = json.dumps(dict(errors={e.args[1].name: e.args[0]}))
+                    errors = json.dumps(
+                        dict(errors={e.args[1].name: e.args[0]}))
                     return web.HTTPBadRequest(
                         reason="Invalid request data",
                         body=errors,

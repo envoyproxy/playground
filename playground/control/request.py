@@ -10,11 +10,9 @@ class PlaygroundRequest(object):
         self._request = request
         self._attribs = attribs
 
-    def _json_loader(self, content):
-        return json.loads(content, object_pairs_hook=OrderedDict)
-
     async def load_data(self):
-        self._data = self._attribs(**await self._request.json(loads=self._json_loader))
+        self._data = self._attribs(
+            **await self._request.json(loads=json.loads))
 
     async def validate(self, api):
         await self._data.validate(api)

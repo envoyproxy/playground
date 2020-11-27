@@ -25,10 +25,6 @@ class ResourceImage extends React.Component {
             networks, proxies, services, store,
             icon, name, dispatch, ...props} = this.props;
         const {x, y} = this.state;
-        const parts = name.split(':');
-        const service_name = parts.pop();
-        const service_type = parts.pop();
-        const resource = service_type + ': ' + service_name;
         return (
             <Group
                 x={x || startX}
@@ -61,8 +57,7 @@ class ResourceImage extends React.Component {
                 <Text
                   y={50}
                   x={5}
-                  fontSize={18}
-                  text={resource}
+                  text={name.split(':').pop()}
                   fill="#0a0a0a"
                   padding={5}
                   fontSize={12} />

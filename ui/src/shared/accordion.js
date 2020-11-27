@@ -17,6 +17,7 @@ export class AccordionItem extends React.PureComponent {
 export default class Accordion extends React.Component {
     static propTypes = exact({
         children: PropTypes.array.isRequired,
+        editable: PropTypes.bool,
         logo: PropTypes.func,
     });
 

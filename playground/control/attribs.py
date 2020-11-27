@@ -5,7 +5,7 @@ from collections import OrderedDict
 import attr
 from attr.validators import instance_of, matches_re
 
-from .exceptions import PlaygroundError, ValidationError
+from .exceptions import PlaygroundError
 from .validators import has_length, all_members, is_well_formed
 
 
@@ -30,7 +30,7 @@ class AddNetworkAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
     proxies = attr.ib(
         default=[],
         validator=[
@@ -49,17 +49,22 @@ class AddNetworkAttribs(object):
 
         for network in networks:
             if network['name'] == self.name:
-                raise PlaygroundError(f'A network with the name {self.name} already exists.', self)
+                raise PlaygroundError(
+                    f'A network with the name {self.name} already exists.',
+                    self)
 
         if self.services:
-            # check all of the requested services are present in the service list
+            # check all of the requested services are present
+            # in the service list
             services = set(
                 s['name']
                 for s
                 in await api.client.list_services())
             _services = set(self.services)
             if (services ^ _services) & _services:
-                raise PlaygroundError(f'Connection to unrecognized service requested.', self)
+                raise PlaygroundError(
+                    'Connection to unrecognized service requested.',
+                    self)
 
         if self.proxies:
             # check all of the requested proxies are present in the proxy list
@@ -69,7 +74,9 @@ class AddNetworkAttribs(object):
                 in await api.client.list_proxies())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
-                raise PlaygroundError(f'Connection to unrecognized proxy requested.', self)
+                raise PlaygroundError(
+                    'Connection to unrecognized proxy requested.',
+                    self)
 
 
 @attr.s
@@ -98,14 +105,17 @@ class EditNetworkAttribs(object):
                 f'Unrecognized network id {self.id}.', self)
 
         if self.services:
-            # check all of the requested services are present in the service list
+            # check all of the requested services are present
+            # in the service list
             services = set(
                 s['name']
                 for s
                 in await api.client.list_services())
             _services = set(self.services)
             if (services ^ _services) & _services:
-                raise PlaygroundError(f'Connection to unrecognized service requested.', self)
+                raise PlaygroundError(
+                    'Connection to unrecognized service requested.',
+                    self)
 
         if self.proxies:
             # check all of the requested proxies are present in the proxy list
@@ -115,7 +125,9 @@ class EditNetworkAttribs(object):
                 in await api.client.list_proxies())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
-                raise PlaygroundError(f'Connection to unrecognized proxy requested.', self)
+                raise PlaygroundError(
+                    'Connection to unrecognized proxy requested.',
+                    self)
 
 
 @attr.s
@@ -126,7 +138,7 @@ class AddProxyAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
 
     configuration = attr.ib(
         validator=[
@@ -156,6 +168,7 @@ class AddProxyAttribs(object):
     async def validate(self, api):
         pass
 
+
 @attr.s
 class AddServiceAttribs(object):
     name = attr.ib(
@@ -164,7 +177,7 @@ class AddServiceAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
 
     # v: exists
     # v: length and length of values
@@ -182,6 +195,7 @@ class AddServiceAttribs(object):
     async def validate(self, api):
         pass
 
+
 @attr.s
 class DeleteServiceAttribs(object):
     name = attr.ib(
@@ -190,7 +204,7 @@ class DeleteServiceAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
 
     async def validate(self, api):
         pass
@@ -204,7 +218,7 @@ class DeleteNetworkAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
 
     async def validate(self, api):
         pass
@@ -218,7 +232,7 @@ class DeleteProxyAttribs(object):
             has_length(f'>={MIN_NAME_LENGTH}'),
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match),])
+            matches_re(RE_NOT_NAME, func=re.match), ])
 
     async def validate(self, api):
         pass
