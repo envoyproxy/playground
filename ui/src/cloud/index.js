@@ -57,7 +57,6 @@ class ResourceImage extends React.Component {
                 <Text
                   y={50}
                   x={5}
-                  fontSize={18}
                   text={name.split(':').pop()}
                   fill="#0a0a0a"
                   padding={5}

@@ -48,7 +48,7 @@ class BaseServiceForm extends React.PureComponent {
         let valid = true;
         const errors = {name: []};
 
-        if (evt.target.name == 'service_type') {
+        if (evt.target.name === 'service_type') {
             service_type = evt.target.value;
         } else {
             name = evt.currentTarget.value.toLowerCase();

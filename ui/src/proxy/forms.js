@@ -69,7 +69,7 @@ export class BaseProxyForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form, proxies, meta} = this.props;
+        const {dispatch, proxies, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
         let valid = true;
         const errors = {name: []};
