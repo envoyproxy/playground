@@ -9,6 +9,21 @@ import {updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 
 
+class ResourceInfoItem extends React.PureComponent {
+
+    render () {
+        const {k, v, handleItem} = this.props;
+        return (
+            <dl className="row m-0 bg-light p-0 small">
+              <dt className="col col-sm-4 bg-light text-right text-dark m-0">{k}</dt>
+              <dd className="col col-sm-8 bg-white m-0">
+                {handleItem(k, v)}
+              </dd>
+            </dl>);
+    }
+
+}
+
 class BaseResources extends React.PureComponent {
     static contextType = APIContext;
     static propTypes = exact({
@@ -83,15 +98,26 @@ class BaseResources extends React.PureComponent {
             onSubmit: this.createResource};
     }
 
-    handleItem = (v) => {
-        if (v instanceof Array) {
+    handleItem = (k, v) => {
+        // this needs to move out of here...
+
+        if (k === 'port_mappings') {
             return (
                 <>
                   {v.map((_v, i) => {
                       return (
                           <div key={i}>
-                            <div >{_v.mapping_from}</div>
-                            <div >{_v.mapping_to}</div>
+                            <div >{_v.mapping_from} -> {_v.mapping_to}</div>
+                          </div>);
+                  })}
+                </>);
+        } else if (v instanceof Array) {
+            return (
+                <>
+                  {v.map((_v, i) => {
+                      return (
+                          <div key={i}>
+                            <div >{_v}</div>
                           </div>);
                   })}
                 </>
@@ -139,21 +165,25 @@ class BaseResources extends React.PureComponent {
                           onEdit={this.editResource}
                           resource={content}
                           onDelete={this.deleteResource}>
-	                  {Object.entries(content).map(([k, v], index) => {
+	                  {Object.entries(content).map(([k, v], i) => {
                               return (
-                                  <dl className="row m-0 bg-light p-0 small" key={index}>
-                                    <dt className="col col-sm-4 bg-light text-right text-dark m-0">{k}</dt>
-                                    <dd className="col col-sm-8 bg-white m-0">{this.handleItem(v)}</dd>
-                                  </dl>
-		              );
+                                  <ResourceInfoItem
+                                    key={i}
+                                    k={k}
+                                    v={v}
+                                    handleItem={this.handleItem}
+                                  />);
 	                  })}
                         </AccordionItem>
 		    );
 	        })}
               </Accordion>
             </section>);
-    }
+        }
 }
+
+
+
 
 const mapStateToProps = function(state) {
     return {
