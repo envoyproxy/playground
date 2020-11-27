@@ -155,7 +155,9 @@ class PlaygroundDockerClient(object):
         network = await self.client.networks.get(id)
         info = await network.show()
         containers = {
-            container['Name']
+            container['Name'].replace(
+                'envoy__playground__service__', '').replace(
+                    'envoy__playground__proxy__', '')
             for container
             in info["Containers"].values()}
         expected = set(proxies) | set(services)
