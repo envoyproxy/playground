@@ -1,7 +1,8 @@
 
-import json
 from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
+
+import rapidjson as json
 
 from aiohttp import web
 

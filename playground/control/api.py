@@ -1,9 +1,10 @@
 import asyncio
 import base64
 import functools
-import json
 import os
 from collections import OrderedDict
+
+import rapidjson as json
 
 import yaml
 
@@ -37,7 +38,6 @@ class PlaygroundAPI(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
-    # todo, consider using faster json implementation
     def _json_loader(self, content):
         return json.loads(content, object_pairs_hook=OrderedDict)
 
