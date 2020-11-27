@@ -60,6 +60,9 @@
 	"!**/coverage/**",
 	"!**/dist/**",
 	"!**/node_modules/**"
-	]
+    ],
+    "testMatch": [
+      "**/tests/**/*.js?(x)"
+    ]
   }
 }
