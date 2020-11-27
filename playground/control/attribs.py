@@ -45,7 +45,7 @@ class AddNetworkAttribs(object):
             all_members(lambda m: type(m) == str)])
 
     async def validate(self, api):
-        networks = await api.client.list_networks()
+        networks = await api.connector.list_networks()
 
         for network in networks:
             if network['name'] == self.name:
@@ -59,7 +59,7 @@ class AddNetworkAttribs(object):
             services = set(
                 s['name']
                 for s
-                in await api.client.list_services())
+                in await api.connector.list_services())
             _services = set(self.services)
             if (services ^ _services) & _services:
                 raise PlaygroundError(
@@ -71,7 +71,7 @@ class AddNetworkAttribs(object):
             proxies = set(
                 s['name']
                 for s
-                in await api.client.list_proxies())
+                in await api.connector.list_proxies())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
                 raise PlaygroundError(
@@ -98,7 +98,7 @@ class EditNetworkAttribs(object):
             all_members(lambda m: type(m) == str)])
 
     async def validate(self, api):
-        networks = await api.client.list_networks()
+        networks = await api.connector.list_networks()
 
         if self.id not in [n['id'] for n in networks]:
             raise PlaygroundError(
@@ -110,7 +110,7 @@ class EditNetworkAttribs(object):
             services = set(
                 s['name']
                 for s
-                in await api.client.list_services())
+                in await api.connector.list_services())
             _services = set(self.services)
             if (services ^ _services) & _services:
                 raise PlaygroundError(
@@ -122,7 +122,7 @@ class EditNetworkAttribs(object):
             proxies = set(
                 s['name']
                 for s
-                in await api.client.list_proxies())
+                in await api.connector.list_proxies())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
                 raise PlaygroundError(
