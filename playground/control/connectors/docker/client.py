@@ -11,7 +11,6 @@ from .events import PlaygroundDockerEvents
 
 
 class PlaygroundDockerClient(object):
-    _envoy_image = "envoyproxy/envoy-dev:latest"
     _envoy_label = "envoy.playground"
     _mount_image = "busybox"
 
@@ -19,9 +18,11 @@ class PlaygroundDockerClient(object):
         self.client = aiodocker.Docker()
         self.events = PlaygroundDockerEvents(self.client)
 
-    async def get_network(self, name: str):
-        return await self._get_resource(
-            self.client.networks, "network",  name)
+    async def get_container(self, id: str):
+        return await self.client.containers.get(id)
+
+    async def get_network(self, id: str):
+        return await self.client.networks.get(id)
 
     async def list_networks(self) -> list:
         return await self._list_resources(
@@ -126,12 +127,14 @@ class PlaygroundDockerClient(object):
 
     async def create_proxy(
             self,
+            image: str,
             name: str,
             mounts: dict,
             mappings: list,
             logging: dict) -> None:
         container = await self.client.containers.create_or_replace(
             config=self._get_proxy_config(
+                image,
                 name,
                 mounts,
                 mappings),
@@ -273,17 +276,9 @@ class PlaygroundDockerClient(object):
                             async with volume_delete:
                                 pass
 
-    async def _get_resource(
-            self,
-            resources: dict,
-            resource_type: str,
-            name: str) -> dict:
-        resource = await resources.get("__playground_%s" % name)
-        content = await resource.show()
-        return dict(name=name, id=content["Id"][:10])
-
     def _get_proxy_config(
             self,
+            image: str,
             name: str,
             mounts: dict,
             port_mappings: list) -> dict:
@@ -293,7 +288,7 @@ class PlaygroundDockerClient(object):
             for host, internal
             in port_mappings)
         return {
-            'Image': self._envoy_image,
+            'Image': image,
             "AttachStdin": False,
             "AttachStdout": False,
             "AttachStderr": False,

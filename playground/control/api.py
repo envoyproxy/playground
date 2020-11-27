@@ -28,6 +28,7 @@ from .attribs import (
 
 class PlaygroundAPI(object):
     _services_yaml = "/services.yaml"
+    _envoy_image = "envoyproxy/envoy-dev:latest"
 
     def __init__(self):
         self.connector = PlaygroundDockerClient()
@@ -65,7 +66,7 @@ class PlaygroundAPI(object):
 
         return web.json_response(
             dict(meta=dict(
-                version=self.connector._envoy_image,
+                version=self._envoy_image,
                 max_network_connections=MAX_NETWORK_CONNECTIONS,
                 min_name_length=MIN_NAME_LENGTH,
                 max_name_length=MAX_NAME_LENGTH,
@@ -120,7 +121,7 @@ class PlaygroundAPI(object):
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        container = await self.connector.client.containers.get(event["id"])
+        container = await self.connector.get_container(event["id"])
         try:
             logs = await container.log(stdout=True, stderr=True)
             await container.delete(force=True, v=True)
@@ -156,7 +157,7 @@ class PlaygroundAPI(object):
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        container = await self.connector.client.containers.get(event["id"])
+        container = await self.connector.get_container(event["id"])
         ports = container['HostConfig']['PortBindings'] or {}
         port_mappings = [
             {'mapping_from': v[0]['HostPort'],
@@ -189,7 +190,7 @@ class PlaygroundAPI(object):
 
     async def handle_network_connect(self, ws, event: dict) -> None:
         nid = event["Actor"]["ID"]
-        network = await self.connector.client.networks.get(nid)
+        network = await self.connector.get_network(nid)
         info = await network.show()
         if "envoy.playground.network" in info["Labels"]:
             name = info["Labels"]["envoy.playground.network"]
@@ -208,7 +209,7 @@ class PlaygroundAPI(object):
     async def handle_network_create(self, ws, event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
-        network = await self.connector.client.networks.get(nid)
+        network = await self.connector.get_network(nid)
         info = await network.show()
         name = info["Labels"]["envoy.playground.network"]
         if "envoy.playground.network" not in info["Labels"]:
@@ -230,7 +231,7 @@ class PlaygroundAPI(object):
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
         try:
-            network = await self.connector.client.networks.get(nid)
+            network = await self.connector.get_network(nid)
             info = await network.show()
         except DockerError:
             return
@@ -296,9 +297,8 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=AddProxyAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
-        # todo: move client._envoy_image here
-        if not await self.connector.image_exists(self.connector._envoy_image):
-            await self.connector.pull_image(self.connector._envoy_image)
+        if not await self.connector.image_exists(self._envoy_image):
+            await self.connector.pull_image(self._envoy_image)
 
         # todo: remove binary/cert prefixes in js
         mappings = [
@@ -333,6 +333,7 @@ class PlaygroundAPI(object):
 
         # create the proxy
         await self.connector.create_proxy(
+            self._envoy_image,
             request.data.name,
             mounts,
             mappings,
