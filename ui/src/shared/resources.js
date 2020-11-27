@@ -38,7 +38,6 @@ class BaseResources extends React.PureComponent {
         // send API request to create resource
         const {api, dispatch, form} = this.props;
         const {errors: _errors, valid, validation, status, ...data} = form;
-        console.log('BEFORE UPDATE...', status);
         const {errors} = await this.context.post('/' + api + '/add', data);
         if (errors) {
             await dispatch(updateForm({validation: errors}));
