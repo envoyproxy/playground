@@ -25,5 +25,5 @@ py_tests () {
 		control -c 'flake8 .'
 }
 
-# js_tests
+js_tests
 py_tests
