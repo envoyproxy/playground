@@ -1,7 +1,7 @@
 import {
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
-    removeService, updateServices, updateCloud
+    removeService, updateServices, updateCloud, updateEdges
 } from "../app/store";
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -24,6 +24,9 @@ export default class PlaygroundSocket {
             services: service.value,
             proxies: proxy.value,
             networks: network.value,
+        }));
+        await dispatch(updateEdges({
+            proxies: proxy.value,
         }));
     }
 
