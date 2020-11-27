@@ -4,6 +4,8 @@ SHELL := /bin/bash
 
 export PLAYGROUND_VERSION=0.0.5-alpha
 
+.PHONY: coverage
+
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") || :
 
@@ -36,6 +38,9 @@ build:
 publish:
 	docker tag envoy-playground phlax/envoy-playground:$$PLAYGROUND_VERSION
 	docker push phlax/envoy-playground:$$PLAYGROUND_VERSION
+
+coverage:
+	bash <(curl -s https://codecov.io/bash)
 
 exec:
 	docker exec -it --workdir /code envoy-playground bash

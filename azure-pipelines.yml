@@ -19,5 +19,5 @@ steps:
   displayName: 'Build the production Docker image'
 
 - script: |
-    bash <(curl -s https://codecov.io/bash)
+    make coverage
   displayName: 'Upload to codecov.io'

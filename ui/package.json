@@ -52,7 +52,21 @@
   },
   "jest": {
     "coverageReporters": [
-      "lcov"
+	"lcov",
+	"text"
+    ],
+      "coveragePathIgnorePatterns": [
+	  "node_modules"
+      ],
+    "collectCoverageFrom": [
+        "**/*.{js,jsx}",
+	"!**/*.eslintrc.js",
+	"!**/coverage/**",
+	"!**/dist/**",
+	"!**/node_modules/**"
+    ],
+    "testMatch": [
+	"**/tests/**/*.js?(x)"
     ]
   }
 }
