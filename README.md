@@ -1,5 +1,9 @@
 # Envoy playground
 
+[![codecov](https://codecov.io/gh/envoyproxy/playground/branch/main/graph/badge.svg)](https://codecov.io/gh/envoyproxy/playground)
+
+[![Build Status](https://dev.azure.com/cncf/envoy/_apis/build/status/envoyproxy.playground?branchName=master)](https://dev.azure.com/cncf/envoy/_build/latest?definitionId=26&branchName=master)
+
 The Envoy playground allows you to experiment with proxies, services and networks using Docker.
 
 This is useful for learning or testing Envoy configurations and network architectures.
