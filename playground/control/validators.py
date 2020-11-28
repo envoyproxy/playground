@@ -1,4 +1,6 @@
 
+from collections import OrderedDict
+
 import attr
 
 import yaml
@@ -112,20 +114,19 @@ class _AllMembersValidator(object):
         """
         We use a callable class to be able to change the ``__repr__``.
         """
-        for member in value:
+        _iter = value
+        if isinstance(value, (dict, OrderedDict)):
+            _iter = value.items()
+        for member in _iter:
             if not self.members(member):
                 raise TypeError(
-                    "'{name}' member did not match `{members}` "
-                    "(got {value!r} that is a "
-                    "{actual!r}).".format(
+                    "'{name}' member did not match requirements "
+                    "(got {value!r})".format(
                         name=attr.name,
-                        members=value,
-                        actual=value.__class__,
-                        value=value,
+                        value=member,
                     ),
                     attr,
-                    self.members,
-                    value)
+                    member)
 
     def __repr__(self):
         return self._repr.format(members=self.members)
