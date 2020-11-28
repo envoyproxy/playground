@@ -13,17 +13,17 @@ from aiohttp.web import Request, Response
 
 from aiodocker.exceptions import DockerError
 
-from .connectors.docker.client import PlaygroundDockerClient
-
-from .decorators import api, method_decorator
-from .request import PlaygroundRequest
 from .attribs import (
+    NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
+    ProxyAddAttribs, ProxyDeleteAttribs,
+    ServiceAddAttribs, ServiceDeleteAttribs)
+from .constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
-    MAX_NETWORK_CONNECTIONS,
-    AddNetworkAttribs, DeleteNetworkAttribs, EditNetworkAttribs,
-    AddProxyAttribs, DeleteProxyAttribs,
-    AddServiceAttribs, DeleteServiceAttribs)
+    MAX_NETWORK_CONNECTIONS)
+from .connectors.docker.client import PlaygroundDockerClient
+from .decorators import api, method_decorator
+from .request import PlaygroundRequest
 
 
 class PlaygroundAPI(object):
@@ -267,7 +267,7 @@ class PlaygroundAPI(object):
                  name=event["Actor"]["Attributes"]["name"].split('__')[2],
                  status='creating'))
 
-    @method_decorator(api(attribs=AddNetworkAttribs))
+    @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.connector.create_network(
@@ -276,13 +276,13 @@ class PlaygroundAPI(object):
             services=request.data.services)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=DeleteNetworkAttribs))
+    @method_decorator(api(attribs=NetworkDeleteAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.connector.delete_network(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=EditNetworkAttribs))
+    @method_decorator(api(attribs=NetworkEditAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.connector.edit_network(
@@ -303,7 +303,7 @@ class PlaygroundAPI(object):
 
         return volume
 
-    @method_decorator(api(attribs=AddProxyAttribs))
+    @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         if not await self.connector.image_exists(self._envoy_image):
@@ -349,7 +349,7 @@ class PlaygroundAPI(object):
             request.data.logging)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=DeleteProxyAttribs))
+    @method_decorator(api(attribs=ProxyDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.connector.delete_proxy(request.data.name)
@@ -359,7 +359,7 @@ class PlaygroundAPI(object):
         # print("PUBLISH", event)
         await ws.send_json(event, dumps=json.dumps)
 
-    @method_decorator(api(attribs=AddServiceAttribs))
+    @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         data = dict(
@@ -387,7 +387,7 @@ class PlaygroundAPI(object):
         await self.connector.create_service(**data)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=DeleteServiceAttribs))
+    @method_decorator(api(attribs=ServiceDeleteAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> Response:
         await request.validate(self)
         await self.connector.delete_service(request.data.name)

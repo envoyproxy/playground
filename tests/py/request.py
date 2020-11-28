@@ -10,7 +10,7 @@ class DummyRequest(Request):
         pass
 
 
-class DummyAttribs(attribs.Attribs):
+class DummyAttribs(attribs.ValidatingAttribs):
 
     def __init__(self):
         pass

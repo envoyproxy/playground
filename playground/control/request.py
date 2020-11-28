@@ -3,12 +3,12 @@ import rapidjson as json
 
 from aiohttp.web import Request
 
-from .attribs import Attribs
+from .attribs import ValidatingAttribs
 
 
 class PlaygroundRequest(object):
 
-    def __init__(self, request: Request, attribs: Attribs = None):
+    def __init__(self, request: Request, attribs: ValidatingAttribs = None):
         self._request = request
         self._attribs = attribs
 
