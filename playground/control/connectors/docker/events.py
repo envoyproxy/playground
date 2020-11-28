@@ -2,10 +2,12 @@
 import asyncio
 from typing import AsyncGenerator
 
+import aiodocker
+
 
 class PlaygroundDockerEvents(object):
 
-    def __init__(self, docker):
+    def __init__(self, docker: aiodocker.Docker):
         self.docker = docker
 
     async def __call__(self) -> AsyncGenerator[dict, None]:
