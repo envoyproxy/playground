@@ -1,18 +1,21 @@
 
 from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
+from typing import Callable
 
 import rapidjson as json
 
 from aiohttp import web
 
-from .exceptions import PlaygroundError, ValidationError
-from .request import PlaygroundRequest
+from playground.control.attribs import ValidatingAttribs
+from playground.control.exceptions import PlaygroundError, ValidationError
+from playground.control.request import PlaygroundRequest
 
 
-def api(original_fun=None, attribs=None):
+def api(original_fun: Callable = None,
+        attribs: ValidatingAttribs = None) -> Callable:
 
-    def _api(fun):
+    def _api(fun: Callable) -> Callable:
 
         @wraps(fun)
         async def wrapped_fun(request: web.Request) -> web.Response:
