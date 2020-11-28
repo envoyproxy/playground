@@ -15,7 +15,7 @@ class PlaygroundDockerEvents(object):
         while True:
             yield await subscriber.get()
 
-    async def emit(self, publisher: dict, debug=None) -> None:
+    async def emit(self, publisher: dict, debug: list = None) -> None:
         async for event in self():
             event_type = event['Type']
             event_action = event['Action']
@@ -28,7 +28,7 @@ class PlaygroundDockerEvents(object):
             if publisher.get(event['Type']):
                 await publisher[event['Type']](event)
 
-    def subscribe(self, name: str, publisher: dict, debug=None) -> None:
+    def subscribe(self, name: str, publisher: dict, debug: list = None) -> None:
         asyncio.create_task(
             self.emit(publisher, debug=debug),
             name=name)
