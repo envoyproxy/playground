@@ -358,8 +358,8 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
                     <CustomInput
                       type="file"
                       onInput={this.onChange}
-                      id="certificatesFileBrowser"
-                      name="customFile" />
+                      id="certificate"
+                      name="certificate" />
                   </Col>
                 </PlaygroundFormGroupRow>
                 <CertificatesListForm
@@ -469,10 +469,9 @@ export class BaseProxyBinariesForm extends React.PureComponent {
                   <Col sm={8}>
                     <CustomInput
                       type="file"
-                      value=""
                       onInput={this.onChange}
                       id="binaries"
-                      name="customFile" />
+                      name="binaries" />
                   </Col>
                 </PlaygroundFormGroupRow>
                 <BinariesListForm
