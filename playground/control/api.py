@@ -160,21 +160,25 @@ class PlaygroundAPI(object):
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
         container = await self.connector.get_container(event["id"])
+        to_publish = dict(
+            type="container",
+            resource=resource,
+            id=event["id"][:10],
+            image=event['Actor']['Attributes']['image'],
+            name=event["Actor"]["Attributes"]["name"].replace(
+                f'envoy__playground__{resource}__', ''),
+            status=event["status"])
         ports = container['HostConfig']['PortBindings'] or {}
         port_mappings = [
             {'mapping_from': v[0]['HostPort'],
              'mapping_to': k.split('/')[0]}
-            for k, v in ports.items()]
+            for k, v in ports.items()
+            if v[0]['HostPort']]
+        if port_mappings:
+            to_publish["port_mappings"] = port_mappings
         await self.publish(
             ws,
-            dict(type="container",
-                 resource=resource,
-                 id=event["id"][:10],
-                 image=event['Actor']['Attributes']['image'],
-                 name=event["Actor"]["Attributes"]["name"].replace(
-                     f'envoy__playground__{resource}__', ''),
-                 port_mappings=port_mappings,
-                 status=event["status"]))
+            to_publish)
 
     async def handle_image(self, ws, event):
         if event['Action'] == 'pull':
@@ -350,6 +354,7 @@ class PlaygroundAPI(object):
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def publish(self, ws, event: dict) -> None:
+        # print("PUBLISH", event)
         await ws.send_json(event, dumps=json.dumps)
 
     @method_decorator(api(attribs=AddServiceAttribs))

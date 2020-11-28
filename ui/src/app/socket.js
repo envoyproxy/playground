@@ -64,7 +64,10 @@ export default class PlaygroundSocket {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
-                    proxies[name] = {name, id, port_mappings, image};
+                    proxies[name] = {name, id, image};
+                    if (port_mappings) {
+                        proxies[name].port_mappings = port_mappings;
+                    }
                     await dispatch(updateProxies({proxies}));
                     this.refreshIcons();
                     if (formName && formName === name) {
