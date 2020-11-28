@@ -264,8 +264,7 @@ export {ProxyForm};
 export class CertificatesListForm extends React.PureComponent {
 
     render () {
-        const {certs} = this.props;
-        const onDelete = null;
+        const {certs, onDelete} = this.props;
         const title = '';
 
         if (Object.keys(certs).length === 0) {
@@ -294,7 +293,7 @@ export class CertificatesListForm extends React.PureComponent {
                               <ActionRemove
                                 title={title}
                                 name={title}
-                                remove={evt => this.onDelete(evt, onDelete)} />
+                                remove={evt => onDelete(name)} />
                             </div>
                           </Col>
                           <Col sm={11} className="m-0 p-0 border-bottom bg-white">
@@ -334,6 +333,14 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
         ];
     }
 
+    onDelete = async (name) => {
+        const {dispatch, form} = this.props;
+        const {certs: _certs={}} = form;
+        const certs = {..._certs};
+        delete certs[name];
+        await dispatch(updateForm({certs}));
+    }
+
     render () {
         const {form} = this.props;
         const {certs={}} = form;
@@ -352,6 +359,7 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
                   </Col>
                 </PlaygroundFormGroupRow>
                 <CertificatesListForm
+                  onDelete={this.onDelete}
                   certs={{...certs}} />
               </PlaygroundFormGroup>
             </PlaygroundForm>
@@ -366,8 +374,7 @@ export {ProxyCertificatesForm};
 export class BinariesListForm extends React.PureComponent {
 
     render () {
-        const {binaries} = this.props;
-        const onDelete = null;
+        const {onDelete, binaries} = this.props;
         const title = '';
 
         if (Object.keys(binaries).length === 0) {
@@ -396,7 +403,7 @@ export class BinariesListForm extends React.PureComponent {
                               <ActionRemove
                                 title={title}
                                 name={title}
-                                remove={evt => this.onDelete(evt, onDelete)} />
+                                remove={evt => onDelete(name)} />
                             </div>
                           </Col>
                           <Col sm={11} className="m-0 p-0 border-bottom bg-white">
@@ -426,7 +433,16 @@ export class BaseProxyBinariesForm extends React.PureComponent {
         const {binaries={}} = form;
         const update = {};
         update[evt.target.files[0].name] = await readFile(evt.target.files[0]);
-        dispatch(updateForm({binaries: {...binaries, ...update}}));
+        await dispatch(updateForm({binaries: {...binaries, ...update}}));
+    }
+
+    onDelete = async (name) => {
+        console.log('REMOVE', name);
+        const {dispatch, form} = this.props;
+        const {binaries: _binaries={}} = form;
+        const binaries = {..._binaries};
+        delete binaries[name];
+        await dispatch(updateForm({binaries}));
     }
 
     get messages () {
@@ -455,6 +471,7 @@ export class BaseProxyBinariesForm extends React.PureComponent {
                   </Col>
                 </PlaygroundFormGroupRow>
                 <BinariesListForm
+                  onDelete={this.onDelete}
                   binaries={{...binaries}} />
               </PlaygroundFormGroup>
             </PlaygroundForm>
