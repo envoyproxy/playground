@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import Accordion, {AccordionItem} from './accordion';
 import {APIContext} from '../app/context';
-import {updateForm, updateUI} from '../app/store';
+import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 
 
@@ -48,6 +48,7 @@ class BaseResources extends React.PureComponent {
     addResource = async (evt) => {
         // open the add resource modal
         const {dispatch, api} = this.props;
+        await dispatch(clearForm());
         await dispatch(updateUI({modal: api}));
     };
 
