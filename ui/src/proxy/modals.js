@@ -103,7 +103,9 @@ export {ProxyError};
 
 export class ProxyStarting extends React.PureComponent {
     static propTypes = exact({
-        status: PropTypes.object.isRequired,
+        status: PropTypes.string.isRequired,
+        form: PropTypes.object.isRequired,
+        success: PropTypes.bool
     });
 
     render () {
@@ -139,6 +141,7 @@ export class ProxyModal extends React.Component {
         dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        form: PropTypes.object.isRequired,
     });
 
     state = {success: false};

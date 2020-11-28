@@ -24,6 +24,7 @@ export class BaseServiceError extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
+        service_types: PropTypes.object.isRequired,
     });
 
     copyConfig = () => {
@@ -101,7 +102,10 @@ export {ServiceError};
 
 export class ServiceStarting extends React.PureComponent {
     static propTypes = exact({
-        status: PropTypes.object.isRequired,
+        status: PropTypes.string.isRequired,
+        form: PropTypes.object.isRequired,
+        service_types: PropTypes.object.isRequired,
+        success: PropTypes.bool,
     });
 
     render () {
@@ -135,8 +139,10 @@ export class ServiceStarting extends React.PureComponent {
 export class BaseServiceModal extends React.Component {
     static propTypes = exact({
         status: PropTypes.string.isRequired,
+        form: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        dispatch: PropTypes.func.isRequired,
     });
 
     state = {success: false};

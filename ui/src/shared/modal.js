@@ -12,6 +12,7 @@ import {ModalContext} from '../app/context';
 export class PlaygroundModalFooter extends React.PureComponent {
     static propTypes = exact({
         action: PropTypes.string.isRequired,
+        edit: PropTypes.bool.isRequired,
         onClose: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
         disabled: PropTypes.bool,
@@ -63,6 +64,9 @@ export class ModalParts extends React.PureComponent {
         ]).isRequired,
         onSubmit: PropTypes.func.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        errors: PropTypes.object,
+        editClose: PropTypes.string,
+        editAction: PropTypes.string,
     });
 
     close = (e) => {
