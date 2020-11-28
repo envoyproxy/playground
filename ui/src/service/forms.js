@@ -83,7 +83,7 @@ class BaseServiceForm extends React.PureComponent {
         if (valid) {
             delete errors.name;
         }
-        dispatch(updateForm({errors, valid, name, service_type}));
+        await dispatch(updateForm({errors, valid, name, service_type}));
     }
 
     render () {
@@ -332,6 +332,16 @@ export class BaseServiceEnvironmentForm extends React.Component {
             } else {
                 await dispatch(updateForm({vars: {}}));
             }
+        }
+    }
+
+    async componentDidMount () {
+        const {dispatch, service_type, service_types} = this.props;
+        if (service_type && service_type !== undefined) {
+            const {environment: vars} =  service_types[service_type];
+            await dispatch(updateForm({vars}));
+        } else {
+            await dispatch(updateForm({vars: {}}));
         }
     }
 
