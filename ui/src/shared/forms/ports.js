@@ -24,8 +24,7 @@ export class PortMappingListForm extends React.PureComponent {
     });
 
     render () {
-        const {port_mappings=[]} = this.props;
-        const onDelete = null;
+        const {onDelete, port_mappings=[]} = this.props;
         const title = '';
 
         if (port_mappings.length === 0) {
@@ -75,7 +74,7 @@ export class PortMappingListForm extends React.PureComponent {
                               <ActionRemove
                                 title={mapping_from}
                                 name={mapping_from}
-                                remove={evt => this.onDelete(evt, onDelete)} />
+                                remove={e => onDelete(mapping_from)} />
                             </div>
                           </Col>
                           <Col sm={4} className="m-0 p-0 border-bottom">
@@ -112,13 +111,14 @@ export class BasePortMappingForm extends React.Component {
         mapping_to: undefined,
         mapping_type: undefined};
 
-    onClick = (evt) => {
+    onClick = async (evt) => {
         const {mapping_from=10000, mapping_to=10000, mapping_type} = this.state;
         const {dispatch, form} = this.props;
         const {port_mappings=[]} = form;
         const newMappings = [...port_mappings, {mapping_from, mapping_to, mapping_type}];
         this.setState({mapping_from: undefined, mapping_to: undefined, mapping_type: undefined});
-        dispatch(updateForm({port_mappings: newMappings}));
+        // TODO: add validation against existing ports
+        await dispatch(updateForm({port_mappings: newMappings}));
     }
 
     onChange = (evt) => {
@@ -133,6 +133,12 @@ export class BasePortMappingForm extends React.Component {
             "Expose ports from your container to localhost.",
             "Type hint is used to create links only."
         ];
+    }
+
+    onDelete = async (item) => {
+        const {dispatch, form} = this.props;
+        const {port_mappings=[]} = form;
+        await dispatch(updateForm({port_mappings: port_mappings.filter(v => v.mapping_from !== item)}));
     }
 
     render () {
@@ -181,7 +187,9 @@ export class BasePortMappingForm extends React.Component {
                       onClick={this.onClick}>+</Button>
                   </Col>
                 </PlaygroundFormGroupRow>
-                <PortMappingListForm port_mappings={[...port_mappings]} />
+                <PortMappingListForm
+		  onDelete={this.onDelete}
+		  port_mappings={[...port_mappings]} />
               </PlaygroundFormGroup>
             </PlaygroundForm>
         );

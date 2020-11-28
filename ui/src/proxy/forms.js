@@ -128,21 +128,21 @@ export class BaseProxyForm extends React.PureComponent {
 
         if (name.length > parseInt(max_name_length)) {
             valid = false;
-            errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
+            errors.name.push('Proxy name too long, maximum ' + max_name_length + ' chars.');
         }
         for (const forbidden of ['..', '--', '__']) {
             if (name.indexOf(forbidden) !== -1) {
                 valid = false;
-                errors.name.push('Network name cannot contain \'' + forbidden + '\'');
+                errors.name.push('Proxy name cannot contain \'' + forbidden + '\'');
             }
         }
         if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
             valid = false;
-            errors.name.push('Network name contains forbidden characters');
+            errors.name.push('Proxy name contains forbidden characters');
         }
         if (Object.keys(proxies).indexOf(name) !== -1) {
             valid = false;
-            errors.name.push('Network name exists already');
+            errors.name.push('Proxy name exists already');
         }
 
         if (valid) {
