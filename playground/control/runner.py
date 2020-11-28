@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 
 from aiohttp import web
 import aiohttp_cors
