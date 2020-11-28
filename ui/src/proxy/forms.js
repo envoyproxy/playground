@@ -160,7 +160,7 @@ export class BaseProxyForm extends React.PureComponent {
         }
         if (config.length > 0) {
             try {
-                const yaml = Yaml.safeLoad(config);
+                Yaml.safeLoad(config);
             }
             catch (error) {
                 valid = false;
