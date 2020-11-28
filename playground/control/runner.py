@@ -22,8 +22,10 @@ class PlaygroundRunner(object):
             path: str,
             handler,
             method="GET") -> None:
+        route = self.cors.add(
+            self.app.router.add_resource(path)).add_route(method, handler)
         self.cors.add(
-            self.cors.add(self.app.router.add_resource(path)).add_route(method, handler),
+            route,
             {self.cors_allowed: aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers=("X-Custom-Server-Header",),
@@ -45,7 +47,7 @@ class PlaygroundRunner(object):
                     '/',
                     "/code/build",
                     show_index=True)]
-            app.add_routes(routes)
+            self.app.add_routes(routes)
         else:
             self.cors.add(
                 self.app.router.add_static('/static', "/services"),

@@ -20,5 +20,6 @@ ENDPOINTS = (
 def main():
     PlaygroundRunner(ENDPOINTS, CORS_ALLOWED).run()
 
+
 if __name__ == "__main__":
     main()
