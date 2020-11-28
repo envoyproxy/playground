@@ -1,11 +1,7 @@
 
-from unittest.mock import patch
-
 from playground.control import runner
 
-
-def _patch(path):
-    return patch(f'playground.control.{path}')
+from utils import _patch
 
 
 def test_runner():
