@@ -169,11 +169,13 @@ class PlaygroundAPI(object):
                 f'envoy__playground__{resource}__', ''),
             status=event["status"])
         ports = container['HostConfig']['PortBindings'] or {}
-        port_mappings = [
-            {'mapping_from': v[0]['HostPort'],
-             'mapping_to': k.split('/')[0]}
-            for k, v in ports.items()
-            if v[0]['HostPort']]
+        port_mappings = []
+        for container_port, mappings in ports.items():
+            for mapping in mappings:
+                if mapping['HostPort']:
+                    port_mappings.append(
+                        dict(mapping_from=mapping['HostPort'],
+                             mapping_to=container_port.split('/')[0]))
         if port_mappings:
             to_publish["port_mappings"] = port_mappings
         await self.publish(
