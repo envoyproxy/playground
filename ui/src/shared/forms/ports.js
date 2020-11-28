@@ -20,6 +20,7 @@ import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './bas
 
 export class PortMappingListForm extends React.PureComponent {
     static propTypes = exact({
+        onDelete: PropTypes.func.isRequired,
         port_mappings: PropTypes.array,
     });
 

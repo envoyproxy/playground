@@ -34,6 +34,8 @@ class BaseServiceForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        meta: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
     });
 
@@ -235,7 +237,8 @@ export {ServiceConfigurationForm};
 
 export class ServiceEnvironmentListForm extends React.PureComponent {
     static propTypes = exact({
-        vars: PropTypes.array,
+        vars: PropTypes.object,
+        onDelete: PropTypes.func.isRequired,
     });
 
     render () {
@@ -262,7 +265,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
                 </Row>
                 {Object.entries(vars).map(([k, v], index) => {
                     let value = v;
-                    if (!v || v.length === 0) {
+                    if (v === null || v === undefined || v.length === 0) {
                         value = <span>&nbsp;</span>;
                     }
                     return (
@@ -297,6 +300,8 @@ export class BaseServiceEnvironmentForm extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
+        service_type: PropTypes.string.isRequired,
+        service_types: PropTypes.object.isRequired,
     });
 
     state = {value: '', key: ''};

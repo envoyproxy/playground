@@ -133,7 +133,10 @@ export class ActionClear extends React.PureComponent {
 export class ActionRemove extends React.PureComponent {
     static propTypes = {
         remove: PropTypes.func.isRequired,
-        name: PropTypes.string.isRequired,
+        name: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
     };
 
     render () {

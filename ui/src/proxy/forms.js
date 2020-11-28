@@ -106,6 +106,8 @@ export class BaseProxyForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
+        meta: PropTypes.object.isRequired,
     });
 
     get messages () {
@@ -316,6 +318,8 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
+        meta: PropTypes.object.isRequired,
     });
 
     onChange = async (evt) => {
@@ -426,6 +430,8 @@ export class BaseProxyBinariesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
+        meta: PropTypes.object.isRequired,
     });
 
     onChange = async (evt) => {
@@ -512,7 +518,6 @@ export class BaseProxyLoggingForm extends React.PureComponent {
                       id="default-level"
                       value={logging.default}
                       onChange={this.onChange}
-                      autocomplete="off"
                       name="default-level">
                       <option>Select log level</option>
                       <option value="info">info (default)</option>
