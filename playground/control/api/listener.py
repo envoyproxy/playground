@@ -32,7 +32,7 @@ class PlaygroundAPI(object):
 
     def __init__(self):
         self.connector = PlaygroundDockerClient()
-        self.handler = PlaygroundEventHandler()
+        self.handler = PlaygroundEventHandler(self.connector)
 
     # todo: use a cached property or somesuch.
     @property

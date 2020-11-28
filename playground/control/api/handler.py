@@ -8,6 +8,9 @@ from aiodocker.exceptions import DockerError
 
 class PlaygroundEventHandler(object):
 
+    def __init__(self, connector):
+        self.connector = connector
+
     async def handle_container(
             self,
             ws: web.WebSocketResponse,
@@ -108,7 +111,7 @@ class PlaygroundEventHandler(object):
     async def handle_image(
             self,
             ws: web.WebSocketResponse,
-            event):
+            event: dict) -> None:
         if event['Action'] == 'pull':
             # todo: if image is one configured for envoy or services
             #  then emit a signal to ui. This will be more useful
@@ -202,7 +205,7 @@ class PlaygroundEventHandler(object):
     async def handle_proxy_creation(
             self,
             ws: web.WebSocketResponse,
-            event):
+            event: dict) -> None:
         # print('PROXY CREATE', event)
         await self.publish(
             ws,
