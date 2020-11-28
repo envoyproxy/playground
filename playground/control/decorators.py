@@ -15,7 +15,7 @@ def api(original_fun=None, attribs=None):
     def _api(fun):
 
         @wraps(fun)
-        async def wrapped_fun(request):
+        async def wrapped_fun(request: web.Request) -> web.Response:
             if attribs:
                 request = PlaygroundRequest(request, attribs=attribs)
                 try:
