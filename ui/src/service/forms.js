@@ -239,8 +239,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
     });
 
     render () {
-        const {vars={}} = this.props;
-        const onDelete = null;
+        const {onDelete, vars={}} = this.props;
         const title = '';
         return (
             <Row className="mt-2 pb-3">
@@ -263,14 +262,18 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
                   </Col>
                 </Row>
                 {Object.entries(vars).map(([k, v], index) => {
+                    let value = v;
+                    if (!v || v.length === 0) {
+                        value = <span>&nbsp;</span>;
+                    }
                     return (
                         <Row key={index} className="pl-5 pr-5">
                           <Col sm={1} className="m-0 p-0">
                             <div className="p-2 bg-white">
                               <ActionRemove
-                                title={title}
-                                name={title}
-                                remove={evt => this.onDelete(evt, onDelete)} />
+                                title={k}
+                                name={k}
+                                remove={e => onDelete(k)} />
                             </div>
                           </Col>
                           <Col sm={6} className="m-0 p-0 border-bottom">
@@ -280,7 +283,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
                           </Col>
                           <Col sm={5} className="m-0 p-0 border-bottom">
                             <div className="p-2 bg-white">
-                              {v + ''}
+                              {value}
                             </div>
                           </Col>
                         </Row>);
@@ -297,7 +300,7 @@ export class BaseServiceEnvironmentForm extends React.Component {
         form: PropTypes.object.isRequired,
     });
 
-    state = {value: '', network: ''};
+    state = {value: '', key: ''};
 
     onClick = async (evt) => {
         const {value, key} = this.state;
@@ -313,6 +316,14 @@ export class BaseServiceEnvironmentForm extends React.Component {
         const update = {};
         update[evt.target.name] = evt.target.value;
         this.setState({...update});
+    }
+
+    onDelete = async (name) => {
+        const {dispatch, form} = this.props;
+        const {vars: _vars={}} = form;
+        const vars = {..._vars};
+        delete vars[name];
+        await dispatch(updateForm({vars}));
     }
 
     get messages () {
@@ -349,6 +360,11 @@ export class BaseServiceEnvironmentForm extends React.Component {
         const {value, key} = this.state;
         const {form} = this.props;
         const {vars={}} = form;
+        let disabled = true;
+        if (key && key.trim().length > 0 && key.indexOf(' ') === -1) {
+            disabled = false;
+        }
+
         return (
             <PlaygroundForm messages={this.messages}>
               <PlaygroundFormGroup>
@@ -376,10 +392,13 @@ export class BaseServiceEnvironmentForm extends React.Component {
                   <Col sm={2}>
                     <Button
                       color="success"
+                      disabled={disabled}
                       onClick={this.onClick}>+</Button>
                   </Col>
                 </PlaygroundFormGroupRow>
-                <ServiceEnvironmentListForm vars={{...vars}} />
+                <ServiceEnvironmentListForm
+                  onDelete={this.onDelete}
+                  vars={{...vars}} />
               </PlaygroundFormGroup>
             </PlaygroundForm>
         );
