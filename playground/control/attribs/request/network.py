@@ -1,42 +1,16 @@
 
-import re
-from collections import OrderedDict
-
 import attr
+
 from attr.validators import instance_of, matches_re
 
-from .exceptions import PlaygroundError
-from .validators import has_length, all_members, is_well_formed
-
-
-# this will give total 20, 10 per proxies/services
-MAX_NETWORK_CONNECTIONS = 10
-
-MIN_NAME_LENGTH = 2
-MAX_NAME_LENGTH = 32
-MIN_CONFIG_LENGTH = 7
-MAX_CONFIG_LENGTH = 4096
-
-RE_NAME = r'[a-z]+[a-z0-9\.\-_]*$'
-RE_NOT_NAME = r'(?!.*(__|\.\.|\-\-)+.*$)'
-RE_UUID = r'[0-9a-f]+$'
-
-
-class ValidatingAttribs(object):
-
-    async def validate(self, api):
-        pass
-
-
-@attr.s(kw_only=True)
-class AttribsWithName(ValidatingAttribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
+from playground.control.attribs.validators import (
+    has_length, all_members)
+from playground.control.attribs.base import (
+    AttribsWithName, ValidatingAttribs)
+from playground.control.constants import (
+    MAX_NETWORK_CONNECTIONS,
+    RE_UUID)
+from playground.control.exceptions import PlaygroundError
 
 
 @attr.s(kw_only=True)
@@ -141,82 +115,7 @@ class NetworkEditAttribs(ValidatingAttribs):
 
 
 @attr.s
-class ProxyAddAttribs(AttribsWithName):
-    configuration = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_CONFIG_LENGTH}'),
-            has_length(f'<={MAX_CONFIG_LENGTH}'),
-            is_well_formed('yaml')])
-
-    # v: length
-    # v: port_mapping dicts
-    # v: mapping to/from are in valid ranges
-    port_mappings = attr.ib(default=[])
-
-    # v: length
-    # v: valid keys
-    # v: length of values
-    certs = attr.ib(default=OrderedDict())
-
-    # v: length
-    # v: valid keys
-    # v: length of values
-    binaries = attr.ib(default=OrderedDict())
-
-    # v: option/s
-    logging = attr.ib(default=OrderedDict())
-
-    async def validate(self, api):
-        pass
-
-
-# todo check length/validity of keys/values
-def _validate_env_vars(item):
-    if not item[0].strip():
-        return
-    return True
-
-
-@attr.s
-class ServiceAddAttribs(AttribsWithName):
-
-    # v: exists
-    # v: length and length of values
-    # v: valid chars
-    service_type = attr.ib()
-
-    # v: length
-    configuration = attr.ib(default='')
-
-    # v: length
-    # v: valid keys (length, chars)
-    # v: valid values (length)
-    # todo: im sure there must be a way to validate an
-    #        attrib as an attrib class.
-    env = attr.ib(
-        default=OrderedDict(),
-        validator=[
-            all_members(_validate_env_vars)])
-
-    async def validate(self, api):
-        pass
-
-
-@attr.s
-class ServiceDeleteAttribs(AttribsWithName):
-
-    async def validate(self, api):
-        pass
-
-
-@attr.s
 class NetworkDeleteAttribs(AttribsWithName):
 
     async def validate(self, api):
         pass
-
-
-@attr.s
-class ProxyDeleteAttribs(AttribsWithName):
-    pass

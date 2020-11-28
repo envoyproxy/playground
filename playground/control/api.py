@@ -13,17 +13,17 @@ from aiohttp.web import Request, Response
 
 from aiodocker.exceptions import DockerError
 
-from .connectors.docker.client import PlaygroundDockerClient
-
-from .decorators import api, method_decorator
-from .request import PlaygroundRequest
 from .attribs import (
-    MIN_NAME_LENGTH, MAX_NAME_LENGTH,
-    MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
-    MAX_NETWORK_CONNECTIONS,
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
     ProxyAddAttribs, ProxyDeleteAttribs,
     ServiceAddAttribs, ServiceDeleteAttribs)
+from .constants import (
+    MIN_NAME_LENGTH, MAX_NAME_LENGTH,
+    MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
+    MAX_NETWORK_CONNECTIONS)
+from .connectors.docker.client import PlaygroundDockerClient
+from .decorators import api, method_decorator
+from .request import PlaygroundRequest
 
 
 class PlaygroundAPI(object):
