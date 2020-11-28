@@ -22,12 +22,14 @@ RE_NOT_NAME = r'(?!.*(__|\.\.|\-\-)+.*$)'
 RE_UUID = r'[0-9a-f]+$'
 
 
-class Attribs(object):
-    pass
+class ValidatingAttribs(object):
+
+    async def validate(self, api):
+        pass
 
 
 @attr.s(kw_only=True)
-class AddNetworkAttribs(Attribs):
+class AttribsWithName(ValidatingAttribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -35,6 +37,10 @@ class AddNetworkAttribs(Attribs):
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
             matches_re(RE_NOT_NAME, func=re.match), ])
+
+
+@attr.s(kw_only=True)
+class NetworkAddAttribs(AttribsWithName):
     proxies = attr.ib(
         default=[],
         validator=[
@@ -84,7 +90,7 @@ class AddNetworkAttribs(Attribs):
 
 
 @attr.s
-class EditNetworkAttribs(Attribs):
+class NetworkEditAttribs(ValidatingAttribs):
     id = attr.ib(
         has_length(10),
         matches_re(RE_UUID))
@@ -135,15 +141,7 @@ class EditNetworkAttribs(Attribs):
 
 
 @attr.s
-class AddProxyAttribs(Attribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
-
+class ProxyAddAttribs(AttribsWithName):
     configuration = attr.ib(
         validator=[
             instance_of(str),
@@ -181,14 +179,7 @@ def _validate_env_vars(item):
 
 
 @attr.s
-class AddServiceAttribs(Attribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
+class ServiceAddAttribs(AttribsWithName):
 
     # v: exists
     # v: length and length of values
@@ -213,42 +204,19 @@ class AddServiceAttribs(Attribs):
 
 
 @attr.s
-class DeleteServiceAttribs(Attribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
+class ServiceDeleteAttribs(AttribsWithName):
 
     async def validate(self, api):
         pass
 
 
 @attr.s
-class DeleteNetworkAttribs(Attribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
+class NetworkDeleteAttribs(AttribsWithName):
 
     async def validate(self, api):
         pass
 
 
 @attr.s
-class DeleteProxyAttribs(Attribs):
-    name = attr.ib(
-        validator=[
-            instance_of(str),
-            has_length(f'>={MIN_NAME_LENGTH}'),
-            has_length(f'<={MAX_NAME_LENGTH}'),
-            matches_re(RE_NAME),
-            matches_re(RE_NOT_NAME, func=re.match), ])
-
-    async def validate(self, api):
-        pass
+class ProxyDeleteAttribs(AttribsWithName):
+    pass
