@@ -8,7 +8,7 @@ from .api import PlaygroundAPI
 
 class PlaygroundRunner(object):
 
-    def __init__(self, endpoints, cors_allowed):
+    def __init__(self, endpoints: tuple, cors_allowed: str):
         self.endpoints = endpoints
         self.cors_allowed = cors_allowed
         self.app = web.Application()
