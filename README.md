@@ -2,8 +2,9 @@
 
 [![codecov](https://codecov.io/gh/envoyproxy/playground/branch/main/graph/badge.svg)](https://codecov.io/gh/envoyproxy/playground)
 
-[![Azure Pipelines](https://dev.azure.com/cncf/envoy/_apis/build/status/26?branchName=master)](https://dev.azure.com/cncf/envoy/_build/latest?definitionId=26&branchName=master)
 
+[//]: # (TODO: fix AZP)
+[//]: # ([![Azure Pipelines](https://dev.azure.com/cncf/envoy/_apis/build/status/26?branchName=master)](https://dev.azure.com/cncf/envoy/_build/latest?definitionId=26&branchName=master))
 
 The Envoy playground allows you to experiment with proxies, services and networks using Docker.
 
