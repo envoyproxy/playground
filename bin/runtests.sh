@@ -50,12 +50,18 @@ sh_tests () {
 
 run_tests () {
     mkdir -p .cache/coverage
-    js_tests
-    py_tests
-    sh_tests
+    if [[ -z "$1" || "$1" == "js" ]]; then
+	js_tests
+    fi
+    if [[ -z "$1" || "$1" == "py" ]]; then
+	py_tests
+    fi
+    if [[ -z "$1" || "$1" == "sh" ]]; then
+	sh_tests
+    fi
 }
 
-run_tests
+run_tests "$@"
 
 if [[ "${#FAILED[@]}" -ne "0" ]]; then
     echo "TESTS FAILED:"

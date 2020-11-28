@@ -1,10 +1,14 @@
 
 import rapidjson as json
 
+from aiohttp.web import Request
+
+from .attribs import Attribs
+
 
 class PlaygroundRequest(object):
 
-    def __init__(self, request, attribs=None):
+    def __init__(self, request: Request, attribs: Attribs = None):
         self._request = request
         self._attribs = attribs
 

@@ -20,6 +20,7 @@ extras_require = {}
 extras_require['test'] = [
     "flake8",
     "pytest",
+    "pytest-console-scripts",
     "pytest-mock",
     "pytest-cov"]
 

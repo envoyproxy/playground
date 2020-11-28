@@ -16,8 +16,8 @@ class PlaygroundDockerClient(object):
     _mount_image = "busybox"
 
     def __init__(self):
-        self.client = aiodocker.Docker()
-        self.events = PlaygroundDockerEvents(self.client)
+        self.docker = aiodocker.Docker()
+        self.events = PlaygroundDockerEvents(self.docker)
 
     async def create_service(
             self,
@@ -34,7 +34,7 @@ class PlaygroundDockerClient(object):
             "%s=%s" % (k, v)
             for k, v
             in environment.items()]
-        container = await self.client.containers.create_or_replace(
+        container = await self.docker.containers.create_or_replace(
             config=self._get_service_config(
                 service_type,
                 image,
@@ -51,7 +51,7 @@ class PlaygroundDockerClient(object):
             mounts: dict,
             mappings: list,
             logging: dict) -> None:
-        container = await self.client.containers.create_or_replace(
+        container = await self.docker.containers.create_or_replace(
             config=self._get_proxy_config(
                 image,
                 name,
@@ -65,7 +65,7 @@ class PlaygroundDockerClient(object):
             name: str,
             proxies: Optional[list] = None,
             services: Optional[list] = None) -> None:
-        network = await self.client.networks.create(
+        network = await self.docker.networks.create(
             dict(name="__playground_%s" % name,
                  labels={"envoy.playground.network": name}))
         if proxies:
@@ -84,13 +84,13 @@ class PlaygroundDockerClient(object):
             mount: str) -> None:
         volume_config = await self._get_volume_config(
             container_type, name, mount)
-        return await self.client.volumes.create(volume_config)
+        return await self.docker.volumes.create(volume_config)
 
     async def delete_network(self, name: str) -> None:
-        for network in await self.client.networks.list():
+        for network in await self.docker.networks.list():
             if "envoy.playground.network" in network["Labels"]:
                 if network["Name"] == "__playground_%s" % name:
-                    _network = await self.client.networks.get(network["Id"])
+                    _network = await self.docker.networks.get(network["Id"])
                     info = await _network.show()
                     for container in info["Containers"].keys():
                         await _network.disconnect({"Container": container})
@@ -98,7 +98,7 @@ class PlaygroundDockerClient(object):
 
     async def delete_proxy(self, name: str) -> None:
         # todo: use uuid
-        for container in await self.client.containers.list():
+        for container in await self.docker.containers.list():
             if "envoy.playground.proxy" in container["Labels"]:
                 name_matches = (
                     "/envoy__playground__proxy__%s" % name
@@ -111,19 +111,19 @@ class PlaygroundDockerClient(object):
                     await container.wait()
                     await container.delete(v=True)
                     if volumes:
-                        _volumes = await self.client.volumes.list()
+                        _volumes = await self.docker.volumes.list()
                         for volume in _volumes['Volumes']:
                             volume_name = volume['Name']
                             if volume_name not in volumes:
                                 continue
-                            volume_delete = self.client._query(
+                            volume_delete = self.docker._query(
                                     f"volumes/{volume_name}",
                                     method="DELETE")
                             async with volume_delete:
                                 pass
 
     async def delete_service(self, name: str) -> None:
-        for container in await self.client.containers.list():
+        for container in await self.docker.containers.list():
             if "envoy.playground.service" in container["Labels"]:
                 name_matches = (
                     "/envoy__playground__service__%s" % name
@@ -136,12 +136,12 @@ class PlaygroundDockerClient(object):
                     await container.wait()
                     await container.delete(v=True, force=True)
                     if volumes:
-                        _volumes = await self.client.volumes.list()
+                        _volumes = await self.docker.volumes.list()
                         for volume in _volumes['Volumes']:
                             volume_name = volume['Name']
                             if volume_name not in volumes:
                                 continue
-                            volume_delete = self.client._query(
+                            volume_delete = self.docker._query(
                                     f"volumes/{volume_name}",
                                     method="DELETE")
                             async with volume_delete:
@@ -152,7 +152,7 @@ class PlaygroundDockerClient(object):
             id: str,
             proxies: Optional[list] = None,
             services: Optional[list] = None) -> None:
-        network = await self.client.networks.get(id)
+        network = await self.docker.networks.get(id)
         info = await network.show()
         containers = {
             container['Name'].replace(
@@ -175,36 +175,36 @@ class PlaygroundDockerClient(object):
                 await network.disconnect({"Container": service["id"]})
 
     async def get_container(self, id: str):
-        return await self.client.containers.get(id)
+        return await self.docker.containers.get(id)
 
     async def get_network(self, id: str):
-        return await self.client.networks.get(id)
+        return await self.docker.networks.get(id)
 
     async def image_exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        for image in await self.client.images.list():
+        for image in await self.docker.images.list():
             if image_tag in (image['RepoTags'] or []):
                 return True
         return False
 
     async def list_networks(self) -> list:
         return await self._list_resources(
-            self.client.networks, "network")
+            self.docker.networks, "network")
 
     async def list_proxies(self) -> list:
         return await self._list_resources(
-            self.client.containers, "proxy")
+            self.docker.containers, "proxy")
 
     async def list_services(self) -> list:
         return await self._list_resources(
-            self.client.containers, "service")
+            self.docker.containers, "service")
 
     async def pull_image(self, image_tag: str) -> None:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        await self.client.images.pull(image_tag)
+        await self.docker.images.pull(image_tag)
 
     async def remove_volume(
             self,
@@ -212,7 +212,7 @@ class PlaygroundDockerClient(object):
             name: str,
             mount: str) -> None:
         volume_name = f"envoy_playground__{container_type}__{name}__{mount}"
-        delete_context = self.client._query(
+        delete_context = self.docker._query(
             f"volumes/{volume_name}",
             method="DELETE")
         async with delete_context:
@@ -230,7 +230,7 @@ class PlaygroundDockerClient(object):
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(volume, v, mount, k)
-            container = await self.client.containers.create_or_replace(
+            container = await self.docker.containers.create_or_replace(
                 config=config,
                 name=volume)
             await container.start()
