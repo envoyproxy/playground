@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 
 from aiohttp import web
 import aiohttp_cors
@@ -20,8 +21,8 @@ class PlaygroundRunner(object):
     def add_endpoint(
             self,
             path: str,
-            handler,
-            method="GET") -> None:
+            handler: Callable[[web.Request], web.Response],
+            method: str = "GET") -> None:
         route = self.cors.add(
             self.app.router.add_resource(path)).add_route(method, handler)
         self.cors.add(
@@ -32,14 +33,14 @@ class PlaygroundRunner(object):
                 allow_headers=("X-Requested-With", "Content-Type"),
                 max_age=3600)})
 
-    def add_endpoints(self):
+    def add_endpoints(self) -> None:
         for endpoint in self.endpoints:
             endpoint = (
                 endpoint[0],
                 getattr(self.api, endpoint[1])) + endpoint[2:]
             self.add_endpoint(*endpoint)
 
-    def add_static(self):
+    def add_static(self) -> None:
         if os.path.exists('/code/build'):
             self.app.router.add_route('*', '/', self.root_handler)
             routes = [
@@ -57,8 +58,8 @@ class PlaygroundRunner(object):
                     allow_headers=("X-Requested-With", "Content-Type"),
                     max_age=3600)})
 
-    async def root_handler(self, request):
+    async def root_handler(self, request: web.Request) -> web.Response:
         return web.HTTPFound('/index.html')
 
-    def run(self):
+    def run(self) -> None:
         web.run_app(self.app)

@@ -28,6 +28,7 @@ class NetworkAddAttribs(AttribsWithName):
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
             all_members(lambda m: type(m) == str)])
 
+    # api: p.c.api.PlaygroundAPI
     async def validate(self, api):
         networks = await api.connector.list_networks()
 
@@ -81,6 +82,7 @@ class NetworkEditAttribs(ValidatingAttribs):
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
             all_members(lambda m: type(m) == str)])
 
+    # api: p.c.api.PlaygroundAPI
     async def validate(self, api):
         networks = await api.connector.list_networks()
 
@@ -116,6 +118,4 @@ class NetworkEditAttribs(ValidatingAttribs):
 
 @attr.s
 class NetworkDeleteAttribs(AttribsWithName):
-
-    async def validate(self, api):
-        pass
+    pass

@@ -3,6 +3,7 @@ import base64
 import functools
 import os
 from collections import OrderedDict
+from typing import Union
 
 import rapidjson as json
 
@@ -11,19 +12,18 @@ import yaml
 from aiohttp import web
 from aiohttp.web import Request, Response
 
-from aiodocker.exceptions import DockerError
-
-from .attribs import (
+from playground.control.attribs import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
     ProxyAddAttribs, ProxyDeleteAttribs,
     ServiceAddAttribs, ServiceDeleteAttribs)
-from .constants import (
+from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
     MAX_NETWORK_CONNECTIONS)
-from .connectors.docker.client import PlaygroundDockerClient
-from .decorators import api, method_decorator
-from .request import PlaygroundRequest
+from playground.control.connectors.docker.client import PlaygroundDockerClient
+from playground.control.decorators import api, method_decorator
+from playground.control.request import PlaygroundRequest
+from playground.control.api.handler import PlaygroundEventHandler
 
 
 class PlaygroundAPI(object):
@@ -32,6 +32,7 @@ class PlaygroundAPI(object):
 
     def __init__(self):
         self.connector = PlaygroundDockerClient()
+        self.handler = PlaygroundEventHandler(self.connector)
 
     # todo: use a cached property or somesuch.
     @property
@@ -83,9 +84,9 @@ class PlaygroundAPI(object):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         handler = dict(
-            image=functools.partial(self.handle_image, ws),
-            container=functools.partial(self.handle_container, ws),
-            network=functools.partial(self.handle_network, ws))
+            image=functools.partial(self.handler.handle_image, ws),
+            container=functools.partial(self.handler.handle_container, ws),
+            network=functools.partial(self.handler.handle_network, ws))
         hashed = str(hash(ws))
         self.connector.events.subscribe(hashed, handler, debug=[])
         try:
@@ -96,176 +97,6 @@ class PlaygroundAPI(object):
             print(e)
         finally:
             await self.connector.events.unsubscribe(hashed)
-
-    async def handle_container(self, ws, event: dict) -> None:
-        handlers = ["destroy", "start", "die"]
-        if event['Action'] not in handlers:
-            return
-        is_playground_container = set([
-            "envoy.playground.proxy",
-            "envoy.playground.service"]).intersection(
-                event["Actor"]["Attributes"])
-        is_proxy_create_container = (
-            "envoy.playground.temp.resource" in event["Actor"]["Attributes"]
-            and event['status'] == 'start')
-        if is_playground_container:
-            await getattr(
-                self,
-                'handle_container_%s' % event['Action'])(ws, event)
-        elif is_proxy_create_container:
-            await self.handle_proxy_creation(ws, event)
-
-    async def handle_container_die(self, ws, event: dict) -> None:
-        # print('CONTAINER DIE', event)
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event["Actor"]["Attributes"]
-            else "service")
-        container = await self.connector.get_container(event["id"])
-        try:
-            logs = await container.log(stdout=True, stderr=True)
-            await container.delete(force=True, v=True)
-        except DockerError:
-            # most likely been killed
-            logs = []
-        await self.publish(
-            ws,
-            dict(type="container",
-                 resource=resource,
-                 id=event["id"][:10],
-                 logs=logs,
-                 name=event["Actor"]["Attributes"]["name"].replace(
-                     f'envoy__playground__{resource}__', ''),
-                 status=event["status"]))
-
-    async def handle_container_destroy(self, ws, event: dict) -> None:
-        # print('CONTAINER DESTROY', event)
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event["Actor"]["Attributes"]
-            else "service")
-        await self.publish(
-            ws,
-            dict(type="container",
-                 resource=resource,
-                 id=event["id"][:10],
-                 name=event["Actor"]["Attributes"]["name"].replace(
-                     f'envoy__playground__{resource}__', ''),
-                 status=event["status"]))
-
-    async def handle_container_start(self, ws, event: dict) -> None:
-        # print('PROXY START', event)
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event["Actor"]["Attributes"]
-            else "service")
-        container = await self.connector.get_container(event["id"])
-        to_publish = dict(
-            type="container",
-            resource=resource,
-            id=event["id"][:10],
-            image=event['Actor']['Attributes']['image'],
-            name=event["Actor"]["Attributes"]["name"].replace(
-                f'envoy__playground__{resource}__', ''),
-            status=event["status"])
-        ports = container['HostConfig']['PortBindings'] or {}
-        port_mappings = []
-        for container_port, mappings in ports.items():
-            for mapping in mappings:
-                if mapping['HostPort']:
-                    port_mappings.append(
-                        dict(mapping_from=mapping['HostPort'],
-                             mapping_to=container_port.split('/')[0]))
-        if port_mappings:
-            to_publish["port_mappings"] = port_mappings
-        await self.publish(
-            ws,
-            to_publish)
-
-    async def handle_image(self, ws, event):
-        if event['Action'] == 'pull':
-            # todo: if image is one configured for envoy or services
-            #  then emit a signal to ui. This will be more useful
-            #  when socket events are fixed.
-            pass
-
-    async def handle_network(self, ws, event: dict) -> None:
-        handlers = ["destroy", "create", "connect", "disconnect"]
-        if event['Action'] in handlers:
-            await getattr(
-                self,
-                'handle_network_%s' % event['Action'])(
-                    ws, event)
-
-    async def handle_network_connect(self, ws, event: dict) -> None:
-        nid = event["Actor"]["ID"]
-        network = await self.connector.get_network(nid)
-        info = await network.show()
-        if "envoy.playground.network" in info["Labels"]:
-            name = info["Labels"]["envoy.playground.network"]
-            containers = [
-                container[:10]
-                for container
-                in info["Containers"].keys()]
-            await self.publish(
-                ws,
-                dict(type="network",
-                     action=event["Action"],
-                     networks={
-                         name: dict(name=name, id=nid[:10],
-                                    containers=containers)}))
-
-    async def handle_network_create(self, ws, event: dict) -> None:
-        name = event["Actor"]["Attributes"]["name"]
-        nid = event["Actor"]["ID"]
-        network = await self.connector.get_network(nid)
-        info = await network.show()
-        name = info["Labels"]["envoy.playground.network"]
-        if "envoy.playground.network" not in info["Labels"]:
-            return
-        await self.publish(
-            ws,
-            dict(type="network",
-                 action=event["Action"],
-                 networks={name: dict(name=name, id=nid[:10])}))
-
-    async def handle_network_destroy(self, ws, event: dict) -> None:
-        await self.publish(
-            ws,
-            dict(type="network",
-                 action=event["Action"],
-                 id=event["Actor"]["ID"][:10]))
-
-    async def handle_network_disconnect(self, ws, event: dict) -> None:
-        name = event["Actor"]["Attributes"]["name"]
-        nid = event["Actor"]["ID"]
-        try:
-            network = await self.connector.get_network(nid)
-            info = await network.show()
-        except DockerError:
-            return
-        if "envoy.playground.network" in info["Labels"]:
-            name = info["Labels"]["envoy.playground.network"]
-            containers = [
-                container[:10]
-                for container
-                in info["Containers"].keys()]
-            await self.publish(
-                ws,
-                dict(type="network",
-                     action=event["Action"],
-                     networks={
-                         name: dict(name=name, id=nid[:10],
-                                    containers=containers)}))
-
-    async def handle_proxy_creation(self, ws, event):
-        # print('PROXY CREATE', event)
-        await self.publish(
-            ws,
-            dict(type="container",
-                 resource=event["Actor"]["Attributes"]["name"].split('__')[1],
-                 name=event["Actor"]["Attributes"]["name"].split('__')[2],
-                 status='creating'))
 
     @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> Response:
@@ -291,7 +122,12 @@ class PlaygroundAPI(object):
             services=request.data.services)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    async def populate_volume(self, container_type, name, mount, files):
+    async def populate_volume(
+            self,
+            container_type: str,
+            name: str,
+            mount: str,
+            files: Union[dict, OrderedDict]):
         # create volume
         volume = await self.connector.create_volume(
             container_type, name, mount)
@@ -354,10 +190,6 @@ class PlaygroundAPI(object):
         await request.validate(self)
         await self.connector.delete_proxy(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
-
-    async def publish(self, ws, event: dict) -> None:
-        # print("PUBLISH", event)
-        await ws.send_json(event, dumps=json.dumps)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> Response:

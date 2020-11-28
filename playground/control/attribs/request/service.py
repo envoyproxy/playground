@@ -8,7 +8,7 @@ from playground.control.attribs.validators import all_members
 
 
 # todo check length/validity of keys/values
-def _validate_env_vars(item):
+def _validate_env_vars(item: list):
     if not item[0].strip():
         return
     return True
@@ -41,6 +41,4 @@ class ServiceAddAttribs(AttribsWithName):
 
 @attr.s
 class ServiceDeleteAttribs(AttribsWithName):
-
-    async def validate(self, api):
-        pass
+    pass

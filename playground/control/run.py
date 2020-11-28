@@ -17,5 +17,5 @@ ENDPOINTS = (
     ("/service/delete", "service_delete", "POST"))
 
 
-def main():
+def main() -> None:
     PlaygroundRunner(ENDPOINTS, CORS_ALLOWED).run()
