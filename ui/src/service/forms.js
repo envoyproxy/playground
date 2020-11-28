@@ -262,7 +262,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
                 </Row>
                 {Object.entries(vars).map(([k, v], index) => {
                     let value = v;
-                    if (!v || v.length === 0) {
+                    if (v === null || v === undefined || v.length === 0) {
                         value = <span>&nbsp;</span>;
                     }
                     return (
