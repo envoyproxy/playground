@@ -3,6 +3,7 @@ import base64
 import functools
 import os
 from collections import OrderedDict
+from typing import Union
 
 import rapidjson as json
 
@@ -97,7 +98,10 @@ class PlaygroundAPI(object):
         finally:
             await self.connector.events.unsubscribe(hashed)
 
-    async def handle_container(self, ws, event: dict) -> None:
+    async def handle_container(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         handlers = ["destroy", "start", "die"]
         if event['Action'] not in handlers:
             return
@@ -115,7 +119,10 @@ class PlaygroundAPI(object):
         elif is_proxy_create_container:
             await self.handle_proxy_creation(ws, event)
 
-    async def handle_container_die(self, ws, event: dict) -> None:
+    async def handle_container_die(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         # print('CONTAINER DIE', event)
         resource = (
             "proxy"
@@ -138,7 +145,10 @@ class PlaygroundAPI(object):
                      f'envoy__playground__{resource}__', ''),
                  status=event["status"]))
 
-    async def handle_container_destroy(self, ws, event: dict) -> None:
+    async def handle_container_destroy(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         # print('CONTAINER DESTROY', event)
         resource = (
             "proxy"
@@ -153,7 +163,10 @@ class PlaygroundAPI(object):
                      f'envoy__playground__{resource}__', ''),
                  status=event["status"]))
 
-    async def handle_container_start(self, ws, event: dict) -> None:
+    async def handle_container_start(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         # print('PROXY START', event)
         resource = (
             "proxy"
@@ -182,14 +195,20 @@ class PlaygroundAPI(object):
             ws,
             to_publish)
 
-    async def handle_image(self, ws, event):
+    async def handle_image(
+            self,
+            ws: web.WebSocketResponse,
+            event):
         if event['Action'] == 'pull':
             # todo: if image is one configured for envoy or services
             #  then emit a signal to ui. This will be more useful
             #  when socket events are fixed.
             pass
 
-    async def handle_network(self, ws, event: dict) -> None:
+    async def handle_network(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         handlers = ["destroy", "create", "connect", "disconnect"]
         if event['Action'] in handlers:
             await getattr(
@@ -197,7 +216,10 @@ class PlaygroundAPI(object):
                 'handle_network_%s' % event['Action'])(
                     ws, event)
 
-    async def handle_network_connect(self, ws, event: dict) -> None:
+    async def handle_network_connect(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         nid = event["Actor"]["ID"]
         network = await self.connector.get_network(nid)
         info = await network.show()
@@ -215,7 +237,10 @@ class PlaygroundAPI(object):
                          name: dict(name=name, id=nid[:10],
                                     containers=containers)}))
 
-    async def handle_network_create(self, ws, event: dict) -> None:
+    async def handle_network_create(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
         network = await self.connector.get_network(nid)
@@ -229,14 +254,20 @@ class PlaygroundAPI(object):
                  action=event["Action"],
                  networks={name: dict(name=name, id=nid[:10])}))
 
-    async def handle_network_destroy(self, ws, event: dict) -> None:
+    async def handle_network_destroy(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         await self.publish(
             ws,
             dict(type="network",
                  action=event["Action"],
                  id=event["Actor"]["ID"][:10]))
 
-    async def handle_network_disconnect(self, ws, event: dict) -> None:
+    async def handle_network_disconnect(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
         try:
@@ -258,7 +289,10 @@ class PlaygroundAPI(object):
                          name: dict(name=name, id=nid[:10],
                                     containers=containers)}))
 
-    async def handle_proxy_creation(self, ws, event):
+    async def handle_proxy_creation(
+            self,
+            ws: web.WebSocketResponse,
+            event):
         # print('PROXY CREATE', event)
         await self.publish(
             ws,
@@ -291,7 +325,12 @@ class PlaygroundAPI(object):
             services=request.data.services)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    async def populate_volume(self, container_type, name, mount, files):
+    async def populate_volume(
+            self,
+            container_type: str,
+            name: str,
+            mount: str,
+            files: Union[dict, OrderedDict]):
         # create volume
         volume = await self.connector.create_volume(
             container_type, name, mount)
@@ -355,7 +394,10 @@ class PlaygroundAPI(object):
         await self.connector.delete_proxy(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    async def publish(self, ws, event: dict) -> None:
+    async def publish(
+            self,
+            ws: web.WebSocketResponse,
+            event: dict) -> None:
         # print("PUBLISH", event)
         await ws.send_json(event, dumps=json.dumps)
 
