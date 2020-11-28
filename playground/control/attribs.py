@@ -22,8 +22,12 @@ RE_NOT_NAME = r'(?!.*(__|\.\.|\-\-)+.*$)'
 RE_UUID = r'[0-9a-f]+$'
 
 
+class Attribs(object):
+    pass
+
+
 @attr.s(kw_only=True)
-class AddNetworkAttribs(object):
+class AddNetworkAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -80,7 +84,7 @@ class AddNetworkAttribs(object):
 
 
 @attr.s
-class EditNetworkAttribs(object):
+class EditNetworkAttribs(Attribs):
     id = attr.ib(
         has_length(10),
         matches_re(RE_UUID))
@@ -131,7 +135,7 @@ class EditNetworkAttribs(object):
 
 
 @attr.s
-class AddProxyAttribs(object):
+class AddProxyAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -177,7 +181,7 @@ def _validate_env_vars(item):
 
 
 @attr.s
-class AddServiceAttribs(object):
+class AddServiceAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -209,7 +213,7 @@ class AddServiceAttribs(object):
 
 
 @attr.s
-class DeleteServiceAttribs(object):
+class DeleteServiceAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -223,7 +227,7 @@ class DeleteServiceAttribs(object):
 
 
 @attr.s
-class DeleteNetworkAttribs(object):
+class DeleteNetworkAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
@@ -237,7 +241,7 @@ class DeleteNetworkAttribs(object):
 
 
 @attr.s
-class DeleteProxyAttribs(object):
+class DeleteProxyAttribs(Attribs):
     name = attr.ib(
         validator=[
             instance_of(str),
