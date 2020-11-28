@@ -105,7 +105,7 @@ class BaseResources extends React.PureComponent {
     handleItem = (k, v) => {
         // this needs to move out of here...
 
-        if (k === 'port_mappings') {
+        if (k === 'port_mappings' && v) {
             return (
                 <>
                   {v.map((_v, i) => {
