@@ -240,7 +240,6 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
 
     render () {
         const {onDelete, vars={}} = this.props;
-        const title = '';
         return (
             <Row className="mt-2 pb-3">
               <Col>
