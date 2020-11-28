@@ -12,8 +12,6 @@ import {ActionCopy} from '../shared/actions';
 import {PlaygroundTabs} from '../shared/tabs';
 import {clearForm, updateForm, updateUI} from '../app/store';
 
-import EnvoyLogo from '../images/envoy.svg';
-
 import Editor from 'react-simple-code-editor';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-yaml';
@@ -34,8 +32,9 @@ export class BaseServiceError extends React.PureComponent {
     }
 
     render () {
-        const {dispatch, form} = this.props;
+        const {dispatch, form, service_types} = this.props;
         const {logs=[], name} = form;
+        const {service_type} = form;
         return (
             <div>
               <Alert color="danger">
@@ -47,11 +46,11 @@ export class BaseServiceError extends React.PureComponent {
                   Reconfigure
                 </Button>
                 <img
-                  alt="Envoy logo"
-                  src={EnvoyLogo}
+                  alt="Service logo"
+                  src={service_types[service_type].icon}
                   width="24px"
                   className="mr-2" />
-                Failed starting Envoy service ({name}). See logs for errors.
+                Failed starting service ({name}). See logs for errors.
               </Alert>
 
               <Row className="bg-light ml-0 mr-0">
@@ -106,8 +105,8 @@ export class ServiceStarting extends React.PureComponent {
     });
 
     render () {
-        const {form, status, success} = this.props;
-        const {name} = form;
+        const {form, status, success, service_types} = this.props;
+        const {name, service_type} = form;
         let color = 'info';
 
         let message = <span>Pulling container image for service ({name})...</span>;
@@ -122,8 +121,8 @@ export class ServiceStarting extends React.PureComponent {
         return (
             <Alert color={color}>
               <img
-                alt="Envoy logo"
-                src={EnvoyLogo}
+                alt="Service logo"
+                src={service_types[service_type].icon}
                 width="24px"
                 className="mr-2" />
               {message}
@@ -179,7 +178,7 @@ export class BaseServiceModal extends React.Component {
     }
 
     render () {
-        const {form, status} = this.props;
+        const {form, status, service_types} = this.props;
         const {validation} = form;
         const {success} = this.state;
 
@@ -188,18 +187,26 @@ export class BaseServiceModal extends React.Component {
                 <ServiceStarting
                   success={success}
                   form={form}
-                  status={status} />);
+                  status={status}
+                  service_types={service_types}
+                />);
         }
         if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
             return (
-                <ServiceStarting form={form} status={status} />
+                <ServiceStarting
+                  form={form}
+                  status={status}
+                  service_types={service_types}
+                />
             );
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
-                <ServiceError />
+                <ServiceError
+                  service_types={service_types}
+                />
             );
         }
         return (
