@@ -15,6 +15,7 @@ from playground.control.constants import (
 
 class ValidatingAttribs(object):
 
+    # api: p.c.api.PlaygroundAPI
     async def validate(self, api):
         pass
 

@@ -1,5 +1,6 @@
 
 from collections import OrderedDict
+from typing import Callable, Union
 
 import attr
 
@@ -33,21 +34,27 @@ class _LengthValidator(object):
         "(got {value!r} with length "
         "{actual!r}).")
 
-    def __call__(self, inst, attr, value):
+    def __call__(self, inst, attr, value) -> None:
         if self.length.startswith('>='):
-            return self._gte(inst, attr, value)
+            self._gte(inst, attr, value)
         elif self.length.startswith('<='):
-            return self._lte(inst, attr, value)
+            self._lte(inst, attr, value)
         elif self.length.startswith('>'):
-            return self._gt(inst, attr, value)
+            self._gt(inst, attr, value)
         elif self.length.startswith('<'):
-            return self._lt(inst, attr, value)
+            self._lt(inst, attr, value)
         return self._eq(inst, attr, value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self._repr.format(length=self.length)
 
-    def _type_error(self, msg, attr, value, length):
+    # attr: p.c.attribs.ValidatingAttribs
+    def _type_error(
+            self,
+            msg: str,
+            attr,
+            value: Union[dict, list, str, tuple, OrderedDict],
+            length: int) -> TypeError:
         return TypeError(
             msg.format(
                 name=attr.name,
@@ -58,7 +65,7 @@ class _LengthValidator(object):
             self.length,
             value)
 
-    def _gt(self, inst, attr, value):
+    def _gt(self, inst, attr, value) -> None:
         if not len(value) > int(self.length.strip('>')):
             raise self._type_error(
                 self._err_gt,
@@ -66,7 +73,7 @@ class _LengthValidator(object):
                 value,
                 self.length.strip('>'))
 
-    def _gte(self, inst, attr, value):
+    def _gte(self, inst, attr, value) -> None:
         if not len(value) >= int(self.length.strip('>=')):
             raise self._type_error(
                 self._err_gte,
@@ -74,7 +81,7 @@ class _LengthValidator(object):
                 value,
                 self.length.strip('>='))
 
-    def _lt(self, inst, attr, value):
+    def _lt(self, inst, attr, value) -> None:
         if not len(value) < int(self.length.strip('<')):
             raise self._type_error(
                 self._err_lt,
@@ -82,7 +89,7 @@ class _LengthValidator(object):
                 value,
                 self.length.strip('<'))
 
-    def _lte(self, inst, attr, value):
+    def _lte(self, inst, attr, value) -> None:
         if not len(value) <= int(self.length.strip('<=')):
             raise self._type_error(
                 self._err_lte,
@@ -90,7 +97,7 @@ class _LengthValidator(object):
                 value,
                 self.length.strip('<='))
 
-    def _eq(self, inst, attr, value):
+    def _eq(self, inst, attr, value) -> None:
         if not len(value) == int(self.length):
             raise self._type_error(
                 self._err_eq,
@@ -99,7 +106,7 @@ class _LengthValidator(object):
                 self.length)
 
 
-def has_length(length):
+def has_length(length: int) -> _LengthValidator:
     return _LengthValidator(length)
 
 
@@ -110,7 +117,7 @@ class _AllMembersValidator(object):
     _repr = "<instance_of validator for membership test {members!r}>"
     members = attr.ib()
 
-    def __call__(self, inst, attr, value):
+    def __call__(self, inst, attr, value) -> None:
         """
         We use a callable class to be able to change the ``__repr__``.
         """
@@ -132,7 +139,7 @@ class _AllMembersValidator(object):
         return self._repr.format(members=self.members)
 
 
-def all_members(membertest):
+def all_members(membertest: Callable):
     return _AllMembersValidator(membertest)
 
 
@@ -141,10 +148,10 @@ class _WellFormedStringValidator(object):
     _repr = "<instance_of validator for well-formed string {string_type!r}>"
     string_type = attr.ib()
 
-    def __call__(self, inst, attr, value):
+    def __call__(self, inst, attr, value) -> None:
         return getattr(self, f'valid_{self.string_type}')(inst, attr, value)
 
-    def valid_yaml(self, inst, attr, value):
+    def valid_yaml(self, inst, attr, value) -> None:
         try:
             yaml.safe_load(value)
         except yaml.parser.ParserError:
@@ -156,9 +163,9 @@ class _WellFormedStringValidator(object):
                 self.string_type,
                 value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self._repr.format(members=self.members)
 
 
-def is_well_formed(membertest):
-    return _WellFormedStringValidator(membertest)
+def is_well_formed(format_type: str) -> _WellFormedStringValidator:
+    return _WellFormedStringValidator(format_type)

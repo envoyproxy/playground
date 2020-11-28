@@ -39,9 +39,6 @@ class ProxyAddAttribs(AttribsWithName):
     # v: option/s
     logging = attr.ib(default=OrderedDict())
 
-    async def validate(self, api):
-        pass
-
 
 @attr.s
 class ProxyDeleteAttribs(AttribsWithName):
