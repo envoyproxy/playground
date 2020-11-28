@@ -6,7 +6,6 @@ import rapidjson as json
 
 from aiohttp.web import Request
 
-from playground.control.api import PlaygroundAPI
 from playground.control.attribs import ValidatingAttribs
 
 
@@ -20,7 +19,8 @@ class PlaygroundRequest(object):
         self._data = self._attribs(
             **await self._request.json(loads=json.loads))
 
-    async def validate(self, api: PlaygroundAPI) -> None:
+    # api: api.listener.PlaygroundAPI
+    async def validate(self, api) -> None:
         await self._data.validate(api)
         self._valid_data = self._data
 
