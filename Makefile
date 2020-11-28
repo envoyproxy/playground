@@ -2,7 +2,7 @@
 
 SHELL := /bin/bash
 
-export PLAYGROUND_VERSION=0.0.6-alpha
+export PLAYGROUND_VERSION=0.1-alpha
 
 .PHONY: coverage
 
