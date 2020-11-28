@@ -1,7 +1,13 @@
 
 from unittest.mock import patch
 
+import pytest
 
-# todo: move this to a fixture
+
 def _patch(path):
     return patch(f'playground.control.{path}')
+
+
+@pytest.fixture
+def patch_playground():
+    return _patch

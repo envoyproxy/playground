@@ -1,11 +1,9 @@
 
 from playground.control import api
 
-from utils import _patch
 
-
-def test_api():
-    _patch_docker = _patch('api.PlaygroundDockerClient')
+def test_api(patch_playground):
+    _patch_docker = patch_playground('api.PlaygroundDockerClient')
 
     with _patch_docker as m_docker:
         _api = api.PlaygroundAPI()
