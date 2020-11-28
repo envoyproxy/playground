@@ -169,6 +169,13 @@ class AddProxyAttribs(object):
         pass
 
 
+# todo check length/validity of keys/values
+def _validate_env_vars(item):
+    if not item[0].strip():
+        return
+    return True
+
+
 @attr.s
 class AddServiceAttribs(object):
     name = attr.ib(
@@ -190,7 +197,12 @@ class AddServiceAttribs(object):
     # v: length
     # v: valid keys (length, chars)
     # v: valid values (length)
-    env = attr.ib(default=OrderedDict())
+    # todo: im sure there must be a way to validate an
+    #        attrib as an attrib class.
+    env = attr.ib(
+        default=OrderedDict(),
+        validator=[
+            all_members(_validate_env_vars)])
 
     async def validate(self, api):
         pass
