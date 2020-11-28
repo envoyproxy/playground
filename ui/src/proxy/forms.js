@@ -437,7 +437,6 @@ export class BaseProxyBinariesForm extends React.PureComponent {
     }
 
     onDelete = async (name) => {
-        console.log('REMOVE', name);
         const {dispatch, form} = this.props;
         const {binaries: _binaries={}} = form;
         const binaries = {..._binaries};
