@@ -105,13 +105,13 @@ class PlaygroundAPI(object):
         await request.validate(self)
         kwargs = attr.asdict(request.data)
         kwargs['image'] = self._envoy_image
-        await self.connector.proxy_create(kwargs)
+        await self.connector.proxies.create(kwargs)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ProxyDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.proxy_delete(attr.asdict(request.data))
+        await self.connector.proxies.delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def publish(
@@ -129,11 +129,11 @@ class PlaygroundAPI(object):
         if command.get('configuration'):
             command['config_path'] = service_config['labels'].get(
                 'envoy.playground.config.path')
-        await self.connector.service_create(command)
+        await self.connector.services.create(command)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ServiceDeleteAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.service_delete(attr.asdict(request.data))
+        await self.connector.services.delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)

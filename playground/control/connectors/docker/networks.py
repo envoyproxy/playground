@@ -49,7 +49,7 @@ class PlaygroundDockerNetworks(object):
     async def edit(
             self,
             command: PlaygroundCommand) -> None:
-        network = await self.docker.networks.get(command.data.id)
+        network = await self.connector.docker.networks.get(command.data.id)
         info = await network.show()
         containers = {
             container['Name'].replace(
@@ -62,12 +62,12 @@ class PlaygroundDockerNetworks(object):
             | set(command.data.services or []))
         connect = expected - containers
         disconnect = containers - expected
-        for proxy in await self.list_proxies():
+        for proxy in await self.connector.list_proxies():
             if proxy['name'] in connect:
                 await network.connect({"Container": proxy["id"]})
             if proxy['name'] in disconnect:
                 await network.disconnect({"Container": proxy["id"]})
-        for service in await self.list_services():
+        for service in await self.connector.list_services():
             if service['name'] in connect:
                 await network.connect({"Container": service["id"]})
             if service['name'] in disconnect:
