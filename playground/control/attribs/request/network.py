@@ -46,7 +46,7 @@ class NetworkAddAttribs(AttribsWithName):
             services = set(
                 s['name']
                 for s
-                in await api.connector.list_services())
+                in await api.connector.services.list())
             _services = set(self.services)
             if (services ^ _services) & _services:
                 raise PlaygroundError(
@@ -58,7 +58,7 @@ class NetworkAddAttribs(AttribsWithName):
             proxies = set(
                 s['name']
                 for s
-                in await api.connector.list_proxies())
+                in await api.connector.proxies.list())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
                 raise PlaygroundError(
@@ -100,7 +100,7 @@ class NetworkEditAttribs(ValidatingAttribs):
             services = set(
                 s['name']
                 for s
-                in await api.connector.list_services())
+                in await api.connector.services.list())
             _services = set(self.services)
             if (services ^ _services) & _services:
                 raise PlaygroundError(
@@ -112,7 +112,7 @@ class NetworkEditAttribs(ValidatingAttribs):
             proxies = set(
                 s['name']
                 for s
-                in await api.connector.list_proxies())
+                in await api.connector.proxies.list())
             _proxies = set(self.proxies)
             if (proxies ^ _proxies) & _proxies:
                 raise PlaygroundError(
