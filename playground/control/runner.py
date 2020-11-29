@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 from aiohttp import web
-import aiohttp_cors # type: ignore
+import aiohttp_cors  # type: ignore
 
 from playground.control.api import PlaygroundAPI
 

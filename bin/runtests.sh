@@ -37,11 +37,18 @@ js_tests () {
 }
 
 py_tests () {
-    # Python
+    local testtype;
+    testtype="$1"
     _docker_compose build control
-    _docker_compose_run control pytest
-    _docker_compose_run control mypy --follow-imports=skip --namespace-packages playground/control
-    _docker_compose_run control flake8 .
+    if [[ -z "$testtype" || "$testtype" == "test" ]]; then
+	_docker_compose_run control pytest
+    fi
+    if [[ -z "$testtype" || "$testtype" == "typing" ]]; then
+	_docker_compose_run control mypy --follow-imports=skip --namespace-packages playground/control
+    fi
+    if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
+	_docker_compose_run control flake8 .
+    fi
 }
 
 sh_tests () {
@@ -49,14 +56,17 @@ sh_tests () {
 }
 
 run_tests () {
+    local testtype;
+    testtype="$1"
+    shift
     mkdir -p .cache/coverage
-    if [[ -z "$1" || "$1" == "js" ]]; then
+    if [[ -z "$testtype" || "$testtype" == "js" ]]; then
 	js_tests
     fi
-    if [[ -z "$1" || "$1" == "py" ]]; then
+    if [[ -z "$testtype" || "$testtype" == "py" ]]; then
 	py_tests
     fi
-    if [[ -z "$1" || "$1" == "sh" ]]; then
+    if [[ -z "$testtype" || "$testtype" == "sh" ]]; then
 	sh_tests
     fi
 }

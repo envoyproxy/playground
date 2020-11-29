@@ -4,7 +4,7 @@ import os
 from collections import OrderedDict
 from typing import Union
 
-import rapidjson as json # type: ignore
+import rapidjson as json  # type: ignore
 import yaml
 
 from aiohttp import web
