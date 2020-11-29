@@ -5,7 +5,7 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import APIResources from '../shared/resources';
-import CloudLogo from '../images/cloud.svg';
+import CloudLogo from '../app/images/cloud.svg';
 import {NetworkModal} from './modals';
 
 

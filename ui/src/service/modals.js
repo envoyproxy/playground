@@ -19,7 +19,6 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-shell-session';
 
 
-
 export class BaseServiceError extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func,
@@ -90,11 +89,13 @@ export class BaseServiceError extends React.PureComponent {
     }
 }
 
+
 const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
     };
 }
+
 
 const ServiceError = connect(mapStateToProps)(BaseServiceError);
 export {ServiceError};

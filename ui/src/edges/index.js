@@ -1,17 +1,28 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
 import {Stage, Layer} from 'react-konva';
 import {Group, Text, Tag, Label} from 'react-konva';
 
-import CloudLogo from '../images/cloud.svg';
-import EnvoyLogo from '../images/envoy.svg';
+import CloudLogo from '../app/images/cloud.svg';
+import EnvoyLogo from '../app/images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
 
 
-class CloudImage extends React.Component {
+class EdgeImage extends React.Component {
+    static propTypes = {
+        dispatch: PropTypes.func.isRequired,
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        icon: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        proxies: PropTypes.object.isRequired,
+    };
+
     state = {};
 
     render () {
@@ -48,6 +59,11 @@ class CloudImage extends React.Component {
 
 
 export class BaseEdgesContent extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        proxies: PropTypes.object.isRequired,
+        ui: PropTypes.object.isRequired,
+    });
 
     get icons () {
         const {dispatch, proxies, ui} = this.props;
@@ -57,10 +73,9 @@ export class BaseEdgesContent extends React.PureComponent {
               {Object.entries(edges).map(([k, v], i) => {
                   const icon = EnvoyLogo;
                   return (
-                      <CloudImage
+                      <EdgeImage
                         icon={icon}
                         dispatch={dispatch}
-                        resources={edges}
 			proxies={proxies}
                         key={i}
                         name={k}
@@ -68,7 +83,6 @@ export class BaseEdgesContent extends React.PureComponent {
                       />);
               })}
             </>);
-
     }
 
     render () {

@@ -14,7 +14,7 @@ import {
     ProxyBinariesForm, ProxyLoggingForm,
     ProxyForm, ProxyCertificatesForm} from './forms';
 
-import EnvoyLogo from '../images/envoy.svg';
+import EnvoyLogo from '../app/images/envoy.svg';
 
 import Editor from 'react-simple-code-editor';
 import 'prismjs/components/prism-clike';
@@ -133,7 +133,6 @@ export class ProxyStarting extends React.PureComponent {
         );
     }
 }
-
 
 
 export class ProxyModal extends React.Component {

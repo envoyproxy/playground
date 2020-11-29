@@ -7,7 +7,7 @@ import {
     ActionClear,
     ActionLoad, ActionSave} from '../shared/actions';
 import {APIContext} from '../app/context';
-import EnvoyLogo from '../images/envoy.svg';
+import EnvoyLogo from '../app/images/envoy.svg';
 import {updateUI} from '../app/store';
 
 

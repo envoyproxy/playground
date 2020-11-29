@@ -7,7 +7,7 @@ import {
 
 import {updateForm} from '../../app/store';
 
-import CloudLogo from '../../images/cloud.svg';
+import CloudLogo from '../../app/images/cloud.svg';
 import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
 

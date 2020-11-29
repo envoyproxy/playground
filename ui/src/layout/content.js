@@ -1,4 +1,5 @@
 import React from 'react';
+import exact from 'prop-types-exact';
 
 import classnames from 'classnames';
 
@@ -9,6 +10,7 @@ import EdgesContent from '../edges';
 
 
 export default class Content extends React.PureComponent {
+    static propTypes = exact({})
 
     state = {tab: '1'}
 

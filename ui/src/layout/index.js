@@ -1,4 +1,5 @@
 import React from 'react';
+import exact from 'prop-types-exact';
 
 import {Col, Row} from 'reactstrap';
 
@@ -15,6 +16,7 @@ export {Header, Left, Right, Content, Footer};
 
 
 export class NotImplementedModal extends React.PureComponent {
+    static propTypes = exact({})
 
     render () {
         return <AlertNotImplemented />;
@@ -23,6 +25,7 @@ export class NotImplementedModal extends React.PureComponent {
 
 export default class Layout extends React.PureComponent {
     static contextType = ModalContext;
+    static propTypes = exact({})
 
     componentDidMount () {
         this.context['not-implemented'] = {

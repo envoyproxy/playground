@@ -1,7 +1,7 @@
 import React from 'react';
 import exact from 'prop-types-exact';
 
-import GithubLogo from '../images/github.svg';
+import GithubLogo from '../app/images/github.svg';
 
 
 export class GithubSnippet extends React.PureComponent {

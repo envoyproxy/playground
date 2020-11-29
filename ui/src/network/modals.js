@@ -8,7 +8,7 @@ import {Alert, Col, Row} from 'reactstrap';
 
 import {PlaygroundTabs} from '../shared/tabs';
 import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
-import CloudLogo from '../images/cloud.svg';
+import CloudLogo from '../app/images/cloud.svg';
 
 
 export class BaseNetworkCreating extends React.PureComponent {
@@ -46,8 +46,12 @@ export {NetworkCreating};
 
 export class BaseNetworkModal extends React.PureComponent {
     static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        proxies: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        form: PropTypes.object.isRequired,
     });
 
     get tabs () {

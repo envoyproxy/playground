@@ -1,5 +1,5 @@
 import {render} from '@testing-library/react';
-import App from '../app';
+import {PlaygroundApp} from '../app';
 
 import 'reactstrap';
 
@@ -21,6 +21,6 @@ beforeEach(() => {
 
 
 test('renders learn react link', () => {
-    render(<App />);
+    render(<PlaygroundApp />);
     // expect(screen.getByRole('banner')[0]).toHaveTextContent('Envoy playground');
 });

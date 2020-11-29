@@ -10,6 +10,15 @@ import {ActionAdd} from './actions';
 
 
 class ResourceInfoItem extends React.PureComponent {
+    static propTypes = exact({
+        k: PropTypes.string.isRequired,
+        v: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object,
+            PropTypes.array,
+        ]).isRequired,
+        handleItem: PropTypes.func.isRequired,
+    })
 
     render () {
         const {k, v, handleItem} = this.props;

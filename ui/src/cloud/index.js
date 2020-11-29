@@ -6,8 +6,8 @@ import {connect} from 'react-redux';
 
 import {Stage, Layer, Line} from 'react-konva';
 
-import CloudLogo from '../images/cloud.svg';
-import EnvoyLogo from '../images/envoy.svg';
+import CloudLogo from '../app/images/cloud.svg';
+import EnvoyLogo from '../app/images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
 import {Group, Text, Tag, Label} from 'react-konva';
@@ -16,12 +16,22 @@ import {updateCloud} from '../app/store';
 
 
 class ResourceImage extends React.Component {
+    static propTypes = {
+        dispatch: PropTypes.func.isRequired,
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        networks: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        icon: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+    };
+
     state = {};
 
     render () {
         const {
             x: startX, y: startY,
-            resources: _resources,
             networks, proxies, services, store,
             icon, name, dispatch, ...props} = this.props;
         const {x, y} = this.state;
