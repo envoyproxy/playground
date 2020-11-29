@@ -27,6 +27,34 @@ class PlaygroundDockerClient(object):
         self.docker = aiodocker.Docker()
         self.events = PlaygroundDockerEvents(self.docker)
 
+    @method_decorator(cmd)
+    async def clear(self) -> list:
+        resources = (
+            (self.list_services, self.delete_service),
+            (self.list_proxies, self.delete_proxy),
+            (self.list_networks, self.delete_network))
+        for _resources, remove in resources:
+            for resource in await _resources():
+                await remove(resource['name'])
+
+    @method_decorator(cmd(sync=True))
+    async def dump_resources(self) -> list:
+        proxies = OrderedDict()
+        for proxy in await self.list_proxies():
+            proxies[proxy["name"]] = proxy
+
+        networks = OrderedDict()
+        for network in await self.list_networks():
+            networks[network["name"]] = network
+
+        services = OrderedDict()
+        for service in await self.list_services():
+            services[service["name"]] = service
+        return dict(
+            networks=networks,
+            proxies=proxies,
+            services=services)
+
     async def get_container(self, id: str):
         return await self.docker.containers.get(id)
 
