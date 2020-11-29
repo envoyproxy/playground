@@ -1,13 +1,10 @@
 
 from .base import (
     AttribsWithName, ValidatingAttribs)
-from .connector import (
-    NetworkCreateConnectorAttribs, NetworkDeleteConnectorAttribs)
-
 from .request import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
-    ProxyAddAttribs, ProxyDeleteAttribs,
-    ServiceAddAttribs, ServiceDeleteAttribs)
+    ProxyAddAttribs, ProxyCreateCommandAttribs, ProxyDeleteAttribs,
+    ServiceAddAttribs, ServiceCreateCommandAttribs, ServiceDeleteAttribs)
 
 
 __all__ = (
@@ -16,6 +13,7 @@ __all__ = (
     'NetworkCreateConnectorAttribs',
     'NetworkDeleteAttribs',
     'NetworkDeleteConnectorAttribs',
+    'NetworkEditConnectorAttribs',
     'NetworkEditAttribs',
     'ProxyAddAttribs',
     'ProxyDeleteAttribs',

@@ -1,7 +1,9 @@
 
 from .commands import (
-    NetworkCreateConnectorAttribs, NetworkDeleteConnectorAttribs)
+    NetworkCreateConnectorAttribs, NetworkDeleteConnectorAttribs,
+    NetworkEditConnectorAttribs)
 
 __all__ = (
     'NetworkCreateConnectorAttribs',
-    'NetworkDeleteConnectorAttribs')
+    'NetworkDeleteConnectorAttribs'
+    'NetworkEditConnectorAttribs')

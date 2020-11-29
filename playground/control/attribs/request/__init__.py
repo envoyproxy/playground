@@ -2,9 +2,9 @@
 from .network import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs)
 from .proxy import (
-    ProxyAddAttribs, ProxyDeleteAttribs)
+    ProxyAddAttribs, ProxyDeleteAttribs, ProxyCreateCommandAttribs)
 from .service import (
-    ServiceAddAttribs, ServiceDeleteAttribs)
+    ServiceAddAttribs, ServiceCreateCommandAttribs, ServiceDeleteAttribs)
 
 
 __all__ = (
