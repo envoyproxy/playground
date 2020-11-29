@@ -61,13 +61,13 @@ run_tests () {
     shift
     mkdir -p .cache/coverage
     if [[ -z "$testtype" || "$testtype" == "js" ]]; then
-	js_tests
+	js_tests "$@"
     fi
     if [[ -z "$testtype" || "$testtype" == "py" ]]; then
-	py_tests
+	py_tests "$@"
     fi
     if [[ -z "$testtype" || "$testtype" == "sh" ]]; then
-	sh_tests
+	sh_tests "$@"
     fi
 }
 
