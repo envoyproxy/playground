@@ -58,9 +58,9 @@ export class BaseNetworkProxiesForm extends React.PureComponent {
                         checked = (networks[name].proxies || []).indexOf(k) !== -1;
                     }
                     return (
-                        <Row className="p-1 pl-3 ml-2">
+                        <Row className="p-1 pl-3 ml-2" key={i}>
                           <Col sm={10} >
-                            <Label key={i} check>
+                            <Label check>
                               <Input
                                 type="checkbox"
                                 name={k}

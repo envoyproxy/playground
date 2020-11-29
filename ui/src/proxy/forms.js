@@ -50,6 +50,12 @@ const code =
 
 
 export class ProxyConfigForm extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        onChange: PropTypes.func.isRequired,
+        configuration: PropTypes.string.isRequired,
+        errors: PropTypes.object.isRequired,
+    });
 
     copyConfig = () => {
         this.textArea._input.select();
@@ -264,6 +270,10 @@ export {ProxyForm};
 
 
 export class CertificatesListForm extends React.PureComponent {
+    static propTypes = exact({
+        onDelete: PropTypes.func.isRequired,
+        certs: PropTypes.object.isRequired,
+    });
 
     render () {
         const {certs, onDelete} = this.props;
@@ -376,6 +386,10 @@ export {ProxyCertificatesForm};
 
 
 export class BinariesListForm extends React.PureComponent {
+    static propTypes = exact({
+        onDelete: PropTypes.func.isRequired,
+        binaries: PropTypes.object.isRequired,
+    });
 
     render () {
         const {onDelete, binaries} = this.props;
@@ -488,6 +502,10 @@ export {ProxyBinariesForm};
 
 
 export class BaseProxyLoggingForm extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        form: PropTypes.object.isRequired,
+    });
 
     get messages () {
         return [
@@ -531,5 +549,11 @@ export class BaseProxyLoggingForm extends React.PureComponent {
     }
 }
 
-const ProxyLoggingForm = connect(mapStateToProps)(BaseProxyLoggingForm);
+const mapLoggingStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+}
+
+const ProxyLoggingForm = connect(mapLoggingStateToProps)(BaseProxyLoggingForm);
 export {ProxyLoggingForm};

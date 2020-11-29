@@ -135,7 +135,6 @@ export class ProxyStarting extends React.PureComponent {
 }
 
 
-
 export class ProxyModal extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,

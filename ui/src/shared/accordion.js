@@ -7,6 +7,7 @@ import {Collapse, CardBody, Card, CardHeader} from 'reactstrap';
 import {ActionRemove, ActionEdit} from './actions';
 
 
+// todo: remove this
 export class AccordionItem extends React.PureComponent {
     render() {
         return "ITEM";
