@@ -1,6 +1,4 @@
 
-from collections import OrderedDict
-
 import attr
 
 import rapidjson as json  # type: ignore
@@ -50,7 +48,7 @@ class PlaygroundAPI(object):
 
     @method_decorator(api)
     async def clear(self, request: PlaygroundRequest) -> web.Response:
-        response = await self.connector.clear()
+        await self.connector.clear()
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api)
