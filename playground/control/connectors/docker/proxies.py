@@ -13,6 +13,10 @@ class PlaygroundDockerProxies(object):
     def __init__(self, connector):
         self.connector = connector
 
+    async def clear(self):
+        for proxy in await self.list():
+            await self.delete(dict(name=proxy['name']))
+
     @method_decorator(cmd(attribs=ProxyCreateCommandAttribs))
     async def create(
             self,

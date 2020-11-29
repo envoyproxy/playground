@@ -14,8 +14,12 @@ class PlaygroundDockerServices(object):
     def __init__(self, connector):
         self.connector = connector
 
+    async def clear(self):
+        for service in await self.list():
+            await self.delete(dict(name=service['name']))
+
     @method_decorator(cmd(attribs=ServiceCreateCommandAttribs))
-    async def service_create(
+    async def create(
             self,
             command: PlaygroundCommand) -> None:
         if not command.data.image:
