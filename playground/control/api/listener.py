@@ -31,8 +31,12 @@ class PlaygroundAPI(object):
     _envoy_image = "envoyproxy/envoy-dev:latest"
 
     def __init__(self):
+        self._sockets = []
         self.connector = PlaygroundDockerClient()
-        self.handler = PlaygroundEventHandler(self.connector)
+        self.handler = PlaygroundEventHandler(self)
+
+    async def listen(self, app):
+        self.handler.subscribe()
 
     # todo: use a cached property or somesuch.
     @property
@@ -80,15 +84,9 @@ class PlaygroundAPI(object):
             dumps=json.dumps)
 
     async def events(self, request: Request) -> None:
-        # todo: dont tie event handling to socket connection
         ws = web.WebSocketResponse()
         await ws.prepare(request)
-        handler = dict(
-            image=functools.partial(self.handler.handle_image, ws),
-            container=functools.partial(self.handler.handle_container, ws),
-            network=functools.partial(self.handler.handle_network, ws))
-        hashed = str(hash(ws))
-        self.connector.events.subscribe(hashed, handler, debug=[])
+        self.subscribe(ws)
         try:
             while True:
                 await ws.receive()
@@ -96,7 +94,13 @@ class PlaygroundAPI(object):
             # todo: handle this better ?
             print(e)
         finally:
-            await self.connector.events.unsubscribe(hashed)
+            self.unsubscribe(ws)
+
+    def subscribe(self, ws):
+        self._sockets.append(ws)
+
+    def unsubscribe(self, ws):
+        self._sockets.remove(ws)
 
     @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> Response:
@@ -224,3 +228,9 @@ class PlaygroundAPI(object):
         await request.validate(self)
         await self.connector.delete_service(request.data.name)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
+
+    async def publish(
+            self,
+            event: dict) -> None:
+        for socket in self._sockets:
+            await socket.send_json(event, dumps=json.dumps)

@@ -8,12 +8,20 @@ from aiodocker.exceptions import DockerError
 
 class PlaygroundEventHandler(object):
 
-    def __init__(self, connector):
-        self.connector = connector
+    def __init__(self, listener):
+        self.listener = listener
+        self.connector = listener.connector
+        self.handler = dict(
+            image=self.handle_image,
+            container=self.handle_container,
+            network=self.handle_network)
+        self.debug = []
+
+    def subscribe(self):
+        self.connector.events.subscribe(self.handler, debug=self.debug)
 
     async def handle_container(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         handlers = ["destroy", "start", "die"]
         if event['Action'] not in handlers:
@@ -28,13 +36,12 @@ class PlaygroundEventHandler(object):
         if is_playground_container:
             await getattr(
                 self,
-                'handle_container_%s' % event['Action'])(ws, event)
+                'handle_container_%s' % event['Action'])(event)
         elif is_proxy_create_container:
-            await self.handle_proxy_creation(ws, event)
+            await self.handle_proxy_creation(event)
 
     async def handle_container_die(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         # print('CONTAINER DIE', event)
         resource = (
@@ -48,8 +55,7 @@ class PlaygroundEventHandler(object):
         except DockerError:
             # most likely been killed
             logs = []
-        await self.publish(
-            ws,
+        await self.listener.publish(
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
@@ -60,15 +66,13 @@ class PlaygroundEventHandler(object):
 
     async def handle_container_destroy(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         # print('CONTAINER DESTROY', event)
         resource = (
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        await self.publish(
-            ws,
+        await self.listener.publish(
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
@@ -78,7 +82,6 @@ class PlaygroundEventHandler(object):
 
     async def handle_container_start(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         # print('PROXY START', event)
         resource = (
@@ -104,13 +107,11 @@ class PlaygroundEventHandler(object):
                              mapping_to=container_port.split('/')[0]))
         if port_mappings:
             to_publish["port_mappings"] = port_mappings
-        await self.publish(
-            ws,
+        await self.listener.publish(
             to_publish)
 
     async def handle_image(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         if event['Action'] == 'pull':
             # todo: if image is one configured for envoy or services
@@ -120,18 +121,16 @@ class PlaygroundEventHandler(object):
 
     async def handle_network(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         handlers = ["destroy", "create", "connect", "disconnect"]
         if event['Action'] in handlers:
             await getattr(
                 self,
                 'handle_network_%s' % event['Action'])(
-                    ws, event)
+                    event)
 
     async def handle_network_connect(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         nid = event["Actor"]["ID"]
         network = await self.connector.get_network(nid)
@@ -142,8 +141,7 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.publish(
-                ws,
+            await self.listener.publish(
                 dict(type="network",
                      action=event["Action"],
                      networks={
@@ -152,7 +150,6 @@ class PlaygroundEventHandler(object):
 
     async def handle_network_create(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
@@ -161,25 +158,21 @@ class PlaygroundEventHandler(object):
         name = info["Labels"]["envoy.playground.network"]
         if "envoy.playground.network" not in info["Labels"]:
             return
-        await self.publish(
-            ws,
+        await self.listener.publish(
             dict(type="network",
                  action=event["Action"],
                  networks={name: dict(name=name, id=nid[:10])}))
 
     async def handle_network_destroy(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
-        await self.publish(
-            ws,
+        await self.listener.publish(
             dict(type="network",
                  action=event["Action"],
                  id=event["Actor"]["ID"][:10]))
 
     async def handle_network_disconnect(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         name = event["Actor"]["Attributes"]["name"]
         nid = event["Actor"]["ID"]
@@ -194,8 +187,7 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.publish(
-                ws,
+            await self.listener.publish(
                 dict(type="network",
                      action=event["Action"],
                      networks={
@@ -204,19 +196,10 @@ class PlaygroundEventHandler(object):
 
     async def handle_proxy_creation(
             self,
-            ws: web.WebSocketResponse,
             event: dict) -> None:
         # print('PROXY CREATE', event)
-        await self.publish(
-            ws,
+        await self.listener.publish(
             dict(type="container",
                  resource=event["Actor"]["Attributes"]["name"].split('__')[1],
                  name=event["Actor"]["Attributes"]["name"].split('__')[2],
                  status='creating'))
-
-    async def publish(
-            self,
-            ws: web.WebSocketResponse,
-            event: dict) -> None:
-        # print("PUBLISH", event)
-        await ws.send_json(event, dumps=json.dumps)

@@ -62,4 +62,6 @@ class PlaygroundRunner(object):
         return web.HTTPFound('/index.html')
 
     def run(self) -> None:
+        # todo: add on_cleanup
+        self.app.on_startup.append(self.api.listen)
         web.run_app(self.app)
