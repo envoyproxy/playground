@@ -2,7 +2,7 @@
 from collections import OrderedDict
 from typing import Union
 
-import rapidjson as json
+import rapidjson as json # type: ignore
 
 from aiohttp.web import Request
 

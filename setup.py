@@ -19,11 +19,11 @@ install_requires = [
 extras_require = {}
 extras_require['test'] = [
     "flake8",
+    "mypy",
     "pytest",
     "pytest-console-scripts",
     "pytest-cov",
-    "pytest-mock",
-    "pytest-mypy"]
+    "pytest-mock"]
 
 # TODO: Fix classifiers
 setup(

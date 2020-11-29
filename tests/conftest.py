@@ -11,8 +11,3 @@ def _patch(path):
 @pytest.fixture
 def patch_playground():
     return _patch
-
-
-def pytest_configure(config):
-    plugin = config.pluginmanager.getplugin('mypy')
-    plugin.mypy_argv.append('--follow-imports=skip')

@@ -23,25 +23,25 @@ _docker_compose () {
     COMPOSE_FILE=./composition/docker-compose.yaml docker-compose "$@"
 }
 
+_docker_compose_run () {
+    _docker_compose run --rm -e CI=1 "$@"
+}
+
+
 js_tests () {
     # JavaScript
     _docker_compose build ui
-    _docker_compose run \
-		-e CI=1 \
-		ui yarn install
-    _docker_compose run \
-		-e CI=1 \
-		ui yarn test --coverage
-    _docker_compose run \
-		-e CI=1 \
-		ui ./node_modules/.bin/eslint --max-warnings 0  src/
+    _docker_compose_run ui yarn install
+    _docker_compose_run ui yarn test --coverage
+    _docker_compose_run ui ./node_modules/.bin/eslint --max-warnings 0  src/
 }
 
 py_tests () {
     # Python
     _docker_compose build control
-    _docker_compose run control pytest
-    _docker_compose run control flake8 .
+    _docker_compose_run control pytest
+    _docker_compose_run control mypy --follow-imports=skip --namespace-packages playground/control
+    _docker_compose_run control flake8 .
 }
 
 sh_tests () {
