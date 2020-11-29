@@ -1,6 +1,10 @@
 
 from .base import (
     AttribsWithName, ValidatingAttribs)
+from .event import (
+    ContainerEventAttribs,
+    ImageEventAttribs,
+    NetworkEventAttribs)
 from .request import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
     ProxyAddAttribs, ProxyCreateCommandAttribs, ProxyDeleteAttribs,
@@ -9,9 +13,12 @@ from .request import (
 
 __all__ = (
     'AttribsWithName',
+    'ContainerEventAttribs',
+    'ImageEventAttribs',
     'NetworkAddAttribs',
     'NetworkDeleteAttribs',
     'NetworkEditAttribs',
+    'NetworkEventAttribs',
     'ProxyAddAttribs',
     'ProxyCreateCommandAttribs',
     'ProxyDeleteAttribs',

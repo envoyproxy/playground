@@ -10,6 +10,22 @@ class PlaygroundDockerEvents(object):
     def __init__(self, docker: aiodocker.Docker):
         self.docker = docker
 
+    @property
+    def mapping(self):
+        return dict(
+            container=dict(
+                action='Action',
+                attributes='Actor/Attributes',
+                id='id',
+                status='status'),
+            network=dict(
+                action='Action',
+                id='Actor/ID',
+                name="Actor/Attributes/name",
+            ),
+            image=dict(
+                action='Action'))
+
     async def __call__(self) -> AsyncGenerator[dict, None]:
         subscriber = self.docker.events.subscribe()
         while True:
@@ -26,7 +42,12 @@ class PlaygroundDockerEvents(object):
                 print(event)
                 print()
             if publisher.get(event['Type']):
-                await publisher[event['Type']](event)
+                data = {}
+                for k, v in self.mapping[event['Type']].items():
+                    data[k] = event[v.split('/')[0]]
+                    for item in v.split('/')[1:]:
+                        data[k] = data[k][item]
+                await publisher[event['Type']](data)
 
     def subscribe(
             self,

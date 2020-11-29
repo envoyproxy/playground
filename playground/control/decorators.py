@@ -11,6 +11,7 @@ from aiohttp import web
 
 from playground.control.attribs import ValidatingAttribs
 from playground.control.command import PlaygroundCommand
+from playground.control.event import PlaygroundEvent
 from playground.control.exceptions import (
     PlaygroundError, ValidationError, PlaygroundValidationError)
 from playground.control.request import PlaygroundRequest
@@ -101,6 +102,44 @@ def cmd(original_fun: Callable = None,
         return _cmd(original_fun)
 
     return _cmd
+
+
+def handler(
+        original_fun: Callable = None,
+        attribs: ValidatingAttribs = None) -> Callable:
+
+    def _handler(fun: Callable) -> Callable:
+
+        @wraps(fun)
+        async def wrapped_fun(kwargs: dict = {}) -> None:
+            event = PlaygroundEvent(
+                kwargs,
+                attribs=attribs)
+            if attribs:
+                # todo: improve error handling
+                try:
+                    await event.load_data()
+                except ValidationError as e:
+                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
+                    raise PlaygroundValidationError(errors)
+                except (TypeError, ValueError) as e:
+                    if len(e.args) > 1:
+                        errors = json.dumps(
+                            dict(errors={e.args[1].name: e.args[0]}))
+                    else:
+                        errors = json.dumps(
+                            dict(errors={'playground': e.args[0]}))
+                    raise PlaygroundValidationError(errors)
+            return await (
+                fun(event)
+                if kwargs
+                else fun())
+        return wrapped_fun
+
+    if original_fun:
+        return _handler(original_fun)
+
+    return _handler
 
 
 # Method decoration taken from the django project
