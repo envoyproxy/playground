@@ -88,7 +88,6 @@ class ProxyCreateCommandAttribs(AttribsWithName):
         default=OrderedDict())
 
 
-
 @attr.s
 class ProxyDeleteAttribs(AttribsWithName):
     pass

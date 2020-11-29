@@ -2,7 +2,7 @@
 import base64
 import os
 from collections import OrderedDict
-from typing import Optional, Union
+from typing import Union
 
 import aiodocker
 from aiodocker.containers import DockerContainers
@@ -95,7 +95,9 @@ class PlaygroundDockerClient(object):
                     'envoy__playground__proxy__', '')
             for container
             in info["Containers"].values()}
-        expected = set(command.data.proxies or []) | set(command.data.services or [])
+        expected = (
+            set(command.data.proxies or [])
+            | set(command.data.services or []))
         connect = expected - containers
         disconnect = containers - expected
         for proxy in await self.list_proxies():

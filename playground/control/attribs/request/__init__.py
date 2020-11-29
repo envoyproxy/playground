@@ -12,6 +12,8 @@ __all__ = (
     'NetworkDeleteAttribs',
     'NetworkEditAttribs',
     'ProxyAddAttribs',
+    'ProxyCreateCommandAttribs',
     'ProxyDeleteAttribs',
     'ServiceAddAttribs',
+    'ServiceCreateCommandAttribs',
     'ServiceDeleteAttribs')

@@ -1,8 +1,5 @@
 
-import base64
-import os
 from collections import OrderedDict
-from typing import Union
 
 import attr
 

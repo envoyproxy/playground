@@ -99,7 +99,7 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
         const {dispatch, form} = this.props;
         const {certs={}} = form;
         const update = {};
-        update[evt.target.files[0].name] = await readFile(evt.target.files[0]);
+        update[evt.target.files[0].name] = (await readFile(evt.target.files[0])).split(',')[1];
         dispatch(updateForm({certs: {...certs, ...update}}));
     }
 
