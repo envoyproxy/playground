@@ -46,8 +46,12 @@ export {NetworkCreating};
 
 export class BaseNetworkModal extends React.PureComponent {
     static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        proxies: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        form: PropTypes.object.isRequired,
     });
 
     get tabs () {

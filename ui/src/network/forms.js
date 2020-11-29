@@ -178,6 +178,8 @@ class BaseNetworkForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        meta: PropTypes.object.isRequired,
+        networks: PropTypes.object.isRequired,
     });
 
     get messages () {
