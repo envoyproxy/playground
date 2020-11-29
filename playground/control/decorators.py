@@ -98,7 +98,6 @@ def cmd(original_fun: Callable = None,
     return _cmd
 
 
-
 # Method decoration taken from the django project
 def _update_method_wrapper(_wrapper, decorator):
     # _multi_decorate()'s bound_method isn't available in this scope. Cheat by
