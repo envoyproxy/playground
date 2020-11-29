@@ -2,16 +2,14 @@
 
 import attr
 
-from attr.validators import instance_of, matches_re
+from attr.validators import instance_of
 
 from playground.control.attribs.validators import (
     has_length, all_members)
 from playground.control.attribs.base import (
-    AttribsWithName, ValidatingAttribs)
+    AttribsWithName)
 from playground.control.constants import (
-    MAX_NETWORK_CONNECTIONS,
-    RE_UUID)
-from playground.control.exceptions import PlaygroundError
+    MAX_NETWORK_CONNECTIONS)
 
 
 @attr.s(kw_only=True)
