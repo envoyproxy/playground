@@ -59,7 +59,7 @@ sh_tests () {
 run_tests () {
     local testtype;
     testtype="$1"
-    if [[ -z "$testtype" ]]; then
+    if [[ -n "$testtype" ]]; then
 	shift
     fi
     mkdir -p .cache/coverage
