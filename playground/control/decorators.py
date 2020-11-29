@@ -60,6 +60,7 @@ def api(original_fun: Callable = None,
     return _api
 
 
+# todo: improve error handling
 def cmd(original_fun: Callable = None,
         attribs: ValidatingAttribs = None) -> Callable:
 

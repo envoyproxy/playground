@@ -10,13 +10,12 @@ from .request import (
 __all__ = (
     'AttribsWithName',
     'NetworkAddAttribs',
-    'NetworkCreateConnectorAttribs',
     'NetworkDeleteAttribs',
-    'NetworkDeleteConnectorAttribs',
-    'NetworkEditConnectorAttribs',
     'NetworkEditAttribs',
     'ProxyAddAttribs',
+    'ProxyCreateCommandAttribs',
     'ProxyDeleteAttribs',
     'ServiceAddAttribs',
+    'ServiceCreateCommandAttribs',
     'ServiceDeleteAttribs',
     'ValidatingAttribs')
