@@ -25,14 +25,14 @@ class PlaygroundDockerServices(object):
         if not command.data.image:
             # todo: add build logic
             return
-        if not await self.connector.image_exists(command.data.image):
-            await self.connector.pull_image(command.data.image)
+        if not await self.connector.images.exists(command.data.image):
+            await self.connector.images.pull(command.data.image)
         mounts = OrderedDict()
         if command.data.configuration and command.data.config_path:
             config = base64.b64encode(
                 command.data.configuration.encode('utf-8')).decode()
             mounts[os.path.dirname(command.data.config_path)] = (
-                await self.connector.volume_populate(
+                await self.connector.volumes.populate(
                     'service',
                     command.data.name,
                     'config',

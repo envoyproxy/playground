@@ -22,30 +22,30 @@ class PlaygroundDockerProxies(object):
             self,
             command: PlaygroundCommand) -> None:
         # todo: add logging
-        if not await self.connector.image_exists(command.data.image):
-            await self.connector.pull_image(command.data.image)
+        if not await self.connector.images.exists(command.data.image):
+            await self.connector.images.pull(command.data.image)
         _mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
             in command.data.port_mappings]
         mounts = {
-            "/etc/envoy": await self.connector.volume_populate(
+            "/etc/envoy": await self.connector.volumes.populate(
                 'proxy',
                 command.data.name,
                 'envoy',
                 {'envoy.yaml': base64.b64encode(
                     command.data.configuration.encode('utf-8')).decode()}),
-            "/certs": await self.connector.volume_populate(
+            "/certs": await self.connector.volumes.populate(
                 'proxy',
                 command.data.name,
                 'certs',
                 command.data.certs.items()),
-            '/binary': await self.connector.volume_populate(
+            '/binary': await self.connector.volumes.populate(
                 'proxy',
                 command.data.name,
                 'binary',
                 command.data.binaries.items()),
-            '/logs': await self.connector.volume_create(
+            '/logs': await self.connector.volumes.create(
                 'proxy', command.data.name, 'logs')}
         container = await self.connector.docker.containers.create_or_replace(
             config=self._get_proxy_config(
