@@ -1,24 +1,17 @@
 
-import rapidjson as json
-
-from aiohttp import web
-
 from aiodocker.exceptions import DockerError
 
 
 class PlaygroundEventHandler(object):
 
-    def __init__(self, listener):
-        self.listener = listener
-        self.connector = listener.connector
+    def __init__(self, api):
+        self.api = api
+        self.connector = api.connector
         self.handler = dict(
             image=self.handle_image,
             container=self.handle_container,
             network=self.handle_network)
         self.debug = []
-
-    def subscribe(self):
-        self.connector.events.subscribe(self.handler, debug=self.debug)
 
     async def handle_container(
             self,
@@ -43,7 +36,6 @@ class PlaygroundEventHandler(object):
     async def handle_container_die(
             self,
             event: dict) -> None:
-        # print('CONTAINER DIE', event)
         resource = (
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
@@ -55,7 +47,7 @@ class PlaygroundEventHandler(object):
         except DockerError:
             # most likely been killed
             logs = []
-        await self.listener.publish(
+        await self.api.publish(
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
@@ -67,12 +59,11 @@ class PlaygroundEventHandler(object):
     async def handle_container_destroy(
             self,
             event: dict) -> None:
-        # print('CONTAINER DESTROY', event)
         resource = (
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
             else "service")
-        await self.listener.publish(
+        await self.api.publish(
             dict(type="container",
                  resource=resource,
                  id=event["id"][:10],
@@ -83,7 +74,6 @@ class PlaygroundEventHandler(object):
     async def handle_container_start(
             self,
             event: dict) -> None:
-        # print('PROXY START', event)
         resource = (
             "proxy"
             if "envoy.playground.proxy" in event["Actor"]["Attributes"]
@@ -107,7 +97,7 @@ class PlaygroundEventHandler(object):
                              mapping_to=container_port.split('/')[0]))
         if port_mappings:
             to_publish["port_mappings"] = port_mappings
-        await self.listener.publish(
+        await self.api.publish(
             to_publish)
 
     async def handle_image(
@@ -141,7 +131,7 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.listener.publish(
+            await self.api.publish(
                 dict(type="network",
                      action=event["Action"],
                      networks={
@@ -158,7 +148,7 @@ class PlaygroundEventHandler(object):
         name = info["Labels"]["envoy.playground.network"]
         if "envoy.playground.network" not in info["Labels"]:
             return
-        await self.listener.publish(
+        await self.api.publish(
             dict(type="network",
                  action=event["Action"],
                  networks={name: dict(name=name, id=nid[:10])}))
@@ -166,7 +156,7 @@ class PlaygroundEventHandler(object):
     async def handle_network_destroy(
             self,
             event: dict) -> None:
-        await self.listener.publish(
+        await self.api.publish(
             dict(type="network",
                  action=event["Action"],
                  id=event["Actor"]["ID"][:10]))
@@ -187,7 +177,7 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.listener.publish(
+            await self.api.publish(
                 dict(type="network",
                      action=event["Action"],
                      networks={
@@ -197,9 +187,11 @@ class PlaygroundEventHandler(object):
     async def handle_proxy_creation(
             self,
             event: dict) -> None:
-        # print('PROXY CREATE', event)
-        await self.listener.publish(
+        await self.api.publish(
             dict(type="container",
                  resource=event["Actor"]["Attributes"]["name"].split('__')[1],
                  name=event["Actor"]["Attributes"]["name"].split('__')[2],
                  status='creating'))
+
+    def subscribe(self):
+        self.connector.events.subscribe(self.handler, debug=self.debug)
