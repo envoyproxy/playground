@@ -1,6 +1,4 @@
 
-from collections import OrderedDict
-
 import attr
 
 import rapidjson as json  # type: ignore
@@ -31,8 +29,15 @@ class PlaygroundAPI(object):
         self.connector = PlaygroundDockerClient()
         self.handler = PlaygroundEventHandler(self)
 
-    async def listen(self, app: web.Application) -> None:
-        self.handler.subscribe()
+    @property
+    def metadata(self):
+        return dict(
+            version=self._envoy_image,
+            max_network_connections=MAX_NETWORK_CONNECTIONS,
+            min_name_length=MIN_NAME_LENGTH,
+            max_name_length=MAX_NAME_LENGTH,
+            min_config_length=MIN_CONFIG_LENGTH,
+            max_config_length=MAX_CONFIG_LENGTH)
 
     # todo: use a cached property or somesuch.
     @property
@@ -41,43 +46,18 @@ class PlaygroundAPI(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
-    async def clear(self, request: web.Request) -> web.Response:
-        resources = (
-            (self.connector.list_services, self.connector.delete_service),
-            (self.connector.list_proxies, self.connector.delete_proxy),
-            (self.connector.list_networks, self.connector.delete_network))
-        for _resources, remove in resources:
-            for resource in await _resources():
-                await remove(resource['name'])
+    @method_decorator(api)
+    async def clear(self, request: PlaygroundRequest) -> web.Response:
+        await self.connector.clear()
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api)
     async def dump_resources(self, request: PlaygroundRequest) -> web.Response:
-        proxies = OrderedDict()
-        for proxy in await self.connector.list_proxies():
-            proxies[proxy["name"]] = proxy
-
-        networks = OrderedDict()
-        for network in await self.connector.list_networks():
-            networks[network["name"]] = network
-
-        services = OrderedDict()
-        for service in await self.connector.list_services():
-            services[service["name"]] = service
-
-        return web.json_response(
-            dict(meta=dict(
-                version=self._envoy_image,
-                max_network_connections=MAX_NETWORK_CONNECTIONS,
-                min_name_length=MIN_NAME_LENGTH,
-                max_name_length=MAX_NAME_LENGTH,
-                min_config_length=MIN_CONFIG_LENGTH,
-                max_config_length=MAX_CONFIG_LENGTH),
-                 proxies=proxies,
-                 services=services,
-                 service_types=self.service_types,
-                 networks=networks),
-            dumps=json.dumps)
+        response = await self.connector.dump_resources()
+        response.update(
+            dict(meta=self.metadata,
+                 service_types=self.service_types))
+        return web.json_response(response, dumps=json.dumps)
 
     async def events(self, request: web.Request) -> None:
         ws = web.WebSocketResponse()
@@ -89,8 +69,12 @@ class PlaygroundAPI(object):
         except RuntimeError as e:
             # todo: handle this better ?
             print(e)
+        # always ?
         finally:
             self.unsubscribe(ws)
+
+    async def listen(self, app: web.Application) -> None:
+        self.handler.subscribe()
 
     def subscribe(self, ws: web.WebSocketResponse):
         self._sockets.append(ws)
@@ -130,6 +114,12 @@ class PlaygroundAPI(object):
         await self.connector.proxy_delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
+    async def publish(
+            self,
+            event: dict) -> None:
+        for socket in self._sockets:
+            await socket.send_json(event, dumps=json.dumps)
+
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
@@ -147,9 +137,3 @@ class PlaygroundAPI(object):
         await request.validate(self)
         await self.connector.service_delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
-
-    async def publish(
-            self,
-            event: dict) -> None:
-        for socket in self._sockets:
-            await socket.send_json(event, dumps=json.dumps)
