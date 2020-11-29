@@ -30,9 +30,9 @@ class PlaygroundDockerClient(object):
     @method_decorator(cmd)
     async def clear(self) -> list:
         resources = (
-            (self.list_services, self.delete_service),
-            (self.list_proxies, self.delete_proxy),
-            (self.list_networks, self.delete_network))
+            (self.list_services, self.service_delete),
+            (self.list_proxies, self.proxy_delete),
+            (self.list_networks, self.network_delete))
         for _resources, remove in resources:
             for resource in await _resources():
                 await remove(resource['name'])
