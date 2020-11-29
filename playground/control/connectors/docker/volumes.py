@@ -3,13 +3,11 @@ import os
 from collections import OrderedDict
 from typing import Union
 
+from playground.control.connectors.docker.base import PlaygroundDockerContext
 
-class PlaygroundDockerVolumes(object):
+
+class PlaygroundDockerVolumes(PlaygroundDockerContext):
     _mount_image = "busybox"
-
-    def __init__(self, connector):
-        self.connector = connector
-        self.docker = connector.docker
 
     async def create(
             self,
