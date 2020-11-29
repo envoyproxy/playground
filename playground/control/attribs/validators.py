@@ -43,7 +43,8 @@ class _LengthValidator(object):
             self._gt(inst, attr, value)
         elif self.length.startswith('<'):
             self._lt(inst, attr, value)
-        return self._eq(inst, attr, value)
+        else:
+            return self._eq(inst, attr, value)
 
     def __repr__(self) -> str:
         return self._repr.format(length=self.length)
@@ -106,7 +107,7 @@ class _LengthValidator(object):
                 self.length)
 
 
-def has_length(length: int) -> _LengthValidator:
+def has_length(length: Union[int, str]) -> _LengthValidator:
     return _LengthValidator(length)
 
 
