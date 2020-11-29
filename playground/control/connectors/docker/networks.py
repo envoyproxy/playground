@@ -23,11 +23,11 @@ class PlaygroundDockerNetworks(object):
             dict(name="__playground_%s" % command.data.name,
                  labels={"envoy.playground.network": command.data.name}))
         if command.data.proxies:
-            for proxy in await self.connector.list_proxies():
+            for proxy in await self.connector.proxies.list():
                 if proxy['name'] in command.data.proxies:
                     await network.connect({"Container": proxy["id"]})
         if command.data.services:
-            for service in await self.connector.list_services():
+            for service in await self.connector.services.list():
                 if service['name'] in command.data.services:
                     await network.connect({"Container": service["id"]})
 
@@ -62,12 +62,12 @@ class PlaygroundDockerNetworks(object):
             | set(command.data.services or []))
         connect = expected - containers
         disconnect = containers - expected
-        for proxy in await self.connector.list_proxies():
+        for proxy in await self.connector.proxies.list():
             if proxy['name'] in connect:
                 await network.connect({"Container": proxy["id"]})
             if proxy['name'] in disconnect:
                 await network.disconnect({"Container": proxy["id"]})
-        for service in await self.connector.list_services():
+        for service in await self.connector.services.list():
             if service['name'] in connect:
                 await network.connect({"Container": service["id"]})
             if service['name'] in disconnect:
