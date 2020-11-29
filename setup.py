@@ -12,22 +12,23 @@ install_requires = [
     "aiohttp",
     "aiohttp_cors",
     "attrs",
-    "pyyaml",
     "pytest-asyncio",
-    "python-rapidjson"]
+    "python-rapidjson",
+    "pyyaml"]
 
 extras_require = {}
 extras_require['test'] = [
     "flake8",
+    "mypy",
     "pytest",
     "pytest-console-scripts",
-    "pytest-mock",
-    "pytest-cov"]
+    "pytest-cov",
+    "pytest-mock"]
 
 # TODO: Fix classifiers
 setup(
     name='playground.control',
-    version='0.0.1',
+    version='0.1.0',
     description='playground.control',
     long_description="playground.control",
     url='https://github.com/envoyproxy/playground',

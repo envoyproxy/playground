@@ -165,7 +165,7 @@ class _WellFormedStringValidator(object):
                 value)
 
     def __repr__(self) -> str:
-        return self._repr.format(members=self.members)
+        return self._repr.format(string_type=self.string_type)
 
 
 def is_well_formed(format_type: str) -> _WellFormedStringValidator:

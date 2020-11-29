@@ -31,6 +31,7 @@ class ServiceAddAttribs(AttribsWithName):
     # todo: im sure there must be a way to validate an
     #        attrib as an attrib class.
     env = attr.ib(
+        type=OrderedDict,
         default=OrderedDict(),
         validator=[
             all_members(_validate_env_vars)])

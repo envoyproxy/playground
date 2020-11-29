@@ -1,5 +1,5 @@
 
-from .runner import PlaygroundRunner
+from playground.control.runner import PlaygroundRunner
 
 
 CORS_ALLOWED = "http://localhost:5555"

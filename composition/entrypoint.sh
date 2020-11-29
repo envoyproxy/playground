@@ -1,7 +1,12 @@
 #!/bin/bash -e
 
 
-pip install -q -e .
-pip install -q -e '.[test]'
+if [[ -n "$CI" ]]; then
+    pip install -q .
+else
+    pip install -q -e .
+fi
+
+pip install -q '.[test]'
 
 exec "$@"

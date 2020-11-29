@@ -3,7 +3,7 @@ from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
 from typing import Callable
 
-import rapidjson as json
+import rapidjson as json  # type: ignore
 
 from aiohttp import web
 

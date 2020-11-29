@@ -23,25 +23,33 @@ _docker_compose () {
     COMPOSE_FILE=./composition/docker-compose.yaml docker-compose "$@"
 }
 
+_docker_compose_run () {
+    _docker_compose run --rm -e CI=1 "$@"
+}
+
+
 js_tests () {
     # JavaScript
     _docker_compose build ui
-    _docker_compose run \
-		-e CI=1 \
-		ui yarn install
-    _docker_compose run \
-		-e CI=1 \
-		ui yarn test --coverage
-    _docker_compose run \
-		-e CI=1 \
-		ui ./node_modules/.bin/eslint --max-warnings 0  src/
+    _docker_compose_run ui yarn install
+    _docker_compose_run ui yarn test --coverage
+    _docker_compose_run ui ./node_modules/.bin/eslint --max-warnings 0  src/
 }
 
 py_tests () {
-    # Python
+    local testtype;
+    testtype="$1"
     _docker_compose build control
-    _docker_compose run control pytest
-    _docker_compose run control flake8 .
+    if [[ -z "$testtype" || "$testtype" == "test" ]]; then
+	_docker_compose_run control pytest
+    fi
+    if [[ -z "$testtype" || "$testtype" == "typing" ]]; then
+	# todo: remove skip on imports
+	_docker_compose_run control mypy --follow-imports=skip --namespace-packages playground/control
+    fi
+    if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
+	_docker_compose_run control flake8 .
+    fi
 }
 
 sh_tests () {
@@ -49,15 +57,20 @@ sh_tests () {
 }
 
 run_tests () {
+    local testtype;
+    testtype="$1"
+    if [[ -n "$testtype" ]]; then
+	shift
+    fi
     mkdir -p .cache/coverage
-    if [[ -z "$1" || "$1" == "js" ]]; then
-	js_tests
+    if [[ -z "$testtype" || "$testtype" == "js" ]]; then
+	js_tests "$@"
     fi
-    if [[ -z "$1" || "$1" == "py" ]]; then
-	py_tests
+    if [[ -z "$testtype" || "$testtype" == "py" ]]; then
+	py_tests "$@"
     fi
-    if [[ -z "$1" || "$1" == "sh" ]]; then
-	sh_tests
+    if [[ -z "$testtype" || "$testtype" == "sh" ]]; then
+	sh_tests "$@"
     fi
 }
 
