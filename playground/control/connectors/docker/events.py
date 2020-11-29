@@ -30,21 +30,6 @@ class PlaygroundDockerEvents(object):
 
     def subscribe(
             self,
-            name: str,
             publisher: dict,
             debug: list = None) -> None:
-        asyncio.create_task(
-            self.emit(publisher, debug=debug),
-            name=name)
-
-    async def unsubscribe(self, name: str) -> None:
-        for task in asyncio.Task.all_tasks():
-            if task.get_name() != name:
-                continue
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                print("task is cancelled now")
-            else:
-                print("Error stopping task")
+        asyncio.create_task(self.emit(publisher, debug=debug))
