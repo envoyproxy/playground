@@ -9,3 +9,7 @@ class ValidationError(Exception):
 
 class PlaygroundError(Exception):
     pass
+
+
+class PlaygroundValidationError(Exception):
+    pass

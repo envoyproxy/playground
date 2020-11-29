@@ -1,4 +1,6 @@
 
+import asyncio
+
 from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
 from typing import Callable
@@ -9,7 +11,8 @@ from aiohttp import web
 
 from playground.control.attribs import ValidatingAttribs
 from playground.control.command import PlaygroundCommand
-from playground.control.exceptions import PlaygroundError, ValidationError
+from playground.control.exceptions import (
+    PlaygroundError, ValidationError, PlaygroundValidationError)
 from playground.control.request import PlaygroundRequest
 
 
@@ -20,8 +23,8 @@ def api(original_fun: Callable = None,
 
         @wraps(fun)
         async def wrapped_fun(request: web.Request) -> web.Response:
+            request = PlaygroundRequest(request, attribs=attribs)
             if attribs:
-                request = PlaygroundRequest(request, attribs=attribs)
                 try:
                     await request.load_data()
                 except ValidationError as e:
@@ -41,6 +44,7 @@ def api(original_fun: Callable = None,
                         reason="Invalid request data",
                         body=errors,
                         content_type='application/json')
+
                 try:
                     return await fun(request)
                 except PlaygroundError as e:
@@ -60,7 +64,6 @@ def api(original_fun: Callable = None,
     return _api
 
 
-# todo: improve error handling
 def cmd(original_fun: Callable = None,
         attribs: ValidatingAttribs = None) -> Callable:
 
@@ -68,14 +71,14 @@ def cmd(original_fun: Callable = None,
 
         @wraps(fun)
         async def wrapped_fun(kwargs: dict) -> None:
+            cmd = PlaygroundCommand(kwargs, attribs=attribs)
             if attribs:
-                # todo: raise a PlaygroundRuntimeError if DockerError
-                cmd = PlaygroundCommand(kwargs, attribs=attribs)
+                # todo: improve error handling
                 try:
                     await cmd.load_data()
                 except ValidationError as e:
                     errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
-                    return errors
+                    raise PlaygroundValidationError(errors)
                 except (TypeError, ValueError) as e:
                     if len(e.args) > 1:
                         errors = json.dumps(
@@ -83,14 +86,8 @@ def cmd(original_fun: Callable = None,
                     else:
                         errors = json.dumps(
                             dict(errors={'playground': e.args[0]}))
-                    return errors
-                try:
-                    return await fun(cmd)
-                except PlaygroundError as e:
-                    errors = json.dumps(
-                        dict(errors={e.args[1].name: e.args[0]}))
-                    return errors
-            return await fun(PlaygroundCommand(cmd))
+                    raise PlaygroundValidationError(errors)
+            asyncio.create_task(fun(cmd))
         return wrapped_fun
 
     if original_fun:
