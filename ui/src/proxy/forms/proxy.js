@@ -35,15 +35,6 @@ const code =
 //      - valid yaml
 //      - not too long, and not too short
 //      - ideally valid envoy config
-//  - certs
-//      - number of files
-//      - length of each file
-//      - valid file extensions for certs ?
-//      - valid filenames
-//  - binaries
-//      - number of files
-//      - size of each file
-//      - valid filenames
 
 
 export class ProxyConfigForm extends React.PureComponent {

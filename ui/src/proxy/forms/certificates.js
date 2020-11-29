@@ -15,6 +15,14 @@ import {readFile} from '../../shared/utils';
 import {ActionRemove} from '../../shared/actions';
 
 
+// VALIDATION REQUIRED
+//  - certs
+//      - number of files
+//      - length of each file
+//      - valid file extensions for certs ?
+//      - valid filenames
+
+
 const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
