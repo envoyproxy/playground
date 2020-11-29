@@ -24,20 +24,28 @@ class ProxyAddAttribs(AttribsWithName):
     # v: length
     # v: port_mapping dicts
     # v: mapping to/from are in valid ranges
-    port_mappings = attr.ib(default=[])
+    port_mappings = attr.ib(
+        type=list,
+        default=[])
 
     # v: length
     # v: valid keys
     # v: length of values
-    certs = attr.ib(default=OrderedDict())
+    certs = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
 
     # v: length
     # v: valid keys
     # v: length of values
-    binaries = attr.ib(default=OrderedDict())
+    binaries = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
 
     # v: option/s
-    logging = attr.ib(default=OrderedDict())
+    logging = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
 
 
 @attr.s

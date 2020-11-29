@@ -16,12 +16,14 @@ from playground.control.exceptions import PlaygroundError
 @attr.s(kw_only=True)
 class NetworkAddAttribs(AttribsWithName):
     proxies = attr.ib(
+        type=list,
         default=[],
         validator=[
             instance_of(list),
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
             all_members(lambda m: type(m) == str)])
     services = attr.ib(
+        type=list,
         default=[],
         validator=[
             instance_of(list),
@@ -29,7 +31,7 @@ class NetworkAddAttribs(AttribsWithName):
             all_members(lambda m: type(m) == str)])
 
     # api: p.c.api.PlaygroundAPI
-    async def validate(self, api):
+    async def validate(self, api) -> None:
         networks = await api.connector.list_networks()
 
         for network in networks:
@@ -70,12 +72,14 @@ class NetworkEditAttribs(ValidatingAttribs):
         has_length(10),
         matches_re(RE_UUID))
     proxies = attr.ib(
+        type=list,
         default=[],
         validator=[
             instance_of(list),
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
             all_members(lambda m: type(m) == str)])
     services = attr.ib(
+        type=list,
         default=[],
         validator=[
             instance_of(list),

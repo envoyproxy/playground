@@ -30,7 +30,7 @@ class PlaygroundDockerClient(object):
         if not image:
             # todo: add build logic
             return
-        environment = [
+        _environment = [
             "%s=%s" % (k, v)
             for k, v
             in environment.items()]
@@ -39,7 +39,7 @@ class PlaygroundDockerClient(object):
                 service_type,
                 image,
                 name,
-                environment,
+                _environment,
                 mounts),
             name="envoy__playground__service__%s" % name)
         await container.start()
@@ -160,7 +160,7 @@ class PlaygroundDockerClient(object):
                     'envoy__playground__proxy__', '')
             for container
             in info["Containers"].values()}
-        expected = set(proxies) | set(services)
+        expected = set(proxies or []) | set(services or [])
         connect = expected - containers
         disconnect = containers - expected
         for proxy in await self.list_proxies():
@@ -270,6 +270,17 @@ class PlaygroundDockerClient(object):
                 "envoy.playground.temp.target": target,
             }}
 
+    def _get_port_bindings(
+            self,
+            port_mappings: list) -> OrderedDict:
+        port_bindings: OrderedDict = OrderedDict()
+        for host, internal in port_mappings:
+            port_bindings[f"{internal}/tcp"] = port_bindings.get(
+                f"{internal}/tcp", [])
+            port_bindings[f"{internal}/tcp"].append(
+                {"HostPort": f"{host}"})
+        return port_bindings
+
     def _get_proxy_config(
             self,
             image: str,
@@ -277,12 +288,6 @@ class PlaygroundDockerClient(object):
             mounts: dict,
             port_mappings: list) -> dict:
         # todo: handle udp etc
-        port_bindings = OrderedDict()
-        for host, internal in port_mappings:
-            port_bindings[f"{internal}/tcp"] = port_bindings.get(
-                f"{internal}/tcp", [])
-            port_bindings[f"{internal}/tcp"].append(
-                {"HostPort": f"{host}"})
         return {
             'Image': image,
             "AttachStdin": False,
@@ -294,7 +299,7 @@ class PlaygroundDockerClient(object):
                 "envoy.playground.proxy": name,
             },
             "HostConfig": {
-                "PortBindings": port_bindings,
+                "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
                     '%s:%s' % (v.name, k)
                     for k, v
@@ -305,7 +310,7 @@ class PlaygroundDockerClient(object):
             service_type,
             image: str,
             name: str,
-            environment: dict,
+            environment: list,
             mounts: dict) -> dict:
         labels = {
             "envoy.playground.service": name,
