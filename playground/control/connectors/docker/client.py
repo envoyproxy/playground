@@ -35,7 +35,7 @@ class PlaygroundDockerClient(object):
             (self.list_networks, self.network_delete))
         for _resources, remove in resources:
             for resource in await _resources():
-                await remove(resource['name'])
+                await remove(dict(name=resource['name']))
 
     @method_decorator(cmd(sync=True))
     async def dump_resources(self) -> list:
