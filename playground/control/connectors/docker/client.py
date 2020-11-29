@@ -9,16 +9,28 @@ from aiodocker.containers import DockerContainers
 from aiodocker.networks import DockerNetworks
 
 from playground.control.attribs import (
-    NetworkAddAttribs, NetworkDeleteAttribs,
-    NetworkEditAttribs,
     ProxyCreateCommandAttribs, ProxyDeleteAttribs,
     ServiceCreateCommandAttribs, ServiceDeleteAttribs)
 from playground.control.command import PlaygroundCommand
-from playground.control.connectors.docker.events import PlaygroundDockerEvents
+from playground.control.connectors.docker.events import (
+    PlaygroundDockerEvents)
+from playground.control.connectors.docker.networks import (
+    PlaygroundDockerNetworks)
 from playground.control.decorators import cmd, method_decorator
 
 
-# TODO: split network/service/proxy classes/instances out
+class PlaygroundDockerServices(object):
+
+    def __init__(self, connector):
+        self.connector = connector
+
+
+class PlaygroundDockerProxies(object):
+
+    def __init__(self, connector):
+        self.connector = connector
+
+
 class PlaygroundDockerClient(object):
     _envoy_label = "envoy.playground"
     _mount_image = "busybox"
@@ -26,13 +38,16 @@ class PlaygroundDockerClient(object):
     def __init__(self):
         self.docker = aiodocker.Docker()
         self.events = PlaygroundDockerEvents(self.docker)
+        self.networks = PlaygroundDockerNetworks(self)
+        self.proxies = PlaygroundDockerProxies(self)
+        self.services = PlaygroundDockerServices(self)
 
     @method_decorator(cmd)
     async def clear(self) -> list:
+        await self.networks.clear()
         resources = (
             (self.list_services, self.service_delete),
-            (self.list_proxies, self.proxy_delete),
-            (self.list_networks, self.network_delete))
+            (self.list_proxies, self.proxy_delete))
         for _resources, remove in resources:
             for resource in await _resources():
                 await remove(dict(name=resource['name']))
@@ -44,7 +59,7 @@ class PlaygroundDockerClient(object):
             proxies[proxy["name"]] = proxy
 
         networks = OrderedDict()
-        for network in await self.list_networks():
+        for network in await self.networks.list():
             networks[network["name"]] = network
 
         services = OrderedDict()
@@ -70,10 +85,6 @@ class PlaygroundDockerClient(object):
                 return True
         return False
 
-    async def list_networks(self) -> list:
-        return await self._list_resources(
-            self.docker.networks, "network")
-
     async def list_proxies(self) -> list:
         return await self._list_resources(
             self.docker.containers, "proxy")
@@ -81,63 +92,6 @@ class PlaygroundDockerClient(object):
     async def list_services(self) -> list:
         return await self._list_resources(
             self.docker.containers, "service")
-
-    @method_decorator(cmd(attribs=NetworkAddAttribs))
-    async def network_create(
-            self,
-            command: PlaygroundCommand) -> None:
-        network = await self.docker.networks.create(
-            dict(name="__playground_%s" % command.data.name,
-                 labels={"envoy.playground.network": command.data.name}))
-        if command.data.proxies:
-            for proxy in await self.list_proxies():
-                if proxy['name'] in command.data.proxies:
-                    await network.connect({"Container": proxy["id"]})
-        if command.data.services:
-            for service in await self.list_services():
-                if service['name'] in command.data.services:
-                    await network.connect({"Container": service["id"]})
-
-    @method_decorator(cmd(attribs=NetworkDeleteAttribs))
-    async def network_delete(
-            self,
-            command: PlaygroundCommand) -> None:
-        for network in await self.docker.networks.list():
-            if "envoy.playground.network" in network["Labels"]:
-                if network["Name"] == "__playground_%s" % command.data.name:
-                    _network = await self.docker.networks.get(network["Id"])
-                    info = await _network.show()
-                    for container in info["Containers"].keys():
-                        await _network.disconnect({"Container": container})
-                    await _network.delete()
-
-    @method_decorator(cmd(attribs=NetworkEditAttribs))
-    async def network_edit(
-            self,
-            command: PlaygroundCommand) -> None:
-        network = await self.docker.networks.get(command.data.id)
-        info = await network.show()
-        containers = {
-            container['Name'].replace(
-                'envoy__playground__service__', '').replace(
-                    'envoy__playground__proxy__', '')
-            for container
-            in info["Containers"].values()}
-        expected = (
-            set(command.data.proxies or [])
-            | set(command.data.services or []))
-        connect = expected - containers
-        disconnect = containers - expected
-        for proxy in await self.list_proxies():
-            if proxy['name'] in connect:
-                await network.connect({"Container": proxy["id"]})
-            if proxy['name'] in disconnect:
-                await network.disconnect({"Container": proxy["id"]})
-        for service in await self.list_services():
-            if service['name'] in connect:
-                await network.connect({"Container": service["id"]})
-            if service['name'] in disconnect:
-                await network.disconnect({"Container": service["id"]})
 
     @method_decorator(cmd(attribs=ProxyCreateCommandAttribs))
     async def proxy_create(

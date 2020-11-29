@@ -85,19 +85,19 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.network_create(attr.asdict(request.data))
+        await self.connector.networks.create(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkDeleteAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.network_delete(attr.asdict(request.data))
+        await self.connector.networks.delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkEditAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.network_edit(attr.asdict(request.data))
+        await self.connector.networks.edit(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ProxyAddAttribs))
