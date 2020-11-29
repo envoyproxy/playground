@@ -58,7 +58,9 @@ sh_tests () {
 run_tests () {
     local testtype;
     testtype="$1"
-    shift
+    if [[ -z "$testtype" ]]; then
+	shift
+    fi
     mkdir -p .cache/coverage
     if [[ -z "$testtype" || "$testtype" == "js" ]]; then
 	js_tests "$@"
