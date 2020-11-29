@@ -4,6 +4,8 @@ import os
 from collections import OrderedDict
 from typing import Union
 
+import attr
+
 import rapidjson as json  # type: ignore
 import yaml
 
@@ -102,16 +104,13 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.create_network(
-            request.data.name,
-            proxies=request.data.proxies,
-            services=request.data.services)
+        await self.connector.create_network(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkDeleteAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.delete_network(request.data.name)
+        await self.connector.delete_network(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkEditAttribs))

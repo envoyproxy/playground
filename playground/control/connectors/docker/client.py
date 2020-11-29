@@ -7,7 +7,11 @@ import aiodocker
 from aiodocker.containers import DockerContainers
 from aiodocker.networks import DockerNetworks
 
+from playground.control.attribs import (
+    NetworkCreateConnectorAttribs, NetworkDeleteConnectorAttribs)
+from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.events import PlaygroundDockerEvents
+from playground.control.decorators import cmd, method_decorator
 
 
 # TODO: split network/service/proxy classes/instances out
@@ -60,21 +64,20 @@ class PlaygroundDockerClient(object):
             name="envoy__playground__proxy__%s" % name)
         await container.start()
 
+    @method_decorator(cmd(attribs=NetworkCreateConnectorAttribs))
     async def create_network(
             self,
-            name: str,
-            proxies: Optional[list] = None,
-            services: Optional[list] = None) -> None:
+            command: PlaygroundCommand) -> None:
         network = await self.docker.networks.create(
-            dict(name="__playground_%s" % name,
-                 labels={"envoy.playground.network": name}))
-        if proxies:
+            dict(name="__playground_%s" % command.data.name,
+                 labels={"envoy.playground.network": command.data.name}))
+        if command.data.proxies:
             for proxy in await self.list_proxies():
-                if proxy['name'] in proxies:
+                if proxy['name'] in command.data.proxies:
                     await network.connect({"Container": proxy["id"]})
-        if services:
+        if command.data.services:
             for service in await self.list_services():
-                if service['name'] in services:
+                if service['name'] in command.data.services:
                     await network.connect({"Container": service["id"]})
 
     async def create_volume(
@@ -86,10 +89,13 @@ class PlaygroundDockerClient(object):
             container_type, name, mount)
         return await self.docker.volumes.create(volume_config)
 
-    async def delete_network(self, name: str) -> None:
+    @method_decorator(cmd(attribs=NetworkDeleteConnectorAttribs))
+    async def delete_network(
+            self,
+            command: PlaygroundCommand) -> None:
         for network in await self.docker.networks.list():
             if "envoy.playground.network" in network["Labels"]:
-                if network["Name"] == "__playground_%s" % name:
+                if network["Name"] == "__playground_%s" % command.data.name:
                     _network = await self.docker.networks.get(network["Id"])
                     info = await _network.show()
                     for container in info["Containers"].keys():
