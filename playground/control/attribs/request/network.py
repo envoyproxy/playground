@@ -32,7 +32,7 @@ class NetworkAddAttribs(AttribsWithName):
 
     # api: p.c.api.PlaygroundAPI
     async def validate(self, api) -> None:
-        networks = await api.connector.list_networks()
+        networks = await api.connector.networks.list()
 
         for network in networks:
             if network['name'] == self.name:
@@ -88,7 +88,7 @@ class NetworkEditAttribs(ValidatingAttribs):
 
     # api: p.c.api.PlaygroundAPI
     async def validate(self, api):
-        networks = await api.connector.list_networks()
+        networks = await api.connector.networks.list()
 
         if self.id not in [n['id'] for n in networks]:
             raise PlaygroundError(
