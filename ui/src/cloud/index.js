@@ -6,8 +6,8 @@ import {connect} from 'react-redux';
 
 import {Stage, Layer, Line} from 'react-konva';
 
-import CloudLogo from '../images/cloud.svg';
-import EnvoyLogo from '../images/envoy.svg';
+import CloudLogo from '../app/images/cloud.svg';
+import EnvoyLogo from '../app/images/envoy.svg';
 
 import {KonvaImage} from '../shared/image';
 import {Group, Text, Tag, Label} from 'react-konva';

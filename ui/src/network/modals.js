@@ -8,7 +8,7 @@ import {Alert, Col, Row} from 'reactstrap';
 
 import {PlaygroundTabs} from '../shared/tabs';
 import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
-import CloudLogo from '../images/cloud.svg';
+import CloudLogo from '../app/images/cloud.svg';
 
 
 export class BaseNetworkCreating extends React.PureComponent {

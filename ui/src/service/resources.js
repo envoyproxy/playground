@@ -5,7 +5,7 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import APIResources from '../shared/resources';
-import ServiceLogo from '../images/service.png';
+import ServiceLogo from '../app/images/service.png';
 
 import {ServiceModal} from './modals';
 

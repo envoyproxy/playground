@@ -6,8 +6,8 @@ import {
     Button, Col, CustomInput, Input, Row } from 'reactstrap';
 
 import {updateForm} from '../../app/store';
-import EdgeLogo from '../../images/edge.svg';
-import EnvoyLogo from '../../images/envoy.svg';
+import EdgeLogo from '../../app/images/edge.svg';
+import EnvoyLogo from '../../app/images/envoy.svg';
 import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
 

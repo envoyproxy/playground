@@ -15,10 +15,10 @@ import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../shared/forms';
 
-import BinaryIcon from '../images/binary.png';
-import CertificateIcon from '../images/certificate.svg';
+import BinaryIcon from '../app/images/binary.png';
+import CertificateIcon from '../app/images/certificate.svg';
 import {updateForm} from '../app/store';
-import {readFile} from '../utils';
+import {readFile} from '../shared/utils';
 import {ActionCopy, ActionClear, ActionRemove} from '../shared/actions';
 
 import Yaml from 'js-yaml';

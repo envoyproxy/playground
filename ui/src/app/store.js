@@ -2,7 +2,7 @@ import {combineReducers} from 'redux';
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 import {staticAddress} from '../app/constants';
-import {getRndInteger} from '../utils';
+import {getRndInteger} from '../shared/utils';
 
 
 const metaSlice = createSlice({
