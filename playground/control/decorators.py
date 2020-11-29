@@ -8,6 +8,7 @@ import rapidjson as json  # type: ignore
 from aiohttp import web
 
 from playground.control.attribs import ValidatingAttribs
+from playground.control.command import PlaygroundCommand
 from playground.control.exceptions import PlaygroundError, ValidationError
 from playground.control.request import PlaygroundRequest
 
@@ -57,6 +58,45 @@ def api(original_fun: Callable = None,
         return _api(original_fun)
 
     return _api
+
+
+# todo: improve error handling
+def cmd(original_fun: Callable = None,
+        attribs: ValidatingAttribs = None) -> Callable:
+
+    def _cmd(fun: Callable) -> Callable:
+
+        @wraps(fun)
+        async def wrapped_fun(kwargs: dict) -> None:
+            if attribs:
+                # todo: raise a PlaygroundRuntimeError if DockerError
+                cmd = PlaygroundCommand(kwargs, attribs=attribs)
+                try:
+                    await cmd.load_data()
+                except ValidationError as e:
+                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
+                    return errors
+                except (TypeError, ValueError) as e:
+                    if len(e.args) > 1:
+                        errors = json.dumps(
+                            dict(errors={e.args[1].name: e.args[0]}))
+                    else:
+                        errors = json.dumps(
+                            dict(errors={'playground': e.args[0]}))
+                    return errors
+                try:
+                    return await fun(cmd)
+                except PlaygroundError as e:
+                    errors = json.dumps(
+                        dict(errors={e.args[1].name: e.args[0]}))
+                    return errors
+            return await fun(PlaygroundCommand(cmd))
+        return wrapped_fun
+
+    if original_fun:
+        return _cmd(original_fun)
+
+    return _cmd
 
 
 # Method decoration taken from the django project

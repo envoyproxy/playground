@@ -7,7 +7,7 @@ export PLAYGROUND_VERSION=0.1-alpha
 .PHONY: coverage
 
 clean:
-	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") || :
+	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") 2> /dev/null || :
 
 run: clean
 	docker run -d \

@@ -1,8 +1,7 @@
 
-import base64
-import os
 from collections import OrderedDict
-from typing import Union
+
+import attr
 
 import rapidjson as json  # type: ignore
 import yaml
@@ -102,128 +101,51 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=NetworkAddAttribs))
     async def network_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.create_network(
-            request.data.name,
-            proxies=request.data.proxies,
-            services=request.data.services)
+        await self.connector.network_create(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkDeleteAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.delete_network(request.data.name)
+        await self.connector.network_delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=NetworkEditAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.edit_network(
-            request.data.id,
-            proxies=request.data.proxies,
-            services=request.data.services)
+        await self.connector.network_edit(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
-
-    async def populate_volume(
-            self,
-            container_type: str,
-            name: str,
-            mount: str,
-            files: Union[dict, OrderedDict]):
-        # create volume
-        volume = await self.connector.create_volume(
-            container_type, name, mount)
-
-        if files:
-            # write files into the volume
-            await self.connector.write_volume(
-                volume.name, mount, files)
-
-        return volume
 
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        if not await self.connector.image_exists(self._envoy_image):
-            await self.connector.pull_image(self._envoy_image)
-
-        # todo: remove binary/cert prefixes in js
-        mappings = [
-            [m['mapping_from'], m['mapping_to']]
-            for m
-            in request.data.port_mappings]
-        mounts = {
-            "/etc/envoy": await self.populate_volume(
-                'proxy',
-                request.data.name,
-                'envoy',
-                {'envoy.yaml': base64.b64encode(
-                    request.data.configuration.encode('utf-8')).decode()}),
-            "/certs": await self.populate_volume(
-                'proxy',
-                request.data.name,
-                'certs',
-                OrderedDict(
-                    (k, v.split(',')[1])
-                    for k, v
-                    in request.data.certs.items())),
-            '/binary': await self.populate_volume(
-                'proxy',
-                request.data.name,
-                'binary',
-                OrderedDict(
-                    (k, v.split(',')[1])
-                    for k, v
-                    in request.data.binaries.items())),
-            '/logs': await self.connector.create_volume(
-                'proxy', request.data.name, 'logs')}
-
-        # create the proxy
-        await self.connector.create_proxy(
-            self._envoy_image,
-            request.data.name,
-            mounts,
-            mappings,
-            request.data.logging)
+        kwargs = attr.asdict(request.data)
+        kwargs['image'] = self._envoy_image
+        await self.connector.proxy_create(kwargs)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ProxyDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.delete_proxy(request.data.name)
+        await self.connector.proxy_delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        data = dict(
-            name=request.data.name,
-            service_type=request.data.service_type)
+        command = attr.asdict(request.data)
         service_config = self.service_types[request.data.service_type]
-
-        data['image'] = service_config.get("image")
-        if not await self.connector.image_exists(data['image']):
-            await self.connector.pull_image(data['image'])
-
-        data['mounts'] = OrderedDict()
-        config_path = service_config['labels'].get(
-            'envoy.playground.config.path')
-        if config_path:
-            config = base64.b64encode(
-                request.data.configuration.encode('utf-8')).decode()
-            data['mounts'][os.path.dirname(config_path)] = (
-                await self.populate_volume(
-                    'service',
-                    request.data.name,
-                    'config',
-                    {os.path.basename(config_path): config}))
-        data['environment'] = request.data.env
-        await self.connector.create_service(**data)
+        command['image'] = service_config.get("image")
+        if command.get('configuration'):
+            command['config_path'] = service_config['labels'].get(
+                'envoy.playground.config.path')
+        await self.connector.service_create(command)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     @method_decorator(api(attribs=ServiceDeleteAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        await self.connector.delete_service(request.data.name)
+        await self.connector.service_delete(attr.asdict(request.data))
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
     async def publish(

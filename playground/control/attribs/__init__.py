@@ -3,8 +3,8 @@ from .base import (
     AttribsWithName, ValidatingAttribs)
 from .request import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
-    ProxyAddAttribs, ProxyDeleteAttribs,
-    ServiceAddAttribs, ServiceDeleteAttribs)
+    ProxyAddAttribs, ProxyCreateCommandAttribs, ProxyDeleteAttribs,
+    ServiceAddAttribs, ServiceCreateCommandAttribs, ServiceDeleteAttribs)
 
 
 __all__ = (
@@ -13,7 +13,9 @@ __all__ = (
     'NetworkDeleteAttribs',
     'NetworkEditAttribs',
     'ProxyAddAttribs',
+    'ProxyCreateCommandAttribs',
     'ProxyDeleteAttribs',
     'ServiceAddAttribs',
+    'ServiceCreateCommandAttribs',
     'ServiceDeleteAttribs',
     'ValidatingAttribs')

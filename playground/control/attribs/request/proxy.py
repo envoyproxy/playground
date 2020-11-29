@@ -31,6 +31,7 @@ class ProxyAddAttribs(AttribsWithName):
     # v: length
     # v: valid keys
     # v: length of values
+    # v: base64
     certs = attr.ib(
         type=OrderedDict,
         default=OrderedDict())
@@ -38,6 +39,45 @@ class ProxyAddAttribs(AttribsWithName):
     # v: length
     # v: valid keys
     # v: length of values
+    # v: base64
+    binaries = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
+
+    # v: option/s
+    logging = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
+
+
+@attr.s
+class ProxyCreateCommandAttribs(AttribsWithName):
+    image = attr.ib(type=str)
+    configuration = attr.ib(
+        validator=[
+            instance_of(str),
+            has_length(f'>={MIN_CONFIG_LENGTH}'),
+            has_length(f'<={MAX_CONFIG_LENGTH}')])
+
+    # v: length
+    # v: port_mapping dicts
+    # v: mapping to/from are in valid ranges
+    port_mappings = attr.ib(
+        type=list,
+        default=[])
+
+    # v: length
+    # v: valid keys
+    # v: length of values
+    # v: base64
+    certs = attr.ib(
+        type=OrderedDict,
+        default=OrderedDict())
+
+    # v: length
+    # v: valid keys
+    # v: length of values
+    # v: base64
     binaries = attr.ib(
         type=OrderedDict,
         default=OrderedDict())
