@@ -18,10 +18,13 @@ class DummyPlaygroundAPI(api.PlaygroundAPI):
         pass
 
 
-class DummyPlaygroundRequest(request.PlaygroundRequest):
+class DummyRequest(request.PlaygroundRequest):
 
     def __init__(self):
-        pass
+        self._validate = MagicMock()
+
+    async def validate(self, _api):
+        self._valid_data = self._validate(_api)
 
 
 def test_api(patch_playground):
@@ -59,21 +62,19 @@ async def test_api_clear(patch_playground):
     _api.connector = MagicMock()
     _api.connector.clear = AsyncMock()
     _patch_resp = patch_playground('api.listener.web.json_response')
-    _patch_request = patch_playground('api.listener.PlaygroundRequest')
-    _request = DummyPlaygroundRequest()
+    _request = DummyRequest()
 
     with _patch_resp as m_resp:
-        with _patch_request as m_request:
-            response = await _api.clear(_request)
-            assert response == m_resp.return_value
-            assert (
-                list(m_resp.call_args)
-                == [({'message': 'OK'},),
-                    {'dumps': json.dumps}])
-            assert (
-                list(_api.connector.clear.call_args)
-                == [(), {}])
-            assert not m_request.called
+        response = await _api.clear.__wrapped__(_api, _request)
+        assert response == m_resp.return_value
+        assert (
+            list(m_resp.call_args)
+            == [({'message': 'OK'},),
+                {'dumps': json.dumps}])
+        assert (
+            list(_api.connector.clear.call_args)
+            == [(), {}])
+        assert response == m_resp.return_value
 
 
 @pytest.mark.asyncio
@@ -83,23 +84,49 @@ async def test_api_dump_resources(patch_playground):
     _api.connector.dump_resources = AsyncMock(return_value=MagicMock())
     type(_api).service_types = PropertyMock()
     _patch_resp = patch_playground('api.listener.web.json_response')
-    _patch_request = patch_playground('api.listener.PlaygroundRequest')
-    _request = DummyPlaygroundRequest()
+    _request = DummyRequest()
 
     with _patch_resp as m_resp:
-        with _patch_request as m_request:
-            response = await _api.dump_resources(_request)
-            assert response == m_resp.return_value
-            _dumped = _api.connector.dump_resources.return_value
+        response = await _api.dump_resources.__wrapped__(_api, _request)
+        assert response == m_resp.return_value
+        _dumped = _api.connector.dump_resources.return_value
+        assert (
+            list(_api.connector.dump_resources.call_args)
+            == [(), {}])
+        assert (
+            list(_dumped.update.call_args)
+            == [({'meta': _api.metadata,
+                  'service_types': _api.service_types}, ), {}])
+        assert (
+            list(m_resp.call_args)
+            == [(_dumped,),
+                {'dumps': json.dumps}])
+        assert response == m_resp.return_value
+
+
+@pytest.mark.asyncio
+async def test_api_network_add(patch_playground):
+    _api = DummyPlaygroundAPI()
+    _api.connector = MagicMock()
+    _api.connector.networks.create = AsyncMock(return_value=MagicMock())
+    _patch_resp = patch_playground('api.listener.web.json_response')
+    _patch_attr = patch_playground('api.listener.attr')
+    _request = DummyRequest()
+
+    with _patch_resp as m_resp:
+        with _patch_attr as m_attr:
+            response = await _api.network_add.__wrapped__(_api, _request)
             assert (
-                list(_api.connector.dump_resources.call_args)
-                == [(), {}])
+                list(_request._validate.call_args)
+                == [(_api,), {}])
             assert (
-                list(_dumped.update.call_args)
-                == [({'meta': _api.metadata,
-                      'service_types': _api.service_types}, ), {}])
+                list(m_attr.asdict.call_args)
+                == [(_request._validate.return_value,), {}])
+            assert (
+                list(_api.connector.networks.create.call_args)
+                == [(m_attr.asdict.return_value,), {}])
             assert (
                 list(m_resp.call_args)
-                == [(_dumped,),
+                == [({'message': 'OK'},),
                     {'dumps': json.dumps}])
-            assert not m_request.called
+            assert response == m_resp.return_value
