@@ -4,11 +4,11 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert, Col, CustomInput, Input} from 'reactstrap';
+import {Col, CustomInput} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
+    PlaygroundFormGroupRow, PlaygroundInput} from '../../shared/forms';
 
 import {updateForm} from '../../app/store';
 
@@ -86,22 +86,12 @@ class BaseServiceForm extends React.PureComponent {
                   label="name"
                   title="Name">
                   <Col sm={9}>
-                    <Input
-                      type="text"
+		    <PlaygroundInput
                       name="name"
-                      id="name"
-                      value={name || ""}
                       placeholder="Enter service name"
-                      onChange={this.onChange}
-                    />
-                    {(errors.name || []).map((e, i) => {
-                        return (
-                            <Alert
-                              className="p-1 mt-2 mb-2"
-                              color="danger"
-                              key={i}>{e}</Alert>
-                        );
-                    })}
+                      errors={errors}
+                      value={name || ''}
+                      onChange={this.onChange} />
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>

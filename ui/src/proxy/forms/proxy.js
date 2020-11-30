@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {Alert, Col, Input} from 'reactstrap';
+import {Col} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
+    PlaygroundFormGroupRow, PlaygroundInput} from '../../shared/forms';
 
 import Yaml from 'js-yaml';
 
@@ -178,21 +178,12 @@ export class BaseProxyForm extends React.PureComponent {
                   title="Name*"
                   label="name">
                   <Col sm={8}>
-                    <Input
-                      type="text"
+		    <PlaygroundInput
                       name="name"
-                      id="name"
-                      value={name || ""}
-                      onChange={this.onChange}
-                      placeholder="Enter proxy name" />
-                    {(errors.name || []).map((e, i) => {
-                        return (
-                            <Alert
-                              className="p-1 mt-2 mb-2"
-                              color="danger"
-                              key={i}>{e}</Alert>
-                        );
-                    })}
+                      placeholder="Enter proxy name"
+                      errors={errors}
+                      value={name || ''}
+                      onChange={this.onChange} />
                   </Col>
                 </PlaygroundFormGroupRow>
                 {showConfig &&
