@@ -143,3 +143,103 @@ async def test_api_methods(patch_playground, method, command):
                 == [({'message': 'OK'},),
                     {'dumps': json.dumps}])
             assert response == m_resp.return_value
+
+
+@pytest.mark.asyncio
+async def test_api_proxy_add(patch_playground):
+    _api = DummyPlaygroundAPI()
+    _api.connector = MagicMock()
+    _api.connector.proxies.create = AsyncMock()
+    _target = _api.connector.proxies.create
+    _patch_resp = patch_playground('api.listener.web.json_response')
+    _patch_attr = patch_playground('api.listener.attr')
+    _request = DummyRequest()
+
+    with _patch_resp as m_resp:
+        with _patch_attr as m_attr:
+            response = await _api.proxy_add.__wrapped__(_api, _request)
+            assert (
+                list(_request._validate.call_args)
+                == [(_api,), {}])
+            assert (
+                list(m_attr.asdict.call_args)
+                == [(_request._validate.return_value,), {}])
+            assert (
+                list(m_attr.asdict.return_value.__setitem__.call_args)
+                == [('image', _api._envoy_image), {}])
+            assert (
+                list(_target.call_args)
+                == [(m_attr.asdict.return_value,), {}])
+            assert (
+                list(m_resp.call_args)
+                == [({'message': 'OK'},),
+                    {'dumps': json.dumps}])
+            assert response == m_resp.return_value
+
+
+@pytest.mark.asyncio
+async def test_api_service_add(patch_playground):
+    _api = DummyPlaygroundAPI()
+    _api.connector = MagicMock()
+    _api.connector.services.create = AsyncMock()
+    _target = _api.connector.services.create
+    type(_api).service_types = PropertyMock()
+    _patch_resp = patch_playground('api.listener.web.json_response')
+    _patch_attr = patch_playground('api.listener.attr')
+    _request = DummyRequest()
+
+    with _patch_resp as m_resp:
+        with _patch_attr as m_attr:
+            response = await _api.service_add.__wrapped__(_api, _request)
+            assert (
+                list(_request._validate.call_args)
+                == [(_api,), {}])
+            assert (
+                list(m_attr.asdict.call_args)
+                == [(_request._validate.return_value,), {}])
+            assert (
+                list(_api.service_types.__getitem__.call_args)
+                == [(_request._validate.return_value.service_type,), {}])
+            assert (
+                list(m_attr.asdict.return_value.get.call_args)
+                == [('configuration',), {}])
+
+            _service_config = _api.service_types.__getitem__.return_value
+            _service_types = _service_config.__getitem__
+
+            assert (
+                list(m_attr.asdict.return_value.__setitem__.call_args)
+                == [('config_path',
+                     _service_types.return_value.get.return_value), {}])
+
+            # todo test adding without config
+            assert (
+                list(_service_types.call_args)
+                == [('labels',), {}])
+            assert (
+                list(_service_types.return_value.get.call_args)
+                == [('envoy.playground.config.path',), {}])
+            assert (
+                list(m_attr.asdict.return_value.__setitem__.call_args)
+                == [('config_path',
+                     _service_types.return_value.get.return_value), {}])
+            assert (
+                [list(c)
+                 for c
+                 in list(
+                     m_attr.asdict.return_value.__setitem__.call_args_list)]
+                == [[('image',
+                     _service_config.get.return_value),
+                     {}],
+                    [('config_path',
+                      _service_types.return_value.get.return_value),
+                     {}]])
+
+            assert (
+                list(_target.call_args)
+                == [(m_attr.asdict.return_value,), {}])
+            assert (
+                list(m_resp.call_args)
+                == [({'message': 'OK'},),
+                    {'dumps': json.dumps}])
+            assert response == m_resp.return_value
