@@ -5,4 +5,4 @@ ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
 ENTRYPOINT ["./composition/docs-entrypoint.sh"]
-CMD ["sphinx-build", "-W", "--keep-going", "-b", "html", "docs", "build/site/docs"]
+CMD ["sphinx-build", "-W", "--keep-going", "-b", "htmldir", "docs", "build/site/docs"]
