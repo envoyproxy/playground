@@ -27,7 +27,7 @@ class PlaygroundAPI(object):
     _envoy_image = "envoyproxy/envoy-dev:latest"
 
     def __init__(self, services: Union[tuple, None] = None):
-        self._sockets = []
+        self._sockets: list = []
         self.connector = PlaygroundDockerClient()
         self.handler = PlaygroundEventHandler(self)
         self.services = PlaygroundServiceDiscovery(services)
