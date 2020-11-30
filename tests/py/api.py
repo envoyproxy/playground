@@ -90,15 +90,16 @@ async def test_api_dump_resources(patch_playground):
         with _patch_request as m_request:
             response = await _api.dump_resources(_request)
             assert response == m_resp.return_value
+            _dumped = _api.connector.dump_resources.return_value
             assert (
                 list(_api.connector.dump_resources.call_args)
                 == [(), {}])
             assert (
-                list(_api.connector.dump_resources.return_value.update.call_args)
+                list(_dumped.update.call_args)
                 == [({'meta': _api.metadata,
                       'service_types': _api.service_types}, ), {}])
             assert (
                 list(m_resp.call_args)
-                == [(_api.connector.dump_resources.return_value,),
+                == [(_dumped,),
                     {'dumps': json.dumps}])
             assert not m_request.called
