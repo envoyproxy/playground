@@ -16,6 +16,7 @@ docs:
 			docs
 
 site:
+	echo "Building site..."
 	pip install .[docs]
 	sphinx-build -W --keep-going -b html docs build/site/docs
 	cp -a site/* build/site
