@@ -4,6 +4,7 @@ services:
     labels:
       envoy.playground.service: "ACME letsencrypt (pebble)"
       envoy.playground.logo: "acme.svg"
+      envoy.playground.readme: README
 
   postgres:
     image: postgres:latest
@@ -12,6 +13,7 @@ services:
     labels:
       envoy.playground.service: "PostgreSQL"
       envoy.playground.logo: "postgres.svg"
+      envoy.playground.readme: README
 
   redis:
     image: redis:latest
@@ -42,12 +44,14 @@ services:
     labels:
       envoy.playground.service: "Jaeger"
       envoy.playground.logo: "jaeger.svg"
+      envoy.playground.readme: README
 
   zipkin:
     image: openzipkin/zipkin
     labels:
       envoy.playground.service: "Zipkin"
       envoy.playground.logo: "zipkin.svg"
+      envoy.playground.readme: README
 
   mariadb:
     image: mariadb:latest
@@ -56,12 +60,14 @@ services:
     labels:
       envoy.playground.service: "Mariadb"
       envoy.playground.logo: "mariadb.svg"
+      envoy.playground.readme: README
 
   http-echo:
     image: mendhak/http-https-echo
     labels:
       envoy.playground.service: "HTTP/S echo"
       envoy.playground.logo: "http-echo.svg"
+      envoy.playground.readme: README
     environment:
       HTTPS_PORT: 0
 
@@ -70,3 +76,4 @@ services:
     labels:
       envoy.playground.service: Solid server (node)
       envoy.playground.logo: "solid.svg"
+      envoy.playground.readme: README
