@@ -10,7 +10,7 @@ import {Alert, Button, Col, Label, Row} from 'reactstrap';
 
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionCopy} from '../shared/actions';
-import {PlaygroundModalTabs} from '../shared/tabs';
+import {PlaygroundFormTabs} from '../shared/tabs';
 
 
 import Editor from 'react-simple-code-editor';
@@ -218,7 +218,7 @@ export class BaseServiceModal extends React.Component {
             );
         }
         return (
-            <PlaygroundModalTabs
+            <PlaygroundFormTabs
               validation={validation}
               tabs={this.tabs} />
         );

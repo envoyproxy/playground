@@ -16,12 +16,12 @@ import {ActionCopy, ActionClear} from './actions';
 
 export class PlaygroundEditor extends React.PureComponent {
     static propTypes = exact({
-        clearConfig: PropTypes.func.isRequired,
         content: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
         title: PropTypes.string.isRequired,
 
+        clearConfig: PropTypes.func,
         format: PropTypes.string,
         errors: PropTypes.array,
         onHighlight: PropTypes.func,
@@ -34,7 +34,7 @@ export class PlaygroundEditor extends React.PureComponent {
 
     render () {
         const {
-            clearConfig, content, errors,
+            clearConfig, content, errors=[],
             onHighlight,
             format, onChange, name, title} = this.props;
         let highlighter = code => highlight(code, languages[format]);
@@ -51,7 +51,9 @@ export class PlaygroundEditor extends React.PureComponent {
                 <Col sm={8} />
                 <Col sm={2} className="align-text-bottom">
                   <ActionCopy copy={this.copyConfig} />
-                  <ActionClear clear={clearConfig} />
+                  {clearConfig &&
+                   <ActionClear clear={clearConfig} />
+                  }
                 </Col>
               </Row>
               {(errors.configuration || []).map((e, i) => {

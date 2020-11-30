@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import exact from 'prop-types-exact';
 
-import {Alert, Col, Row} from 'reactstrap';
+import {Alert, Button, Col, Row} from 'reactstrap';
 
 import {GithubSnippet} from './snippets';
 
@@ -62,5 +63,37 @@ export class AlertValidation extends React.PureComponent {
                   );
               })}
             </Alert>);
+    }
+}
+
+
+export class AlertStartFailed extends React.PureComponent {
+    static propTypes = exact({
+        onReconfigure: PropTypes.func.isRequired,
+        icon: PropTypes.string.isRequired,
+        message: PropTypes.string.isRequired,
+        alt: PropTypes.string,
+    });
+
+    render () {
+        const {alt, icon, message, onReconfigure} = this.props;
+        return (
+            <>
+              <Alert color="danger">
+                <Button
+                  className="float-right"
+                  onClick={onReconfigure}
+                  size="sm"
+                  color="info">
+                  Reconfigure
+                </Button>
+                <img
+                  alt={alt || message}
+                  src={icon}
+                  width="24px"
+                  className="mr-2" />
+                {message}
+              </Alert>
+            </>);
     }
 }

@@ -4,23 +4,19 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert, Button, Col, Label, Row} from 'reactstrap';
+import {Alert, Col, Label, Row} from 'reactstrap';
 
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionCopy} from '../shared/actions';
+import {AlertStartFailed} from '../shared/alerts';
 import {PortMappingForm} from '../shared/forms';
-import {PlaygroundModalTabs} from '../shared/tabs';
+import {PlaygroundFailLogs} from '../shared/logs';
+import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
     ProxyForm, ProxyCertificatesForm} from './forms';
 
 import EnvoyLogo from '../app/images/envoy.svg';
-
-import Editor from 'react-simple-code-editor';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-yaml';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-shell-session';
 
 
 export class BaseProxyError extends React.PureComponent {
@@ -37,54 +33,19 @@ export class BaseProxyError extends React.PureComponent {
     render () {
         const {dispatch, form} = this.props;
         const {logs=[], name} = form;
+        const message = "Failed starting Envoy proxy (" + name  + "). See logs for errors.";
         return (
             <div>
-              <Alert color="danger">
-                <Button
-                  className="float-right"
-                  onClick={evt => dispatch(updateForm({status: null}))}
-                  size="sm"
-                  color="info">
-                  Reconfigure
-                </Button>
-                <img
-                  alt="Envoy logo"
-                  src={EnvoyLogo}
-                  width="24px"
-                  className="mr-2" />
-                Failed starting Envoy proxy ({name}). See logs for errors.
-              </Alert>
-
-              <Row className="bg-light ml-0 mr-0">
-                <Label
-                  className="pl-5"
-                  sm={2}
-                  for="configuration">Logs</Label>
-                <Col sm={8} />
-                <Col sm={2} className="align-text-bottom">
-                  <ActionCopy copy={this.copyConfig} />
-                </Col>
-              </Row>
+              <AlertStartFailed
+                onReconfigure={evt => dispatch(updateForm({status: null}))}
+                message={message}
+                icon={EnvoyLogo}
+                alt="Envoy logo"
+              />
               <Row className="pt-2 bg-light ml-0 mr-0">
-              <Col sm={12}>
-              <Editor
-                className="border bg-light"
-                value={logs.join('')}
-                onValueChange={code => {
-                    this.setState({ code });
-                    // onUpdate({configuration: code});
-                }}
-                // highlight={code => highlight(code, languages["shell-session"])}
-                highlight={code => code}
-                padding={10}
-                name="configuration"
-                id="configuration"
-                ref={(textarea) => this.textArea = textarea}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                }} />
-              </Col>
+                <Col sm={12}>
+                  <PlaygroundFailLogs logs={logs} />
+                </Col>
               </Row>
             </div>
         );
@@ -206,7 +167,7 @@ export class ProxyModal extends React.Component {
             );
         }
         return (
-            <PlaygroundModalTabs
+            <PlaygroundFormTabs
               validation={validation}
               tabs={this.tabs} />
         );

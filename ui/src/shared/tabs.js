@@ -50,7 +50,7 @@ export class PlaygroundTabs extends React.Component {
 }
 
 
-export class PlaygroundModalTabs extends React.PureComponent {
+export class PlaygroundFormTabs extends React.PureComponent {
     static propTypes = exact({
         tabs: PropTypes.object.isRequired,
         validation: PropTypes.object,

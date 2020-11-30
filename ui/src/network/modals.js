@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import {Alert} from 'reactstrap';
 
-import {PlaygroundModalTabs} from '../shared/tabs';
+import {PlaygroundFormTabs} from '../shared/tabs';
 import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
 import CloudLogo from '../app/images/cloud.svg';
 
@@ -76,7 +76,7 @@ export class BaseNetworkModal extends React.PureComponent {
             return <NetworkCreating />;
         }
         return (
-            <PlaygroundModalTabs
+            <PlaygroundFormTabs
               validation={validation}
               tabs={this.tabs} />
         );
