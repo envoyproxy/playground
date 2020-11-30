@@ -16,6 +16,9 @@ services:
     - ../services:/services
     ports:
     - 8000:8000
+    environment:
+      CORS_ALLOWED: http://localhost:5555
+      PLAYGROUND_ENV: dev
 
   ui:
     build:
