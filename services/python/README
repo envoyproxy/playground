@@ -1,17 +1,26 @@
 
-## Python asyncio/aiolibs web server
+![Python](http://localhost:8000/static/python/python.png)
+
+### Python asyncio/aiolibs web server
 
 Provides an example of an asynchronous web server.
-
-Can be configured by editing the python `run.py`.
 
 Container has some other aiolibs for example for connecting
 to `mariadb` or `postgres` servers.
 
-### Ports
+#### Ports
 
 - 8000/HTTP
 
-### Environment vars
+#### Environment vars
 
-### Configuration
+None are used by default with this service.
+
+#### Configuration
+
+Can be configured by editing the python `run.py`.
+
+#### Envoy example configurations
+
+A `python-envoy.yaml` file is provided which proxies to a service named `python`,
+and connects to port `8000`

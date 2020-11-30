@@ -18,6 +18,7 @@ services:
     labels:
       envoy.playground.service: "Redis"
       envoy.playground.logo: "redis.svg"
+      envoy.playground.readme: README
 
   python:
     image: phlax/aiohttp
@@ -32,6 +33,8 @@ services:
       envoy.playground.config.highlight: "py"
       envoy.playground.example.name: "Envoy -> Service: Python (asyncio)"
       envoy.playground.example.config: envoy-python.yaml
+      envoy.playground.readme: README
+      envoy.playground.image.url: https://docker.hub
   jaeger:
     image: jaegertracing/all-in-one
     environment:

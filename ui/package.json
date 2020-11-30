@@ -12,6 +12,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-konva": "^17.0.0-0",
+    "react-markdown": "^5.0.3",
     "react-redux": "^7.2.2",
     "react-scripts": "4.0.0",
     "react-simple-code-editor": "^0.11.0",
@@ -31,8 +32,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-      "eject": "react-scripts eject",
-      "lint": "./node_modules/.bin/eslint --max-warnings 0 src"
+    "eject": "react-scripts eject",
+    "lint": "./node_modules/.bin/eslint --max-warnings 0 src"
   },
   "eslintConfig": {
     "extends": [
