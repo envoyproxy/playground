@@ -17,6 +17,7 @@ docs:
 
 site:
 	echo "Building site..."
+	pip install -U pip setuptools
 	pip install -r docs/requirements.txt
 	sphinx-build -W --keep-going -b html docs build/site/docs
 	cp -a site/* build/site
