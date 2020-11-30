@@ -24,11 +24,6 @@ export class BaseProxyError extends React.PureComponent {
         form: PropTypes.object.isRequired,
     });
 
-    copyConfig = () => {
-        this.textArea._input.select();
-        document.execCommand('copy');
-    }
-
     render () {
         const {dispatch, form} = this.props;
         const {logs=[], name} = form;
