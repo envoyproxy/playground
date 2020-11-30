@@ -9,7 +9,7 @@ COPY --from=builder /app/build /code/build
 ADD ./playground /code/playground
 ADD ./setup.py /code
 WORKDIR /code
-RUN pip install .
+RUN pip install -e .
 COPY ./services/ /code/build/static/
 COPY ./services.yaml /
 ENTRYPOINT ["playground"]
