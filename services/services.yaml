@@ -30,7 +30,7 @@ services:
       envoy.playground.config.type: "python"
       envoy.playground.config.default: "run.py"
       envoy.playground.config.highlight: "py"
-      envoy.playground.example.name: "Envoy -> Python (asyncio)"
+      envoy.playground.example.name: "Envoy -> Service: Python (asyncio)"
       envoy.playground.example.config: envoy-python.yaml
   jaeger:
     image: jaegertracing/all-in-one
