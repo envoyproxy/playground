@@ -4,10 +4,9 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert, Col, Label, Row} from 'reactstrap';
+import {Alert, Col, Row} from 'reactstrap';
 
 import {clearForm, updateForm, updateUI} from '../app/store';
-import {ActionCopy} from '../shared/actions';
 import {AlertStartFailed} from '../shared/alerts';
 import {PortMappingForm} from '../shared/forms';
 import {PlaygroundFailLogs} from '../shared/logs';
