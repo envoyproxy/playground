@@ -6,17 +6,11 @@ import {connect} from 'react-redux';
 import {
     Alert, Col, Label, Input, Row} from 'reactstrap';
 
-import Editor from 'react-simple-code-editor';
-import {highlight, languages} from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-yaml';
-
+import {updateForm} from '../../app/store';
+import {PlaygroundEditor} from '../../shared/editor';
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../../shared/forms';
-
-import {updateForm} from '../../app/store';
-import {ActionCopy, ActionClear} from '../../shared/actions';
 
 import Yaml from 'js-yaml';
 
@@ -45,11 +39,6 @@ export class ProxyConfigForm extends React.PureComponent {
         errors: PropTypes.object.isRequired,
     });
 
-    copyConfig = () => {
-        this.textArea._input.select();
-        document.execCommand('copy');
-    }
-
     clearConfig = () => {
         const {dispatch} = this.props;
         dispatch(updateForm({configuration: ''}));
@@ -59,38 +48,14 @@ export class ProxyConfigForm extends React.PureComponent {
         const {configuration, errors, onChange} = this.props;
         return (
             <PlaygroundFormGroup>
-              <Row>
-                <Label
-                  className="text-right"
-                  for="configuration"
-                  sm={2}>Configuration*</Label>
-                <Col sm={8} />
-                <Col sm={2} className="align-text-bottom">
-                  <ActionCopy copy={this.copyConfig} />
-                  <ActionClear clear={this.clearConfig} />
-                </Col>
-              </Row>
-              {(errors.configuration || []).map((e, i) => {
-                  return (
-                      <Alert
-                        className="p-1 mt-2 mb-2"
-                        color="danger"
-                        key={i}>{e}</Alert>
-                  );
-              })}
-              <Editor
-                className="border bg-secondary"
-                value={configuration}
-                onValueChange={onChange}
-                highlight={code => highlight(code, languages.yaml)}
-                padding={10}
+              <PlaygroundEditor
+                title="Configuration*"
                 name="configuration"
-                id="configuration"
-                ref={(textarea) => this.textArea = textarea}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                }}
+                content={configuration}
+                format="yaml"
+                clearConfig={this.clearConfig}
+                onChange={onChange}
+                errors={errors}
               />
             </PlaygroundFormGroup>);
     }

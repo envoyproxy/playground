@@ -8,9 +8,10 @@ import {connect} from 'react-redux';
 
 import {Alert, Button, Col, Label, Row} from 'reactstrap';
 
-import {ActionCopy} from '../shared/actions';
-import {PlaygroundTabs} from '../shared/tabs';
 import {clearForm, updateForm, updateUI} from '../app/store';
+import {ActionCopy} from '../shared/actions';
+import {PlaygroundModalTabs} from '../shared/tabs';
+
 
 import Editor from 'react-simple-code-editor';
 import 'prismjs/components/prism-clike';
@@ -217,29 +218,9 @@ export class BaseServiceModal extends React.Component {
             );
         }
         return (
-            <>
-              {validation &&
-               <Alert color="danger">
-                 {Object.entries(validation).map(([k, v], i) => {
-                     return (
-                         <Row>
-                           <Col sm={1} className="font-weight-bold">
-                             &nbsp;
-                           </Col>
-                           <Col sm={2} className="font-weight-bold">
-                             {k}
-                           </Col>
-                           <Col sm={9}>
-                             {v}
-                           </Col>
-                         </Row>
-                     );
-                 })}
-               </Alert>
-              }
-              <PlaygroundTabs
-                tabs={this.tabs} />
-            </>
+            <PlaygroundModalTabs
+              validation={validation}
+              tabs={this.tabs} />
         );
     }
 }
