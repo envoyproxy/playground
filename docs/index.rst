@@ -1,5 +1,11 @@
 
-WORKING!
-========
+Envoy proxy playground
+======================
 
-boom!
+
+.. toctree::
+    :maxdepth: 3
+
+    install
+    quick-start
+    developers
