@@ -6,17 +6,12 @@ import {ServiceConfigurationForm, ServiceEnvironmentForm, ServiceForm} from './f
 
 import {connect} from 'react-redux';
 
-import {Alert, Button, Col, Label, Row} from 'reactstrap';
+import {Alert, Col, Row} from 'reactstrap';
 
-import {ActionCopy} from '../shared/actions';
-import {PlaygroundTabs} from '../shared/tabs';
 import {clearForm, updateForm, updateUI} from '../app/store';
-
-import Editor from 'react-simple-code-editor';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-yaml';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-shell-session';
+import {AlertStartFailed} from '../shared/alerts';
+import {PlaygroundFailLogs} from '../shared/logs';
+import {PlaygroundFormTabs} from '../shared/tabs';
 
 
 export class BaseServiceError extends React.PureComponent {
@@ -26,65 +21,24 @@ export class BaseServiceError extends React.PureComponent {
         service_types: PropTypes.object.isRequired,
     });
 
-    copyConfig = () => {
-        this.textArea._input.select();
-        document.execCommand('copy');
-    }
-
     render () {
         const {dispatch, form, service_types} = this.props;
         const {logs=[], name} = form;
         const {service_type} = form;
+        const message = "Failed starting service (" + name  + "). See logs for errors.";
         return (
-            <div>
-              <Alert color="danger">
-                <Button
-                  className="float-right"
-                  onClick={evt => dispatch(updateForm({status: null}))}
-                  size="sm"
-                  color="info">
-                  Reconfigure
-                </Button>
-                <img
-                  alt="Service logo"
-                  src={service_types[service_type].icon}
-                  width="24px"
-                  className="mr-2" />
-                Failed starting service ({name}). See logs for errors.
-              </Alert>
-
-              <Row className="bg-light ml-0 mr-0">
-                <Label
-                  className="pl-5"
-                  sm={2}
-                  for="configuration">Logs</Label>
-                <Col sm={8} />
-                <Col sm={2} className="align-text-bottom">
-                  <ActionCopy copy={this.copyConfig} />
+            <>
+              <AlertStartFailed
+                onReconfigure={evt => dispatch(updateForm({status: null}))}
+                message={message}
+                icon={service_types[service_type].icon}
+                alt="Service logo" />
+              <Row className="pt-2 bg-light ml-0 mr-0">
+                <Col sm={12}>
+                  <PlaygroundFailLogs logs={logs} />
                 </Col>
               </Row>
-              <Row className="pt-2 bg-light ml-0 mr-0">
-              <Col sm={12}>
-              <Editor
-                className="border bg-light"
-                value={logs.join('')}
-                onValueChange={code => {
-                    this.setState({ code });
-                    // onUpdate({configuration: code});
-                }}
-                // highlight={code => highlight(code, languages["shell-session"])}
-                highlight={code => code}
-                padding={10}
-                name="configuration"
-                id="configuration"
-                ref={(textarea) => this.textArea = textarea}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                }} />
-              </Col>
-              </Row>
-            </div>
+            </>
         );
     }
 }
@@ -217,29 +171,9 @@ export class BaseServiceModal extends React.Component {
             );
         }
         return (
-            <>
-              {validation &&
-               <Alert color="danger">
-                 {Object.entries(validation).map(([k, v], i) => {
-                     return (
-                         <Row>
-                           <Col sm={1} className="font-weight-bold">
-                             &nbsp;
-                           </Col>
-                           <Col sm={2} className="font-weight-bold">
-                             {k}
-                           </Col>
-                           <Col sm={9}>
-                             {v}
-                           </Col>
-                         </Row>
-                     );
-                 })}
-               </Alert>
-              }
-              <PlaygroundTabs
-                tabs={this.tabs} />
-            </>
+            <PlaygroundFormTabs
+              validation={validation}
+              tabs={this.tabs} />
         );
     }
 }

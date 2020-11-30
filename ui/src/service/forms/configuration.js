@@ -4,12 +4,10 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-python';
 
 import {updateForm} from '../../app/store';
+import {PlaygroundEditor} from '../../shared/editor';
 
 
 // VALIDATION REQUIRED
@@ -62,24 +60,17 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
 
     render () {
         const {form} = this.props;
-        const {configuration=''} = form;
+        const {configuration='', errors} = form;
         return (
-            <div>
-                <Editor
-                  className="border bg-secondary"
-                  value={configuration}
-                  onValueChange={this.onConfigChange}
-                  highlight={this.onHighlight}
-                  padding={10}
-                  name="configuration"
-                  id="configuration"
-                  ref={(textarea) => this.textArea = textarea}
-                  style={{
-                      fontFamily: '"Fira code", "Fira Mono", monospace',
-                        fontSize: 12,
-                  }}
-                />
-            </div>
+            <PlaygroundEditor
+              title="Configuration"
+              name="configuration"
+              content={configuration}
+              clearConfig={this.clearConfig}
+              onChange={this.onConfigChange}
+              onHighlight={this.onHighlight}
+              errors={errors}
+            />
         );
     }
 }

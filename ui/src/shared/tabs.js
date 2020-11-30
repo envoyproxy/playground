@@ -6,6 +6,8 @@ import classnames from 'classnames';
 
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 
+import {AlertValidation} from './alerts';
+
 
 export class PlaygroundTabs extends React.Component {
     static propTypes = exact({
@@ -22,7 +24,7 @@ export class PlaygroundTabs extends React.Component {
         let {tab} = this.state;
         const {tabs} = this.props;
         return (
-            <div>
+            <>
               <Nav tabs>
                 {Object.keys(tabs).map((k, index) => {
                     return (
@@ -43,6 +45,25 @@ export class PlaygroundTabs extends React.Component {
                         </TabPane>);
                 })}
               </TabContent>
-            </div>);
+            </>);
+    }
+}
+
+
+export class PlaygroundFormTabs extends React.PureComponent {
+    static propTypes = exact({
+        tabs: PropTypes.object.isRequired,
+        validation: PropTypes.object,
+    });
+
+    render () {
+        const {tabs, validation} = this.props;
+        return (
+            <>
+              <AlertValidation
+                validation={validation} />
+              <PlaygroundTabs
+                tabs={tabs} />
+            </>);
     }
 }

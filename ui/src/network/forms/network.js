@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {Alert, Col, Label, Input, Row} from 'reactstrap';
-
-import {PlaygroundForm, PlaygroundFormGroup} from '../../shared/forms';
+import {Col, Label, Row} from 'reactstrap';
+import {
+    PlaygroundForm, PlaygroundFormGroup,
+    PlaygroundInput} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
@@ -69,23 +70,14 @@ class BaseNetworkForm extends React.PureComponent {
                     </div>
                   </Label>
                   <Col sm={9}>
-                    <Input
-                      type="text"
+		    <PlaygroundInput
                       name="name"
-                      id="name"
-                      value={name || ''}
                       placeholder="Enter network name"
                       disabled={edit}
+                      errors={errors}
+                      value={name || ''}
                       onChange={this.onChange}
                     />
-                    {(errors.name || []).map((e, i) => {
-                        return (
-                            <Alert
-                              className="p-1 mt-2 mb-2"
-                              color="danger"
-                              key={i}>{e}</Alert>
-                        );
-                    })}
                   </Col>
                 </Row>
               </PlaygroundFormGroup>

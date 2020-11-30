@@ -27,13 +27,17 @@ _docker_compose_run () {
     _docker_compose run --rm -e CI=1 "$@"
 }
 
-
 js_tests () {
-    # JavaScript
+    local testtype;
+    testtype="$1"
     _docker_compose build ui
     _docker_compose_run ui yarn install
-    _docker_compose_run ui yarn test --coverage
-    _docker_compose_run ui ./node_modules/.bin/eslint --max-warnings 0  src/
+    if [[ -z "$testtype" || "$testtype" == "test" ]]; then
+	_docker_compose_run ui yarn test --coverage
+    fi
+    if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
+	_docker_compose_run ui yarn lint
+    fi
 }
 
 py_tests () {
