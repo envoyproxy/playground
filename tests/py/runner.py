@@ -6,6 +6,7 @@ def test_runner(patch_playground):
     endpoints = ()
     cors_allowed = "http://now.here:666"
     playground_env = "foo"
+    playground_services = ('bar', )
     _patch_api = patch_playground(
         'runner.PlaygroundAPI')
     _patch_app = patch_playground(
@@ -22,7 +23,10 @@ def test_runner(patch_playground):
                 with _patch_endpoints as m_endpoints:
                     with _patch_static as m_static:
                         _runner = runner.PlaygroundRunner(
-                            endpoints, cors_allowed, playground_env)
+                            endpoints,
+                            cors_allowed,
+                            playground_env,
+                            playground_services)
                         assert _runner.endpoints == endpoints
                         assert _runner.cors_allowed == cors_allowed
                         assert _runner.playground_env == playground_env
@@ -31,7 +35,7 @@ def test_runner(patch_playground):
                             == [(), {}])
                         assert (
                             list(m_api.call_args)
-                            == [(), {}])
+                            == [(), {'services': playground_services}])
                         assert (
                             list(m_cors.call_args)
                             == [(m_app.return_value, ), {}])
