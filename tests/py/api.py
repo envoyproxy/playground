@@ -89,7 +89,8 @@ async def test_api_dump_resources(patch_playground):
             == [(), {}])
         assert (
             list(_api.connector.dump_resources.return_value.update.call_args)
-            == [({'meta': _api.metadata, 'service_types': _api.service_types}, ), {}])
+            == [({'meta': _api.metadata,
+                  'service_types': _api.service_types}, ), {}])
         assert (
             list(m_resp.call_args)
             == [(_api.connector.dump_resources.return_value,),
