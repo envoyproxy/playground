@@ -16,10 +16,8 @@ docs:
 			docs
 
 site:
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build docs
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
-		--rm \
-			docs
+	pip install .[docs]
+	sphinx-build -W --keep-going -b html docs build/site/docs
 	cp -a site/* build/site
 
 run: clean
