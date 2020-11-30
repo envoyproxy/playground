@@ -22,7 +22,7 @@ from playground.control.api.handler import PlaygroundEventHandler
 
 
 class PlaygroundAPI(object):
-    _services_yaml = "/services.yaml"
+    _services_yaml = "/services/services.yaml"
     _envoy_image = "envoyproxy/envoy-dev:latest"
 
     def __init__(self):

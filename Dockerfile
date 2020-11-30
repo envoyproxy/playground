@@ -11,5 +11,4 @@ ADD ./setup.py /code
 WORKDIR /code
 RUN pip install -e .
 COPY ./services/ /code/build/static/
-COPY ./services.yaml /
 ENTRYPOINT ["playground"]
