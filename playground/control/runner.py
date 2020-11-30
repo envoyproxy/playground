@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
+
 from typing import Callable
 
 from aiohttp import web
