@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from playground.control.attribs import ValidatingAttribs
 

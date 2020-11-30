@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # this will give total 20, 10 per proxies/services
 MAX_NETWORK_CONNECTIONS = 10

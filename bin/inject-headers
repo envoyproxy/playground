@@ -1,0 +1,12 @@
+
+_inject_header () {
+    if [[ ! $(head -n1 "$1" | grep "coding: utf-8") ]]; then
+	echo "injecting header: $1"
+	sed -i '1i# -*-\ coding:\ utf-8\ -*-' "$1"
+    fi
+}
+
+
+export -f _inject_header
+
+find playground/control -name "*.py" | xargs -I{} bash -c "_inject_header {}"
