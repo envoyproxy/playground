@@ -31,7 +31,7 @@ class PlaygroundDockerClient(object):
         self.events = PlaygroundDockerEvents(self.docker)
 
     @method_decorator(cmd)
-    async def clear(self) -> list:
+    async def clear(self) -> None:
         await self.networks.clear()
         await self.proxies.clear()
         await self.services.clear()
