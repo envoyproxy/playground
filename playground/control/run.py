@@ -7,6 +7,7 @@ from playground.control.runner import PlaygroundRunner
 
 CORS_ALLOWED = os.environ.get("CORS_ALLOWED")
 PLAYGROUND_ENV = os.environ.get("PLAYGROUND_ENV", 'production')
+PLAYGROUND_SERVICES = ('/services', )
 
 
 ENDPOINTS = (
@@ -23,4 +24,8 @@ ENDPOINTS = (
 
 
 def main() -> None:
-    PlaygroundRunner(ENDPOINTS, CORS_ALLOWED, PLAYGROUND_ENV).run()
+    PlaygroundRunner(
+        ENDPOINTS,
+        CORS_ALLOWED,
+        PLAYGROUND_ENV,
+        PLAYGROUND_SERVICES).run()

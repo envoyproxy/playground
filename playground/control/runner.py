@@ -14,12 +14,13 @@ class PlaygroundRunner(object):
             self,
             endpoints: tuple,
             cors_allowed: str,
-            playground_env: str):
+            playground_env: str,
+            playground_services: tuple):
         self.endpoints = endpoints
         self.cors_allowed = cors_allowed
         self.playground_env = playground_env
         self.app = web.Application()
-        self.api = PlaygroundAPI()
+        self.api = PlaygroundAPI(services=playground_services)
         self.cors = aiohttp_cors.setup(self.app)
         self.add_endpoints()
         self.add_static()

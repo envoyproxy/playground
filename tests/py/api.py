@@ -90,7 +90,7 @@ async def test_api_dump_resources(patch_playground):
     _api = DummyPlaygroundAPI()
     _api.connector = MagicMock()
     _api.connector.dump_resources = AsyncMock(return_value=MagicMock())
-    type(_api).service_types = PropertyMock()
+    type(_api).services = PropertyMock()
     _patch_resp = patch_playground('api.listener.web.json_response')
     _request = DummyRequest()
 
@@ -104,7 +104,7 @@ async def test_api_dump_resources(patch_playground):
         assert (
             list(_dumped.update.call_args)
             == [({'meta': _api.metadata,
-                  'service_types': _api.service_types}, ), {}])
+                  'service_types': _api.services.types}, ), {}])
         assert (
             list(m_resp.call_args)
             == [(_dumped,),
@@ -183,7 +183,7 @@ async def test_api_service_add(patch_playground):
     _api.connector = MagicMock()
     _api.connector.services.create = AsyncMock()
     _target = _api.connector.services.create
-    type(_api).service_types = PropertyMock()
+    type(_api).services = PropertyMock()
     _patch_resp = patch_playground('api.listener.web.json_response')
     _patch_attr = patch_playground('api.listener.attr')
     _request = DummyRequest()
@@ -198,13 +198,13 @@ async def test_api_service_add(patch_playground):
                 list(m_attr.asdict.call_args)
                 == [(_request._validate.return_value,), {}])
             assert (
-                list(_api.service_types.__getitem__.call_args)
+                list(_api.services.types.__getitem__.call_args)
                 == [(_request._validate.return_value.service_type,), {}])
             assert (
                 list(m_attr.asdict.return_value.get.call_args)
                 == [('configuration',), {}])
 
-            _service_config = _api.service_types.__getitem__.return_value
+            _service_config = _api.services.types.__getitem__.return_value
             _service_types = _service_config.__getitem__
 
             assert (

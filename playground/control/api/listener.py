@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from typing import Union
+
 import attr
 
 import rapidjson as json  # type: ignore
-import yaml
 
 from aiohttp import web
 
@@ -19,16 +20,17 @@ from playground.control.connectors.docker.client import PlaygroundDockerClient
 from playground.control.decorators import api, method_decorator
 from playground.control.request import PlaygroundRequest
 from playground.control.api.handler import PlaygroundEventHandler
+from playground.control.services import PlaygroundServiceDiscovery
 
 
 class PlaygroundAPI(object):
-    _services_yaml = "/services.yaml"
     _envoy_image = "envoyproxy/envoy-dev:latest"
 
-    def __init__(self):
-        self._sockets = []
+    def __init__(self, services: Union[tuple, None] = None):
+        self._sockets: list = []
         self.connector = PlaygroundDockerClient()
         self.handler = PlaygroundEventHandler(self)
+        self.services = PlaygroundServiceDiscovery(services)
 
     @property
     def metadata(self):
@@ -40,13 +42,6 @@ class PlaygroundAPI(object):
             min_config_length=MIN_CONFIG_LENGTH,
             max_config_length=MAX_CONFIG_LENGTH)
 
-    # todo: use a cached property or somesuch.
-    @property
-    def service_types(self) -> dict:
-        with open(self._services_yaml) as f:
-            parsed = yaml.safe_load(f.read())
-        return parsed["services"]
-
     @method_decorator(api)
     async def clear(self, request: PlaygroundRequest) -> web.Response:
         await self.connector.clear()
@@ -57,7 +52,7 @@ class PlaygroundAPI(object):
         response = await self.connector.dump_resources()
         response.update(
             dict(meta=self.metadata,
-                 service_types=self.service_types))
+                 service_types=self.services.types))
         return web.json_response(response, dumps=json.dumps)
 
     async def events(self, request: web.Request) -> None:
@@ -125,7 +120,7 @@ class PlaygroundAPI(object):
     async def service_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         command = attr.asdict(request.data)
-        service_config = self.service_types[request.data.service_type]
+        service_config = self.services.types[request.data.service_type]
         command['image'] = service_config.get("image")
         if command.get('configuration'):
             command['config_path'] = service_config['labels'].get(

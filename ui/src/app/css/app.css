@@ -55,3 +55,36 @@
 .border-dark {
     border-color: #999 !important;
 }
+
+
+
+.readme  {
+    font-size: .9em;
+}
+
+
+.readme img {
+    width: 100px;
+    height: 100px;
+    float: right;
+    padding: 1em;
+}
+
+.readme h1 {
+    color: #777;
+}
+.readme h2 {
+    color: #777;
+}
+.readme h3 {
+    color: #777;
+}
+.readme h4 {
+    color: #777;
+}
+.readme h5 {
+    color: #777;
+}
+.readme h6 {
+    color: #777;
+}

@@ -9,7 +9,8 @@ def test_run_runner(patch_playground):
             list(m_runner.call_args)
             == [(run.ENDPOINTS,
                  run.CORS_ALLOWED,
-                 run.PLAYGROUND_ENV), {}])
+                 run.PLAYGROUND_ENV,
+                 run.PLAYGROUND_SERVICES), {}])
         assert m_runner.return_value.run.called
 
 
