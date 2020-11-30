@@ -22,7 +22,7 @@ export class PlaygroundTabs extends React.Component {
 
     render () {
         let {tab} = this.state;
-        const {tabs, validation} = this.props;
+        const {tabs} = this.props;
         return (
             <>
               <Nav tabs>

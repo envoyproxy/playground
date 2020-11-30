@@ -4,6 +4,8 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
+import {highlight, languages} from 'prismjs/components/prism-core';
+
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 
