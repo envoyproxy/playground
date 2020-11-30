@@ -26,3 +26,13 @@ services:
     volumes:
     - ../ui:/app
     - ../.cache/coverage:/app/coverage
+
+  docs:
+    build:
+      context: ..
+      dockerfile: composition/Dockerfile-playground-docs
+    volumes:
+    - ../:/code/
+    - ../.cache/control/root/.cache:/root/.cache
+    - ../services.yaml:/services.yaml
+    - ../services:/services

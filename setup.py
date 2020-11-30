@@ -24,6 +24,15 @@ extras_require['test'] = [
     "pytest-console-scripts",
     "pytest-cov",
     "pytest-mock"]
+extras_require['docs'] = [
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-rtd-theme",
+    "sphinx-tabs",
+    "sphinxext-rediraffe",
+    "sphinxcontrib-httpdomain",
+    ]
+
 
 # TODO: Fix classifiers
 setup(

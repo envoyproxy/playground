@@ -4,10 +4,23 @@ SHELL := /bin/bash
 
 export PLAYGROUND_VERSION=0.1.1-alpha
 
-.PHONY: coverage
+.PHONY: coverage docs site
 
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") 2> /dev/null || :
+
+docs:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build docs
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
+		--rm \
+			docs
+
+site:
+	echo "Building site..."
+	pip install -U pip setuptools
+	pip install -r docs/requirements.txt
+	sphinx-build -W --keep-going -b html docs build/site/docs
+	cp -a site/* build/site
 
 run: clean
 	docker run -d \
