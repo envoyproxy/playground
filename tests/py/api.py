@@ -12,6 +12,14 @@ from playground.control.constants import (
     MAX_NETWORK_CONNECTIONS)
 
 
+API_SIMPLE_METHODS = (
+    ('network_add', 'networks.create'),
+    ('network_delete', 'networks.delete'),
+    ('network_edit', 'networks.edit'),
+    ('proxy_delete', 'proxies.delete'),
+    ('service_delete', 'services.delete'))
+
+
 class DummyPlaygroundAPI(api.PlaygroundAPI):
 
     def __init__(self):
@@ -104,18 +112,23 @@ async def test_api_dump_resources(patch_playground):
         assert response == m_resp.return_value
 
 
+@pytest.mark.parametrize("method,command", API_SIMPLE_METHODS)
 @pytest.mark.asyncio
-async def test_api_network_add(patch_playground):
+async def test_api_methods(patch_playground, method, command):
     _api = DummyPlaygroundAPI()
     _api.connector = MagicMock()
-    _api.connector.networks.create = AsyncMock(return_value=MagicMock())
+    _resource = getattr(_api.connector, command.split('.')[0])
+    setattr(
+        _resource, command.split('.')[1],
+        AsyncMock(return_value=MagicMock()))
+    _target = getattr(_resource, command.split('.')[1])
     _patch_resp = patch_playground('api.listener.web.json_response')
     _patch_attr = patch_playground('api.listener.attr')
     _request = DummyRequest()
 
     with _patch_resp as m_resp:
         with _patch_attr as m_attr:
-            response = await _api.network_add.__wrapped__(_api, _request)
+            response = await getattr(_api, method).__wrapped__(_api, _request)
             assert (
                 list(_request._validate.call_args)
                 == [(_api,), {}])
@@ -123,7 +136,7 @@ async def test_api_network_add(patch_playground):
                 list(m_attr.asdict.call_args)
                 == [(_request._validate.return_value,), {}])
             assert (
-                list(_api.connector.networks.create.call_args)
+                list(_target.call_args)
                 == [(m_attr.asdict.return_value,), {}])
             assert (
                 list(m_resp.call_args)
