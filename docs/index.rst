@@ -13,4 +13,5 @@ It is not intended to be exposed on the internet or other network.
 
     install
     quick-start
+    services
     developers
