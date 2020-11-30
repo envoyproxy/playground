@@ -1,5 +1,17 @@
 
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 from playground.control.connectors.docker import client
+
+
+class DummyPlaygroundClient(client.PlaygroundDockerClient):
+
+    def __init__(self):
+        self.networks = MagicMock()
+        self.proxies = MagicMock()
+        self.services = MagicMock()
 
 
 def test_docker_client(patch_playground):
@@ -61,3 +73,21 @@ def test_docker_client(patch_playground):
                                     m_aiodocker, m_images, m_volumes,
                                     m_proxies, m_services, m_networks,
                                     m_events)
+
+
+@pytest.mark.asyncio
+async def test_docker_client_clear():
+    client = DummyPlaygroundClient()
+    client.networks.clear = AsyncMock()
+    client.proxies.clear = AsyncMock()
+    client.services.clear = AsyncMock()
+    await client.clear.__wrapped__(client)
+    assert (
+        list(client.networks.clear.call_args)
+        == [(), {}])
+    assert (
+        list(client.proxies.clear.call_args)
+        == [(), {}])
+    assert (
+        list(client.services.clear.call_args)
+        == [(), {}])
