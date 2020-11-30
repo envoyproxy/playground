@@ -30,6 +30,15 @@ export class ServiceREADME extends React.Component {
         this.setState({content});
     }
 
+    async componentDidUpdate (prevProps) {
+        const {url} = this.props;
+        if (url !== prevProps.url) {
+            const response = await fetch(url);
+            const content = await response.text();
+            this.setState({content});
+        }
+    }
+
     render () {
         const {content} = this.state;
         return (
