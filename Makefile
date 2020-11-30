@@ -4,10 +4,23 @@ SHELL := /bin/bash
 
 export PLAYGROUND_VERSION=0.1.1-alpha
 
-.PHONY: coverage
+.PHONY: coverage docs
 
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") 2> /dev/null || :
+
+docs:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build docs
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
+		--rm \
+			docs
+
+site:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build docs
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
+		--rm \
+			docs
+	cp -a site/* build/site
 
 run: clean
 	docker run -d \
