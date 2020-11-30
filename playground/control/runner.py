@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
+
 from typing import Callable
 
 from aiohttp import web
@@ -10,9 +10,14 @@ from playground.control.api import PlaygroundAPI
 
 class PlaygroundRunner(object):
 
-    def __init__(self, endpoints: tuple, cors_allowed: str):
+    def __init__(
+            self,
+            endpoints: tuple,
+            cors_allowed: str,
+            playground_env: str):
         self.endpoints = endpoints
         self.cors_allowed = cors_allowed
+        self.playground_env = playground_env
         self.app = web.Application()
         self.api = PlaygroundAPI()
         self.cors = aiohttp_cors.setup(self.app)
@@ -24,15 +29,18 @@ class PlaygroundRunner(object):
             path: str,
             handler: Callable[[web.Request], web.Response],
             method: str = "GET") -> None:
-        route = self.cors.add(
-            self.app.router.add_resource(path)).add_route(method, handler)
-        self.cors.add(
-            route,
-            {self.cors_allowed: aiohttp_cors.ResourceOptions(
-                allow_credentials=True,
-                expose_headers=("X-Custom-Server-Header",),
-                allow_headers=("X-Requested-With", "Content-Type"),
-                max_age=3600)})
+        if self.playground_env == 'production':
+            self.app.router.add_resource(path).add_route(method, handler)
+        elif self.cors_allowed:
+            route = self.cors.add(
+                self.app.router.add_resource(path)).add_route(method, handler)
+            self.cors.add(
+                route,
+                {self.cors_allowed: aiohttp_cors.ResourceOptions(
+                    allow_credentials=True,
+                    expose_headers=("X-Custom-Server-Header",),
+                    allow_headers=("X-Requested-With", "Content-Type"),
+                    max_age=3600)})
 
     def add_endpoints(self) -> None:
         for endpoint in self.endpoints:
@@ -42,7 +50,7 @@ class PlaygroundRunner(object):
             self.add_endpoint(*endpoint)
 
     def add_static(self) -> None:
-        if os.path.exists('/code/build'):
+        if self.playground_env == 'production':
             self.app.router.add_route('*', '/', self.root_handler)
             routes = [
                 web.static(
@@ -50,7 +58,7 @@ class PlaygroundRunner(object):
                     "/code/build",
                     show_index=True)]
             self.app.add_routes(routes)
-        else:
+        elif self.cors_allowed:
             self.cors.add(
                 self.app.router.add_static('/static', "/services"),
                 {self.cors_allowed: aiohttp_cors.ResourceOptions(
@@ -58,6 +66,9 @@ class PlaygroundRunner(object):
                     expose_headers=("X-Custom-Server-Header",),
                     allow_headers=("X-Requested-With", "Content-Type"),
                     max_age=3600)})
+        else:
+            # todo: raise an error/warning ?
+            pass
 
     async def root_handler(self, request: web.Request) -> web.Response:
         return web.HTTPFound('/index.html')

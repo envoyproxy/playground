@@ -5,6 +5,7 @@ from playground.control import runner
 def test_runner(patch_playground):
     endpoints = ()
     cors_allowed = "http://now.here:666"
+    playground_env = "foo"
     _patch_api = patch_playground(
         'runner.PlaygroundAPI')
     _patch_app = patch_playground(
@@ -21,9 +22,10 @@ def test_runner(patch_playground):
                 with _patch_endpoints as m_endpoints:
                     with _patch_static as m_static:
                         _runner = runner.PlaygroundRunner(
-                            endpoints, cors_allowed)
+                            endpoints, cors_allowed, playground_env)
                         assert _runner.endpoints == endpoints
                         assert _runner.cors_allowed == cors_allowed
+                        assert _runner.playground_env == playground_env
                         assert (
                             list(m_app.call_args)
                             == [(), {}])

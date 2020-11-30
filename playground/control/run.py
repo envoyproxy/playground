@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 from playground.control.runner import PlaygroundRunner
 
 
-CORS_ALLOWED = "http://localhost:5555"
+CORS_ALLOWED = os.environ.get("CORS_ALLOWED")
+PLAYGROUND_ENV = os.environ.get("PLAYGROUND_ENV", 'production')
+
 
 ENDPOINTS = (
     ("/resources", "dump_resources"),
@@ -19,4 +23,4 @@ ENDPOINTS = (
 
 
 def main() -> None:
-    PlaygroundRunner(ENDPOINTS, CORS_ALLOWED).run()
+    PlaygroundRunner(ENDPOINTS, CORS_ALLOWED, PLAYGROUND_ENV).run()
