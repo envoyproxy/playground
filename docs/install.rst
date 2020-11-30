@@ -1,3 +1,3 @@
 
-Install Envoy proxy playground
-==============================
+Install Envoy Playground
+========================
