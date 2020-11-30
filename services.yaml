@@ -1,4 +1,10 @@
 services:
+  acme:
+    image: letsencrypt/pebble
+    labels:
+      envoy.playground.service: "ACME letsencrypt (pebble)"
+      envoy.playground.logo: "acme.svg"
+
   postgres:
     image: postgres:latest
     environment:
@@ -54,3 +60,9 @@ services:
       envoy.playground.logo: "http-echo.svg"
     environment:
       HTTPS_PORT: 0
+
+  solid:
+    image: nodesolidserver/node-solid-server
+    labels:
+      envoy.playground.service: Solid server (node)
+      envoy.playground.logo: "solid.svg"
