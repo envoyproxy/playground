@@ -8,6 +8,7 @@ import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-python';
 
 import {ActionCopy, ActionClear} from './actions';
 

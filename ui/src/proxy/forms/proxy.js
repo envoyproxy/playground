@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {
-    Alert, Col, Label, Input, Row} from 'reactstrap';
+import {Alert, Col, Input} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
