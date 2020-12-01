@@ -21,7 +21,7 @@ export class ExampleSearch extends React.PureComponent {
     });
 
     onExampleSelect = async (evt) => {
-        const {examples, onExampleSelect} = this.props;
+        const {onExampleSelect} = this.props;
         console.log('UPDATE', evt);
         await onExampleSelect(evt);
     }
