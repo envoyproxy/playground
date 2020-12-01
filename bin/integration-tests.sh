@@ -19,6 +19,9 @@ docker run --rm \
        --shm-size 2g \
        selenium/standalone-firefox:4.0.0-beta-1-prerelease-20201130
 
+echo "Snoozing while they start..."
+sleep 30
+
 echo "Running selenium tests"
 docker run --rm \
        --net host \
