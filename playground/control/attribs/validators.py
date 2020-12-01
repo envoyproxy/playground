@@ -36,13 +36,13 @@ class _LengthValidator(object):
         "{actual!r}).")
 
     def __call__(self, inst, attr, value) -> None:
-        if self.length.startswith('>='):
+        if str(self.length).startswith('>='):
             self._gte(inst, attr, value)
-        elif self.length.startswith('<='):
+        elif str(self.length).startswith('<='):
             self._lte(inst, attr, value)
-        elif self.length.startswith('>'):
+        elif str(self.length).startswith('>'):
             self._gt(inst, attr, value)
-        elif self.length.startswith('<'):
+        elif str(self.length).startswith('<'):
             self._lt(inst, attr, value)
         else:
             return self._eq(inst, attr, value)
