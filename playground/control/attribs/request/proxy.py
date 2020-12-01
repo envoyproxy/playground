@@ -16,6 +16,7 @@ from playground.control.constants import (
 @attr.s
 class ProxyAddAttribs(AttribsWithName):
     configuration = attr.ib(
+        type=str,
         validator=[
             instance_of(str),
             has_length(f'>={MIN_CONFIG_LENGTH}'),
@@ -55,6 +56,7 @@ class ProxyAddAttribs(AttribsWithName):
 class ProxyCreateCommandAttribs(AttribsWithName):
     image = attr.ib(type=str)
     configuration = attr.ib(
+        type=str,
         validator=[
             instance_of(str),
             has_length(f'>={MIN_CONFIG_LENGTH}'),

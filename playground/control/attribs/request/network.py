@@ -70,8 +70,10 @@ class NetworkAddAttribs(AttribsWithName):
 @attr.s
 class NetworkEditAttribs(ValidatingAttribs):
     id = attr.ib(
-        has_length(10),
-        matches_re(RE_UUID))
+        type=str,
+        validator=[
+            has_length(10),
+            matches_re(RE_UUID)])
     proxies = attr.ib(
         type=list,
         default=[],

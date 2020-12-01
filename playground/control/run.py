@@ -5,7 +5,7 @@ import os
 from playground.control.runner import PlaygroundRunner
 
 
-CORS_ALLOWED = os.environ.get("CORS_ALLOWED")
+CORS_ALLOWED = os.environ.get("CORS_ALLOWED", '')
 PLAYGROUND_ENV = os.environ.get("PLAYGROUND_ENV", 'production')
 PLAYGROUND_SERVICES = ('/services', )
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import Callable
+from typing import Awaitable, Callable, Type, Union
 
+import aiohttp
 from aiohttp import web
 import aiohttp_cors  # type: ignore
 
@@ -28,7 +29,11 @@ class PlaygroundRunner(object):
     def add_endpoint(
             self,
             path: str,
-            handler: Callable[[web.Request], web.Response],
+            handler: Union[
+                Type[aiohttp.abc.AbstractView],
+                Callable[
+                    [web.Request],
+                    Awaitable[web.StreamResponse]]],
             method: str = "GET") -> None:
         if self.playground_env == 'production':
             self.app.router.add_resource(path).add_route(method, handler)
