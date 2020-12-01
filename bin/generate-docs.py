@@ -43,7 +43,9 @@ class ServiceDocsCreator(object):
             rst = f'{self.docpath}/services/{service}.rst'
             print(f'creating rst file: {rst}')
             with open(rst, 'w') as f:
-                f.write(template.render(title=service))
+                f.write(template.render(
+                    title=self.service_types[service]['labels'][
+                        'envoy.playground.service']))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'
