@@ -12,6 +12,6 @@ It is not intended to be exposed on the internet or other network.
     :maxdepth: 3
 
     install
-    quick-start
+    getting-started
     services
     developers
