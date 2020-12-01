@@ -37,3 +37,12 @@ services:
     - ../:/code/
     - ../.cache/control/root/.cache:/root/.cache
     - ../services:/services
+
+  site:
+    build:
+      context: ..
+      dockerfile: composition/Dockerfile-playground-site
+    ports:
+    - 8082:3000
+    volumes:
+    - ../site:/app
