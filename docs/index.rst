@@ -12,5 +12,7 @@ It is not intended to be exposed on the internet or other network.
     :maxdepth: 3
 
     getting-started/index
+    proxies/index
+    networks/index
     services/index
     developers/index
