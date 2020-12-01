@@ -19,7 +19,15 @@ site:
 	echo "Building site..."
 	pip install -U pip setuptools
 	pip install -r docs/requirements.txt
-	sphinx-build -W --keep-going -b html docs build/site/docs
+	mkdir tmp/ -p
+	rm -rf tmp/docs
+	rm -rf build/site
+	mkdir -p build
+	cp -a docs tmp
+	pwd
+	ls bin
+	./bin/generate-docs.py tmp/docs services/services.yaml
+	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
 	cp -a site/* build/site
 
 run: clean
