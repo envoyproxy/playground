@@ -12,6 +12,7 @@ pool:
 steps:
 - script: |
     make test
+    make integration-test
   displayName: 'Run test suites'
 
 - script: |
