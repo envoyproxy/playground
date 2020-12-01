@@ -99,3 +99,9 @@ dev-ui-sh:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
 		ui sh
+
+dev-site:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
+		--rm \
+		-p 7777:3000 \
+			site yarn start
