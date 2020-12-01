@@ -11,7 +11,6 @@ It is not intended to be exposed on the internet or other network.
 .. toctree::
     :maxdepth: 3
 
-    install
-    getting-started
-    services
-    developers
+    getting-started/index
+    services/index
+    developers/index
