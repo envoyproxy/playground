@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Envoy playground",
+  "name": "Envoy proxy, services and networking playground",
   "icons": [
     {
       "src": "favicon.ico",
