@@ -30,7 +30,7 @@ site:
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
 	npm install -g yarn
 	cd site && yarn install && yarn build
-	cp -a site/public/* build/site
+	cp -a site/build/* build/site
 
 run: clean
 	docker run -d \
