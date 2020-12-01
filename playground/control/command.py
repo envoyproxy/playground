@@ -2,10 +2,15 @@
 
 from playground.control.attribs import ValidatingAttribs
 
+from typing import Optional, Type
+
 
 class PlaygroundCommand(object):
 
-    def __init__(self, kwargs: dict, attribs: ValidatingAttribs = None):
+    def __init__(
+            self,
+            kwargs: dict,
+            attribs: Optional[Type[ValidatingAttribs]]  = None):
         self._kwargs = kwargs
         self._attribs = attribs
 

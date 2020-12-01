@@ -4,7 +4,7 @@ import asyncio
 
 from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
-from typing import Callable
+from typing import Callable, Optional, Type
 
 import rapidjson as json  # type: ignore
 
@@ -19,22 +19,16 @@ from playground.control.request import PlaygroundRequest
 
 
 def api(original_fun: Callable = None,
-        attribs: ValidatingAttribs = None) -> Callable:
+        attribs: Optional[Type[ValidatingAttribs]] = None) -> Callable:
 
     def _api(fun: Callable) -> Callable:
 
         @wraps(fun)
         async def wrapped_fun(request: web.Request) -> web.Response:
-            request = PlaygroundRequest(request, attribs=attribs)
+            _request = PlaygroundRequest(request, attribs=attribs)
             if attribs:
                 try:
-                    await request.load_data()
-                except ValidationError as e:
-                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
-                    return web.HTTPBadRequest(
-                        reason="Invalid request data",
-                        body=errors,
-                        content_type='application/json')
+                    await _request.load_data()
                 except (TypeError, ValueError) as e:
                     if len(e.args) > 1:
                         errors = json.dumps(
@@ -48,7 +42,7 @@ def api(original_fun: Callable = None,
                         content_type='application/json')
 
                 try:
-                    return await fun(request)
+                    return await fun(_request)
                 except PlaygroundError as e:
                     errors = json.dumps(
                         dict(errors={e.args[1].name: e.args[0]}))
@@ -67,7 +61,7 @@ def api(original_fun: Callable = None,
 
 
 def cmd(original_fun: Callable = None,
-        attribs: ValidatingAttribs = None,
+        attribs: Optional[Type[ValidatingAttribs]] = None,
         sync: bool = False) -> Callable:
 
     def _cmd(fun: Callable) -> Callable:
@@ -79,9 +73,6 @@ def cmd(original_fun: Callable = None,
                 # todo: improve error handling
                 try:
                     await cmd.load_data()
-                except ValidationError as e:
-                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
-                    raise PlaygroundValidationError(errors)
                 except (TypeError, ValueError) as e:
                     if len(e.args) > 1:
                         errors = json.dumps(
@@ -107,7 +98,7 @@ def cmd(original_fun: Callable = None,
 
 def handler(
         original_fun: Callable = None,
-        attribs: ValidatingAttribs = None) -> Callable:
+        attribs: Optional[Type[ValidatingAttribs]] = None) -> Callable:
 
     def _handler(fun: Callable) -> Callable:
 
@@ -120,9 +111,6 @@ def handler(
                 # todo: improve error handling
                 try:
                     await event.load_data()
-                except ValidationError as e:
-                    errors = json.dumps(dict(errors=OrderedDict((e.args, ))))
-                    raise PlaygroundValidationError(errors)
                 except (TypeError, ValueError) as e:
                     if len(e.args) > 1:
                         errors = json.dumps(

@@ -16,6 +16,9 @@ from playground.control.constants import (
 
 class ValidatingAttribs(object):
 
+    def __init__(self, value):
+        pass
+
     # api: p.c.api.PlaygroundAPI
     async def validate(self, api):
         pass
@@ -24,6 +27,7 @@ class ValidatingAttribs(object):
 @attr.s(kw_only=True)
 class AttribsWithName(ValidatingAttribs):
     name = attr.ib(
+        type=str,
         validator=[
             instance_of(str),
             has_length(f'>={MIN_NAME_LENGTH}'),

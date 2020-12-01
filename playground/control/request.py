@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-from typing import Union
+from typing import Optional, Type, Union
 
 import rapidjson as json  # type: ignore
 
@@ -12,7 +12,10 @@ from playground.control.attribs import ValidatingAttribs
 
 class PlaygroundRequest(object):
 
-    def __init__(self, request: Request, attribs: ValidatingAttribs = None):
+    def __init__(
+            self,
+            request: Request,
+            attribs: Optional[Type[ValidatingAttribs]]  = None):
         self._request = request
         self._attribs = attribs
 
@@ -25,10 +28,11 @@ class PlaygroundRequest(object):
 
     # api: api.listener.PlaygroundAPI
     async def validate(self, api) -> None:
-        await self._data.validate(api)
-        self._valid_data = self._data
+        if self._data:
+            await self._data.validate(api)
+            self._valid_data = self._data
 
     @property
-    def data(self) -> Union[dict, OrderedDict]:
+    def data(self) -> Optional[ValidatingAttribs]:
         # todo: test this - showing as covered, but not
         return self._valid_data
