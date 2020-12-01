@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Alert, Col, Label, Row} from 'reactstrap';
+import {Alert, Col, CustomInput, Label, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
@@ -13,6 +13,31 @@ import 'prismjs/components/prism-python';
 
 import {ActionCopy, ActionClear} from './actions';
 
+
+export class ExampleSearch extends React.PureComponent {
+    static propTypes = exact({
+        examples: PropTypes.array.isRequired,
+        onExampleSelect: PropTypes.func.isRequired,
+    });
+
+    render () {
+        const {examples, onExampleSelect} = this.props;
+        return (
+            <CustomInput
+              type="select"
+              id="default-level"
+              onChange={onExampleSelect}
+              name="default-level">
+              <option>Select an example</option>);
+              {examples.map((k, i) => {
+                  return (
+                      <option key={i}>{k}</option>);
+              })}
+            </CustomInput>
+
+        );
+    }
+}
 
 export class PlaygroundEditor extends React.PureComponent {
     static propTypes = exact({
@@ -25,6 +50,8 @@ export class PlaygroundEditor extends React.PureComponent {
         format: PropTypes.string,
         errors: PropTypes.array,
         onHighlight: PropTypes.func,
+        onExampleSelect: PropTypes.func,
+        examples: PropTypes.array,
     });
 
     copyConfig = () => {
@@ -36,6 +63,8 @@ export class PlaygroundEditor extends React.PureComponent {
         const {
             clearConfig, content, errors=[],
             onHighlight,
+            examples=[],
+            onExampleSelect,
             format, onChange, name, title} = this.props;
         let highlighter = code => highlight(code, languages[format]);
         if (onHighlight) {
@@ -48,8 +77,13 @@ export class PlaygroundEditor extends React.PureComponent {
                   className="text-right"
                   for="configuration"
                   sm={2}>{title}</Label>
-                <Col sm={8} />
-                <Col sm={2} className="align-text-bottom">
+                <Col sm={5} />
+                <Col sm={3}>
+                  <ExampleSearch
+                    onExampleSelect={onExampleSelect}
+                    examples={examples} />
+                </Col>
+                <Col sm={2} className="align-text-bottom text-right">
                   <ActionCopy copy={this.copyConfig} />
                   {clearConfig &&
                    <ActionClear clear={clearConfig} />

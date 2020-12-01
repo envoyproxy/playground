@@ -5,6 +5,8 @@ services:
       envoy.playground.service: "ACME letsencrypt (pebble)"
       envoy.playground.logo: "acme.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: ACME/letsencrypt"
+      envoy.playground.example.config: envoy-letsencrypt.yaml
 
   postgres:
     image: postgres:latest
@@ -14,6 +16,8 @@ services:
       envoy.playground.service: "PostgreSQL"
       envoy.playground.logo: "postgres.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Postgres"
+      envoy.playground.example.config: envoy-postgres.yaml
 
   redis:
     image: redis:latest
@@ -21,22 +25,27 @@ services:
       envoy.playground.service: "Redis"
       envoy.playground.logo: "redis.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Redis"
+      envoy.playground.example.config: envoy-redis.yaml
 
   python:
     image: phlax/aiohttp
     labels:
       envoy.playground.service: "Python (asyncio)"
       envoy.playground.logo: "python.png"
-      envoy.playground.descriptions: |
+      envoy.playground.readme: README
+      envoy.playground.image.url: https://docker.hub
+      envoy.playground.description: |
         Python/asyncio image with aiohttp and aio-libs
       envoy.playground.config.path: "/code/control/run.py"
       envoy.playground.config.type: "python"
       envoy.playground.config.default: "run.py"
       envoy.playground.config.highlight: "py"
-      envoy.playground.example.name: "Envoy -> Service: Python (asyncio)"
+      envoy.playground.example.name: "Service: Python (asyncio)"
       envoy.playground.example.config: envoy-python.yaml
-      envoy.playground.readme: README
-      envoy.playground.image.url: https://docker.hub
+      envoy.playground.example.setup.config: playground.yaml
+      envoy.playground.example.setup.name: "Python asyncio"
+
   jaeger:
     image: jaegertracing/all-in-one
     environment:
@@ -45,6 +54,8 @@ services:
       envoy.playground.service: "Jaeger"
       envoy.playground.logo: "jaeger.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Jaeger"
+      envoy.playground.example.config: envoy-jaeger.yaml
 
   zipkin:
     image: openzipkin/zipkin
@@ -52,6 +63,8 @@ services:
       envoy.playground.service: "Zipkin"
       envoy.playground.logo: "zipkin.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Zipkin"
+      envoy.playground.example.config: envoy-zipkin.yaml
 
   mariadb:
     image: mariadb:latest
@@ -61,6 +74,8 @@ services:
       envoy.playground.service: "Mariadb"
       envoy.playground.logo: "mariadb.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: MariaDB"
+      envoy.playground.example.config: envoy-mariadb.yaml
 
   http-echo:
     image: mendhak/http-https-echo
@@ -68,6 +83,8 @@ services:
       envoy.playground.service: "HTTP/S echo"
       envoy.playground.logo: "http-echo.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: HTTP/S echo"
+      envoy.playground.example.config: envoy-echo.yaml
     environment:
       HTTPS_PORT: 0
 
@@ -77,3 +94,5 @@ services:
       envoy.playground.service: Solid server (node)
       envoy.playground.logo: "solid.svg"
       envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Solid node"
+      envoy.playground.example.config: envoy-solid.yaml
