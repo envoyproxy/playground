@@ -1,4 +1,4 @@
-version: "3.7"
+version: "2.3"
 services:
 
   control:
@@ -47,7 +47,18 @@ services:
     volumes:
     - ../site:/app
 
-  dind:
+  integration:
+    privileged: true
     build:
       context: ..
       dockerfile: composition/Dockerfile-in-docker
+    volumes:
+    - ../bin/integration-tests.sh:/usr/local/bin/integration-tests.sh:shared
+    - ../.cache/integration/docker:/var/lib/docker
+    - ../tests/integration:/tests
+
+  integration-start:
+    image: busybox
+    depends_on:
+      integration:
+        condition: service_healthy

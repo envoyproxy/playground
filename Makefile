@@ -71,6 +71,14 @@ exec:
 test:
 	./bin/runtests.sh
 
+integration-test:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration integration-tests.sh
+
+dev-integration: clean
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
+
 dev-control: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
