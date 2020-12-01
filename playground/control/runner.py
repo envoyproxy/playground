@@ -21,6 +21,7 @@ class PlaygroundRunner(object):
         self.cors_allowed = cors_allowed
         self.playground_env = playground_env
         self.app = web.Application()
+        self.playground_services = playground_services
         self.api = PlaygroundAPI(services=playground_services)
         self.cors = aiohttp_cors.setup(self.app)
         self.add_endpoints()
@@ -65,13 +66,14 @@ class PlaygroundRunner(object):
                     show_index=True)]
             self.app.add_routes(routes)
         elif self.cors_allowed:
-            self.cors.add(
-                self.app.router.add_static('/static', "/services"),
-                {self.cors_allowed: aiohttp_cors.ResourceOptions(
-                    allow_credentials=True,
-                    expose_headers=("X-Custom-Server-Header",),
-                    allow_headers=("X-Requested-With", "Content-Type"),
-                    max_age=3600)})
+            for services in self.playground_services:
+                self.cors.add(
+                    self.app.router.add_static('/static', services),
+                    {self.cors_allowed: aiohttp_cors.ResourceOptions(
+                        allow_credentials=True,
+                        expose_headers=("X-Custom-Server-Header",),
+                        allow_headers=("X-Requested-With", "Content-Type"),
+                        max_age=3600)})
         else:
             # todo: raise an error/warning ?
             pass

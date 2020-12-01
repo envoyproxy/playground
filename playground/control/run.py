@@ -7,7 +7,11 @@ from playground.control.runner import PlaygroundRunner
 
 CORS_ALLOWED = os.environ.get("CORS_ALLOWED", '')
 PLAYGROUND_ENV = os.environ.get("PLAYGROUND_ENV", 'production')
-PLAYGROUND_SERVICES = ('/services', )
+# todo: think how to make this work with multiple paths
+PLAYGROUND_SERVICES = (
+    (os.environ['PLAYGROUND_SERVICES'], )
+    if os.environ.get('PLAYGROUND_SERVICES')
+    else ('/services', ))
 
 
 ENDPOINTS = (
