@@ -30,6 +30,7 @@ export class PlaygroundTabs extends React.Component {
                     return (
                         <NavItem key={index}>
                           <NavLink
+                            href="#"
                             className={classnames({'ml-2': true, active: tab  === index})}
                             onClick={() => { this.toggle(index); }}>
                             {k}

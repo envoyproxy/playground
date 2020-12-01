@@ -56,7 +56,9 @@
     border-color: #999 !important;
 }
 
-
+.bg-code {
+    background-color: #efefef;
+}
 
 .readme  {
     font-size: .9em;
