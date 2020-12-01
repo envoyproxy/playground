@@ -18,6 +18,7 @@ export class ActionExport extends React.PureComponent {
               {...props}
               onClick={exporter}
               color="info"
+              href="#"
               className="ml-2 mb-0 float-right mt-1 mr-5"
               name="export">export</Badge>);
     }
@@ -37,6 +38,7 @@ export class ActionImport extends React.PureComponent {
               {...props}
               onClick={importer}
               color="info"
+              href="#"
               className="ml-2 mb-0 float-right mt-1 mr-5"
               name="import">import</Badge>);
     }
@@ -54,6 +56,7 @@ export class ActionLoad extends React.PureComponent {
               {...props}
               onClick={load}
               color="info"
+              href="#"
               className="ml-2 mb-0 float-right mt-1 mr-5"
               name="load">load</Badge>);
     }
@@ -73,6 +76,7 @@ export class ActionSave extends React.PureComponent {
               {...props}
               onClick={save}
               color="info"
+              href="#"
               className="ml-2 mb-0 float-right mt-1 mr-5"
               name="save">save</Badge>);
     }
@@ -91,6 +95,7 @@ export class ActionCopy extends React.PureComponent {
               {...props}
               onClick={copy}
               color="info"
+              href="#"
               className="ml-2 mb-0 mt-3"
               name="copy">copy</Badge>);
     }
@@ -108,6 +113,7 @@ export class ActionEdit extends React.PureComponent {
               {...props}
               onClick={edit}
               color="info"
+              href="#"
               name="edit">edit</Badge>);
     }
 }
@@ -124,6 +130,7 @@ export class ActionClear extends React.PureComponent {
               {...props}
               onClick={clear}
               color="info"
+              href="#"
               className={classnames({'ml-2': true}, className)}
               name="clear">clear</Badge>);
     }
@@ -146,6 +153,7 @@ export class ActionRemove extends React.PureComponent {
               {...props}
               name={name}
               color="danger"
+              href="#"
               onClick={remove}>-</Badge>);
     }
 }
@@ -164,6 +172,7 @@ export class ActionAdd extends React.PureComponent {
               {...props}
               color="success"
               name={title}
+              href="#"
               onClick={add}>+</Badge>);
     }
 }
