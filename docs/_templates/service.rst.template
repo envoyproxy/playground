@@ -1,3 +1,7 @@
 
 {{title}}
 {% for i in range(title|length) %}={% endfor %}
+
+
+.. image:: {{image}}
+  :width: 100px
