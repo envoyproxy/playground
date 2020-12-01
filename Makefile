@@ -28,7 +28,8 @@ site:
 	ls bin
 	./bin/generate-docs.py tmp/docs services/services.yaml
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
-	cp -a site/* build/site
+	cd site && yarn build
+	cp -a site/public/* build/site
 
 run: clean
 	docker run -d \
