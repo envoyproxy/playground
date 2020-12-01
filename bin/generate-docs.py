@@ -42,12 +42,13 @@ class ServiceDocsCreator(object):
         for service in self.service_types:
             rst = f'{self.docpath}/services/{service}.rst'
             print(f'creating rst file: {rst}')
+            icon = self.service_types[service]['labels'][
+                'envoy.playground.logo']
             with open(rst, 'w') as f:
                 f.write(template.render(
                     title=self.service_types[service]['labels'][
                         'envoy.playground.service'],
-                    image=self.service_types[service]['labels'][
-                        'envoy.playground.logo']))
+                    image='_include/{icon}'))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'
