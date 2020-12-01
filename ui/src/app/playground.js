@@ -5,7 +5,7 @@ import Layout from '../layout';
 import {ModalContext, APIContext} from "./context";
 import store, {
     updateMeta, updateServices, updateProxies, updateNetworks,
-    updateServiceTypes, updateCloud, updateEdges
+    updateServiceTypes, updateCloud, updateEdges, updateExamples,
 } from "./store";
 
 /* css */
@@ -30,7 +30,8 @@ export default class PlaygroundApp extends React.PureComponent {
             updateServiceTypes(data),
             updateServices(data),
             updateProxies(data),
-            updateNetworks(data)];
+            updateNetworks(data),
+            updateExamples(data)];
         for (const update of initialUpdates) {
             await store.dispatch(update);
         }

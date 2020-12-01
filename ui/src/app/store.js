@@ -328,7 +328,35 @@ const formSlice = createSlice({
 export const {updateForm, clearForm} = formSlice.actions;
 
 
+
+const exampleSlice = createSlice({
+    name: 'example',
+    initialState: {
+        value: {}
+    },
+    reducers: {
+        updateExamples: (state, action) => {
+            const {service_types} = action.payload;
+            const _examples = {playground: {}, envoy: {}};
+            for (const [k, v] of Object.entries(service_types)) {
+                const {labels} = v;
+                if (Object.keys(labels).indexOf('envoy.playground.example.setup.config') !== -1) {
+                    _examples.playground[labels['envoy.playground.example.setup.name']] = 'http://localhost:8000/static/' + k + '/' + labels['envoy.playground.example.setup.config'];
+                }
+                if (Object.keys(labels).indexOf('envoy.playground.example.config') !== -1) {
+                    _examples.envoy[labels['envoy.playground.example.name']] = 'http://localhost:8000/static/' + k + '/' + labels['envoy.playground.example.config'];
+                }
+            }
+            state.value = _examples;
+        },
+    }
+});
+
+export const {removeExample, updateExamples} = exampleSlice.actions;
+
+
 const rootReducer = combineReducers({
+    example: exampleSlice.reducer,
     proxy: proxySlice.reducer,
     network: networkSlice.reducer,
     service:  serviceSlice.reducer,

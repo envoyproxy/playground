@@ -36,6 +36,7 @@ export class ProxyConfigForm extends React.PureComponent {
         onChange: PropTypes.func.isRequired,
         configuration: PropTypes.string.isRequired,
         errors: PropTypes.object.isRequired,
+        examples: PropTypes.object.isRequired,
     });
 
     clearConfig = () => {
@@ -43,8 +44,23 @@ export class ProxyConfigForm extends React.PureComponent {
         dispatch(updateForm({configuration: ''}));
     }
 
+    onExampleSelect = async (evt) => {
+        const {dispatch, examples} = this.props;
+        const {envoy} = examples;
+        // todo: implement overwrite button
+        // if (configuration !== code)
+        if (envoy[evt.target.value]) {
+            const response = await fetch(envoy[evt.target.value]);
+            const text = await response.text();
+            await dispatch(updateForm({configuration: text}));
+        } else {
+            await dispatch(updateForm({configuration: code}));
+        }
+    }
+
     render ()  {
-        const {configuration, errors, onChange} = this.props;
+        const {configuration, examples, errors, onChange} = this.props;
+        const {envoy} = examples;
         return (
             <PlaygroundFormGroup>
               <PlaygroundEditor
@@ -52,8 +68,10 @@ export class ProxyConfigForm extends React.PureComponent {
                 name="configuration"
                 content={configuration}
                 format="yaml"
+                examples={Object.keys(envoy)}
                 clearConfig={this.clearConfig}
                 onChange={onChange}
+                onExampleSelect={this.onExampleSelect}
                 errors={errors}
               />
             </PlaygroundFormGroup>);
@@ -164,7 +182,7 @@ export class BaseProxyForm extends React.PureComponent {
     }
 
     render () {
-        const {dispatch, form, meta} = this.props;
+        const {dispatch, examples, form, meta} = this.props;
         const {configuration=code, name='', errors={}} = form;
         const {min_name_length} = meta;
         let showConfig = true;
@@ -190,6 +208,7 @@ export class BaseProxyForm extends React.PureComponent {
                  <ProxyConfigForm
                    configuration={configuration}
                    errors={errors}
+                   examples={examples}
                    dispatch={dispatch}
                    onChange={this.onConfigChange}
                  />
@@ -205,6 +224,7 @@ const mapStateToProps = function(state, other) {
         form: state.form.value,
         proxies: state.proxy.value,
         meta: state.meta.value,
+        examples: state.example.value,
     };
 }
 

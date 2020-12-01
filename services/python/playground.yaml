@@ -1,0 +1,15 @@
+
+services:
+  python:
+    type: python
+    networks:
+      - net0
+
+proxies:
+  proxy:
+    type: envoy
+    networks:
+      - net0
+
+networks:
+  net0:

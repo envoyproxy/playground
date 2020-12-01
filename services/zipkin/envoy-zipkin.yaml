@@ -44,5 +44,5 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: python
+                address: zipkin
                 port_value: 80
