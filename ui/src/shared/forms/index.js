@@ -9,6 +9,7 @@ export {
     PlaygroundFormGroup,
     PlaygroundFormGroupRow} from './base';
 export {PlaygroundInput} from './input';
+export {PlaygroundFilesForm} from './files';
 
 
 const mapModalStateToProps = function(state) {

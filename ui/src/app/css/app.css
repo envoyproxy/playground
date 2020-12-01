@@ -60,6 +60,11 @@
     background-color: #efefef;
 }
 
+.bg-cloud {
+    background-color: rgb(252, 252, 251);
+    background-opacity: 0.1;
+}
+
 .readme  {
     font-size: .9em;
 }

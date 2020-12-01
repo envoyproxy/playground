@@ -134,7 +134,7 @@ export class BaseCloudContent extends React.PureComponent {
     render () {
         // const {parentRef} = this.props;
         return (
-            <div className="canvas">
+            <div className="canvas bg-cloud">
               <Stage width={600} height={400}>
                 <Layer>
                   {this.icons}

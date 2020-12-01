@@ -95,6 +95,7 @@ export class BaseProxyForm extends React.PureComponent {
         ];
     }
 
+    // todo: move this to a validator util
     validateName = (name, errors) => {
         const {proxies, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
@@ -153,18 +154,23 @@ export class BaseProxyForm extends React.PureComponent {
         return valid;
     };
 
+    formIsValid = (name, configuration,  errors) => {
+
+        if (!this.validateConfiguration(configuration, errors)) {
+            return false;
+        }
+        if (!this.validateName(name, errors)) {
+            return false;
+        }
+        return true;
+    }
+
     onChange = async (evt) => {
         const {form,  dispatch} = this.props;
         const {errors: _errors={}, configuration=''} = form;
         const errors = {..._errors};
         const name = evt.currentTarget.value.toLowerCase();
-        let valid = true;
-        if (!this.validateConfiguration(configuration, errors)) {
-            valid = false;
-        }
-        if (!this.validateName(name, errors)) {
-            valid = false;
-        }
+        const valid = this.formIsValid(name, configuration, errors);
         dispatch(updateForm({errors, valid, name}));
     }
 
@@ -173,13 +179,7 @@ export class BaseProxyForm extends React.PureComponent {
         const {form,  dispatch} = this.props;
         const {errors: _errors={}, name=''} = form;
         const errors = {..._errors};
-        let valid = true;
-        if (!this.validateConfiguration(configuration, errors)) {
-            valid = false;
-        }
-        if (!this.validateName(name, errors)) {
-            valid = false;
-        }
+        const valid = this.formIsValid(name, configuration, errors);
         dispatch(updateForm({errors, valid, configuration}));
     }
 
