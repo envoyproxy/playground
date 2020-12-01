@@ -27,6 +27,6 @@ docker run --rm \
        --net host \
        -v /tests:/tests \
        python:3.8-slim \
-        sh -c 'pip install selenium && python /tests/playground.py'
+        sh -c 'pip install selenium && python /tests/test_playground.py'
 
 echo "Done"

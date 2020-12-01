@@ -8,6 +8,7 @@ import {CustomInput, Col, Row} from 'reactstrap';
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../../shared/forms';
+import {PlaygroundFilesField} from '../../shared/forms/fields/files';
 
 import BinaryIcon from '../../app/images/binary.png';
 import {updateForm} from '../../app/store';
@@ -28,61 +29,6 @@ const mapStateToProps = function(state, other) {
         proxies: state.proxy.value,
         meta: state.meta.value,
     };
-}
-
-
-export class BinariesListForm extends React.PureComponent {
-    static propTypes = exact({
-        onDelete: PropTypes.func.isRequired,
-        binaries: PropTypes.object.isRequired,
-    });
-
-    render () {
-        const {onDelete, binaries} = this.props;
-        const title = '';
-
-        if (Object.keys(binaries).length === 0) {
-            return '';
-        }
-        return (
-            <Row className="mt-2 pb-3">
-              <Col>
-                <Row className="pl-5 pr-5">
-                  <Col sm={1} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      <span>&nbsp;</span>
-                    </div>
-                  </Col>
-                  <Col sm={11} className="m-0 p-0">
-                    <div className="p-1 pl-4 bg-dark">
-                      Path
-                    </div>
-                  </Col>
-                </Row>
-                {Object.keys(binaries).map((name, index) => {
-                    return (
-                        <Row key={index} className="pl-5 pr-5">
-                          <Col sm={1} className="m-0 p-0">
-                            <div className="p-2 bg-white border-bottom">
-                              <ActionRemove
-                                title={title}
-                                name={title}
-                                remove={evt => onDelete(name)} />
-                            </div>
-                          </Col>
-                          <Col sm={11} className="m-0 p-0 border-bottom bg-white">
-                              <img
-                                alt={name}
-                                src={BinaryIcon}
-                                width="18px"
-                                className="m-2 ml-1 mr-2"  />
-                            binary/{name}
-                          </Col>
-                        </Row>);
-                })}
-              </Col>
-            </Row>);
-    }
 }
 
 
@@ -122,22 +68,14 @@ export class BaseProxyBinariesForm extends React.PureComponent {
         const {binaries={}} = form;
         return (
             <PlaygroundForm messages={this.messages}>
-              <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="binaries"
-                  title="Add a binary">
-                  <Col sm={8}>
-                    <CustomInput
-                      type="file"
-                      onInput={this.onChange}
-                      id="binaries"
-                      name="binaries" />
-                  </Col>
-                </PlaygroundFormGroupRow>
-                <BinariesListForm
-                  onDelete={this.onDelete}
-                  binaries={{...binaries}} />
-              </PlaygroundFormGroup>
+              <PlaygroundFilesField
+                name="binaries"
+                title="Add a binary"
+                icon={BinaryIcon}
+                prefix='binary/'
+                onChange={this.onChange}
+                onDelete={this.onDelete}
+                files={binaries} />
             </PlaygroundForm>
         );
     }
