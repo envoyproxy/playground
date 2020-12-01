@@ -19,5 +19,9 @@ steps:
   displayName: 'Build the production Docker image'
 
 - script: |
+    make integration-test
+  displayName: 'Run integration tests against the built image'
+
+- script: |
     make coverage
   displayName: 'Upload to codecov.io'
