@@ -199,7 +199,8 @@ async def test_api_service_add(patch_playground):
                 == [(_request._validate.return_value,), {}])
             assert (
                 list(_api.services.types.__getitem__.call_args)
-                == [(_request._validate.return_value.service_type,), {}])
+                == [(m_attr.asdict.return_value.__getitem__.return_value, ),
+                    {}])
             assert (
                 list(m_attr.asdict.return_value.get.call_args)
                 == [('configuration',), {}])
