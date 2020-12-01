@@ -1,8 +1,17 @@
 #!/usr/bin/env python
 
+import os
+import shutil
 import sys
 
 import yaml
+
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+
+jinja_env = Environment(
+    loader=FileSystemLoader('docs/_templates'),
+)
 
 
 class ServiceDocsCreator(object):
@@ -18,14 +27,23 @@ class ServiceDocsCreator(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
+    def copy_service_images(self):
+        os.mkdir(f'{self.docpath}/services/_include')
+        for service in self.service_types:
+            icon = self.service_types[service]['labels'].get('envoy.playground.logo')
+            if icon:
+                icon_src = f'services/{service}/{icon}'
+                icon_dst = f'{self.docpath}/services/_include/{icon}'
+                shutil.copyfile(icon_src, icon_dst)
+
     def create_service_files(self):
+        template = jinja_env.get_template('service.rst.template')
+
         for service in self.service_types:
             rst = f'{self.docpath}/services/{service}.rst'
             print(f'creating rst file: {rst}')
-            underline = "=" * len(service)
-            service_txt = f'{service}\n{underline}\n'
             with open(rst, 'w') as f:
-                f.write(service_txt)
+                f.write(template.render(title=service))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'
@@ -38,6 +56,7 @@ class ServiceDocsCreator(object):
             f.write(toc)
 
     def create(self):
+        self.copy_service_images()
         self.create_service_files()
         self.create_toc()
 

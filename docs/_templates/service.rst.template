@@ -1,0 +1,3 @@
+
+{{title}}
+{% for i in range(title|length) %}={% endfor %}
