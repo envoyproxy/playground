@@ -30,6 +30,7 @@ export default class Content extends React.PureComponent {
               <Nav tabs>
 		<NavItem>
 		  <NavLink
+                    href="#"
 		    className={classnames({'ml-2': true, active: tab  === '1'})}
 		    onClick={() => { this.toggle('1'); }}>
                     Cloud
@@ -37,6 +38,7 @@ export default class Content extends React.PureComponent {
                 </NavItem>
                 <NavItem>
                   <NavLink
+                    href="#"
                     className={classnames({'ml-2': true, active: tab  === '2'})}
                     onClick={() => { this.toggle('2'); }}>
                     Edges

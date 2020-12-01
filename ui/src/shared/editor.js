@@ -28,6 +28,9 @@ export class ExampleSearch extends React.PureComponent {
 
     render () {
         const {examples} = this.props;
+        if (examples.length === 0) {
+            return '';
+        }
         return (
             <CustomInput
               type="select"
@@ -89,7 +92,7 @@ export class PlaygroundEditor extends React.PureComponent {
                     onExampleSelect={onExampleSelect}
                     examples={examples} />
                 </Col>
-                <Col sm={2} className="align-text-bottom text-right">
+                <Col sm={2} className="align-text-bottom">
                   <ActionCopy copy={this.copyConfig} />
                   {clearConfig &&
                    <ActionClear clear={clearConfig} />
@@ -104,8 +107,11 @@ export class PlaygroundEditor extends React.PureComponent {
                         key={i}>{e}</Alert>
                   );
               })}
-              <Editor
-                className="border bg-secondary"
+              <Row>
+                <Col
+                  sm={12}>
+                <Editor
+                className="border bg-code mb-0 m-2 mr-3 ml-3 rounded"
                 value={content}
                 onValueChange={onChange}
                 highlight={highlighter}
@@ -117,7 +123,9 @@ export class PlaygroundEditor extends React.PureComponent {
                     fontFamily: '"Fira code", "Fira Mono", monospace',
                     fontSize: 12,
                 }}
-              />
+                />
+                </Col>
+              </Row>
             </>);
     }
 }

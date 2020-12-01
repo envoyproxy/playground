@@ -152,7 +152,7 @@ export class BaseModalWidget extends React.PureComponent {
             <>
               <Modal
 		isOpen={isOpen}
-                size="lg"
+                size="xl"
                 toggle={this.close}
                 className={className}>
                 {isOpen &&
