@@ -45,7 +45,7 @@ export class ProxyConfigForm extends React.PureComponent {
     }
 
     onExampleSelect = async (evt) => {
-        const {configuration, dispatch, examples} = this.props;
+        const {dispatch, examples} = this.props;
         const {envoy} = examples;
         // todo: implement overwrite button
         // if (configuration !== code)
