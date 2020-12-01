@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {PlaygroundForm} from '../../shared/forms';
-import {PlaygroundFilesField} from '../../shared/forms/fields/files';
+import {PlaygroundFilesForm} from '../../shared/forms';
 
 import BinaryIcon from '../../app/images/binary.png';
-import {updateForm} from '../../app/store';
-import {readFile} from '../../shared/utils';
 
 
 // VALIDATION REQUIRED
@@ -18,38 +15,11 @@ import {readFile} from '../../shared/utils';
 //      - valid filenames
 
 
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-        proxies: state.proxy.value,
-        meta: state.meta.value,
-    };
-}
-
-
 export class BaseProxyBinariesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
-        proxies: PropTypes.object.isRequired,
-        meta: PropTypes.object.isRequired,
     });
-
-    onChange = async (evt) => {
-        const {dispatch, form} = this.props;
-        const {binaries={}} = form;
-        const update = {};
-        update[evt.target.files[0].name] = (await readFile(evt.target.files[0])).split(',')[1];
-        await dispatch(updateForm({binaries: {...binaries, ...update}}));
-    }
-
-    onDelete = async (name) => {
-        const {dispatch, form} = this.props;
-        const {binaries: _binaries={}} = form;
-        const binaries = {..._binaries};
-        delete binaries[name];
-        await dispatch(updateForm({binaries}));
-    }
 
     get messages () {
         return [
@@ -59,21 +29,26 @@ export class BaseProxyBinariesForm extends React.PureComponent {
     }
 
     render () {
-        const {form} = this.props;
+        const {dispatch, form} = this.props;
         const {binaries={}} = form;
         return (
-            <PlaygroundForm messages={this.messages}>
-              <PlaygroundFilesField
-                name="binaries"
-                title="Add a binary"
-                icon={BinaryIcon}
-                prefix='binary/'
-                onChange={this.onChange}
-                onDelete={this.onDelete}
-                files={binaries} />
-            </PlaygroundForm>
+            <PlaygroundFilesForm
+              files={binaries}
+              fileType="binaries"
+              dispatch={dispatch}
+              form={form}
+              icon={BinaryIcon}
+              title="Add a binary"
+              prefix='binary/'
+              messages={this.messages} />
         );
     }
+}
+
+const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
 }
 
 const ProxyBinariesForm = connect(mapStateToProps)(BaseProxyBinariesForm);
