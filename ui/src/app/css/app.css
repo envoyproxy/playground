@@ -88,3 +88,8 @@
 .readme h6 {
     color: #777;
 }
+
+
+.modal-xl {
+    max-width: 90%;
+}

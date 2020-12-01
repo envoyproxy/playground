@@ -105,7 +105,7 @@ export class PlaygroundEditor extends React.PureComponent {
                   );
               })}
               <Editor
-                className="border bg-secondary"
+                className="border bg-white"
                 value={content}
                 onValueChange={onChange}
                 highlight={highlighter}
