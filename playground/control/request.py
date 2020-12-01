@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from collections import OrderedDict
-from typing import Optional, Type, Union
+from typing import Optional, Type
 
 import rapidjson as json  # type: ignore
 
@@ -15,7 +14,7 @@ class PlaygroundRequest(object):
     def __init__(
             self,
             request: Request,
-            attribs: Optional[Type[ValidatingAttribs]]  = None):
+            attribs: Optional[Type[ValidatingAttribs]] = None):
         self._request = request
         self._attribs = attribs
 
@@ -33,6 +32,6 @@ class PlaygroundRequest(object):
             self._valid_data = self._data
 
     @property
-    def data(self) -> Optional[ValidatingAttribs]:
+    def data(self):
         # todo: test this - showing as covered, but not
         return self._valid_data

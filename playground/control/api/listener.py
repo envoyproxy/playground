@@ -120,7 +120,7 @@ class PlaygroundAPI(object):
     async def service_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         command = attr.asdict(request.data)
-        service_config = self.services.types[request.data.service_type]
+        service_config = self.services.types[command['service_type']]
         command['image'] = service_config.get("image")
         if command.get('configuration'):
             command['config_path'] = service_config['labels'].get(

@@ -10,7 +10,7 @@ class PlaygroundCommand(object):
     def __init__(
             self,
             kwargs: dict,
-            attribs: Optional[Type[ValidatingAttribs]]  = None):
+            attribs: Optional[Type[ValidatingAttribs]] = None):
         self._kwargs = kwargs
         self._attribs = attribs
 

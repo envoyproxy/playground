@@ -2,7 +2,6 @@
 
 import asyncio
 
-from collections import OrderedDict
 from functools import partial, update_wrapper, wraps
 from typing import Callable, Optional, Type
 
@@ -14,7 +13,7 @@ from playground.control.attribs import ValidatingAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.event import PlaygroundEvent
 from playground.control.exceptions import (
-    PlaygroundError, ValidationError, PlaygroundValidationError)
+    PlaygroundError, PlaygroundValidationError)
 from playground.control.request import PlaygroundRequest
 
 

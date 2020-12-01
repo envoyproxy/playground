@@ -21,7 +21,7 @@ class ServiceAddAttribs(AttribsWithName):
     # v: exists
     # v: length and length of values
     # v: valid chars
-    service_type = attr.ib()
+    service_type = attr.ib(type=str)
 
     # v: length
     configuration = attr.ib(default='')
