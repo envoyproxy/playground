@@ -25,6 +25,8 @@ extras_require['test'] = [
     "pytest-cov",
     "pytest-mock"]
 extras_require['docs'] = [
+    "jinja2",
+    "pyyaml",
     "sphinx",
     "sphinx-copybutton",
     "sphinx-rtd-theme",
@@ -37,7 +39,7 @@ extras_require['docs'] = [
 # TODO: Fix classifiers
 setup(
     name='playground.control',
-    version='0.1.1',
+    version='0.1.2',
     description='playground.control',
     long_description="playground.control",
     url='https://github.com/envoyproxy/playground',
