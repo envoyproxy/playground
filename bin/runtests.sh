@@ -49,7 +49,7 @@ py_tests () {
     fi
     if [[ -z "$testtype" || "$testtype" == "typing" ]]; then
 	# todo: remove skip on imports
-	_docker_compose_run control mypy --follow-imports=skip --namespace-packages playground/control
+	_docker_compose_run control mypy --namespace-packages playground/control
     fi
     if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
 	_docker_compose_run control flake8 playground/control tests/
