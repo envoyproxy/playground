@@ -28,7 +28,9 @@ site:
 	ls bin
 	./bin/generate-docs.py tmp/docs services/services.yaml
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
-	cp -a site/* build/site
+	npm install -g yarn
+	cd site && yarn install && yarn build
+	cp -a site/build/* build/site
 
 run: clean
 	docker run -d \
@@ -97,3 +99,9 @@ dev-ui-sh:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
 		ui sh
+
+dev-site:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
+		--rm \
+		-p 7777:3000 \
+			site yarn start
