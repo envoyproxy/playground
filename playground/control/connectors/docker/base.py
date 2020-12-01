@@ -19,6 +19,8 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             await self.delete(dict(name=resource['name']))
 
     async def list(self) -> list:
+        if not self._docker_resource or not self.name:
+            return []
         return await self._list_resources(
             getattr(self.docker, self._docker_resource),
             self.name)
