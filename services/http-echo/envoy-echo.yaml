@@ -44,5 +44,5 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: postgres
+                address: echo
                 port_value: 80

@@ -20,13 +20,19 @@ export class ExampleSearch extends React.PureComponent {
         onExampleSelect: PropTypes.func.isRequired,
     });
 
-    render () {
+    onExampleSelect = async (evt) => {
         const {examples, onExampleSelect} = this.props;
+        console.log('UPDATE', evt);
+        await onExampleSelect(evt);
+    }
+
+    render () {
+        const {examples} = this.props;
         return (
             <CustomInput
               type="select"
               id="default-level"
-              onChange={onExampleSelect}
+              onChange={this.onExampleSelect}
               name="default-level">
               <option>Select an example</option>);
               {examples.map((k, i) => {
