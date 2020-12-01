@@ -3,17 +3,12 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {CustomInput, Col, Row} from 'reactstrap';
-
-import {
-    PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
+import {PlaygroundForm} from '../../shared/forms';
 import {PlaygroundFilesField} from '../../shared/forms/fields/files';
 
 import BinaryIcon from '../../app/images/binary.png';
 import {updateForm} from '../../app/store';
 import {readFile} from '../../shared/utils';
-import {ActionRemove} from '../../shared/actions';
 
 
 // VALIDATION REQUIRED
