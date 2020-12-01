@@ -10,6 +10,9 @@ import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow, PlaygroundInput} from '../../shared/forms';
 
+import {PlaygroundNameInput} from '../../shared/forms/fields/input';
+
+
 import {updateForm} from '../../app/store';
 
 
@@ -32,52 +35,29 @@ class BaseServiceForm extends React.PureComponent {
     }
 
     onChange = async (evt) => {
-        const {dispatch, form, services, meta} = this.props;
-        const {max_name_length, min_name_length} = meta;
-        let {service_type, name=''} = form;
-        let valid = true;
-        const errors = {name: []};
-
-        if (evt.target.name === 'service_type') {
-            service_type = evt.target.value;
-        } else {
-            name = evt.currentTarget.value.toLowerCase();
-        }
-
+        const {dispatch, form} = this.props;
+        let {service_type} = form;
+        let {valid} = form;
+        service_type = evt.target.value;
         if (!service_type) {
             valid = false;
         }
+        await dispatch(updateForm({valid, service_type}));
+    }
 
-        if (name.length < parseInt(min_name_length)) {
+    onNameChange = async (evt) => {
+        const {dispatch, form} = this.props;
+        const {name, errors} = evt;
+        let {valid} = evt;
+        const {service_type} = form;
+        if (!service_type) {
             valid = false;
-        }
-        if (name.length > parseInt(max_name_length)) {
-            valid = false;
-            errors.name.push('Network name too long, maximum ' + max_name_length + ' chars.');
-        }
-        for (const forbidden of ['..', '--', '__']) {
-            if (name.indexOf(forbidden) !== -1) {
-                valid = false;
-                errors.name.push('Network name cannot contain \'' + forbidden + '\'');
-            }
-        }
-        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
-            valid = false;
-            errors.name.push('Network name contains forbidden characters');
-        }
-        if (Object.keys(services).indexOf(name) !== -1) {
-            valid = false;
-            errors.name.push('Network name exists already');
-        }
-
-        if (valid) {
-            delete errors.name;
         }
         await dispatch(updateForm({errors, valid, name, service_type}));
     }
 
     render () {
-        const {form, service_types} = this.props;
+        const {form, services, service_types, meta} = this.props;
         const {service_type={}, name, errors={}} = form;
         return (
             <PlaygroundForm messages={this.messages}>
@@ -86,12 +66,13 @@ class BaseServiceForm extends React.PureComponent {
                   label="name"
                   title="Name">
                   <Col sm={9}>
-		    <PlaygroundInput
-                      name="name"
+		    <PlaygroundNameInput
                       placeholder="Enter service name"
                       errors={errors}
-                      value={name || ''}
-                      onChange={this.onChange} />
+                      value={name}
+                      meta={meta}
+                      taken={Object.keys(services)}
+                      onChange={this.onNameChange} />
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>
