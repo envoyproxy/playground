@@ -51,12 +51,21 @@ export class PlaygroundForm extends React.PureComponent {
             PropTypes.array,
             PropTypes.object]).isRequired,
         messages: PropTypes.array.isRequired,
+        onSubmit: PropTypes.func,
     });
+
+    onSubmit = (evt) => {
+        const {onSubmit} = this.props;
+        evt.preventDefault();
+        if (onSubmit) {
+            onSubmit(evt);
+        }
+    };
 
     render () {
         const {children, messages} = this.props;
         return (
-            <Form className="mt-3">
+            <Form className="mt-3" onSubmit={this.onSubmit}>
               <FormIntroMessage>
                 {messages.map((message, index) => {
                     return (
