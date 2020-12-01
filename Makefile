@@ -74,7 +74,7 @@ test:
 integration-test:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
 	sleep 10
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration integration-tests.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose -T exec integration integration-tests.sh
 
 dev-integration: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
