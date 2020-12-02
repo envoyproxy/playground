@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-
-import {CustomInput, Col} from 'reactstrap';
+import {Col} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
+    PlaygroundFormGroupRow, PlaygroundSelectInput} from '../../shared/forms';
 
 import {updateForm} from '../../app/store';
 
@@ -42,17 +41,15 @@ export class BaseProxyLoggingForm extends React.PureComponent {
                   label="log_level"
                   title="Default log level">
                   <Col sm={8}>
-                    <CustomInput
-                      type="select"
-                      id="default-level"
-                      value={logging.default}
+                    <PlaygroundSelectInput
                       onChange={this.onChange}
-                      name="default-level">
-                      <option>Select log level</option>
-                      <option value="info">info (default)</option>
-                      <option value="debug">debug</option>
-                      <option value="trace">trace</option>
-                    </CustomInput>
+                      value={logging.default}
+                      name="mapping_type"
+                      noOption="Select log level"
+                      options={[
+                          ['info', 'info (default)'],
+                          ['debug', 'debug'],
+                          ['trace', 'trace']]} />
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>

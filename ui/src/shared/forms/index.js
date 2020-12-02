@@ -8,7 +8,9 @@ export {
     PlaygroundForm,
     PlaygroundFormGroup,
     PlaygroundFormGroupRow} from './base';
-export {PlaygroundInput} from './input';
+export {
+    PlaygroundInput, PlaygroundSelectInput,
+    PlaygroundNameInput} from './fields';
 export {PlaygroundFilesForm} from './files';
 
 

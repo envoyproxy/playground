@@ -30,10 +30,8 @@ export class BaseProxyBinariesForm extends React.PureComponent {
 
     render () {
         const {dispatch, form} = this.props;
-        const {binaries={}} = form;
         return (
             <PlaygroundFilesForm
-              files={binaries}
               fileType="binaries"
               dispatch={dispatch}
               form={form}

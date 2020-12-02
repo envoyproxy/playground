@@ -13,7 +13,7 @@ export class PlaygroundFilesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
-        filetype: PropTypes.string.isRequired,
+        fileType: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
         prefix: PropTypes.string.isRequired,
