@@ -26,7 +26,7 @@ extras_require['test'] = [
     "pytest-mock"]
 extras_require['docs'] = [
     "jinja2",
-    "m2r",
+    "m2r2",
     "pyyaml",
     "sphinx",
     "sphinx-copybutton",
