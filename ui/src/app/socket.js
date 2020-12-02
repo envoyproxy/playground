@@ -15,6 +15,7 @@ export default class PlaygroundSocket {
         this.ws = new ReconnectingWebSocket(address);
         this.addListeners();
         this._state = 'starting';
+        this.disconnected = false;
     }
 
     refreshIcons = async () => {
@@ -29,6 +30,22 @@ export default class PlaygroundSocket {
             proxies: proxy.value,
         }));
     }
+
+    onConnect = async (evt) => {
+        const {dispatch} = this.store;
+        if (this.disconnected) {
+            await dispatch(updateUI({toast: null}));
+        }
+    };
+
+    onDisconnect = async (evt) => {
+        this.disconnected = true;
+        const {target} = evt;
+        const {dispatch} = this.store;
+        if (target._shouldReconnect) {
+            await dispatch(updateUI({toast: 'socket-disconnected'}));
+        }
+    };
 
     onMessage = async (event) => {
         const {dispatch} = this.store;
@@ -141,6 +158,12 @@ export default class PlaygroundSocket {
     addListeners = () => {
         this.ws.addEventListener('message', (event) => {
             this.onMessage(event);
+        });
+        this.ws.addEventListener('close', (event) => {
+            this.onDisconnect(event);
+        });
+        this.ws.addEventListener('open', (event) => {
+            this.onConnect(event);
         });
     }
 }

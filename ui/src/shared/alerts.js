@@ -35,6 +35,25 @@ export class AlertNotImplemented extends React.PureComponent {
 }
 
 
+export class AlertDisconnected extends React.PureComponent {
+    static propTypes = {
+        exporter: PropTypes.func.isRequired,
+    };
+
+    render () {
+        const {exporter, ...props} = this.props;
+        return (
+            <Alert
+              {...props}
+              color="danger">
+              <div className="row p-2 pt-0">
+                Socket disconnected, attempting to reconnect...
+              </div>
+            </Alert>);
+    }
+}
+
+
 export class AlertValidation extends React.PureComponent {
     static propTypes = {
         validation: PropTypes.object
