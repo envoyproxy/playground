@@ -17,14 +17,11 @@ import {updateCloud} from '../app/store';
 
 class ResourceImage extends React.Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired,
         x: PropTypes.number.isRequired,
         y: PropTypes.number.isRequired,
-        networks: PropTypes.object.isRequired,
-        proxies: PropTypes.object.isRequired,
-        services: PropTypes.object.isRequired,
         icon: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
+        onMove: PropTypes.func.isRequired,
     };
 
     state = {};
@@ -32,8 +29,7 @@ class ResourceImage extends React.Component {
     render () {
         const {
             x: startX, y: startY,
-            networks, proxies, services, store,
-            icon, name, dispatch, ...props} = this.props;
+            icon, name, onMove, ...props} = this.props;
         const {x, y} = this.state;
         return (
             <Group
@@ -48,9 +44,7 @@ class ResourceImage extends React.Component {
                     });
                 }}
                 onDragEnd={async e => {
-                    const resources = {};
-                    resources[name] = [e.target.x(), e.target.y()];
-                  await dispatch(updateCloud({networks, proxies, services, resources}));
+                    await onMove(name, [e.target.x(), e.target.y()]);
                 }}>
               <KonvaImage
                 {...props}
@@ -77,20 +71,13 @@ class ResourceImage extends React.Component {
 }
 
 
-export class BaseCloudContent extends React.PureComponent {
+export class CloudConnections extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
-        networks: PropTypes.object.isRequired,
-        proxies: PropTypes.object.isRequired,
-        services: PropTypes.object.isRequired,
-        service_types: PropTypes.object.isRequired,
-        ui: PropTypes.object.isRequired,
-        parentRef: PropTypes.object.isRequired,
+        connections: PropTypes.array.isRequired,
     });
 
-    get icons () {
-        const {dispatch, networks, proxies, services, service_types, ui} = this.props;
-        const {connections=[], resources={}} = ui;
+    render () {
+        const {connections} = this.props;
         return (
             <>
               {connections.map((coords, i) => {
@@ -102,6 +89,22 @@ export class BaseCloudContent extends React.PureComponent {
                         points={coords} />
                   );
               })}
+            </>
+        );
+    }
+}
+
+
+export class CloudResources extends React.PureComponent {
+    static propTypes = exact({
+        service_types: PropTypes.object.isRequired,
+        onMove: PropTypes.func.isRequired,
+    });
+
+    render () {
+        const {service_types, resources, onMove} = this.props;
+        return (
+            <>
               {Object.entries(resources).map(([k, v], i) => {
                   const resourceType = k.split(':')[0];
                   let icon;
@@ -116,11 +119,7 @@ export class BaseCloudContent extends React.PureComponent {
                   return (
                       <ResourceImage
                         icon={icon}
-                        dispatch={dispatch}
-                        resources={resources}
-			networks={networks}
-			services={services}
-			proxies={proxies}
+                        onMove={onMove}
                         key={i}
                         name={k}
                         x={v[0]}
@@ -128,16 +127,72 @@ export class BaseCloudContent extends React.PureComponent {
                       />);
               })}
             </>);
+    }
+}
 
+
+export class BaseCloudContent extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        networks: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        service_types: PropTypes.object.isRequired,
+        ui: PropTypes.object.isRequired,
+        parentRef: PropTypes.object.isRequired,
+    });
+
+    onMove = async (name, [x, y]) => {
+        const {dispatch, networks, proxies, services} = this.props;
+        const resources = {};
+        resources[name] = [x, y];
+        await dispatch(updateCloud({networks, proxies, services, resources}));
     }
 
     render () {
         // const {parentRef} = this.props;
+        const {
+            service_types, ui} = this.props;
+        const {connections=[], resources={}} = ui;
+        const resource_types = [];
+        ['network', 'service', 'proxy'].forEach(resource_type => {
+            const _resources = Object.fromEntries(Object.entries(resources).filter(([k, v]) => {
+                return k.split(':')[0] === resource_type;
+            }));
+            if (Object.keys(_resources).length > 0) {
+                resource_types.push(_resources);
+            }
+        });
         return (
             <div className="canvas bg-cloud">
               <Stage width={600} height={400}>
-                <Layer>
-                  {this.icons}
+                <Layer x={100} y={100}>
+                  <CloudConnections connections={connections} />
+                  {(resource_types.length === 0) &&
+                   <Label>
+                     <Tag
+                       pointerWidth={10}
+                       stroke="#ccc"
+                       fill="#f3f296"
+                       opacity={0.9} />
+                     <Text
+                       width={400}
+                       align="center"
+                       text="There are no proxies, services, or networks configured for this playground"
+                       fill="#0a0a0a"
+                       padding={15}
+                       fontSize={22} />
+                   </Label>
+                  }
+                  {resource_types.map((_resources, i) => {
+                      return (
+                          <CloudResources
+		            resources={_resources}
+                            onMove={this.onMove}
+		            service_types={service_types}
+                            key={i}
+                          />);
+                  })}
                 </Layer>
               </Stage>
             </div>);
