@@ -1,9 +1,34 @@
 
-{{title}}
-{% for i in range(title|length) %}={% endfor %}
-
 ..  figure:: {{image}}
     :figwidth: 100px
     :align: right
 
-.. mdinclude:: {{readme}}
+{{title}}
+{% for i in range(title|length) %}={% endfor %}
+
+
+Information
+-----------
+
+.. tabs::
+
+   .. code-tab:: README
+
+      .. mdinclude:: {{readme}}
+
+   .. tab:: Environment
+
+      Env vars info...
+
+   .. tab:: Configuration
+
+      Config include...
+
+   .. tab:: Ports
+
+      Ports info...
+
+   .. tab:: Ports
+
+Usage
+-----
