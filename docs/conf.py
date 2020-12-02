@@ -18,8 +18,7 @@ extensions = [
 copybutton_prompt_text = r"\$ |PS>"
 copybutton_prompt_is_regexp = True
 source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown'}
+    '.rst': 'restructuredtext'}
 master_doc = 'index'
 project = u'Envoy playground'
 copyright = u'2020-{}, Envoy playground project authors'.format(datetime.now().year)
