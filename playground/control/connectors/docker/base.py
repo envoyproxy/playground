@@ -115,7 +115,7 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         except DockerError as e:
             if e.args[0] == 409:
                 raise PlaytimeError(e.args[1]['message'])
-            #todo: log warning ?
+            # todo: log warning ?
             return False
 
     async def _remove_volumes(self, volumes):
