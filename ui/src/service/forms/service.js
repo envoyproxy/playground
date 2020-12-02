@@ -8,7 +8,7 @@ import {Col, CustomInput} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow, PlaygroundInput} from '../../shared/forms';
+    PlaygroundFormGroupRow} from '../../shared/forms';
 
 import {PlaygroundNameInput} from '../../shared/forms/fields/input';
 
