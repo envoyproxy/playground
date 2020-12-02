@@ -133,7 +133,7 @@ export class BaseProxyForm extends React.PureComponent {
     onConfigChange = async (configuration) => {
         // TODO: validate yaml config as yaml, and length.
         const {form,  dispatch} = this.props;
-        const {errors: _errors={}, name=''} = form;
+        const {errors: _errors={}} = form;
         let {valid} = form;
         const errors = {..._errors};
         if (!this.validateConfiguration(configuration, errors)) {
