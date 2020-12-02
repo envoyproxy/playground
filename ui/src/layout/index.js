@@ -12,9 +12,9 @@ import Right from "./right";
 import Footer from "./footer";
 import Content from "./content";
 import ModalWidget from "../shared/modal";
-import ToastWidget from "../shared/toast";
+import ToastWidget, {FailToast} from "../shared/toast";
 import {
-    AlertDisconnected, AlertErrors,
+    AlertDisconnected,
     AlertNotImplemented} from '../shared/alerts';
 import {ModalContext, ToastContext} from '../app/context';
 
@@ -37,27 +37,6 @@ export class SocketDisconnectedToast extends React.PureComponent {
         return <AlertDisconnected />;
     }
 }
-
-
-export class BaseFailToast extends React.PureComponent {
-    static propTypes = exact({
-        errors: PropTypes.array.isRequired
-    })
-
-    render () {
-        return <AlertErrors {...this.props} />;
-    }
-}
-
-
-const mapStateToProps = function(state) {
-    return {
-        errors: state.ui.value.errors
-    };
-}
-
-const FailToast = connect(mapStateToProps)(BaseFailToast);
-export {FailToast};
 
 
 export class BaseLayout extends React.PureComponent {

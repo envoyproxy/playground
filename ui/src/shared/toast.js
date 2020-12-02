@@ -8,6 +8,8 @@ import {Toast, ToastHeader, ToastBody} from 'reactstrap';
 import {updateUI} from '../app/store';
 import {ToastContext} from '../app/context';
 
+import {AlertErrors} from './alerts';
+
 
 export class ToastParts extends React.PureComponent {
     static propTypes = exact({
@@ -92,3 +94,26 @@ const mapStateToProps = function(state, other) {
 
 const ToastWidget = connect(mapStateToProps)(BaseToastWidget);
 export default ToastWidget;
+
+
+
+
+export class BaseFailToast extends React.PureComponent {
+    static propTypes = exact({
+        errors: PropTypes.array.isRequired
+    })
+
+    render () {
+        return <AlertErrors {...this.props} />;
+    }
+}
+
+
+const mapFailStateToProps = function(state) {
+    return {
+        errors: state.ui.value.errors
+    };
+}
+
+const FailToast = connect(mapFailStateToProps)(BaseFailToast);
+export {FailToast};
