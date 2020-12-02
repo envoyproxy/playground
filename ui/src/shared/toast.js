@@ -57,7 +57,7 @@ export class ToastParts extends React.PureComponent {
 }
 
 
-export class BaseToastWidget extends React.Component {
+export class BaseToastWidget extends React.PureComponent {
     static contextType = ToastContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
