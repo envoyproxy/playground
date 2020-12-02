@@ -30,6 +30,13 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
         ];
     }
 
+    get warnings () {
+        return [
+            "The certificate files will be stored ephemerally in the Envoy Docker container.",
+            "If your certificates are for production or need to be kept safe, you might instead want to use some self-signed certificates for testing."
+        ];
+    }
+
     render () {
         const {dispatch, form} = this.props;
         return (
@@ -40,6 +47,7 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
               icon={CertificateIcon}
               title="Add a cert/key"
               prefix='certs/'
+              warnings={this.warnings}
               messages={this.messages} />
         );
     }

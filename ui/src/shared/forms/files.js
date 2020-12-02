@@ -17,7 +17,8 @@ export class PlaygroundFilesForm extends React.PureComponent {
         icon: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
         prefix: PropTypes.string.isRequired,
-        messages: PropTypes.array
+        messages: PropTypes.array,
+        warnings: PropTypes.array,
     });
 
     onChange = async (evt) => {
@@ -42,11 +43,13 @@ export class PlaygroundFilesForm extends React.PureComponent {
 
     render () {
         const {
-            icon, form, fileType,
+            icon, form, fileType, warnings,
             messages, prefix, title} = this.props;
         const files = form[fileType] || {};
         return (
-            <PlaygroundForm messages={messages}>
+            <PlaygroundForm
+              warnings={warnings}
+              messages={messages}>
               <PlaygroundFilesField
                 name={fileType}
                 title={title}
