@@ -10,7 +10,7 @@ It is not intended to be exposed on the internet or other network.
 
 .. include:: _include/foo.rst
 
-.. include:: _include/bar.md
+.. mdinclude:: _include/bar.md
 
 .. toctree::
     :maxdepth: 3

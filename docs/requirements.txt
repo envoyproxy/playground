@@ -1,6 +1,6 @@
 jinja2
+m2r
 pyyaml
-recommonmark
 sphinx
 sphinx-copybutton
 sphinx-rtd-theme
