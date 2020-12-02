@@ -8,6 +8,8 @@ This is useful for learning or testing Envoy configurations and network architec
 
 It is not intended to be exposed on the internet or other network.
 
+.. include:: _include/foo.rst
+
 .. toctree::
     :maxdepth: 3
 
