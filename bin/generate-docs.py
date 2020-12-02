@@ -34,7 +34,7 @@ class ServiceDocsCreator(object):
             dst = f'{self.docpath}/services/_include/{service}'
             shutil.copytree(src, dst)
 
-    def create_service_files(self):
+    def create_service_rst(self):
         template = jinja_env.get_template('service.rst.template')
 
         for service in self.service_types:
@@ -59,8 +59,8 @@ class ServiceDocsCreator(object):
             f.write(toc)
 
     def create(self):
-        self.copy_service_images()
-        self.create_service_files()
+        self.copy_service_dirs()
+        self.create_service_rst()
         self.create_toc()
 
 
