@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Col, Form, FormGroup, Label, Row } from 'reactstrap';
+    Alert, Col, Form, FormGroup, Label, Row } from 'reactstrap';
 
 
 export class FormIntroMessage extends React.PureComponent {
@@ -45,12 +45,35 @@ export class PlaygroundFormGroup extends React.PureComponent {
 }
 
 
+export class PlaygroundFormWarnings extends React.PureComponent {
+    static propTypes = exact({
+        warnings: PropTypes.array.isRequired,
+    });
+
+    render () {
+        const {warnings} = this.props;
+        return (
+            <Alert color="warning">
+              {warnings.map((warning, index) => {
+                  return (
+                      <Row key={index}>
+                        <Col>
+                          {warning}
+                        </Col>
+                      </Row>);
+              })}
+            </Alert>);
+    }
+}
+
+
 export class PlaygroundForm extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
             PropTypes.object]).isRequired,
-        messages: PropTypes.array.isRequired,
+        messages: PropTypes.array,
+        warnings: PropTypes.array,
         onSubmit: PropTypes.func,
     });
 
@@ -63,10 +86,14 @@ export class PlaygroundForm extends React.PureComponent {
     };
 
     render () {
-        const {children, messages} = this.props;
+        const {children, messages=[], warnings=[]} = this.props;
         return (
             <Form className="mt-3" onSubmit={this.onSubmit}>
               <FormIntroMessage>
+                {warnings.length > 0 &&
+                 <PlaygroundFormWarnings
+                   warnings={warnings} />
+                }
                 {messages.map((message, index) => {
                     return (
                         <Row key={index}>
