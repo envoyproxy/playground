@@ -86,7 +86,7 @@ export class PlaygroundForm extends React.PureComponent {
     };
 
     render () {
-        const {children, messages, warnings=[]} = this.props;
+        const {children, messages=[], warnings=[]} = this.props;
         return (
             <Form className="mt-3" onSubmit={this.onSubmit}>
               <FormIntroMessage>
