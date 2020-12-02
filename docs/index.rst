@@ -13,7 +13,7 @@ It is not intended to be exposed on the internet or other network.
 .. mdinclude:: _include/bar.md
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     getting-started/index
     proxies/index

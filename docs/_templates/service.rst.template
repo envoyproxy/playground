@@ -6,7 +6,4 @@
     :figwidth: 100px
     :align: right
 
-Readme
-------
-
 .. mdinclude:: {{readme}}
