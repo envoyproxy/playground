@@ -32,7 +32,7 @@ export class ToastParts extends React.PureComponent {
         return (
             <>
               <ToastHeader
-	        toggle={this.toggle}
+                toggle={this.toggle}
                 icon={icon}
                 className="p-2 bg-light">
                 {title &&
@@ -66,7 +66,7 @@ export class BaseToastWidget extends React.PureComponent {
         return (
             <>
               <Toast
-		isOpen={isOpen}
+                isOpen={isOpen}
                 toggle={this.close}
                 className={className}>
                 {isOpen &&
