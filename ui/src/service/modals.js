@@ -141,7 +141,7 @@ export class BaseServiceModal extends React.Component {
 
     get tabs () {
         const {form, service_types} = this.props;
-        const {errors, name, service_type} = form;
+        const {errors, name='', service_type} = form;
         let showReadme = false;
         if (service_type) {
             const service_config = service_types[service_type];

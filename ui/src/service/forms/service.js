@@ -4,21 +4,17 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col, CustomInput} from 'reactstrap';
+import {Col} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../../shared/forms';
-
-import {PlaygroundNameInput} from '../../shared/forms/fields/input';
+import {
+    PlaygroundNameInput,
+    PlaygroundSelectInput} from '../../shared/forms/fields/input';
 
 
 import {updateForm} from '../../app/store';
-
-
-// VALIDATION REQUIRED
-//  - service_type
-//      - is set
 
 
 class BaseServiceForm extends React.PureComponent {
@@ -58,7 +54,7 @@ class BaseServiceForm extends React.PureComponent {
 
     render () {
         const {form, services, service_types, meta} = this.props;
-        const {service_type={}, name, errors={}} = form;
+        const {service_type='', name='', errors={}} = form;
         return (
             <PlaygroundForm messages={this.messages}>
               <PlaygroundFormGroup>
@@ -81,18 +77,13 @@ class BaseServiceForm extends React.PureComponent {
                   label="service_type"
                   title="Service type">
                   <Col sm={9}>
-                    <CustomInput
-                      type="select"
-                      id="service_type"
+                    <PlaygroundSelectInput
                       name="service_type"
                       value={service_type}
-                      onChange={this.onTypeChange}>
-                      <option value="">Select a service type</option>
-                      {Object.entries(service_types).map(([k, v], index) => {
-                          return (
-                              <option value={k} key={index}>{v.title}</option>);
-                      })}
-                    </CustomInput>
+                      onChange={this.onTypeChange}
+                      noOption="Select a service type"
+                      options={Object.entries(service_types).map(([k, v])  => [k, v.title])}
+                    />
                   </Col>
                 </PlaygroundFormGroupRow>
               </PlaygroundFormGroup>

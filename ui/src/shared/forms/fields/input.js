@@ -3,7 +3,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {CustomInput} from 'reactstrap';
+
 import {PlaygroundInput} from '..';
+
+
+export class PlaygroundSelectInput extends React.PureComponent {
+    static propTypes = exact({
+        onChange: PropTypes.func.isRequired,
+        options: PropTypes.array.isRequired,
+        noOption: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+    });
+
+    render () {
+        const {
+            value, name, noOption,
+            onChange, options} = this.props;
+        return (
+            <CustomInput
+              type="select"
+              id={name}
+              name={name}
+              value={value}
+              onChange={onChange}>
+              <option value="">{noOption}</option>
+              {options.map(([k, v], index) => {
+                  return (
+                      <option value={k} key={index}>{v}</option>);
+              })}
+            </CustomInput>
+        );
+    }
+
+}
 
 
 export class PlaygroundNameInput extends React.PureComponent {
