@@ -14,6 +14,7 @@ from .request import (
 
 __all__ = (
     'AttribsWithName',
+    'ContainerDeleteAttribs',
     'ContainerEventAttribs',
     'ImageEventAttribs',
     'NetworkAddAttribs',
