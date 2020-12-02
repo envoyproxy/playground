@@ -6,7 +6,8 @@ import {Provider} from 'react-redux';
 import Layout from '../layout';
 import {APIContext, ModalContext, ToastContext} from "./context";
 import store, {
-    updateMeta, updateServices, updateProxies, updateNetworks,
+    updateMeta, loadNetworks,
+    loadProxies, loadServices,
     updateServiceTypes, updateCloud, updateEdges, updateExamples,
 } from "./store";
 
@@ -25,15 +26,15 @@ export default class PlaygroundApp extends React.PureComponent {
     static propTypes = exact({});
 
     async componentDidMount () {
-        new PlaygroundSocket(socketAddress, store);
+        new PlaygroundSocket(socketAddress, store, api);
         const data = await api.get("/resources");
         const {meta} = data;
         const initialUpdates = [
             updateMeta(meta),
             updateServiceTypes(data),
-            updateServices(data),
-            updateProxies(data),
-            updateNetworks(data),
+            loadServices(data),
+            loadProxies(data),
+            loadNetworks(data),
             updateExamples(data)];
         for (const update of initialUpdates) {
             await store.dispatch(update);

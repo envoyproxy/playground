@@ -197,6 +197,16 @@ const proxySlice = createSlice({
         value: {}
     },
     reducers: {
+        loadProxies: (state, action) => {
+            const proxies = {...action.payload.proxies};
+            Object.entries(action.payload.networks || {}).forEach(([k, v], index) => {
+                (v.proxies || []).forEach(proxy => {
+                    proxies[proxy].networks = proxies[proxy].networks || [];
+                    proxies[proxy].networks.push(k);
+                });
+            });
+            state.value = {...action.payload.proxies};
+        },
         updateProxies: (state, action) => {
             const proxies = {...action.payload.proxies};
             Object.entries(action.payload.networks || {}).forEach(([k, v], index) => {
@@ -217,7 +227,7 @@ const proxySlice = createSlice({
     }
 });
 
-export const {updateProxies, removeProxy} = proxySlice.actions;
+export const {loadProxies, updateProxies, removeProxy} = proxySlice.actions;
 
 
 const networkSlice = createSlice({
@@ -226,6 +236,30 @@ const networkSlice = createSlice({
         value: {}
     },
     reducers: {
+        loadNetworks: (state, action) => {
+            const _networks = {};
+            for (const [k, v] of Object.entries(action.payload.networks)) {
+                const {containers=[], ...network} = v;
+                _networks[k] = network;
+                for (const container of containers) {
+                    for (const service of Object.values(action.payload.services)) {
+                        if (service["id"] === container) {
+                            _networks[k].services = _networks[k].services || [];
+                            _networks[k].services.push(service["name"]);
+                            break;
+                        }
+                    }
+                    for (const proxy of Object.values(action.payload.proxies)) {
+                        if (proxy["id"] === container) {
+                            _networks[k].proxies = _networks[k].proxies || [];
+                            _networks[k].proxies.push(proxy["name"]);
+                            break;
+                        }
+                    }
+                }
+            }
+            state.value = {..._networks};
+        },
         updateNetworks: (state, action) => {
             const _networks = {};
             for (const [k, v] of Object.entries(action.payload.networks)) {
@@ -260,7 +294,9 @@ const networkSlice = createSlice({
     }
 });
 
-export const {removeNetwork, updateNetworks} = networkSlice.actions;
+export const {
+    loadNetworks, removeNetwork,
+    updateNetworks} = networkSlice.actions;
 
 const serviceSlice = createSlice({
     name: 'service',
@@ -268,6 +304,10 @@ const serviceSlice = createSlice({
         value: {}
     },
     reducers: {
+        loadServices: (state, action) => {
+            const services = {...action.payload.services};
+            state.value = {...services};
+        },
         updateServices: (state, action) => {
             const services = {...action.payload.services};
             state.value = {...state.value, ...services};
@@ -282,7 +322,9 @@ const serviceSlice = createSlice({
     }
 });
 
-export const {removeService, updateServices} = serviceSlice.actions;
+export const {
+    loadServices, removeService,
+    updateServices} = serviceSlice.actions;
 
 const serviceTypeSlice = createSlice({
     name: 'service_type',
