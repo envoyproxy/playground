@@ -113,7 +113,7 @@ class PlaygroundAPI(object):
     async def publish(
             self,
             event: dict) -> None:
-        print("PUBLISH", self._sockets, event)
+        # print("PUBLISH", self._sockets, event)
         for socket in self._sockets:
             await socket.send_json(event, dumps=json.dumps)
 
