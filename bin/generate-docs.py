@@ -27,14 +27,12 @@ class ServiceDocsCreator(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
-    def copy_service_images(self):
+    def copy_service_dirs(self):
         os.mkdir(f'{self.docpath}/services/_include')
         for service in self.service_types:
-            icon = self.service_types[service]['labels'].get('envoy.playground.logo')
-            if icon:
-                icon_src = f'services/{service}/{icon}'
-                icon_dst = f'{self.docpath}/services/_include/{icon}'
-                shutil.copyfile(icon_src, icon_dst)
+            src = f'services/{service}'
+            dst = f'{self.docpath}/services/_include/{service}'
+            shutil.copytree(src, dst)
 
     def create_service_files(self):
         template = jinja_env.get_template('service.rst.template')
@@ -48,7 +46,7 @@ class ServiceDocsCreator(object):
                 f.write(template.render(
                     title=self.service_types[service]['labels'][
                         'envoy.playground.service'],
-                    image=f'_include/{icon}'))
+                    image=f'_include/{service}/{icon}'))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'
