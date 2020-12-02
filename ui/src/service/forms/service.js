@@ -34,7 +34,7 @@ class BaseServiceForm extends React.PureComponent {
         return ["Select a service type below, and give the service a name"];
     }
 
-    onChange = async (evt) => {
+    onTypeChange = async (evt) => {
         const {dispatch, form} = this.props;
         let {service_type} = form;
         let {valid} = form;
@@ -86,7 +86,7 @@ class BaseServiceForm extends React.PureComponent {
                       id="service_type"
                       name="service_type"
                       value={service_type}
-                      onChange={this.onChange}>
+                      onChange={this.onTypeChange}>
                       <option value="">Select a service type</option>
                       {Object.entries(service_types).map(([k, v], index) => {
                           return (

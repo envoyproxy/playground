@@ -19,7 +19,7 @@ export class PlaygroundNameInput extends React.PureComponent {
     onChange = async (evt) => {
         const {taken, onChange, meta} = this.props;
         const {max_name_length, min_name_length} = meta;
-        const name = evt.target.value;
+        const name = evt.target.value.toLowerCase();
         let valid = true;
         const _errors = [];
 

@@ -9,7 +9,9 @@ import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow, PlaygroundInput} from '../../shared/forms';
+    PlaygroundFormGroupRow} from '../../shared/forms';
+
+import {PlaygroundNameInput} from '../../shared/forms/fields/input';
 
 import Yaml from 'js-yaml';
 
@@ -95,43 +97,6 @@ export class BaseProxyForm extends React.PureComponent {
         ];
     }
 
-    // todo: move this to a validator util
-    validateName = (name, errors) => {
-        const {proxies, meta} = this.props;
-        const {max_name_length, min_name_length} = meta;
-        let valid = true;
-        errors = errors || {};
-        errors.name = [];
-
-        if (name.length < parseInt(min_name_length)) {
-            valid = false;
-        }
-
-        if (name.length > parseInt(max_name_length)) {
-            valid = false;
-            errors.name.push('Proxy name too long, maximum ' + max_name_length + ' chars.');
-        }
-        for (const forbidden of ['..', '--', '__']) {
-            if (name.indexOf(forbidden) !== -1) {
-                valid = false;
-                errors.name.push('Proxy name cannot contain \'' + forbidden + '\'');
-            }
-        }
-        if (name.length > 0 && !name.match(/[a-z]+[a-z0-9.\-_]*$/)) {
-            valid = false;
-            errors.name.push('Proxy name contains forbidden characters');
-        }
-        if (Object.keys(proxies).indexOf(name) !== -1) {
-            valid = false;
-            errors.name.push('Proxy name exists already');
-        }
-
-        if (valid) {
-            delete errors.name;
-        }
-        return valid;
-    };
-
     validateConfiguration = (config, errors) => {
         errors = errors || {};
         errors.configuration = [];
@@ -154,37 +119,33 @@ export class BaseProxyForm extends React.PureComponent {
         return valid;
     };
 
-    formIsValid = (name, configuration,  errors) => {
-
-        if (!this.validateConfiguration(configuration, errors)) {
-            return false;
+    onNameChange = async (evt) => {
+        const {dispatch, form} = this.props;
+        const {name, errors} = evt;
+        let {valid} = evt;
+        const {configuration=''} = form;
+        if (!this.validateConfiguration(configuration)) {
+            valid = false;
         }
-        if (!this.validateName(name, errors)) {
-            return false;
-        }
-        return true;
-    }
-
-    onChange = async (evt) => {
-        const {form,  dispatch} = this.props;
-        const {errors: _errors={}, configuration=''} = form;
-        const errors = {..._errors};
-        const name = evt.currentTarget.value.toLowerCase();
-        const valid = this.formIsValid(name, configuration, errors);
-        dispatch(updateForm({errors, valid, name}));
+        await dispatch(updateForm({errors, valid, name}));
     }
 
     onConfigChange = async (configuration) => {
         // TODO: validate yaml config as yaml, and length.
         const {form,  dispatch} = this.props;
         const {errors: _errors={}, name=''} = form;
+        let {valid} = form;
         const errors = {..._errors};
-        const valid = this.formIsValid(name, configuration, errors);
-        dispatch(updateForm({errors, valid, configuration}));
+        if (!this.validateConfiguration(configuration, errors)) {
+            valid = false;
+        } else if (!errors.name) {
+            valid = true;
+        }
+        await dispatch(updateForm({errors, valid, configuration}));
     }
 
     render () {
-        const {dispatch, examples, form, meta} = this.props;
+        const {dispatch, examples, form, meta, proxies} = this.props;
         const {configuration=code, name='', errors={}} = form;
         const {min_name_length} = meta;
         let showConfig = true;
@@ -198,12 +159,13 @@ export class BaseProxyForm extends React.PureComponent {
                   title="Name*"
                   label="name">
                   <Col sm={8}>
-		    <PlaygroundInput
-                      name="name"
+	            <PlaygroundNameInput
                       placeholder="Enter proxy name"
                       errors={errors}
-                      value={name || ''}
-                      onChange={this.onChange} />
+                      value={name}
+                      meta={meta}
+                      taken={Object.keys(proxies)}
+                      onChange={this.onNameChange} />
                   </Col>
                 </PlaygroundFormGroupRow>
                 {showConfig &&
