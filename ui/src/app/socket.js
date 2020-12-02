@@ -39,10 +39,10 @@ export default class PlaygroundSocket {
     };
 
     onDisconnect = async (evt) => {
-        this.disconnected = true;
         const {target} = evt;
         const {dispatch} = this.store;
         if (target._shouldReconnect) {
+            this.disconnected = true;
             await dispatch(updateUI({toast: 'socket-disconnected'}));
         }
     };
