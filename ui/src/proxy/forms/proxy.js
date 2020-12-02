@@ -9,9 +9,7 @@ import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
-
-import {PlaygroundNameInput} from '../../shared/forms/fields/input';
+    PlaygroundFormGroupRow, PlaygroundNameInput} from '../../shared/forms';
 
 import Yaml from 'js-yaml';
 
@@ -65,6 +63,7 @@ export class ProxyConfigForm extends React.PureComponent {
     render ()  {
         const {configuration, examples, errors, onChange} = this.props;
         const {envoy} = examples;
+        const {configuration: configErrors=[]} =  errors;
         return (
             <PlaygroundFormGroup>
               <PlaygroundEditor
@@ -76,7 +75,7 @@ export class ProxyConfigForm extends React.PureComponent {
                 clearConfig={this.clearConfig}
                 onChange={onChange}
                 onExampleSelect={this.onExampleSelect}
-                errors={errors}
+                errors={configErrors}
               />
             </PlaygroundFormGroup>);
     }
@@ -88,6 +87,7 @@ export class BaseProxyForm extends React.PureComponent {
         form: PropTypes.object.isRequired,
         proxies: PropTypes.object.isRequired,
         meta: PropTypes.object.isRequired,
+        examples: PropTypes.object.isRequired,
     });
 
     get messages () {

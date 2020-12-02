@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Button, Col, CustomInput, Input, Row } from 'reactstrap';
+    Button, Col, Input, Row } from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import EdgeLogo from '../../app/images/edge.svg';
 import EnvoyLogo from '../../app/images/envoy.svg';
 import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
+import {PlaygroundSelectInput} from '.';
+
 
 // VALIDATION REQUIRED
 //  - port from:
@@ -171,16 +173,12 @@ export class BasePortMappingForm extends React.Component {
                       placeholder="10000" />
                   </Col>
                   <Col sm={3}>
-                    <CustomInput
-                      type="select"
-                      id="mapping_type"
+                    <PlaygroundSelectInput
                       onChange={this.onChange}
                       value={mapping_type}
-                      name="mapping_type">
-                      <option>Generic TCP (default)</option>
-                      <option value="http">HTTP</option>
-                      <option value="https">HTTPS</option>
-                    </CustomInput>
+                      name="mapping_type"
+                      noOption="Generic TCP (default)"
+                      options={[['http', 'HTTP'], ['https', 'HTTPS']]} />
                   </Col>
                   <Col sm={2}>
                     <Button

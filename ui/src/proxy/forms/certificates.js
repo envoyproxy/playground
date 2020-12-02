@@ -32,10 +32,8 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
 
     render () {
         const {dispatch, form} = this.props;
-        const {certs={}} = form;
         return (
             <PlaygroundFilesForm
-              files={certs}
               fileType="certificates"
               dispatch={dispatch}
               form={form}

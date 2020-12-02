@@ -8,11 +8,9 @@ import {Col} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../shared/forms';
-import {
+    PlaygroundFormGroupRow,
     PlaygroundNameInput,
-    PlaygroundSelectInput} from '../../shared/forms/fields/input';
-
+    PlaygroundSelectInput} from '../../shared/forms';
 
 import {updateForm} from '../../app/store';
 

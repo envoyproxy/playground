@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Alert, Col, CustomInput, Label, Row} from 'reactstrap';
+import {Alert, Col, Label, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
 import {highlight, languages} from 'prismjs/components/prism-core';
@@ -12,6 +12,7 @@ import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-python';
 
 import {ActionCopy, ActionClear} from './actions';
+import {PlaygroundSelectInput} from './forms';
 
 
 export class ExampleSearch extends React.PureComponent {
@@ -22,7 +23,6 @@ export class ExampleSearch extends React.PureComponent {
 
     onExampleSelect = async (evt) => {
         const {onExampleSelect} = this.props;
-        console.log('UPDATE', evt);
         await onExampleSelect(evt);
     }
 
@@ -32,18 +32,12 @@ export class ExampleSearch extends React.PureComponent {
             return '';
         }
         return (
-            <CustomInput
-              type="select"
-              id="default-level"
+            <PlaygroundSelectInput
+              name="example"
               onChange={this.onExampleSelect}
-              name="default-level">
-              <option>Select an example</option>);
-              {examples.map((k, i) => {
-                  return (
-                      <option key={i}>{k}</option>);
-              })}
-            </CustomInput>
-
+              noOption="Select an example"
+              options={examples.map(k => [k, k])}
+            />
         );
     }
 }
@@ -111,18 +105,18 @@ export class PlaygroundEditor extends React.PureComponent {
                 <Col
                   sm={12}>
                 <Editor
-                className="border bg-code mb-0 m-2 mr-3 ml-3 rounded"
-                value={content}
-                onValueChange={onChange}
-                highlight={highlighter}
-                padding={10}
-                name={name}
-                id={name}
-                ref={(textarea) => this.textArea = textarea}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 12,
-                }}
+                  className="border bg-code mb-0 m-2 mr-3 ml-3 rounded"
+                  value={content}
+                  onValueChange={onChange}
+                  highlight={highlighter}
+                  padding={10}
+                  name={name}
+                  id={name}
+                  ref={(textarea) => this.textArea = textarea}
+                  style={{
+                      fontFamily: '"Fira code", "Fira Mono", monospace',
+                      fontSize: 12,
+                  }}
                 />
                 </Col>
               </Row>
