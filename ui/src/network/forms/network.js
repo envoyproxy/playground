@@ -5,8 +5,7 @@ import {connect} from 'react-redux';
 
 import {Col, Label, Row} from 'reactstrap';
 import {
-    PlaygroundForm, PlaygroundFormGroup} from '../../shared/forms';
-import {PlaygroundNameInput} from '../../shared/forms/fields/input';
+    PlaygroundForm, PlaygroundFormGroup, PlaygroundNameInput} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
