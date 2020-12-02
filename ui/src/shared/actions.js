@@ -149,9 +149,9 @@ export class ActionRemove extends React.Component {
     state = {clicked: false};
 
     onClick = async (evt) => {
-        const {remove} = this.props;
         evt.preventDefault();
         evt.stopPropagation();
+        const {remove} = this.props;
         this.setState({clicked: true});
         await remove(evt);
     }
@@ -164,7 +164,6 @@ export class ActionRemove extends React.Component {
               {...props}
               name={name}
               color="danger"
-              disabled={clicked}
               href={!clicked ? "#" : null}
               onClick={!clicked ? this.onClick : null}>-</Badge>);
     }
