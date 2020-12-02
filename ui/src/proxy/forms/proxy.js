@@ -62,7 +62,7 @@ export class ProxyConfigForm extends React.PureComponent {
 
     render ()  {
         const {configuration, examples, errors, onChange} = this.props;
-        const {envoy} = examples;
+        const {envoy={}} = examples;
         const {configuration: configErrors=[]} =  errors;
         return (
             <PlaygroundFormGroup>
