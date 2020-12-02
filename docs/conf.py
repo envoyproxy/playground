@@ -24,6 +24,7 @@ project = u'Envoy playground'
 copyright = u'2020-{}, Envoy playground project authors'.format(datetime.now().year)
 author = u'Envoy playground project authors'
 exclude_patterns = [
+    '_include',
     '_build',
     '_venv',
     'Thumbs.db',
