@@ -38,10 +38,8 @@ export default class PlaygroundSocket {
     onConnect = async (evt) => {
         const {dispatch} = this.store;
         if (this.disconnected) {
-            console.log("RECONNECTING");
             await dispatch(updateUI({toast: null}));
             const data = await this.api.get("/resources");
-            console.log("UPDATE RES", data);
             const {meta} = data;
             const initialUpdates = [
                 updateMeta(meta),
