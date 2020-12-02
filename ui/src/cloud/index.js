@@ -15,7 +15,7 @@ import {Group, Text, Tag, Label} from 'react-konva';
 import {updateCloud} from '../app/store';
 
 
-class ResourceImage extends React.Component {
+class ResourceImage extends React.PureComponent {
     static propTypes = {
         x: PropTypes.number.isRequired,
         y: PropTypes.number.isRequired,
@@ -24,28 +24,25 @@ class ResourceImage extends React.Component {
         onMove: PropTypes.func.isRequired,
     };
 
-    state = {};
-
     render () {
         const {
-            x: startX, y: startY,
+            x, y,
             icon, name, onMove, ...props} = this.props;
-        const {x, y} = this.state;
         return (
             <Group
-                x={x || startX}
-                y={y || startY}
-                draggable
-                width={50}
-                height={50}
-                onDragStart={() => {
-                    this.setState({
-                        isDragging: true
-                    });
-                }}
-                onDragEnd={async e => {
-                    await onMove(name, [e.target.x(), e.target.y()]);
-                }}>
+              x={x}
+              y={y}
+              draggable
+              width={50}
+              height={50}
+              onDragStart={() => {
+                  this.setState({
+                      isDragging: true
+                  });
+              }}
+              onDragEnd={async e => {
+                  await onMove(name, [e.target.x(), e.target.y()]);
+              }}>
               <KonvaImage
                 {...props}
                 image={icon}
@@ -95,6 +92,31 @@ export class CloudConnections extends React.PureComponent {
 }
 
 
+export class CloudEmpty extends React.PureComponent {
+
+    render () {
+        return (
+            <Group x={100} y={100} align="center">
+              <Label>
+                <Tag
+                  pointerWidth={10}
+                  stroke="#ccc"
+                  fill="#f3f296"
+                  opacity={0.9} />
+                <Text
+                  width={400}
+                  align="center"
+                  text="There are no proxies, services, or networks configured for this playground"
+                  fill="#71ac63"
+                  padding={15}
+                  fontSize={22} />
+              </Label>
+            </Group>
+        );
+    }
+}
+
+
 export class CloudResources extends React.PureComponent {
     static propTypes = exact({
         service_types: PropTypes.object.isRequired,
@@ -116,6 +138,7 @@ export class CloudResources extends React.PureComponent {
                       const serviceType = k.split(':')[1];
                       icon = service_types[serviceType].icon;
                   }
+                  console.log('RESOURCES', k, v);
                   return (
                       <ResourceImage
                         icon={icon}
@@ -150,6 +173,8 @@ export class BaseCloudContent extends React.PureComponent {
     }
 
     render () {
+        // todo: use parent size for sizing
+        // todo: get rid of fouc when loading not-empty
         // const {parentRef} = this.props;
         const {
             service_types, ui} = this.props;
@@ -166,23 +191,10 @@ export class BaseCloudContent extends React.PureComponent {
         return (
             <div className="canvas bg-cloud">
               <Stage width={600} height={400}>
-                <Layer x={100} y={100}>
+                <Layer>
                   <CloudConnections connections={connections} />
                   {(resource_types.length === 0) &&
-                   <Label>
-                     <Tag
-                       pointerWidth={10}
-                       stroke="#ccc"
-                       fill="#f3f296"
-                       opacity={0.9} />
-                     <Text
-                       width={400}
-                       align="center"
-                       text="There are no proxies, services, or networks configured for this playground"
-                       fill="#0a0a0a"
-                       padding={15}
-                       fontSize={22} />
-                   </Label>
+                   <CloudEmpty />
                   }
                   {resource_types.map((_resources, i) => {
                       return (
