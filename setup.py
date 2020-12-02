@@ -27,6 +27,7 @@ extras_require['test'] = [
 extras_require['docs'] = [
     "jinja2",
     "pyyaml",
+    "recommonmark",
     "sphinx",
     "sphinx-copybutton",
     "sphinx-rtd-theme",
