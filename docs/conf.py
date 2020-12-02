@@ -12,7 +12,7 @@ def setup(app):
 
 
 extensions = [
-    'm2r',
+    'm2r2',
     'sphinxcontrib.httpdomain', 'sphinx.ext.extlinks', 'sphinx.ext.ifconfig', 'sphinx_tabs.tabs',
     'sphinx_copybutton', 'sphinxext.rediraffe']
 copybutton_prompt_text = r"\$ |PS>"
