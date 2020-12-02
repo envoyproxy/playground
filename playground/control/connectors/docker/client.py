@@ -30,6 +30,7 @@ class PlaygroundDockerClient(object):
         self.services = PlaygroundDockerServices(self)
         self.networks = PlaygroundDockerNetworks(self)
         self.events = PlaygroundDockerEvents(self.docker)
+        self._subscribers = []
 
     @method_decorator(cmd)
     async def clear(self) -> None:
@@ -55,8 +56,18 @@ class PlaygroundDockerClient(object):
             proxies=proxies,
             services=services)
 
+    async def emit_error(self, message: str):
+        for _subscriber in self._subscribers:
+            await _subscriber(message)
+
     async def get_container(self, id: str):
         return await self.docker.containers.get(id)
 
     async def get_network(self, id: str):
         return await self.docker.networks.get(id)
+
+    def subscribe(self, handler, debug):
+        errors = handler.pop("errors", None)
+        if errors:
+            self._subscribers.append(errors)
+        self.events.subscribe(handler, debug)

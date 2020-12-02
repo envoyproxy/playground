@@ -16,6 +16,7 @@ class PlaygroundEventHandler(object):
         self.api = api
         self.connector = api.connector
         self.handler = dict(
+            errors=self.handle_errors,
             image=self.handle_image,
             container=self.handle_container,
             network=self.handle_network)
@@ -110,6 +111,12 @@ class PlaygroundEventHandler(object):
             to_publish["port_mappings"] = port_mappings
         await self.api.publish(
             to_publish)
+
+    # @method_decorator(handler(attribs=ContainerEventAttribs))
+    async def handle_errors(
+            self,
+            message: str) -> None:
+        await self.api.publish(dict(playtime_errors=[message]))
 
     @method_decorator(handler(attribs=ImageEventAttribs))
     async def handle_image(
@@ -207,4 +214,4 @@ class PlaygroundEventHandler(object):
                  status='creating'))
 
     def subscribe(self):
-        self.connector.events.subscribe(self.handler, debug=self.debug)
+        self.connector.subscribe(self.handler, debug=self.debug)

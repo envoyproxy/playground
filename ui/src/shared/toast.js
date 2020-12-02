@@ -27,12 +27,16 @@ export class ToastParts extends React.PureComponent {
 
     render () {
         const {
-            toast: Content, name,
+            toast: Content, name, canClose=true,
             title, icon='danger'} = this.props;
+        let close = this.close;
+        if (!canClose) {
+            close = null;
+        }
         return (
             <>
               <ToastHeader
-                toggle={this.toggle}
+                toggle={close}
                 icon={icon}
                 className="p-2 bg-light">
                 {title &&
@@ -51,7 +55,7 @@ export class ToastParts extends React.PureComponent {
 }
 
 
-export class BaseToastWidget extends React.PureComponent {
+export class BaseToastWidget extends React.Component {
     static contextType = ToastContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -67,7 +71,6 @@ export class BaseToastWidget extends React.PureComponent {
             <>
               <Toast
                 isOpen={isOpen}
-                toggle={this.close}
                 className={className}>
                 {isOpen &&
                  <ToastParts

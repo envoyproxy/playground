@@ -120,6 +120,7 @@ export class CloudEmpty extends React.PureComponent {
 export class CloudResources extends React.PureComponent {
     static propTypes = exact({
         service_types: PropTypes.object.isRequired,
+        resources: PropTypes.object.isRequired,
         onMove: PropTypes.func.isRequired,
     });
 
@@ -138,7 +139,6 @@ export class CloudResources extends React.PureComponent {
                       const serviceType = k.split(':')[1];
                       icon = service_types[serviceType].icon;
                   }
-                  console.log('RESOURCES', k, v);
                   return (
                       <ResourceImage
                         icon={icon}

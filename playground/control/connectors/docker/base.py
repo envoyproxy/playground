@@ -9,6 +9,7 @@ from aiodocker.networks import DockerNetworks
 from playground.control.attribs import ContainerDeleteAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.decorators import cmd, method_decorator
+from playground.control.exceptions import PlaytimeError
 
 
 class PlaygroundDockerContext(object):
@@ -39,7 +40,12 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
                 volumes = [
                     v['Name']
                     for v in container['Mounts']]
-                if volumes and await self._remove_container(container):
+                try:
+                    await self._remove_container(container)
+                except PlaytimeError as e:
+                    await self.connector.emit_error(e.args[0])
+                    return
+                if volumes:
                     await self._remove_volumes(volumes)
 
     async def list(self) -> list:
@@ -106,8 +112,10 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             await container.wait()
             await container.delete(v=True, force=True)
             return True
-        except DockerError:
-            # todo: raise playtime error ?
+        except DockerError as e:
+            if e.args[0] == 409:
+                raise PlaytimeError(e.args[1]['message'])
+            #todo: log warning ?
             return False
 
     async def _remove_volumes(self, volumes):

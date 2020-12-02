@@ -7,6 +7,32 @@ import {Alert, Button, Col, Row} from 'reactstrap';
 import {GithubSnippet} from './snippets';
 
 
+export class AlertErrors extends React.PureComponent {
+    static propTypes = exact({
+        errors: PropTypes.array.isRequired
+    })
+
+    render () {
+        const {errors} = this.props;
+        return (
+            <Alert
+              {...this.props}
+              color="danger">
+              {errors.map((k, i) => {
+                  return (
+                      <Row>
+                        <Col sm={12} className="font-weight-bold">
+                          {k}
+                        </Col>
+                      </Row>
+                  );
+              })}
+            </Alert>
+        );
+    }
+}
+
+
 export class AlertNotImplemented extends React.PureComponent {
     render () {
         return (

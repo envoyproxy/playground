@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {Col, Row} from 'reactstrap';
 
 import Header from "./header";
@@ -11,7 +13,9 @@ import Footer from "./footer";
 import Content from "./content";
 import ModalWidget from "../shared/modal";
 import ToastWidget from "../shared/toast";
-import {AlertDisconnected, AlertNotImplemented} from '../shared/alerts';
+import {
+    AlertDisconnected, AlertErrors,
+    AlertNotImplemented} from '../shared/alerts';
 import {ModalContext, ToastContext} from '../app/context';
 
 export {Header, Left, Right, Content, Footer};
@@ -35,6 +39,27 @@ export class SocketDisconnectedToast extends React.PureComponent {
 }
 
 
+export class BaseFailToast extends React.PureComponent {
+    static propTypes = exact({
+        errors: PropTypes.array.isRequired
+    })
+
+    render () {
+        return <AlertErrors {...this.props} />;
+    }
+}
+
+
+const mapStateToProps = function(state) {
+    return {
+        errors: state.ui.value.errors
+    };
+}
+
+const FailToast = connect(mapStateToProps)(BaseFailToast);
+export {FailToast};
+
+
 export class BaseLayout extends React.PureComponent {
     static contextType = ModalContext;
     static propTypes = exact({
@@ -45,6 +70,9 @@ export class BaseLayout extends React.PureComponent {
         const {toast} = this.props;
         toast['socket-disconnected'] = {
             toast: SocketDisconnectedToast,
+            title: () => "Socket disconnected!"};
+        toast['errors'] = {
+            toast: FailToast,
             title: () => "Socket disconnected!"};
         this.context['not-implemented'] = {
             modal: NotImplementedModal,

@@ -137,7 +137,7 @@ export class ActionClear extends React.PureComponent {
 }
 
 
-export class ActionRemove extends React.PureComponent {
+export class ActionRemove extends React.Component {
     static propTypes = {
         remove: PropTypes.func.isRequired,
         name: PropTypes.oneOfType([
@@ -146,15 +146,27 @@ export class ActionRemove extends React.PureComponent {
         ]).isRequired,
     };
 
+    state = {clicked: false};
+
+    onClick = async (evt) => {
+        const {remove} = this.props;
+        evt.preventDefault();
+        evt.stopPropagation();
+        this.setState({clicked: true});
+        await remove(evt);
+    }
+
     render () {
+        const {clicked} = this.state;
         const {remove, name, ...props} = this.props;
         return (
             <Badge
               {...props}
               name={name}
               color="danger"
-              href="#"
-              onClick={remove}>-</Badge>);
+              disabled={clicked}
+              href={!clicked ? "#" : null}
+              onClick={!clicked ? this.onClick : null}>-</Badge>);
     }
 }
 

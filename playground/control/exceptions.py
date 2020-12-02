@@ -14,3 +14,7 @@ class PlaygroundError(Exception):
 
 class PlaygroundValidationError(Exception):
     pass
+
+
+class PlaytimeError(Exception):
+    pass
