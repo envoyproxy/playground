@@ -119,9 +119,8 @@ export class BaseServiceEnvironmentForm extends React.Component {
 
     get messages () {
         return [
-            "Add network vars for your proxy.",
-            "Your proxy will be addressable by other proxies or services with this value",
-            "You can restrict which networks an value is used for with a glob match, default is *",
+            "Add environment vars for your service.",
+            "Check the README for more information about significant env vars for this service.",
         ];
     }
 

@@ -30,10 +30,10 @@ class BaseServiceForm extends React.PureComponent {
 
     onTypeChange = async (evt) => {
         const {dispatch, form} = this.props;
-        let {service_type} = form;
-        let {valid} = form;
+        let {errors={}, service_type} = form;
+        let valid = true;
         service_type = evt.target.value;
-        if (!service_type) {
+        if (!service_type || errors.name) {
             valid = false;
         }
         await dispatch(updateForm({valid, service_type}));
@@ -95,7 +95,7 @@ const mapFormStateToProps = function(state) {
     return {
         service_types: state.service_type.value,
         form: state.form.value,
-        services: state.proxy.value,
+        services: state.service.value,
         meta: state.meta.value,
     };
 };
