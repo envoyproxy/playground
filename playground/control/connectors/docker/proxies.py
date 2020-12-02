@@ -48,6 +48,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             config=self._get_proxy_config(
                 command.data.image,
                 command.data.name,
+                command.data.logging,
                 mounts,
                 _mappings),
             name="envoy__playground__proxy__%s" % command.data.name)
@@ -85,6 +86,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
     def _get_port_bindings(
             self,
             port_mappings: list) -> OrderedDict:
+        # todo: handle udp etc
         port_bindings: OrderedDict = OrderedDict()
         for host, internal in port_mappings:
             port_bindings[f"{internal}/tcp"] = port_bindings.get(
@@ -93,15 +95,26 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 {"HostPort": f"{host}"})
         return port_bindings
 
+    def _get_proxy_cmd(
+            self,
+            logging: dict) -> list:
+        return (
+            ["envoy", "-c", "/etc/envoy/envoy.yaml"]
+            if logging.get("default", "info") == "info"
+            else ["envoy",
+                  "-c", "/etc/envoy/envoy.yaml",
+                  '-l', logging['default']])
+
     def _get_proxy_config(
             self,
             image: str,
             name: str,
+            logging: dict,
             mounts: dict,
             port_mappings: list) -> dict:
-        # todo: handle udp etc
         return {
             'Image': image,
+            'Cmd': self._get_proxy_cmd(logging),
             "AttachStdin": False,
             "AttachStdout": False,
             "AttachStderr": False,
