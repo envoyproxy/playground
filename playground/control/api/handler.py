@@ -49,8 +49,10 @@ class PlaygroundEventHandler(object):
             "proxy"
             if "envoy.playground.proxy" in event.data.attributes
             else "service")
-        container = await self.connector.get_container(event.data.id)
         try:
+            # todo: think of a way to not try to fetch logs when container
+            #   has been killed intentionally
+            container = await self.connector.get_container(event.data.id)
             logs = await container.log(stdout=True, stderr=True)
             await container.delete(force=True, v=True)
         except DockerError:
