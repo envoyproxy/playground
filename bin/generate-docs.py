@@ -46,7 +46,8 @@ class ServiceDocsCreator(object):
                 f.write(template.render(
                     title=self.service_types[service]['labels'][
                         'envoy.playground.service'],
-                    image=f'_include/{service}/{icon}'))
+                    image=f'_include/{service}/{icon}',
+                    readme=f'_include/{service}/README'))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'

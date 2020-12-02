@@ -5,3 +5,5 @@
 
 .. image:: {{image}}
   :width: 100px
+
+.. include:: {{readme}}
