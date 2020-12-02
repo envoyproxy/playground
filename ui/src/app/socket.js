@@ -1,8 +1,10 @@
 
 import {
+    loadNetworks, loadProxies, loadServices,
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
-    removeService, updateServices, updateCloud, updateEdges
+    removeService, updateServices, updateCloud, updateEdges,
+    updateMeta, updateServiceTypes, updateExamples,
 } from "../app/store";
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -10,13 +12,14 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export default class PlaygroundSocket {
 
-    constructor(address, store) {
+    constructor(address, store, api) {
         this.store = store;
         this.address = address;
         this.ws = new ReconnectingWebSocket(address);
         this.addListeners();
         this._state = 'starting';
         this.disconnected = false;
+        this.api = api;
     }
 
     refreshIcons = async () => {
@@ -36,6 +39,21 @@ export default class PlaygroundSocket {
         const {dispatch} = this.store;
         if (this.disconnected) {
             await dispatch(updateUI({toast: null}));
+            const data = await this.api.get("/resources");
+            const {meta} = data;
+            const initialUpdates = [
+                updateMeta(meta),
+                updateServiceTypes(data),
+                loadServices(data),
+                loadProxies(data),
+                loadNetworks(data),
+                updateExamples(data)];
+            for (const update of initialUpdates) {
+                await this.store.dispatch(update);
+            }
+            const {network, proxy, service} = this.store.getState();
+            await this.store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
+            await this.store.dispatch(updateEdges({proxies: proxy.value}));
         }
     };
 
