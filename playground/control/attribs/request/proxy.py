@@ -89,8 +89,3 @@ class ProxyCreateCommandAttribs(AttribsWithName):
     logging = attr.ib(
         type=OrderedDict,
         default=OrderedDict())
-
-
-@attr.s
-class ProxyDeleteAttribs(AttribsWithName):
-    pass

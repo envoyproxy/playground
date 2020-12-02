@@ -4,8 +4,7 @@ import base64
 import os
 from collections import OrderedDict
 
-from playground.control.attribs import (
-    ServiceCreateCommandAttribs, ServiceDeleteAttribs)
+from playground.control.attribs import ServiceCreateCommandAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
@@ -38,43 +37,14 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             "%s=%s" % (k, v)
             for k, v
             in command.data.env.items()]
-        container = await self.docker.containers.create_or_replace(
-            config=self._get_service_config(
+        await self._start_container(
+            self._get_service_config(
                 command.data.service_type,
                 command.data.image,
                 command.data.name,
                 _environment,
                 mounts),
-            name="envoy__playground__service__%s" % command.data.name)
-        await container.start()
-
-    @method_decorator(cmd(attribs=ServiceDeleteAttribs))
-    async def delete(
-            self,
-            command: PlaygroundCommand) -> None:
-        for container in await self.docker.containers.list():
-            if "envoy.playground.service" in container["Labels"]:
-                name_matches = (
-                    "/envoy__playground__service__%s" % command.data.name
-                    in container["Names"])
-                if name_matches:
-                    volumes = [
-                        v['Name']
-                        for v in container['Mounts']]
-                    await container.stop()
-                    await container.wait()
-                    await container.delete(v=True, force=True)
-                    if volumes:
-                        _volumes = await self.docker.volumes.list()
-                        for volume in _volumes['Volumes']:
-                            volume_name = volume['Name']
-                            if volume_name not in volumes:
-                                continue
-                            volume_delete = self.docker._query(
-                                    f"volumes/{volume_name}",
-                                    method="DELETE")
-                            async with volume_delete:
-                                pass
+            command.data.name)
 
     def _get_service_config(
             self,

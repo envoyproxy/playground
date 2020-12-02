@@ -68,8 +68,3 @@ class ServiceCreateCommandAttribs(AttribsWithName):
 
     async def validate(self, api):
         pass
-
-
-@attr.s
-class ServiceDeleteAttribs(AttribsWithName):
-    pass

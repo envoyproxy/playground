@@ -4,7 +4,7 @@ import base64
 from collections import OrderedDict
 
 from playground.control.attribs import (
-    ProxyCreateCommandAttribs, ProxyDeleteAttribs)
+    ProxyCreateCommandAttribs)
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
@@ -18,7 +18,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
     async def create(
             self,
             command: PlaygroundCommand) -> None:
-        # todo: add logging
+        # todo: add logging and error handling
         if not await self.connector.images.exists(command.data.image):
             await self.connector.images.pull(command.data.image)
         _mappings = [
@@ -44,44 +44,15 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 command.data.binaries.items()),
             '/logs': await self.connector.volumes.create(
                 'proxy', command.data.name, 'logs')}
-        container = await self.docker.containers.create_or_replace(
-            config=self._get_proxy_config(
+        # todo: add error handling
+        await self._start_container(
+            self._get_proxy_config(
                 command.data.image,
                 command.data.name,
                 command.data.logging,
                 mounts,
                 _mappings),
-            name="envoy__playground__proxy__%s" % command.data.name)
-        await container.start()
-
-    @method_decorator(cmd(attribs=ProxyDeleteAttribs))
-    async def delete(
-            self,
-            command: PlaygroundCommand) -> None:
-        # todo: use uuid
-        for container in await self.docker.containers.list():
-            if "envoy.playground.proxy" in container["Labels"]:
-                name_matches = (
-                    "/envoy__playground__proxy__%s" % command.data.name
-                    in container["Names"])
-                if name_matches:
-                    volumes = [
-                        v['Name']
-                        for v in container['Mounts']]
-                    await container.stop()
-                    await container.wait()
-                    await container.delete(v=True)
-                    if volumes:
-                        _volumes = await self.docker.volumes.list()
-                        for volume in _volumes['Volumes']:
-                            volume_name = volume['Name']
-                            if volume_name not in volumes:
-                                continue
-                            volume_delete = self.docker._query(
-                                    f"volumes/{volume_name}",
-                                    method="DELETE")
-                            async with volume_delete:
-                                pass
+            command.data.name)
 
     def _get_port_bindings(
             self,
