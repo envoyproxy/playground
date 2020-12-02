@@ -57,7 +57,7 @@ const getY = (resource) => {
 const UISlice = createSlice({
     name: 'ui',
     initialState: {
-        value: {modal: null}
+        value: {modal: null, toast: null}
     },
 
     reducers: {

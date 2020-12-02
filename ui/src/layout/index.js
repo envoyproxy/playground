@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {Col, Row} from 'reactstrap';
@@ -9,8 +10,9 @@ import Right from "./right";
 import Footer from "./footer";
 import Content from "./content";
 import ModalWidget from "../shared/modal";
-import {AlertNotImplemented} from '../shared/alerts';
-import {ModalContext} from '../app/context';
+import ToastWidget from "../shared/toast";
+import {AlertDisconnected, AlertNotImplemented} from '../shared/alerts';
+import {ModalContext, ToastContext} from '../app/context';
 
 export {Header, Left, Right, Content, Footer};
 
@@ -23,11 +25,27 @@ export class NotImplementedModal extends React.PureComponent {
     }
 }
 
-export default class Layout extends React.PureComponent {
-    static contextType = ModalContext;
+
+export class SocketDisconnectedToast extends React.PureComponent {
     static propTypes = exact({})
 
+    render () {
+        return <AlertDisconnected />;
+    }
+}
+
+
+export class BaseLayout extends React.PureComponent {
+    static contextType = ModalContext;
+    static propTypes = exact({
+        toast: PropTypes.object.isRequired
+    })
+
     componentDidMount () {
+        const {toast} = this.props;
+        toast['socket-disconnected'] = {
+            toast: SocketDisconnectedToast,
+            title: () => "Socket disconnected!"};
         this.context['not-implemented'] = {
             modal: NotImplementedModal,
             title: () => "Not implemented!"};
@@ -52,7 +70,20 @@ export default class Layout extends React.PureComponent {
                 </div>
               </div>
               <ModalWidget />
+              <ToastWidget />
             </>
+        );
+    }
+}
+
+
+export default class Layout extends React.PureComponent {
+    static contextType = ToastContext;
+    static propTypes = exact({})
+
+    render () {
+        return (
+            <BaseLayout toast={this.context} />
         );
     }
 }

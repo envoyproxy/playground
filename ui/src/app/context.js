@@ -1,7 +1,8 @@
 import React from 'react';
 
-const ModalContext = React.createContext();
 const APIContext = React.createContext();
+const ModalContext = React.createContext();
+const ToastContext = React.createContext();
 
 
-export {APIContext, ModalContext};
+export {APIContext, ModalContext, ToastContext};

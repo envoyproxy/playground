@@ -1,8 +1,10 @@
 import React from 'react';
+import exact from 'prop-types-exact';
+
 import {Provider} from 'react-redux';
 
 import Layout from '../layout';
-import {ModalContext, APIContext} from "./context";
+import {APIContext, ModalContext, ToastContext} from "./context";
 import store, {
     updateMeta, updateServices, updateProxies, updateNetworks,
     updateServiceTypes, updateCloud, updateEdges, updateExamples,
@@ -20,6 +22,7 @@ const api = new API(apiAddress);
 
 
 export default class PlaygroundApp extends React.PureComponent {
+    static propTypes = exact({});
 
     async componentDidMount () {
         new PlaygroundSocket(socketAddress, store);
@@ -45,7 +48,9 @@ export default class PlaygroundApp extends React.PureComponent {
             <Provider store={store}>
               <APIContext.Provider value={api}>
                 <ModalContext.Provider value={{}}>
-                  <Layout />
+                  <ToastContext.Provider value={{}}>
+                    <Layout />
+                  </ToastContext.Provider>
                 </ModalContext.Provider>
               </APIContext.Provider>
             </Provider>
