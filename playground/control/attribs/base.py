@@ -34,3 +34,8 @@ class AttribsWithName(ValidatingAttribs):
             has_length(f'<={MAX_NAME_LENGTH}'),
             matches_re(RE_NAME),
             matches_re(RE_NOT_NAME, func=re.match), ])
+
+
+@attr.s
+class ContainerDeleteAttribs(AttribsWithName):
+    pass

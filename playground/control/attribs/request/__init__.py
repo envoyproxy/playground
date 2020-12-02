@@ -3,9 +3,9 @@
 from .network import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs)
 from .proxy import (
-    ProxyAddAttribs, ProxyDeleteAttribs, ProxyCreateCommandAttribs)
+    ProxyAddAttribs, ProxyCreateCommandAttribs)
 from .service import (
-    ServiceAddAttribs, ServiceCreateCommandAttribs, ServiceDeleteAttribs)
+    ServiceAddAttribs, ServiceCreateCommandAttribs)
 
 
 __all__ = (
@@ -14,7 +14,5 @@ __all__ = (
     'NetworkEditAttribs',
     'ProxyAddAttribs',
     'ProxyCreateCommandAttribs',
-    'ProxyDeleteAttribs',
     'ServiceAddAttribs',
-    'ServiceCreateCommandAttribs',
-    'ServiceDeleteAttribs')
+    'ServiceCreateCommandAttribs')

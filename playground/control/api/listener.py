@@ -10,8 +10,8 @@ from aiohttp import web
 
 from playground.control.attribs import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
-    ProxyAddAttribs, ProxyDeleteAttribs,
-    ServiceAddAttribs, ServiceDeleteAttribs)
+    ProxyAddAttribs, ContainerDeleteAttribs,
+    ServiceAddAttribs)
 from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
@@ -104,7 +104,7 @@ class PlaygroundAPI(object):
         await self.connector.proxies.create(kwargs)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=ProxyDeleteAttribs))
+    @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.proxies.delete(attr.asdict(request.data))
@@ -129,7 +129,7 @@ class PlaygroundAPI(object):
         await self.connector.services.create(command)
         return web.json_response(dict(message="OK"), dumps=json.dumps)
 
-    @method_decorator(api(attribs=ServiceDeleteAttribs))
+    @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.services.delete(attr.asdict(request.data))

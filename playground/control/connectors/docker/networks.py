@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from aiodocker.exceptions import DockerError
+
 from playground.control.attribs import (
     NetworkAddAttribs, NetworkDeleteAttribs,
     NetworkEditAttribs)
@@ -14,6 +16,15 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
 
     @method_decorator(cmd(attribs=NetworkAddAttribs))
     async def create(
+            self,
+            command: PlaygroundCommand) -> None:
+        try:
+            await self._create_network(command)
+        except DockerError:
+            # todo: raise playtime error
+            return
+
+    async def _create_network(
             self,
             command: PlaygroundCommand) -> None:
         network = await self.docker.networks.create(
@@ -32,6 +43,15 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
     async def delete(
             self,
             command: PlaygroundCommand) -> None:
+        try:
+            await self._delete_network(command)
+        except DockerError:
+            # todo: raise playtime error
+            return
+
+    async def _delete_network(
+            self,
+            command: PlaygroundCommand) -> None:
         for network in await self.docker.networks.list():
             if "envoy.playground.network" in network["Labels"]:
                 if network["Name"] == "__playground_%s" % command.data.name:
@@ -44,6 +64,15 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
 
     @method_decorator(cmd(attribs=NetworkEditAttribs))
     async def edit(
+            self,
+            command: PlaygroundCommand) -> None:
+        try:
+            await self._edit_network(command)
+        except DockerError:
+            # todo: raise playtime error
+            return
+
+    async def _edit_network(
             self,
             command: PlaygroundCommand) -> None:
         network = await self.docker.networks.get(command.data.id)
