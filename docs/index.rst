@@ -15,6 +15,7 @@ It is not intended to be exposed on the internet or other network.
 .. toctree::
     :maxdepth: 3
 
+    other
     getting-started/index
     proxies/index
     networks/index
