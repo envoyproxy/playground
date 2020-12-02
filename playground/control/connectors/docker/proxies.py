@@ -100,10 +100,10 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             logging: dict) -> list:
         return (
             ["envoy", "-c", "/etc/envoy/envoy.yaml"]
-            if logging.get("default", "info") == "info"
+            if logging.get("default", "info") in ['', "info"]
             else ["envoy",
                   "-c", "/etc/envoy/envoy.yaml",
-                  '-l', logging['default']])
+                  '-l', logging.get('default')])
 
     def _get_proxy_config(
             self,
