@@ -8,6 +8,8 @@ import {Toast, ToastHeader, ToastBody} from 'reactstrap';
 import {updateUI} from '../app/store';
 import {ToastContext} from '../app/context';
 
+import {AlertErrors} from './alerts';
+
 
 export class ToastParts extends React.PureComponent {
     static propTypes = exact({
@@ -27,12 +29,16 @@ export class ToastParts extends React.PureComponent {
 
     render () {
         const {
-            toast: Content, name,
+            toast: Content, name, canClose=true,
             title, icon='danger'} = this.props;
+        let close = this.close;
+        if (!canClose) {
+            close = null;
+        }
         return (
             <>
               <ToastHeader
-                toggle={this.toggle}
+                toggle={close}
                 icon={icon}
                 className="p-2 bg-light">
                 {title &&
@@ -67,7 +73,6 @@ export class BaseToastWidget extends React.PureComponent {
             <>
               <Toast
                 isOpen={isOpen}
-                toggle={this.close}
                 className={className}>
                 {isOpen &&
                  <ToastParts
@@ -89,3 +94,26 @@ const mapStateToProps = function(state, other) {
 
 const ToastWidget = connect(mapStateToProps)(BaseToastWidget);
 export default ToastWidget;
+
+
+
+
+export class BaseFailToast extends React.PureComponent {
+    static propTypes = exact({
+        errors: PropTypes.array.isRequired
+    })
+
+    render () {
+        return <AlertErrors {...this.props} />;
+    }
+}
+
+
+const mapFailStateToProps = function(state) {
+    return {
+        errors: state.ui.value.errors
+    };
+}
+
+const FailToast = connect(mapFailStateToProps)(BaseFailToast);
+export {FailToast};

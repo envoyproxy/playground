@@ -1,3 +1,4 @@
+
 import {
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
@@ -50,6 +51,13 @@ export default class PlaygroundSocket {
     onMessage = async (event) => {
         const {dispatch} = this.store;
         const eventData = JSON.parse(event.data);
+        // console.log("INCOMING", eventData);
+        if (eventData.playtime_errors) {
+            await dispatch(updateUI({
+                toast: 'errors',
+                errors: eventData.playtime_errors}));
+            return;
+        }
         if (eventData.type === "network") {
             if (eventData.action === "destroy") {
                 await dispatch(removeNetwork(eventData.id));

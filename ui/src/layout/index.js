@@ -10,8 +10,10 @@ import Right from "./right";
 import Footer from "./footer";
 import Content from "./content";
 import ModalWidget from "../shared/modal";
-import ToastWidget from "../shared/toast";
-import {AlertDisconnected, AlertNotImplemented} from '../shared/alerts';
+import ToastWidget, {FailToast} from "../shared/toast";
+import {
+    AlertDisconnected,
+    AlertNotImplemented} from '../shared/alerts';
 import {ModalContext, ToastContext} from '../app/context';
 
 export {Header, Left, Right, Content, Footer};
@@ -45,6 +47,9 @@ export class BaseLayout extends React.PureComponent {
         const {toast} = this.props;
         toast['socket-disconnected'] = {
             toast: SocketDisconnectedToast,
+            title: () => "Socket disconnected!"};
+        toast['errors'] = {
+            toast: FailToast,
             title: () => "Socket disconnected!"};
         this.context['not-implemented'] = {
             modal: NotImplementedModal,

@@ -106,7 +106,6 @@ export class PlaygroundNameInput extends React.PureComponent {
             valid = false;
             _errors.push('Name contains forbidden characters');
         }
-        console.log("CHECKING UNIQUE", taken, name);
         if (taken.indexOf(name) !== -1) {
             valid = false;
             _errors.push('Name exists already');

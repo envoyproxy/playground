@@ -16,6 +16,7 @@ def test_api_handler(patch_playground):
     assert _handler.api == _dummy_api
     assert _handler.connector == _dummy_api.connector
     assert _handler.handler == dict(
+        errors=_handler.handle_errors,
         image=_handler.handle_image,
         container=_handler.handle_container,
         network=_handler.handle_network)
