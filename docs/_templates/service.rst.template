@@ -2,8 +2,11 @@
 {{title}}
 {% for i in range(title|length) %}={% endfor %}
 
+..  figure:: {{image}}
+    :figwidth: 100px
+    :align: right
 
-.. image:: {{image}}
-  :width: 100px
+Readme
+------
 
 .. mdinclude:: {{readme}}
