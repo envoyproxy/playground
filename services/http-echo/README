@@ -1,25 +1,2 @@
 
 Echos back request and request headers as json.
-
-#### Ports
-
-- 80/HTTP
-- 443/HTTPS
-
-#### Environment vars
-
-HTTP_PORT
-: default: 80
-: customize the HTTP port that the service listens on.
-
-HTTPS_PORT
-: default: 443
-: customize the HTTPS port that the service listens on.
-
-#### Configuration
-
-No configuration can be set for this service.
-
-#### Envoy example configurations
-
-tba
