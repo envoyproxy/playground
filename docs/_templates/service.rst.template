@@ -7,9 +7,6 @@
 {% for i in range(title|length) %}={% endfor %}
 
 
-Information
------------
-
 .. tabs::
 
    .. tab:: README
@@ -26,9 +23,10 @@ Information
 
    .. tab:: Ports
 
+{% for i in range(5) %}
+       Port {i}
+{% endfor %}
+
       Ports info...
 
    .. tab:: Ports
-
-Usage
------
