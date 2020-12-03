@@ -24,6 +24,12 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             # todo: raise playtime error
             return
 
+    def _get_container_config(self, container):
+        return {
+            "Container": container["id"],
+            "EndpointConfig": {
+                "Aliases": [container['name']]}}
+
     async def _create_network(
             self,
             command: PlaygroundCommand) -> None:
@@ -33,11 +39,11 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
         if command.data.proxies:
             for proxy in await self.connector.proxies.list():
                 if proxy['name'] in command.data.proxies:
-                    await network.connect({"Container": proxy["id"]})
+                    await network.connect(self._get_container_config(proxy))
         if command.data.services:
             for service in await self.connector.services.list():
                 if service['name'] in command.data.services:
-                    await network.connect({"Container": service["id"]})
+                    await network.connect(self._get_container_config(service))
 
     @method_decorator(cmd(attribs=NetworkDeleteAttribs))
     async def delete(
@@ -90,11 +96,11 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
         disconnect = containers - expected
         for proxy in await self.connector.proxies.list():
             if proxy['name'] in connect:
-                await network.connect({"Container": proxy["id"]})
+                await network.connect(self._get_container_config(proxy))
             if proxy['name'] in disconnect:
                 await network.disconnect({"Container": proxy["id"]})
         for service in await self.connector.services.list():
             if service['name'] in connect:
-                await network.connect({"Container": service["id"]})
+                await network.connect(self._get_container_config(service))
             if service['name'] in disconnect:
                 await network.disconnect({"Container": service["id"]})
