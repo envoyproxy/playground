@@ -33,17 +33,17 @@
 {% endif %}
    .. tab:: Ports
 
-   .. list-table::
-      :widths: 25 25 50
-      :header-rows: 1
+      .. list-table::
+	 :widths: 25 25 50
+	 :header-rows: 1
 
-      * - Port
-	- Type
-	- Information
+	 * - Port
+	   - Type
+	   - Information
 {% for port in (labels.get('envoy.playground.ports', '')|string).split(',') %}
-      * - {{port}}
-	- type
-	- info
+         * - {{port}}
+	   - {labels[f'envoy.playground.port.{port}.type'] or 'TCP'}
+	   - {labels[f'envoy.playground.port.{port}.info']}
 {% endfor %}
 
 {% if labels['envoy.playground.example.config'] %}
