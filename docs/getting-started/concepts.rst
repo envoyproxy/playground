@@ -14,7 +14,8 @@ Proxies can proxy between services and other proxies, as well as proxying into t
 
 Proxies and services are connected together with networks.
 
-The name provide for the proxy or service is the name upon which it is addressable by other proxies or services.
+The name provided for the proxy or service is the name upon which it is addressable by other proxies or services on any
+networks it is connected to.
 
 All proxies and services are ephemeral.
 

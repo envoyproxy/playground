@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Alert, Col, Row, Table} from 'reactstrap';
+import {Col, Row, Table} from 'reactstrap';
 
 
 export class ServicePorts extends React.Component {
