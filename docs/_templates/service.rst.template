@@ -24,7 +24,7 @@
 {% endfor %}
 
 {% endif %}
-{% if labels.get('envoy.playground.config.default') %}
+{% if labels['envoy.playground.config.default'] %}
    .. tab:: Configuration
 
       .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.config.default']}}
@@ -35,15 +35,14 @@
 
 {% for port in labels.get('envoy.playground.ports', '').split(',') %}
        Port {{port}}
+
 {% endfor %}
-
-
-{% if envoy_config_path %}
+{% if labels['envoy.playground.example.config'] %}
    .. tab:: Envoy configuration
 
-      {{envoy_config_name}}
+      {{labels['envoy.playground.example.name']}}
 
-      .. literalinclude:: {{envoy_config_path}}
+      .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.example.config']}}
          :language: yaml
 
 {% endif %}
