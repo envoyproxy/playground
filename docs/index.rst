@@ -9,7 +9,7 @@ This is useful for learning or testing Envoy configurations and network architec
 It is not intended to be exposed on the internet or other network.
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     getting-started/index
     proxies/index

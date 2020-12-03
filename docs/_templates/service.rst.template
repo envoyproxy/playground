@@ -1,7 +1,48 @@
 
-{{title}}
-{% for i in range(title|length) %}={% endfor %}
+..  figure:: _include/{{service_type}}/{{labels['envoy.playground.logo']}}
+    :figwidth: 100px
+    :align: right
 
+{{labels['envoy.playground.service']}}
+{% for i in range(labels['envoy.playground.service']|length) %}={% endfor %}
 
-.. image:: {{image}}
-  :width: 100px
+{{labels.get('envoy.playground.description', '')}}
+
+.. tabs::
+
+{% if labels['envoy.playground.readme'] %}
+   .. tab:: README
+
+      .. mdinclude:: _include/{{service_type}}/{{labels['envoy.playground.readme']}}
+
+{% endif %}
+{% if environment %}
+   .. tab:: Environment
+
+{% for name, default in environment.items() %}
+     {{name}}: {{default}}
+{% endfor %}
+
+{% endif %}
+{% if labels['envoy.playground.config.default'] %}
+   .. tab:: Configuration
+
+      .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.config.default']}}
+         :language: {{labels['envoy.playground.config.type']}}
+
+{% endif %}
+   .. tab:: Ports
+
+{% for port in labels.get('envoy.playground.ports', '').split(',') %}
+       Port {{port}}
+
+{% endfor %}
+{% if labels['envoy.playground.example.config'] %}
+   .. tab:: Envoy configuration
+
+      {{labels['envoy.playground.example.name']}}
+
+      .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.example.config']}}
+         :language: yaml
+
+{% endif %}

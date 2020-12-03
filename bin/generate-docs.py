@@ -10,8 +10,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 jinja_env = Environment(
-    loader=FileSystemLoader('docs/_templates'),
-)
+    loader=FileSystemLoader('docs/_templates'))
 
 
 class ServiceDocsCreator(object):
@@ -27,28 +26,27 @@ class ServiceDocsCreator(object):
             parsed = yaml.safe_load(f.read())
         return parsed["services"]
 
-    def copy_service_images(self):
+    def copy_service_dirs(self):
         os.mkdir(f'{self.docpath}/services/_include')
         for service in self.service_types:
-            icon = self.service_types[service]['labels'].get('envoy.playground.logo')
-            if icon:
-                icon_src = f'services/{service}/{icon}'
-                icon_dst = f'{self.docpath}/services/_include/{icon}'
-                shutil.copyfile(icon_src, icon_dst)
+            src = f'services/{service}'
+            dst = f'{self.docpath}/services/_include/{service}'
+            shutil.copytree(src, dst)
 
-    def create_service_files(self):
+    def _get_service_vars(self, service):
+        service_type = self.service_types[service]
+        service_type['service_type'] = service
+        return service_type
+
+    def create_service_rst(self):
         template = jinja_env.get_template('service.rst.template')
-
         for service in self.service_types:
             rst = f'{self.docpath}/services/{service}.rst'
             print(f'creating rst file: {rst}')
-            icon = self.service_types[service]['labels'][
-                'envoy.playground.logo']
             with open(rst, 'w') as f:
-                f.write(template.render(
-                    title=self.service_types[service]['labels'][
-                        'envoy.playground.service'],
-                    image=f'_include/{icon}'))
+                f.write(
+                    template.render(
+                        self._get_service_vars(service)))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'
@@ -61,8 +59,8 @@ class ServiceDocsCreator(object):
             f.write(toc)
 
     def create(self):
-        self.copy_service_images()
-        self.create_service_files()
+        self.copy_service_dirs()
+        self.create_service_rst()
         self.create_toc()
 
 

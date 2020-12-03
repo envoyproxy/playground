@@ -1,8 +1,0 @@
-jinja2
-pyyaml
-sphinx
-sphinx-copybutton
-sphinx-rtd-theme
-sphinx-tabs
-sphinxext-rediraffe
-sphinxcontrib-httpdomain

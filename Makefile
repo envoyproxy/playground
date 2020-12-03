@@ -18,7 +18,7 @@ docs:
 site:
 	echo "Building site..."
 	pip install -U pip setuptools
-	pip install -r docs/requirements.txt
+	pip install .[docs]
 	mkdir tmp/ -p
 	rm -rf tmp/docs
 	rm -rf build/site
@@ -87,6 +87,7 @@ dev-control: clean
 			control
 
 dev-control-sh:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
 		--entrypoint /bin/bash \
