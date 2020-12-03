@@ -33,7 +33,7 @@
 {% endif %}
    .. tab:: Ports
 
-{% for port in labels.get('envoy.playground.ports', '').split(',') %}
+{% for port in str(labels.get('envoy.playground.ports', '')).split(',') %}
        Port {{port}}
 
 {% endfor %}
