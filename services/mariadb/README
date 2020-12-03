@@ -1,2 +1,8 @@
+Provides a MariaDB server with no authentication by default.
 
-mariadb...
+Can be used for testing proxying to MariaDB and MySQL, and for
+testing Envoy's MySQL filter.
+
+There are many significant environment variables for this image,
+[see the documentation](https://hub.docker.com/_/mariadb) for further
+information on configuration and usage.

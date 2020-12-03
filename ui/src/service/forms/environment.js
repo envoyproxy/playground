@@ -119,8 +119,8 @@ export class BaseServiceEnvironmentForm extends React.Component {
 
     get messages () {
         return [
-            "Add environment vars for your service.",
-            "Check the README for more information about significant env vars for this service.",
+            "Edit the environment variables for this service.",
+            "Check the README for more information about significant environment variables for this service type.",
         ];
     }
 

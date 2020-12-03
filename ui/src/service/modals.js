@@ -76,6 +76,13 @@ export class BaseServiceModal extends React.Component {
                     tabs.Configuration = <ServiceConfigurationForm />;
                 }
                 tabs.Environment = <ServiceEnvironmentForm service_type={service_type} />;
+                const ports = labels['envoy.playground.ports'];
+                if (ports) {
+                    tabs.Ports = (
+                        <ServicePorts
+                          labels={labels}
+                          ports={ports} />);
+                }
                 if (labels['envoy.playground.readme']) {
                     tabs.README = (
                         <ServiceReadme
@@ -85,10 +92,6 @@ export class BaseServiceModal extends React.Component {
                           image={image}
                           service_type={service_type}
                           logo={labels['envoy.playground.logo']} />);
-                }
-                const ports = labels['envoy.playground.ports'];
-                if (ports) {
-                    tabs.Ports = <ServicePorts ports={ports} />;
                 }
             }
         }

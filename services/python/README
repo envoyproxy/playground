@@ -3,10 +3,9 @@ Provides an example of a minimal asynchronous web server.
 
 The service is configurable by editing the python `run.py`.
 
-With the default configuration will listen on port `8000`.
+The default configuration listens on port `8080`.
 
-This image does not have any significant environment variables, although they
-can be used with custom configuration.
+This image does not have any significant environment variables.
 
-Container has some other [aio-libs](https://github.com/aio-libs) for example for connecting
-to `mariadb` or `postgres` servers.
+Container has some other [aio-libs](https://github.com/aio-libs) installed for connecting
+to `mariadb` and `postgres` servers.

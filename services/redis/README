@@ -1,3 +1,8 @@
+Provides a Redis server with no authentication by default.
 
+Can be used for testing proxying to Redis, and for
+testing Envoy's Redis filter.
 
-redis...
+There are many significant environment variables for this image,
+[see the documentation](https://hub.docker.com/_/redis) for further
+information on configuration and usage.

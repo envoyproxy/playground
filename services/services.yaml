@@ -7,6 +7,13 @@ services:
       envoy.playground.readme: README
       envoy.playground.description: |
         ACME letsencrypt (pebble) server for issuing SSL/TLS certificates
+      envoy.playground.ports: 14000,15000
+      envoy.playground.port.14000.type: HTTPS
+      envoy.playground.port.14000.info: |
+        ACME endpoint for issuing certificates
+      envoy.playground.port.15000.type: HTTPS
+      envoy.playground.port.15000.info: |
+        ACME management interface
       envoy.playground.example.name: "Service: ACME/letsencrypt"
       envoy.playground.example.config: envoy-acme.yaml
 
@@ -20,6 +27,13 @@ services:
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: HTTP/S echo"
       envoy.playground.example.config: envoy-echo.yaml
+      envoy.playground.ports: 80,443
+      envoy.playground.port.80.type: HTTP
+      envoy.playground.port.80.info: |
+        Echos request headers and content
+      envoy.playground.port.443.type: HTTPS
+      envoy.playground.port.443.info: |
+        Echos request headers and content
     environment:
       HTTP_PORT: 80
       HTTPS_PORT: 443
@@ -35,6 +49,30 @@ services:
       envoy.playground.logo: "jaeger.svg"
       envoy.playground.readme: README
       envoy.playground.ports: 5775,6831,6832,5778,16686,14268,9411
+      envoy.playground.port.5775.type: UDP
+      envoy.playground.port.5775.info: |
+        accept zipkin.thrift over compact thrift protocol
+      envoy.playground.port.6831.type: UDP
+      envoy.playground.port.6831.info: |
+        accept jaeger.thrift over compact thrift protocol
+      envoy.playground.port.6832.type: UDP
+      envoy.playground.port.6832.info: |
+        accept jaeger.thrift over binary thrift protocol
+      envoy.playground.port.5778.type: HTTP
+      envoy.playground.port.5778.info: |
+        serve configs
+      envoy.playground.port.16686.type: HTTP
+      envoy.playground.port.16686.info: |
+        serve frontend
+      envoy.playground.port.14268.type: HTTP
+      envoy.playground.port.14268.info: |
+        accept jaeger.thrift directly from clients
+      envoy.playground.port.14250.type: HTTP
+      envoy.playground.port.14250.info: |
+        accept model.proto
+      envoy.playground.port.9411.type: HTTP
+      envoy.playground.port.9411.info: |
+        Zipkin compatible endpoint (optional)
       envoy.playground.example.name: "Service: Jaeger"
       envoy.playground.example.config: envoy-jaeger.yaml
 
@@ -43,9 +81,14 @@ services:
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: yes
     labels:
-      envoy.playground.service: "Mariadb"
+      envoy.playground.service: "MariaDB"
+      envoy.playground.description: |
+        MariaDB SQL server
       envoy.playground.logo: "mariadb.svg"
       envoy.playground.readme: README
+      envoy.playground.ports: 3306
+      envoy.playground.port.3306.info: |
+        MariaDB server port
       envoy.playground.example.name: "Service: MariaDB"
       envoy.playground.example.config: envoy-mariadb.yaml
 
@@ -55,9 +98,13 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     labels:
       envoy.playground.service: "PostgreSQL"
+      envoy.playground.description: |
+        PostgreSQL server
       envoy.playground.logo: "postgres.svg"
       envoy.playground.readme: README
       envoy.playground.ports: 5432
+      envoy.playground.port.5432.info: |
+        PostgreSQL server port
       envoy.playground.example.name: "Service: Postgres"
       envoy.playground.example.config: envoy-postgres.yaml
 
@@ -67,10 +114,13 @@ services:
       envoy.playground.service: "Python (asyncio)"
       envoy.playground.logo: "python.png"
       envoy.playground.readme: README
-      envoy.playground.ports: 8000,8443
+      envoy.playground.ports: 8080
       envoy.playground.image.url: https://docker.hub
       envoy.playground.description: |
         Python/asyncio image with aiohttp and aio-libs
+      envoy.playground.port.8080.type: HTTP
+      envoy.playground.port.8080.info: |
+        Simple HTTP server that echos "Hello, aio world"
       envoy.playground.config.path: "/code/control/run.py"
       envoy.playground.config.type: "python"
       envoy.playground.config.default: "run.py"
@@ -84,8 +134,13 @@ services:
     image: redis:latest
     labels:
       envoy.playground.service: "Redis"
+      envoy.playground.description: |
+        Redis in-memory data store
       envoy.playground.logo: "redis.svg"
       envoy.playground.readme: README
+      envoy.playground.ports: 6395
+      envoy.playground.port.6395.info: |
+        Redis server port
       envoy.playground.example.name: "Service: Redis"
       envoy.playground.example.config: envoy-redis.yaml
 
@@ -93,8 +148,14 @@ services:
     image: nodesolidserver/node-solid-server
     labels:
       envoy.playground.service: Solid server (node)
+      envoy.playground.description: |
+        Solid data pod server
       envoy.playground.logo: "solid.svg"
       envoy.playground.readme: README
+      envoy.playground.ports: 8443
+      envoy.playground.port.8443.type: HTTPS
+      envoy.playground.port.8443.info: |
+        Solid data pod endpoint
       envoy.playground.example.name: "Service: Solid node"
       envoy.playground.example.config: envoy-solid.yaml
 
@@ -102,7 +163,12 @@ services:
     image: openzipkin/zipkin
     labels:
       envoy.playground.service: "Zipkin"
+      envoy.playground.description: |
+        Zipkin distributed tracing server
       envoy.playground.logo: "zipkin.svg"
       envoy.playground.readme: README
+      envoy.playground.ports: 6911
+      envoy.playground.port.6911.info: |
+        Zipkin REST endpoint
       envoy.playground.example.name: "Service: Zipkin"
       envoy.playground.example.config: envoy-zipkin.yaml

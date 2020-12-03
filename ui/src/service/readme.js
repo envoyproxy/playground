@@ -4,6 +4,8 @@ import exact from 'prop-types-exact';
 
 import ReactMarkdown from 'react-markdown';
 
+import {URLMangler} from '../shared/utils';
+
 
 export class ServiceReadme extends React.Component {
     static propTypes = exact({
@@ -52,14 +54,15 @@ export class ServiceReadme extends React.Component {
             'http://localhost:8000/static',
             service_type,
             logo].join('/');
+        const imageURL = new URLMangler().docker(image);
         return (
-            <div className="readme m-2 bg-light p-2 pl-3">
+            <div className="readme m-2 mt-3 bg-light p-2 pt-3 pl-3">
               <img src={_logo} alt="service logo" className="float-right m-2" width="50px" />
               <h4>{title}</h4>
               {description &&
                <h5 className="text-secondary">{description}</h5>
               }
-              <p className="bg-dark p-2 mt-3">image: {image}</p>
+              <p className="bg-dark p-2 mt-3">image: <a href={imageURL}>{image}</a></p>
               <ReactMarkdown>
                 {content}
               </ReactMarkdown>

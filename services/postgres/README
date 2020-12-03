@@ -1,2 +1,8 @@
+Provides a PostgreSQL server with no authentication by default.
 
-postgres...
+Can be used for testing proxying to PostgreSQL, and for
+testing Envoy's PostgreSQL filter.
+
+There are many significant environment variables for this image,
+[see the documentation](https://hub.docker.com/_/postgres) for further
+information on configuration and usage.
