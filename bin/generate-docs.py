@@ -54,6 +54,9 @@ class ServiceDocsCreator(object):
         _vars['image'] = f"_include/{service}/{_vars['image']}"
         if _vars['readme']:
             _vars['readme'] = f"_include/{service}/{_vars['readme']}"
+        if _vars['envoy_config_path']:
+            _vars['envoy_config_path'] = (
+                f"_include/{service}/{_vars['envoy_config_path']}")
         return _vars
 
     def create_service_rst(self):

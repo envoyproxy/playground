@@ -6,7 +6,7 @@ services:
       envoy.playground.logo: "acme.svg"
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: ACME/letsencrypt"
-      envoy.playground.example.config: envoy-letsencrypt.yaml
+      envoy.playground.example.config: envoy-acme.yaml
 
   postgres:
     image: postgres:latest

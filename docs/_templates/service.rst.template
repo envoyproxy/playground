@@ -38,7 +38,9 @@
 {% if envoy_config_path %}
    .. tab:: Envoy configuration
 
-      {{envoy_config_path}}
-
       {{envoy_config_name}}
+
+      .. literalinclude:: {{envoy_config_path}}
+         :language: yaml
+
 {% endif %}
