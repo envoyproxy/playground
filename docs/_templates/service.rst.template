@@ -42,8 +42,8 @@
 	   - Information
 {% for port in (labels.get('envoy.playground.ports', '')|string).split(',') %}
          * - {{port}}
-	   - {{labels[f'envoy.playground.port.{port}.type'] or 'TCP'}}
-	   - {{labels[f'envoy.playground.port.{port}.info']}}
+	   - {{labels.get('envoy.playground.port.' + port + '.type', 'TCP')}}
+	   - {{labels.get('envoy.playground.port.' + port + '.info', '')}}
 {% endfor %}
 
 {% if labels['envoy.playground.example.config'] %}
