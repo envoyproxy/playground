@@ -5,8 +5,49 @@ services:
       envoy.playground.service: "ACME letsencrypt (pebble)"
       envoy.playground.logo: "acme.svg"
       envoy.playground.readme: README
+      envoy.playground.description: |
+        ACME letsencrypt (pebble) server for issuing SSL/TLS certificates
       envoy.playground.example.name: "Service: ACME/letsencrypt"
       envoy.playground.example.config: envoy-acme.yaml
+
+  http-echo:
+    image: mendhak/http-https-echo
+    labels:
+      envoy.playground.service: "HTTP/S echo"
+      envoy.playground.description: |
+        Echos back request and request headers as json
+      envoy.playground.logo: "http-echo.svg"
+      envoy.playground.readme: README
+      envoy.playground.example.name: "Service: HTTP/S echo"
+      envoy.playground.example.config: envoy-echo.yaml
+    environment:
+      HTTP_PORT: 80
+      HTTPS_PORT: 443
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+    labels:
+      envoy.playground.service: "Jaeger"
+      envoy.playground.description: |
+        Jaeger distributed tracing server
+      envoy.playground.logo: "jaeger.svg"
+      envoy.playground.readme: README
+      envoy.playground.ports: 5775,6831,6832,5778,16686,14268,9411
+      envoy.playground.example.name: "Service: Jaeger"
+      envoy.playground.example.config: envoy-jaeger.yaml
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    labels:
+      envoy.playground.service: "Mariadb"
+      envoy.playground.logo: "mariadb.svg"
+      envoy.playground.readme: README
+      envoy.playground.example.name: "Service: MariaDB"
+      envoy.playground.example.config: envoy-mariadb.yaml
 
   postgres:
     image: postgres:latest
@@ -16,17 +57,9 @@ services:
       envoy.playground.service: "PostgreSQL"
       envoy.playground.logo: "postgres.svg"
       envoy.playground.readme: README
+      envoy.playground.ports: 5432
       envoy.playground.example.name: "Service: Postgres"
       envoy.playground.example.config: envoy-postgres.yaml
-
-  redis:
-    image: redis:latest
-    labels:
-      envoy.playground.service: "Redis"
-      envoy.playground.logo: "redis.svg"
-      envoy.playground.readme: README
-      envoy.playground.example.name: "Service: Redis"
-      envoy.playground.example.config: envoy-redis.yaml
 
   python:
     image: phlax/aiohttp
@@ -47,48 +80,14 @@ services:
       envoy.playground.example.setup.config: playground.yaml
       envoy.playground.example.setup.name: "Python asyncio"
 
-  jaeger:
-    image: jaegertracing/all-in-one
-    environment:
-      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+  redis:
+    image: redis:latest
     labels:
-      envoy.playground.service: "Jaeger"
-      envoy.playground.logo: "jaeger.svg"
+      envoy.playground.service: "Redis"
+      envoy.playground.logo: "redis.svg"
       envoy.playground.readme: README
-      envoy.playground.example.name: "Service: Jaeger"
-      envoy.playground.example.config: envoy-jaeger.yaml
-
-  zipkin:
-    image: openzipkin/zipkin
-    labels:
-      envoy.playground.service: "Zipkin"
-      envoy.playground.logo: "zipkin.svg"
-      envoy.playground.readme: README
-      envoy.playground.example.name: "Service: Zipkin"
-      envoy.playground.example.config: envoy-zipkin.yaml
-
-  mariadb:
-    image: mariadb:latest
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-    labels:
-      envoy.playground.service: "Mariadb"
-      envoy.playground.logo: "mariadb.svg"
-      envoy.playground.readme: README
-      envoy.playground.example.name: "Service: MariaDB"
-      envoy.playground.example.config: envoy-mariadb.yaml
-
-  http-echo:
-    image: mendhak/http-https-echo
-    labels:
-      envoy.playground.service: "HTTP/S echo"
-      envoy.playground.logo: "http-echo.svg"
-      envoy.playground.readme: README
-      envoy.playground.example.name: "Service: HTTP/S echo"
-      envoy.playground.example.config: envoy-echo.yaml
-    environment:
-      HTTP_PORT: 80
-      HTTPS_PORT: 443
+      envoy.playground.example.name: "Service: Redis"
+      envoy.playground.example.config: envoy-redis.yaml
 
   solid:
     image: nodesolidserver/node-solid-server
@@ -98,3 +97,12 @@ services:
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: Solid node"
       envoy.playground.example.config: envoy-solid.yaml
+
+  zipkin:
+    image: openzipkin/zipkin
+    labels:
+      envoy.playground.service: "Zipkin"
+      envoy.playground.logo: "zipkin.svg"
+      envoy.playground.readme: README
+      envoy.playground.example.name: "Service: Zipkin"
+      envoy.playground.example.config: envoy-zipkin.yaml

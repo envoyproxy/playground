@@ -1,2 +1,6 @@
 
-jaeger tracing...
+This service provides an "all-in-one" Jaeger service for testing out network configurations with Jaeger.
+
+The default configuration provides Zipkin compatibility with a REST API served on port `9411`.
+
+This can be disabled by removing the default `COLLECTOR_ZIPKIN_HTTP_PORT` environment variable.

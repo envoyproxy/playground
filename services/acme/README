@@ -1,4 +1,5 @@
 
 Provides certificates for services.
 
-Mimics the real ACME service.
+Mimics the real ACME service, and allows you test certbot configurations
+before deployment.
