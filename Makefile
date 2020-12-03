@@ -18,7 +18,7 @@ docs:
 site:
 	echo "Building site..."
 	pip install -U pip setuptools
-	pip install -r docs/requirements.txt
+	pip install .[docs]
 	mkdir tmp/ -p
 	rm -rf tmp/docs
 	rm -rf build/site
