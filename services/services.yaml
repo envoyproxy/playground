@@ -30,6 +30,9 @@ services:
 
   python:
     image: phlax/aiohttp
+    ports:
+      8000:
+      8443:
     labels:
       envoy.playground.service: "Python (asyncio)"
       envoy.playground.logo: "python.png"
