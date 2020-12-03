@@ -24,7 +24,7 @@
    .. tab:: Environment
 
       .. list-table::
-	 :widths: 35 65
+	 :widths: 45 55
 	 :header-rows: 1
 
 	 * - Variable
@@ -45,7 +45,7 @@
    .. tab:: Ports
 
       .. list-table::
-	 :widths: 25 25 50
+	 :widths: 20 20 60
 	 :header-rows: 1
 
 	 * - Port
@@ -60,7 +60,7 @@
 {% if labels['envoy.playground.example.config'] %}
    .. tab:: |Envoy icon| example
 
-      {{labels['envoy.playground.example.name']}}
+      Example name: {{labels['envoy.playground.example.name']}}
 
       .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.example.config']}}
          :language: yaml

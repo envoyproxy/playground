@@ -6,3 +6,4 @@ Getting started
     :maxdepth: 3
 
     install
+    concepts
