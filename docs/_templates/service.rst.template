@@ -1,4 +1,8 @@
 
+.. |Envoy icon| image:: ../_static/img/envoy.svg
+  :width: 22
+  :alt: Envoy
+
 ..  figure:: _include/{{service_type}}/{{labels['envoy.playground.logo']}}
     :figwidth: 100px
     :align: right
@@ -19,8 +23,15 @@
 {% if environment %}
    .. tab:: Environment
 
+      .. list-table::
+	 :widths: 35 65
+	 :header-rows: 1
+
+	 * - Variable
+	   - Default
 {% for name, default in environment.items() %}
-     {{name}}: {{default}}
+         * - {{name}}
+	   - {{default}}
 {% endfor %}
 
 {% endif %}
@@ -47,7 +58,7 @@
 {% endfor %}
 
 {% if labels['envoy.playground.example.config'] %}
-   .. tab:: Envoy configuration
+   .. tab:: |Envoy icon| example
 
       {{labels['envoy.playground.example.name']}}
 
