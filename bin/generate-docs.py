@@ -43,8 +43,8 @@ class ServiceDocsCreator(object):
             title='service',
             readme='readme',
             description='description',
-            config_path='config.path',
-            config_type='config_type',
+            config_path='config.default',
+            config_type='config.type',
             envoy_config_name='example.name',
             envoy_config_path='example.config')
         _vars = {
@@ -57,6 +57,9 @@ class ServiceDocsCreator(object):
         if _vars['envoy_config_path']:
             _vars['envoy_config_path'] = (
                 f"_include/{service}/{_vars['envoy_config_path']}")
+        if _vars['config_path']:
+            _vars['config_path'] = (
+                f"_include/{service}/{_vars['config_path']}")
         return _vars
 
     def create_service_rst(self):

@@ -23,9 +23,9 @@
 {% if config_path %}
    .. tab:: Configuration
 
-      {{config_path}}
+      .. literalinclude:: {{config_path}}
+         :language: {{config_type}}
 
-      {{config_type}}
 {% endif %}
 
    .. tab:: Ports
