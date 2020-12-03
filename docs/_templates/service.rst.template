@@ -30,8 +30,8 @@
 
    .. tab:: Ports
 
-{% for i in range(5) %}
-       Port {{i}}
+{% for port in ports %}
+       Port {{port}}
 {% endfor %}
 
 

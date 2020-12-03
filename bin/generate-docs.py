@@ -60,6 +60,7 @@ class ServiceDocsCreator(object):
         if _vars['config_path']:
             _vars['config_path'] = (
                 f"_include/{service}/{_vars['config_path']}")
+        _vars['ports'] = self.service_types[service].get('ports', {})
         return _vars
 
     def create_service_rst(self):
