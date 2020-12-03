@@ -15,7 +15,9 @@
 
    .. tab:: Environment
 
-      Env vars info...
+{% for i in range(5) %}
+       Env var {{i}}
+{% endfor %}
 
    .. tab:: Configuration
 
@@ -24,9 +26,5 @@
    .. tab:: Ports
 
 {% for i in range(5) %}
-       Port {i}
+       Port {{i}}
 {% endfor %}
-
-      Ports info...
-
-   .. tab:: Ports
