@@ -34,20 +34,36 @@ class ServiceDocsCreator(object):
             dst = f'{self.docpath}/services/_include/{service}'
             shutil.copytree(src, dst)
 
+    def _get_service_var(self, service, var):
+        return self.service_types[service]['labels'].get(
+            f'envoy.playground.{var}', '')
+
+    def _get_service_vars(self, service):
+        _vars = dict(
+            image='logo',
+            title='service',
+            readme='readme',
+            description='description',
+            config_path='config.path',
+            config_type='config_type')
+        _vars = {
+            k: self._get_service_var(service, v)
+            for k, v
+            in _vars.items()}
+        _vars['image'] = f"_include/{service}/{_vars['image']}"
+        if _vars['readme']:
+            _vars['readme'] = f"_include/{service}/{_vars['readme']}"
+        return _vars
+
     def create_service_rst(self):
         template = jinja_env.get_template('service.rst.template')
-
         for service in self.service_types:
             rst = f'{self.docpath}/services/{service}.rst'
             print(f'creating rst file: {rst}')
-            icon = self.service_types[service]['labels'][
-                'envoy.playground.logo']
             with open(rst, 'w') as f:
-                f.write(template.render(
-                    title=self.service_types[service]['labels'][
-                        'envoy.playground.service'],
-                    image=f'_include/{service}/{icon}',
-                    readme=f'_include/{service}/README'))
+                f.write(
+                    template.render(
+                        self._get_service_vars(service)))
 
     def create_toc(self):
         rst = f'{self.docpath}/services/index.rst'

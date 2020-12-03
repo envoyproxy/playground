@@ -6,6 +6,7 @@
 {{title}}
 {% for i in range(title|length) %}={% endfor %}
 
+{{description}}
 
 .. tabs::
 
@@ -19,9 +20,13 @@
        Env var {{i}}
 {% endfor %}
 
+{% if config_path %}
    .. tab:: Configuration
 
-      Config include...
+      {{config_path}}
+
+      {{config_type}}
+{% endif %}
 
    .. tab:: Ports
 

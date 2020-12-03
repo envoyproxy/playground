@@ -87,6 +87,7 @@ dev-control: clean
 			control
 
 dev-control-sh:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
 		--entrypoint /bin/bash \
