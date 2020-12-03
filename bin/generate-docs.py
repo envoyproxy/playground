@@ -10,8 +10,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 jinja_env = Environment(
-    loader=FileSystemLoader('docs/_templates'),
-)
+    loader=FileSystemLoader('docs/_templates'))
 
 
 class ServiceDocsCreator(object):
@@ -45,7 +44,9 @@ class ServiceDocsCreator(object):
             readme='readme',
             description='description',
             config_path='config.path',
-            config_type='config_type')
+            config_type='config_type',
+            envoy_config_name='example.name',
+            envoy_config_path='example.config')
         _vars = {
             k: self._get_service_var(service, v)
             for k, v
