@@ -33,35 +33,10 @@ class ServiceDocsCreator(object):
             dst = f'{self.docpath}/services/_include/{service}'
             shutil.copytree(src, dst)
 
-    def _get_service_var(self, service, var):
-        return self.service_types[service]['labels'].get(
-            f'envoy.playground.{var}', '')
-
     def _get_service_vars(self, service):
-        _vars = dict(
-            image='logo',
-            title='service',
-            readme='readme',
-            description='description',
-            config_path='config.default',
-            config_type='config.type',
-            envoy_config_name='example.name',
-            envoy_config_path='example.config')
-        _vars = {
-            k: self._get_service_var(service, v)
-            for k, v
-            in _vars.items()}
-        _vars['image'] = f"_include/{service}/{_vars['image']}"
-        if _vars['readme']:
-            _vars['readme'] = f"_include/{service}/{_vars['readme']}"
-        if _vars['envoy_config_path']:
-            _vars['envoy_config_path'] = (
-                f"_include/{service}/{_vars['envoy_config_path']}")
-        if _vars['config_path']:
-            _vars['config_path'] = (
-                f"_include/{service}/{_vars['config_path']}")
-        _vars['ports'] = self.service_types[service].get('ports', {})
-        return _vars
+        service_type = self.service_types[service]
+        service_type['service_type'] = service
+        return service_type
 
     def create_service_rst(self):
         template = jinja_env.get_template('service.rst.template')
