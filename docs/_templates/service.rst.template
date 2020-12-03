@@ -33,10 +33,19 @@
 {% endif %}
    .. tab:: Ports
 
-{% for port in (labels.get('envoy.playground.ports', '')|string).split(',') %}
-       Port {{port}}
+   .. list-table::
+      :widths: 25 25 50
+      :header-rows: 1
 
+      * - Port
+	- Type
+	- Information
+{% for port in (labels.get('envoy.playground.ports', '')|string).split(',') %}
+      * - {{port}}
+	- type
+	- info
 {% endfor %}
+
 {% if labels['envoy.playground.example.config'] %}
    .. tab:: Envoy configuration
 
