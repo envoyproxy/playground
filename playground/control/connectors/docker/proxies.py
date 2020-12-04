@@ -80,6 +80,10 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             logging: dict,
             mounts: dict,
             port_mappings: list) -> dict:
+        environment = (
+            []
+            if logging.get("default", "info") in ['', "info"]
+            else [f"ENVOY_LOG_LEVEL={logging['default']}"])
         return {
             'Image': image,
             'Cmd': ["python", "/hot-restarter.py", "/start_envoy.sh"],
@@ -91,6 +95,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             "Labels": {
                 "envoy.playground.proxy": name,
             },
+            "Env": environment,
             "HostConfig": {
                 "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
