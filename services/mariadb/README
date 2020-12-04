@@ -16,11 +16,9 @@ To make use of it you should:
 
 - add a proxy with the `Service: HTTP/S echo` configuration and mapping the following ports
   - 10000 -> 10000
+  - 20000 -> 20000 (Optional: admin)
 - create an `MariaDB` service called `mariadb`
 - connect the proxy and the `mariadb` service together on a network
-
-You may also wish to add the following proxy to access the admin interface:
-  - 20000 -> 20000
 
 With this setup you should be able to connect to MariaDB on port `10000`.
 
@@ -37,4 +35,4 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 MariaDB [(none)]>
 ```
 
-You can view the MySQL filter stats in the admin ui [http://localhost:2000](http://localhost:20000), if enabled.
+You can view the MySQL filter stats in the admin ui [http://localhost:2000/stats](http://localhost:20000/stats), if enabled.
