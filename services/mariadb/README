@@ -14,7 +14,7 @@ There is a provided example Envoy configuration (`Service: MariaDB`).
 
 To make use of it you should:
 
-- add a proxy with the `Service: HTTP/S echo` configuration and mapping the following ports
+- add a proxy with the `Service: MariaDB` configuration and mapping the following ports
   - 10000 -> 10000
   - 20000 -> 20000 (Optional: admin)
 - create a `MariaDB` service called `mariadb`
@@ -35,4 +35,4 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 MariaDB [(none)]>
 ```
 
-You can view the MySQL filter stats in the admin ui [http://localhost:2000/stats](http://localhost:20000/stats), if enabled.
+You can view the MySQL filter stats in the admin ui [http://localhost:20000/stats](http://localhost:20000/stats), if enabled.
