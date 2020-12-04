@@ -3,10 +3,8 @@
 import base64
 import os
 from collections import OrderedDict
-from typing import Type
 
-from playground.control.attribs import (
-    ServiceCreateCommandAttribs, ValidatingAttribs)
+from playground.control.attribs import ServiceCreateCommandAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
@@ -41,7 +39,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
 
     async def _get_service_mounts(
             self,
-            data: Type[ValidatingAttribs]) -> OrderedDict:
+            data: ServiceCreateCommandAttribs) -> OrderedDict:
         mounts = OrderedDict()
         if data.configuration and data.config_path:
             config = base64.b64encode(

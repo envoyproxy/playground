@@ -2,10 +2,8 @@
 
 import base64
 from collections import OrderedDict
-from typing import Type
 
-from playground.control.attribs import (
-    ProxyCreateCommandAttribs, ValidatingAttribs)
+from playground.control.attribs import ProxyCreateCommandAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
@@ -44,7 +42,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
 
     async def _get_mounts(
             self,
-            data: Type[ValidatingAttribs]) -> dict:
+            data: ProxyCreateCommandAttribs) -> dict:
         return {
             "/etc/envoy": await self.connector.volumes.populate(
                 'proxy',
