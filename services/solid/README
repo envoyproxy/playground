@@ -1,3 +1,7 @@
 
+Provides a Solid pod server on port `8443`
 
-solid...
+No environment variables are configured by default, but this image has many.
+
+Refer to the [documentation](https://hub.docker.com/r/nodesolidserver/node-solid-server)
+for further information on usage and configuration.

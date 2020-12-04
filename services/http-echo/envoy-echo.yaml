@@ -1,9 +1,7 @@
 static_resources:
   listeners:
-  - name: listener_0
-    address:
+  - address:
       socket_address:
-        protocol: TCP
         address: 0.0.0.0
         port_value: 10000
     filter_chains:
@@ -11,34 +9,31 @@ static_resources:
       - name: envoy.filters.network.http_connection_manager
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          codec_type: auto
           stat_prefix: ingress_http
-          access_log:
-          - name: envoy.access_loggers.file
-            typed_config:
-              "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
-              path: /dev/stdout
           route_config:
             name: local_route
             virtual_hosts:
-            - name: local_service
-              domains: ["*"]
+            - name: app
+              domains:
+              - "*"
               routes:
               - match:
-                  prefix: "/"
+                  prefix: "/http"
                 route:
-                  host_rewrite_literal: www.envoyproxy.io
-                  cluster: service_envoyproxy_io
+                  cluster: echo-http
           http_filters:
           - name: envoy.filters.http.router
+
   clusters:
-  - name: service_envoyproxy_io
-    connect_timeout: 30s
-    type: LOGICAL_DNS
-    # Comment out the following line to test on v6 networks
-    dns_lookup_family: V4_ONLY
-    lb_policy: ROUND_ROBIN
+  - name: echo-http
+    connect_timeout: 1s
+    type: logical_dns
+    dns_failure_refresh_rate:
+      base_interval: 1s
+    lb_policy: round_robin
     load_assignment:
-      cluster_name: service_envoyproxy_io
+      cluster_name: echo-http
       endpoints:
       - lb_endpoints:
         - endpoint:

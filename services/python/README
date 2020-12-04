@@ -1,5 +1,11 @@
 
-Provides an example of an asynchronous web server.
+Provides an example of a minimal asynchronous web server.
 
-Container has some other aiolibs for example for connecting
-to `mariadb` or `postgres` servers.
+The service is configurable by editing the python `run.py`.
+
+The default configuration listens on port `8080`.
+
+This image does not have any significant environment variables.
+
+Container has some other [aio-libs](https://github.com/aio-libs) installed for connecting
+to `mariadb` and `postgres` servers.

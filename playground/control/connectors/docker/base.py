@@ -76,6 +76,7 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             # todo move these bits outa here
             if name == "proxy":
                 _resource['image'] = resource['Image']
+                _resource['type'] = 'proxy'
                 _resource['port_mappings'] = [
                     {'mapping_from': m.get('PublicPort'),
                      'mapping_to': m.get('PrivatePort')}
@@ -87,6 +88,7 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
 
             if name == "service":
                 _resource['image'] = resource['Image']
+                _resource['type'] = 'service'
                 _resource["service_type"] = resource["Labels"][
                     "envoy.playground.service.type"]
 

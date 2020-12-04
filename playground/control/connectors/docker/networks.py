@@ -24,20 +24,28 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             # todo: raise playtime error
             return
 
+    def _get_container_config(self, container):
+        return {
+            "Container": container["id"],
+            "EndpointConfig": {
+                "Aliases": [container['name']]}}
+
     async def _create_network(
             self,
             command: PlaygroundCommand) -> None:
         network = await self.docker.networks.create(
             dict(name="__playground_%s" % command.data.name,
                  labels={"envoy.playground.network": command.data.name}))
-        if command.data.proxies:
-            for proxy in await self.connector.proxies.list():
-                if proxy['name'] in command.data.proxies:
-                    await network.connect({"Container": proxy["id"]})
-        if command.data.services:
-            for service in await self.connector.services.list():
-                if service['name'] in command.data.services:
-                    await network.connect({"Container": service["id"]})
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.proxies.list()
+             if container['name'] in command.data.proxies))
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.services.list()
+             if container['name'] in command.data.services))
 
     @method_decorator(cmd(attribs=NetworkDeleteAttribs))
     async def delete(
@@ -72,6 +80,18 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             # todo: raise playtime error
             return
 
+    async def _connect(self, network, containers):
+        for container in containers:
+            await network.connect(self._get_container_config(container))
+            if container['type'] == 'proxy':
+                await self.docker.containers.container(
+                    container['id']).kill(
+                        signal='SIGHUP')
+
+    async def _disconnect(self, network, containers):
+        for container in containers:
+            await network.disconnect({"Container": container["id"]})
+
     async def _edit_network(
             self,
             command: PlaygroundCommand) -> None:
@@ -88,13 +108,16 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             | set(command.data.services or []))
         connect = expected - containers
         disconnect = containers - expected
-        for proxy in await self.connector.proxies.list():
-            if proxy['name'] in connect:
-                await network.connect({"Container": proxy["id"]})
-            if proxy['name'] in disconnect:
-                await network.disconnect({"Container": proxy["id"]})
-        for service in await self.connector.services.list():
-            if service['name'] in connect:
-                await network.connect({"Container": service["id"]})
-            if service['name'] in disconnect:
-                await network.disconnect({"Container": service["id"]})
+        _containers = (
+            await self.connector.proxies.list()
+            + await self.connector.services.list())
+        await self._connect(
+            network,
+            (container
+             for container in _containers
+             if container['name'] in connect))
+        await self._disconnect(
+            network,
+            (container
+             for container in _containers
+             if container['name'] in disconnect))

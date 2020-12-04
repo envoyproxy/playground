@@ -7,6 +7,7 @@ import Accordion, {AccordionItem} from './accordion';
 import {APIContext} from '../app/context';
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
+import {URLMangler} from './utils';
 
 
 class ResourceInfoItem extends React.PureComponent {
@@ -114,7 +115,6 @@ class BaseResources extends React.PureComponent {
 
     handleItem = (k, v) => {
         // this needs to move out of here...
-
         if (k === 'port_mappings' && v) {
             return (
                 <>
@@ -136,6 +136,12 @@ class BaseResources extends React.PureComponent {
                   })}
                 </>
             );
+        } else if (k === 'image') {
+            let imageURL = new URLMangler().docker(v);
+            return (
+                <a href={imageURL}>
+                    {v}
+                </a>);
         }
         return <div>{v}</div>;
     };

@@ -1,2 +1,8 @@
 
 Echos back request and request headers as json.
+
+`HTTP` and `HTTPS` listening ports can be configured with the `HTTP_PORT` and `HTTPS_PORT`
+environment variables respectively.
+
+This can be useful for testing load balancing setups where you wish to see which upstream
+server handled the request, or for checking injected headers.
