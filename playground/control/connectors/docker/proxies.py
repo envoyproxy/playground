@@ -29,14 +29,13 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             [m['mapping_from'], m['mapping_to']]
             for m
             in command.data.port_mappings]
-        mount = await self._get_mounts(command.data)
         # todo: add error handling
         await self._start_container(
             self._get_proxy_config(
                 command.data.image,
                 command.data.name,
                 command.data.logging,
-                mounts,
+                await self._get_mounts(command.data),
                 _mappings),
             command.data.name)
 

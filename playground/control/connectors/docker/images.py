@@ -20,7 +20,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 encoding="gzip",
                 tag=image_tag)
             tar_obj.close()
-        except aiodocker.DockerError:
+        except aiodocker.DockerError as e:
             return e.args
         try:
             await self.docker.images.inspect(name=image_tag)
