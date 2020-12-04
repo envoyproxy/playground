@@ -15,11 +15,11 @@ To make use of the provided example Envoy configuration (`Service: Python (async
 - add a proxy with the `Service: Python (asyncio)` configuration and mapping the following ports
   - 10000 -> 10000
 - create a `Python (asyncio)` service called `python`
-- connect this proxy and the `echo` service together on a network
+- connect the proxy and the `echo` service together on a network
 
 With this setup you should be able to view the following endpoints:
 
-- http://localhost:10000
+- [http://localhost:10000](http://localhost:10000)
 
 Which should respond with the following text
 

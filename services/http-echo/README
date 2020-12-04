@@ -17,7 +17,7 @@ To make use of the provided example Envoy configuration (`Service: HTTP/S echo`)
   - 10001 -> 10001
   - 10002 -> 10002
 - create an `HTTP/S echo` service called `echo`
-- connect this proxy and the `echo` service together on a network
+- connect the proxy and the `echo` service together on a network
 
 With this setup you should be able to view the following endpoints:
 
