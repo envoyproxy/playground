@@ -36,14 +36,16 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
         network = await self.docker.networks.create(
             dict(name="__playground_%s" % command.data.name,
                  labels={"envoy.playground.network": command.data.name}))
-        if command.data.proxies:
-            for proxy in await self.connector.proxies.list():
-                if proxy['name'] in command.data.proxies:
-                    await network.connect(self._get_container_config(proxy))
-        if command.data.services:
-            for service in await self.connector.services.list():
-                if service['name'] in command.data.services:
-                    await network.connect(self._get_container_config(service))
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.proxies.list()
+             if container['name'] in command.data.proxies))
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.services.list()
+             if container['name'] in command.data.services))
 
     @method_decorator(cmd(attribs=NetworkDeleteAttribs))
     async def delete(
