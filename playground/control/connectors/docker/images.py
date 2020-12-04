@@ -11,9 +11,10 @@ import aiodocker
 from playground.control.connectors.docker.base import PlaygroundDockerContext
 
 
+# based on util in aiodocker for single file
 def mktar_from_docker_context(path: str) -> IO:
     """
-    Create a zipped tar archive from a Dockerfile
+    Create a zipped tar archive from a Docker context
     **Remember to close the file object**
     Args:
         fileobj: a Dockerfile
@@ -24,6 +25,7 @@ def mktar_from_docker_context(path: str) -> IO:
     t = tarfile.open(mode="w:gz", fileobj=f)
 
     for name in os.listdir(path):
+        # todo: handle dir recursion properly
         if name.endswith('~'):
             continue
         fpath = os.path.join(path, name)
