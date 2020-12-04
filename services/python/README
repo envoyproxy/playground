@@ -10,7 +10,9 @@ This image does not have any significant environment variables.
 Container has some other [aio-libs](https://github.com/aio-libs) installed for connecting
 to `mariadb` and `postgres` servers.
 
-To make use of the provided example Envoy configuration (`Service: Python (asyncio)`) you will need to:
+There is a provided example Envoy configuration (`Service: Python (asyncio)`).
+
+To make use of it you should:
 
 - add a proxy with the `Service: Python (asyncio)` configuration and mapping the following ports
   - 10000 -> 10000
