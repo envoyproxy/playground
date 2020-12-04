@@ -98,6 +98,8 @@ services:
       envoy.playground.port.3306.info: |
         MariaDB server port
       envoy.playground.example.name: "Service: MariaDB"
+      envoy.playground.example.description: |
+        Exposes `TCP`/`mysql` on port `10000` which proxies to a service named `mariadb`
       envoy.playground.example.config: envoy-mariadb.yaml
 
   postgres:
