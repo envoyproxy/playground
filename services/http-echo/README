@@ -20,7 +20,6 @@ To make use of the example Envoy configuration you will need to:
 - connect this proxy and the `echo` service together on a network
 
 With this setup you should be able to view the following endpoints:
-
 - http://localhost:10000/http
 - http://localhost:10000/https
 - https://localhost:10001/http
