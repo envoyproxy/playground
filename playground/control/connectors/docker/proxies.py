@@ -23,7 +23,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             errors = await self.connector.images.build(command.data.image)
 
             if errors:
-                # publish...
+                # todo: publish failure
                 print('FAILED BUILDING IMAGE')
                 print(errors)
                 return
