@@ -2,9 +2,10 @@
 
 import base64
 from collections import OrderedDict
+from typing import Type
 
 from playground.control.attribs import (
-    ProxyCreateCommandAttribs)
+    ProxyCreateCommandAttribs, ValidatingAttribs)
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
@@ -21,36 +22,16 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
         # todo: add logging and error handling
         if not await self.connector.images.exists(command.data.image):
             errors = await self.connector.images.build(command.data.image)
-
             if errors:
                 # todo: publish failure
                 print('FAILED BUILDING IMAGE')
                 print(errors)
                 return
-
         _mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
             in command.data.port_mappings]
-        mounts = {
-            "/etc/envoy": await self.connector.volumes.populate(
-                'proxy',
-                command.data.name,
-                'envoy',
-                {'envoy.yaml': base64.b64encode(
-                    command.data.configuration.encode('utf-8')).decode()}),
-            "/certs": await self.connector.volumes.populate(
-                'proxy',
-                command.data.name,
-                'certs',
-                command.data.certs.items()),
-            '/binary': await self.connector.volumes.populate(
-                'proxy',
-                command.data.name,
-                'binary',
-                command.data.binaries.items()),
-            '/logs': await self.connector.volumes.create(
-                'proxy', command.data.name, 'logs')}
+        mount = await self._get_mounts(command.data)
         # todo: add error handling
         await self._start_container(
             self._get_proxy_config(
@@ -60,6 +41,29 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 mounts,
                 _mappings),
             command.data.name)
+
+    async def _get_mounts(
+            self,
+            data: Type[ValidatingAttribs]) -> dict:
+        return {
+            "/etc/envoy": await self.connector.volumes.populate(
+                'proxy',
+                data.name,
+                'envoy',
+                {'envoy.yaml': base64.b64encode(
+                    data.configuration.encode('utf-8')).decode()}),
+            "/certs": await self.connector.volumes.populate(
+                'proxy',
+                data.name,
+                'certs',
+                data.certs.items()),
+            '/binary': await self.connector.volumes.populate(
+                'proxy',
+                data.name,
+                'binary',
+                data.binaries.items()),
+            '/logs': await self.connector.volumes.create(
+                'proxy', data.name, 'logs')}
 
     def _get_port_bindings(
             self,

@@ -24,29 +24,6 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             # todo: raise playtime error
             return
 
-    def _get_container_config(self, container):
-        return {
-            "Container": container["id"],
-            "EndpointConfig": {
-                "Aliases": [container['name']]}}
-
-    async def _create_network(
-            self,
-            command: PlaygroundCommand) -> None:
-        network = await self.docker.networks.create(
-            dict(name="__playground_%s" % command.data.name,
-                 labels={"envoy.playground.network": command.data.name}))
-        await self._connect(
-            network,
-            (container
-             for container in await self.connector.proxies.list()
-             if container['name'] in command.data.proxies))
-        await self._connect(
-            network,
-            (container
-             for container in await self.connector.services.list()
-             if container['name'] in command.data.services))
-
     @method_decorator(cmd(attribs=NetworkDeleteAttribs))
     async def delete(
             self,
@@ -56,19 +33,6 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
         except DockerError:
             # todo: raise playtime error
             return
-
-    async def _delete_network(
-            self,
-            command: PlaygroundCommand) -> None:
-        for network in await self.docker.networks.list():
-            if "envoy.playground.network" in network["Labels"]:
-                if network["Name"] == "__playground_%s" % command.data.name:
-                    _network = await self.docker.networks.get(
-                        network["Id"])
-                    info = await _network.show()
-                    for container in info["Containers"].keys():
-                        await _network.disconnect({"Container": container})
-                    await _network.delete()
 
     @method_decorator(cmd(attribs=NetworkEditAttribs))
     async def edit(
@@ -87,6 +51,36 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
                 await self.docker.containers.container(
                     container['id']).kill(
                         signal='SIGHUP')
+
+    async def _create_network(
+            self,
+            command: PlaygroundCommand) -> None:
+        network = await self.docker.networks.create(
+            dict(name="__playground_%s" % command.data.name,
+                 labels={"envoy.playground.network": command.data.name}))
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.proxies.list()
+             if container['name'] in command.data.proxies))
+        await self._connect(
+            network,
+            (container
+             for container in await self.connector.services.list()
+             if container['name'] in command.data.services))
+
+    async def _delete_network(
+            self,
+            command: PlaygroundCommand) -> None:
+        for network in await self.docker.networks.list():
+            if "envoy.playground.network" in network["Labels"]:
+                if network["Name"] == "__playground_%s" % command.data.name:
+                    _network = await self.docker.networks.get(
+                        network["Id"])
+                    info = await _network.show()
+                    for container in info["Containers"].keys():
+                        await _network.disconnect({"Container": container})
+                    await _network.delete()
 
     async def _disconnect(self, network, containers):
         for container in containers:
@@ -121,3 +115,9 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             (container
              for container in _containers
              if container['name'] in disconnect))
+
+    def _get_container_config(self, container):
+        return {
+            "Container": container["id"],
+            "EndpointConfig": {
+                "Aliases": [container['name']]}}
