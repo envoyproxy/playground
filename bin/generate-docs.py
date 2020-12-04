@@ -39,8 +39,8 @@ class ServiceDocsCreator(object):
         service_type = self.service_types[service]
         service_type['service_type'] = service
         if service_type['labels'].get('envoy.playground.example.description'):
-            fpath = f"_static/{service}/example.md"
-            with open(fpath, "w") as f:
+            fpath = os.path.join("_include",  service, "example.md")
+            with open(os.path.join('docs', 'services', fpath), "w") as f:
                 f.write(
                     service_type['labels'][
                         'envoy.playground.example.description'].strip())
