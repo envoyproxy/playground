@@ -6,8 +6,6 @@ import sys
 
 import yaml
 
-from m2r2 import convert
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
