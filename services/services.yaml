@@ -193,8 +193,14 @@ services:
         Zipkin distributed tracing server
       envoy.playground.logo: "zipkin.svg"
       envoy.playground.readme: README
-      envoy.playground.ports: 6911
-      envoy.playground.port.6911.info: |
+      envoy.playground.ports: 9411
+      envoy.playground.port.9411.info: |
         Zipkin REST endpoint
       envoy.playground.example.name: "Service: Zipkin"
+      envoy.playground.example.description: |
+        Connects to a `Zipkin` service named `zipkin`.
+
+        Exposes `HTTP` on port `10000`.
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-zipkin.yaml
