@@ -20,7 +20,14 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             command: PlaygroundCommand) -> None:
         # todo: add logging and error handling
         if not await self.connector.images.exists(command.data.image):
-            await self.connector.images.pull(command.data.image)
+            errors = await self.connector.images.build(command.data.image)
+
+            if errors:
+                # todo: publish failure
+                print('FAILED BUILDING IMAGE')
+                print(errors)
+                return
+
         _mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
@@ -66,16 +73,6 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 {"HostPort": f"{host}"})
         return port_bindings
 
-    def _get_proxy_cmd(
-            self,
-            logging: dict) -> list:
-        return (
-            ["envoy", "-c", "/etc/envoy/envoy.yaml"]
-            if logging.get("default", "info") in ['', "info"]
-            else ["envoy",
-                  "-c", "/etc/envoy/envoy.yaml",
-                  '-l', logging.get('default')])
-
     def _get_proxy_config(
             self,
             image: str,
@@ -83,9 +80,13 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             logging: dict,
             mounts: dict,
             port_mappings: list) -> dict:
+        environment = (
+            []
+            if logging.get("default", "info") in ['', "info"]
+            else [f"ENVOY_LOG_LEVEL={logging['default']}"])
         return {
             'Image': image,
-            'Cmd': self._get_proxy_cmd(logging),
+            'Cmd': ["python", "/hot-restarter.py", "/start_envoy.sh"],
             "AttachStdin": False,
             "AttachStdout": False,
             "AttachStderr": False,
@@ -94,6 +95,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             "Labels": {
                 "envoy.playground.proxy": name,
             },
+            "Env": environment,
             "HostConfig": {
                 "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
