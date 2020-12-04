@@ -27,6 +27,7 @@ def mktar_from_docker_context(path: str) -> IO:
 
     for name in os.listdir(path):
         # todo: handle dir recursion properly
+        # todo: respect .dockerignore correctly
         if name.endswith('~'):
             continue
         fpath = os.path.join(path, name)
