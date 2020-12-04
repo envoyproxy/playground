@@ -23,22 +23,17 @@ export class ExampleSearch extends React.PureComponent {
         onExampleSelect: PropTypes.func.isRequired,
     });
 
-    onExampleSelect = async (evt) => {
-        const {examples, onExampleSelect} = this.props;
-        await onExampleSelect(evt);
-    }
-
     render () {
-        const {examples={}} = this.props;
-        if (Object.keys(examples).length === 0) {
+        const {examples=[], onExampleSelect} = this.props;
+        if (examples.length === 0) {
             return '';
         }
         return (
             <PlaygroundSelectInput
               name="example"
-              onChange={this.onExampleSelect}
+              onChange={onExampleSelect}
               noOption="Select an example"
-              options={Object.keys(examples).map(k => [k, k])}
+              options={examples.map(k => [k, k])}
             />
         );
     }
@@ -57,7 +52,7 @@ export class PlaygroundEditor extends React.Component {
         errors: PropTypes.array,
         onHighlight: PropTypes.func,
         onExampleSelect: PropTypes.func,
-        examples: PropTypes.array,
+        examples: PropTypes.object,
     });
 
     state = {description: ''};
@@ -99,7 +94,7 @@ export class PlaygroundEditor extends React.Component {
                 <Col sm={3}>
                   <ExampleSearch
                     onExampleSelect={this.onExampleSelect}
-                    examples={examples} />
+                    examples={Object.keys(examples)} />
                 </Col>
                 <Col sm={2} className="align-text-bottom">
                   <ActionCopy copy={this.copyConfig} />
