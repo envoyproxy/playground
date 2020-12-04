@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -26,7 +27,7 @@ export class ProxyModal extends React.Component {
     get tabs () {
         const {dispatch, form} = this.props;
         const {name=''} = form;
-        let tabs = {Proxy: <ProxyForm />};
+        let tabs = {Proxy: <ProxyForm form={form} />};
         if (name.length > 2) {
             tabs = {
                 ...tabs,
