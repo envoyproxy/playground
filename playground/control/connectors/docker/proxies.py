@@ -20,7 +20,14 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             command: PlaygroundCommand) -> None:
         # todo: add logging and error handling
         if not await self.connector.images.exists(command.data.image):
-            await self.connector.images.pull(command.data.image)
+            errors = await self.connector.images.build(command.data.image)
+
+            if errors:
+                # publish...
+                print('FAILED BUILDING IMAGE')
+                print(errors)
+                return
+
         _mappings = [
             [m['mapping_from'], m['mapping_to']]
             for m
@@ -66,16 +73,6 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 {"HostPort": f"{host}"})
         return port_bindings
 
-    def _get_proxy_cmd(
-            self,
-            logging: dict) -> list:
-        return (
-            ["envoy", "-c", "/etc/envoy/envoy.yaml"]
-            if logging.get("default", "info") in ['', "info"]
-            else ["envoy",
-                  "-c", "/etc/envoy/envoy.yaml",
-                  '-l', logging.get('default')])
-
     def _get_proxy_config(
             self,
             image: str,
@@ -85,7 +82,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             port_mappings: list) -> dict:
         return {
             'Image': image,
-            'Cmd': self._get_proxy_cmd(logging),
+            'Cmd': ["python", "/hot-restarter.py", "/start_envoy.sh"],
             "AttachStdin": False,
             "AttachStdout": False,
             "AttachStderr": False,

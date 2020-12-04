@@ -24,7 +24,7 @@ from playground.control.services import PlaygroundServiceDiscovery
 
 
 class PlaygroundAPI(object):
-    _envoy_image = "envoyproxy/envoy-dev:latest"
+    _envoy_image = "envoyproxy/envoy-dev-playground:latest"
 
     def __init__(self, services: Union[tuple, None] = None):
         self._sockets: list = []
