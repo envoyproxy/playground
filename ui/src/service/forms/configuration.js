@@ -1,8 +1,7 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
-
-import {connect} from 'react-redux';
 
 import {highlight, languages} from 'prismjs/components/prism-core';
 
@@ -15,7 +14,7 @@ import {PlaygroundEditor} from '../../shared/editor';
 //      - not too long
 
 
-export class BaseServiceConfigurationForm extends React.PureComponent {
+export class ServiceConfigurationForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -74,14 +73,3 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
         );
     }
 }
-
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-        service_types: state.service_type.value
-    };
-}
-
-const ServiceConfigurationForm = connect(mapStateToProps)(BaseServiceConfigurationForm);
-export {ServiceConfigurationForm};

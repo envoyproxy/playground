@@ -93,8 +93,6 @@ class BaseServiceForm extends React.PureComponent {
 
 const mapFormStateToProps = function(state) {
     return {
-        service_types: state.service_type.value,
-        form: state.form.value,
         services: state.service.value,
         meta: state.meta.value,
     };

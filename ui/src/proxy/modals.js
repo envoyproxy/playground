@@ -2,92 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
-import {Alert, Col, Row} from 'reactstrap';
-
 import {clearForm, updateForm, updateUI} from '../app/store';
-import {AlertStartFailed} from '../shared/alerts';
+import {ContainerError, ContainerStarting} from '../shared/container';
 import {PortMappingForm} from '../shared/forms';
-import {PlaygroundFailLogs} from '../shared/logs';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
     ProxyForm, ProxyCertificatesForm} from './forms';
 
 import EnvoyLogo from '../app/images/envoy.svg';
-
-
-export class BaseProxyError extends React.PureComponent {
-    static propTypes = exact({
-        dispatch: PropTypes.func,
-        form: PropTypes.object.isRequired,
-    });
-
-    render () {
-        const {dispatch, form} = this.props;
-        const {logs=[], name} = form;
-        const message = "Failed starting Envoy proxy (" + name  + "). See logs for errors.";
-        return (
-            <div>
-              <AlertStartFailed
-                onReconfigure={evt => dispatch(updateForm({status: null}))}
-                message={message}
-                icon={EnvoyLogo}
-                alt="Envoy logo"
-              />
-              <Row className="pt-2 bg-light ml-0 mr-0">
-                <Col sm={12}>
-                  <PlaygroundFailLogs logs={logs} />
-                </Col>
-              </Row>
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-    };
-}
-
-const ProxyError = connect(mapStateToProps)(BaseProxyError);
-export {ProxyError};
-
-
-export class ProxyStarting extends React.PureComponent {
-    static propTypes = exact({
-        status: PropTypes.string.isRequired,
-        form: PropTypes.object.isRequired,
-        success: PropTypes.bool
-    });
-
-    render () {
-        const {form, status, success} = this.props;
-        const {name} = form;
-        let color = 'info';
-        let message = <span>Pulling container image for Envoy proxy ({name})...</span>;
-        if (success) {
-            message = <span>Envoy proxy has started ({name})!</span>;
-            color = 'success';
-        } else if (status === 'creating') {
-            message = <span>Creating volumes for Envoy proxy ({name})...</span>;
-        } else if (status === 'start') {
-            message = <span>Starting Envoy proxy container ({name})...</span>;
-        }
-        return (
-            <Alert color={color}>
-              <img
-                alt="Envoy logo"
-                src={EnvoyLogo}
-                width="24px"
-                className="mr-2" />
-              {message}
-            </Alert>
-        );
-    }
-}
 
 
 export class ProxyModal extends React.Component {
@@ -101,20 +24,32 @@ export class ProxyModal extends React.Component {
     state = {success: false};
 
     get tabs () {
-        const {form} = this.props;
+        const {dispatch, form} = this.props;
         const {name=''} = form;
         let tabs = {Proxy: <ProxyForm />};
         if (name.length > 2) {
             tabs = {
                 ...tabs,
                 ...{Logging: (
-                    <ProxyLoggingForm />),
-                    Certificates: (
-                        <ProxyCertificatesForm />),
-                    Binaries: (
-                        <ProxyBinariesForm />),
+                    <ProxyLoggingForm
+                      dispatch={dispatch}
+                      form={form}
+                    />),
                     Ports: (
-                        <PortMappingForm />)}};
+                        <PortMappingForm
+                          dispatch={dispatch}
+                          form={form}
+                        />),
+                    Certificates: (
+                        <ProxyCertificatesForm
+                          dispatch={dispatch}
+                          form={form}
+                        />),
+                    Binaries: (
+                        <ProxyBinariesForm
+                          dispatch={dispatch}
+                          form={form}
+                        />)}};
         }
         return tabs;
     }
@@ -140,24 +75,44 @@ export class ProxyModal extends React.Component {
     }
 
     render () {
-        const {form} = this.props;
+        const {dispatch, form} = this.props;
         const {success} = this.state;
-        const {status, validation} = form;
+        const {logs=[], name, status, validation} = form;
+        const messages = {
+            default: <span>Pulling container image for Envoy proxy ({name})...</span>,
+            success: <span>Envoy proxy has started ({name})!</span>,
+            creating: <span>Creating volumes for Envoy proxy ({name})...</span>,
+            start: <span>Starting Envoy proxy container ({name})...</span>};
         if (success) {
             return (
-                <ProxyStarting success={success} form={form} status={status} />);
+                <ContainerStarting
+                  message={messages.success}
+                  color='success'
+                  icon={EnvoyLogo}
+                  iconAlt={name}
+                />);
         }
-
         if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
             return (
-                <ProxyStarting form={form} status={status} />
-            );
+                <ContainerStarting
+                  message={messages[status]}
+                  color='info'
+                  icon={EnvoyLogo}
+                  iconAlt={name}
+                />);
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
-                <ProxyError />
+                <ContainerError
+                  icon={EnvoyLogo}
+                  iconAlt="Envoy"
+                  name={name}
+                  logs={logs}
+                  message={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+                  onReconfigure={evt => dispatch(updateForm({status: null}))}
+                />
             );
         }
         return (

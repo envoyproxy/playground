@@ -1,8 +1,7 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
-
-import {connect} from 'react-redux';
 
 import {Button, Col, Input, Row} from 'reactstrap';
 
@@ -83,7 +82,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
 }
 
 
-export class BaseServiceEnvironmentForm extends React.Component {
+export class ServiceEnvironmentForm extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
@@ -194,15 +193,3 @@ export class BaseServiceEnvironmentForm extends React.Component {
         );
     }
 }
-
-
-const mapEnvFormStateToProps = function(state) {
-    return {
-        form: state.form.value,
-        service_types: state.service_type.value,
-    };
-}
-
-
-const ServiceEnvironmentForm = connect(mapEnvFormStateToProps)(BaseServiceEnvironmentForm);
-export {ServiceEnvironmentForm}

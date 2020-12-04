@@ -4,52 +4,14 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert} from 'reactstrap';
-
-import {clearForm, updateUI} from '../app/store';
+import {clearForm, updateForm, updateUI} from '../app/store';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ServiceError} from './error';
+import {ContainerError, ContainerStarting} from '../shared/container';
 import {ServicePorts} from './ports';
 import {ServiceReadme} from './readme';
-
-
-export class ServiceStarting extends React.PureComponent {
-    static propTypes = exact({
-        status: PropTypes.string.isRequired,
-        form: PropTypes.object.isRequired,
-        service_types: PropTypes.object.isRequired,
-        success: PropTypes.bool,
-    });
-
-    render () {
-        const {form, status, success, service_types} = this.props;
-        const {name, service_type} = form;
-        let color = 'info';
-
-        let message = <span>Pulling container image for service ({name})...</span>;
-        if (success) {
-            message = <span>Service has started ({name})!</span>;
-            color = 'success';
-        } else if (status === 'creating') {
-            message = <span>Creating volumes for service ({name})...</span>;
-        } else if (status === 'start') {
-            message = <span>Starting service container ({name})...</span>;
-        }
-        return (
-            <Alert color={color}>
-              <img
-                alt="Service logo"
-                src={service_types[service_type].icon}
-                width="24px"
-                className="mr-2" />
-              {message}
-            </Alert>
-        );
-    }
-}
 
 
 export class BaseServiceModal extends React.Component {
@@ -64,18 +26,35 @@ export class BaseServiceModal extends React.Component {
     state = {success: false};
 
     get tabs () {
-        const {form, service_types} = this.props;
+        const {dispatch, form, service_types} = this.props;
         const {errors, name='', service_type} = form;
-        const tabs = {Service: <ServiceForm />};
+        const tabs = {
+            Service: (
+                <ServiceForm
+                  service_types={service_types}
+                  form={form}
+                />)};
         if (service_type && service_type !== undefined) {
             const service_config = service_types[service_type];
             const {image, labels={}} = service_config;
             if (name.length > 2 && !errors.name) {
                 const configPath  = labels['envoy.playground.config.path'];
                 if (configPath) {
-                    tabs.Configuration = <ServiceConfigurationForm />;
+                    tabs.Configuration = (
+                        <ServiceConfigurationForm
+                          service_types={service_types}
+                          form={form}
+                          dispatch={dispatch}
+                        />);
                 }
-                tabs.Environment = <ServiceEnvironmentForm service_type={service_type} />;
+                tabs.Environment = (
+                    <ServiceEnvironmentForm
+                      service_type={service_type}
+                      service_types={service_types}
+                      form={form}
+                      dispatch={dispatch}
+                    />)
+                ;
                 const ports = labels['envoy.playground.ports'];
                 if (ports) {
                     tabs.Ports = (
@@ -119,17 +98,21 @@ export class BaseServiceModal extends React.Component {
     }
 
     render () {
-        const {form, status, service_types} = this.props;
-        const {validation} = form;
+        const {dispatch, form, status, service_types} = this.props;
+        const {logs=[], name, service_type, validation} = form;
         const {success} = this.state;
-
+        const messages = {
+            default: <span>Pulling container image for service ({name})...</span>,
+            success: <span>Service has started ({name})!</span>,
+            creating: <span>Creating volumes for service ({name})...</span>,
+            start: <span>Starting service container ({name})...</span>};
         if (success) {
             return (
-                <ServiceStarting
-                  success={success}
-                  form={form}
-                  status={status}
-                  service_types={service_types}
+                <ContainerStarting
+                  message={messages.success}
+                  color='success'
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
                 />);
         }
         if (status === 'initializing' || status === 'creating' || status === 'start') {
@@ -137,16 +120,21 @@ export class BaseServiceModal extends React.Component {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
             return (
-                <ServiceStarting
-                  form={form}
-                  status={status}
-                  service_types={service_types}
-                />
-            );
+                <ContainerStarting
+                  message={messages[status] || messages.default}
+                  color='info'
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
+                />);
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
-                <ServiceError
-                  service_types={service_types}
+                <ContainerError
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
+                  name={name}
+                  logs={logs}
+                  message={"Failed starting service (" + name  + "). See logs for errors."}
+                  onReconfigure={evt => dispatch(updateForm({status: null}))}
                 />
             );
         }
