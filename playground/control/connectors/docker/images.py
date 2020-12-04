@@ -11,6 +11,7 @@ import aiodocker
 from playground.control.connectors.docker.base import PlaygroundDockerContext
 
 
+# todo: convert to contextlib.context
 # based on util in aiodocker for single file
 def mktar_from_docker_context(path: str) -> IO:
     """
