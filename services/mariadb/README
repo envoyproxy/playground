@@ -3,6 +3,36 @@ Provides a MariaDB server with no authentication by default.
 Can be used for testing proxying to MariaDB and MySQL, and for
 testing Envoy's MySQL filter.
 
+Can also be used for testing proxying to services that require a MySQL/MariaDB
+server.
+
 There are many significant environment variables for this image,
 [see the documentation](https://hub.docker.com/_/mariadb) for further
 information on configuration and usage.
+
+There is a provided example Envoy configuration (`Service: MariaDB`).
+
+To make use of it you should:
+
+- add a proxy with the `Service: MariaDB` configuration and mapping the following ports
+  - 10000 -> 10000
+  - 20000 -> 20000 (Optional: admin)
+- create a `MariaDB` service called `mariadb`
+- connect the proxy and the `mariadb` service together on a network
+
+With this setup you should be able to connect to MariaDB on port `10000`.
+
+``` console
+$ mysql --host=127.0.0.1 --port=10000 -u root
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 7
+Server version: 10.5.8-MariaDB-1:10.5.8+maria~focal mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+```
+
+You can view the MySQL filter stats in the admin ui [http://localhost:20000/stats](http://localhost:20000/stats), if enabled.

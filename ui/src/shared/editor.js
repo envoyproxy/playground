@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import ReactMarkdown from 'react-markdown';
+
 import {Alert, Col, Label, Row} from 'reactstrap';
 
 import Editor from 'react-simple-code-editor';
@@ -21,20 +23,15 @@ export class ExampleSearch extends React.PureComponent {
         onExampleSelect: PropTypes.func.isRequired,
     });
 
-    onExampleSelect = async (evt) => {
-        const {onExampleSelect} = this.props;
-        await onExampleSelect(evt);
-    }
-
     render () {
-        const {examples} = this.props;
+        const {examples=[], onExampleSelect} = this.props;
         if (examples.length === 0) {
             return '';
         }
         return (
             <PlaygroundSelectInput
               name="example"
-              onChange={this.onExampleSelect}
+              onChange={onExampleSelect}
               noOption="Select an example"
               options={examples.map(k => [k, k])}
             />
@@ -42,7 +39,8 @@ export class ExampleSearch extends React.PureComponent {
     }
 }
 
-export class PlaygroundEditor extends React.PureComponent {
+
+export class PlaygroundEditor extends React.Component {
     static propTypes = exact({
         content: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
@@ -54,12 +52,24 @@ export class PlaygroundEditor extends React.PureComponent {
         errors: PropTypes.array,
         onHighlight: PropTypes.func,
         onExampleSelect: PropTypes.func,
-        examples: PropTypes.array,
+        examples: PropTypes.object,
     });
+
+    state = {description: ''};
 
     copyConfig = () => {
         this.textArea._input.select();
         document.execCommand('copy');
+    }
+
+    onExampleSelect = async (evt) => {
+        const {examples, onExampleSelect} = this.props;
+        await onExampleSelect(evt);
+        if (examples[evt.target.value] && examples[evt.target.value].description) {
+            this.setState({description: examples[evt.target.value].description});
+        } else {
+            this.setState({description: ''});
+        }
     }
 
     render () {
@@ -67,8 +77,8 @@ export class PlaygroundEditor extends React.PureComponent {
             clearConfig, content, errors=[],
             onHighlight,
             examples=[],
-            onExampleSelect,
             format, onChange, name, title} = this.props;
+        const {description} = this.state;
         let highlighter = code => highlight(code, languages[format]);
         if (onHighlight) {
             highlighter  = onHighlight;
@@ -83,8 +93,8 @@ export class PlaygroundEditor extends React.PureComponent {
                 <Col sm={5} />
                 <Col sm={3}>
                   <ExampleSearch
-                    onExampleSelect={onExampleSelect}
-                    examples={examples} />
+                    onExampleSelect={this.onExampleSelect}
+                    examples={Object.keys(examples)} />
                 </Col>
                 <Col sm={2} className="align-text-bottom">
                   <ActionCopy copy={this.copyConfig} />
@@ -93,6 +103,17 @@ export class PlaygroundEditor extends React.PureComponent {
                   }
                 </Col>
               </Row>
+              {description &&
+               <Row className="pl-3 pr-3 pt-2 pb-2">
+                 <Col sm={12}>
+                   <Alert color="info" className="mb-0 pb-0">
+                     <ReactMarkdown>
+                       {description}
+                     </ReactMarkdown>
+                   </Alert>
+                 </Col>
+               </Row>
+              }
               {(errors.configuration || []).map((e, i) => {
                   return (
                       <Alert

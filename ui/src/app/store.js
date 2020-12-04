@@ -386,7 +386,10 @@ const exampleSlice = createSlice({
                     _examples.playground[labels['envoy.playground.example.setup.name']] = 'http://localhost:8000/static/' + k + '/' + labels['envoy.playground.example.setup.config'];
                 }
                 if (Object.keys(labels).indexOf('envoy.playground.example.config') !== -1) {
-                    _examples.envoy[labels['envoy.playground.example.name']] = 'http://localhost:8000/static/' + k + '/' + labels['envoy.playground.example.config'];
+                    _examples.envoy[labels['envoy.playground.example.name']] = {
+                        path: 'http://localhost:8000/static/' + k + '/' + labels['envoy.playground.example.config'],
+                        description: labels['envoy.playground.example.description'],
+                    };
                 }
             }
             state.value = _examples;

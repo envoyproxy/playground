@@ -16,6 +16,10 @@ services:
         ACME management interface
       envoy.playground.example.name: "Service: ACME/letsencrypt"
       envoy.playground.example.config: envoy-acme.yaml
+      envoy.playground.example.description: |
+        Connects to an `ACME letsencrypt (pebble)` service named `acme`.
+
+        Exposes `HTTPS` on ports `10001`, and `10002`, proxying to the ACME endpoint and admin ports.
 
   http-echo:
     image: mendhak/http-https-echo
@@ -26,6 +30,10 @@ services:
       envoy.playground.logo: "http-echo.svg"
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: HTTP/S echo"
+      envoy.playground.example.description: |
+        Connects to an `HTTP/S echo` service named `echo`.
+
+        Exposes `HTTP` on port `10000`, and `HTTPS` on ports `10001`, and `10002`.
       envoy.playground.example.config: envoy-echo.yaml
       envoy.playground.ports: 80,443
       envoy.playground.port.80.type: HTTP
@@ -74,6 +82,10 @@ services:
       envoy.playground.port.9411.info: |
         Zipkin compatible endpoint (optional)
       envoy.playground.example.name: "Service: Jaeger"
+      envoy.playground.example.description: |
+        Exposes `HTTP` on port `10000` which proxies to an echo service.
+
+        Exposes `HTTP` on port `10001` which proxies to the Jaeger web console.
       envoy.playground.example.config: envoy-jaeger.yaml
 
   mariadb:
@@ -90,6 +102,10 @@ services:
       envoy.playground.port.3306.info: |
         MariaDB server port
       envoy.playground.example.name: "Service: MariaDB"
+      envoy.playground.example.description: |
+        Exposes `TCP`/`mysql` on port `10000` which proxies to a MariaDB service named `mariadb`
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-mariadb.yaml
 
   postgres:
@@ -106,6 +122,10 @@ services:
       envoy.playground.port.5432.info: |
         PostgreSQL server port
       envoy.playground.example.name: "Service: Postgres"
+      envoy.playground.example.description: |
+        Exposes `TCP`/`postgres` on port `10000` which proxies to a Postgres service named `postgres`
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-postgres.yaml
 
   python:
@@ -126,6 +146,10 @@ services:
       envoy.playground.config.default: "run.py"
       envoy.playground.config.highlight: "py"
       envoy.playground.example.name: "Service: Python (asyncio)"
+      envoy.playground.example.description: |
+        Connects to a `Python (asyncio)` service named `python`.
+
+        Exposes `HTTP` on port `10000`.
       envoy.playground.example.config: envoy-python.yaml
       envoy.playground.example.setup.config: playground.yaml
       envoy.playground.example.setup.name: "Python asyncio"
@@ -138,10 +162,16 @@ services:
         Redis in-memory data store
       envoy.playground.logo: "redis.svg"
       envoy.playground.readme: README
-      envoy.playground.ports: 6395
-      envoy.playground.port.6395.info: |
+      envoy.playground.ports: 6379
+      envoy.playground.port.6379.info: |
         Redis server port
       envoy.playground.example.name: "Service: Redis"
+      envoy.playground.example.description: |
+        Connects to a `Redis` service named `redis`.
+
+        Exposes `TCP`/`redis` on port `10000`.
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-redis.yaml
 
   solid:
@@ -157,6 +187,10 @@ services:
       envoy.playground.port.8443.info: |
         Solid data pod endpoint
       envoy.playground.example.name: "Service: Solid node"
+      envoy.playground.example.description: |
+        Connects to a `Solid server (node)` named `solid`.
+
+        Exposes `HTTPS` on port `10000`.
       envoy.playground.example.config: envoy-solid.yaml
 
   zipkin:
@@ -167,8 +201,14 @@ services:
         Zipkin distributed tracing server
       envoy.playground.logo: "zipkin.svg"
       envoy.playground.readme: README
-      envoy.playground.ports: 6911
-      envoy.playground.port.6911.info: |
+      envoy.playground.ports: 9411
+      envoy.playground.port.9411.info: |
         Zipkin REST endpoint
       envoy.playground.example.name: "Service: Zipkin"
+      envoy.playground.example.description: |
+        Connects to a `Zipkin` service named `zipkin`.
+
+        Exposes `HTTP` on port `10000`.
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-zipkin.yaml

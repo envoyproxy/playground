@@ -1,8 +1,41 @@
-
 Echos back request and request headers as json.
 
 `HTTP` and `HTTPS` listening ports can be configured with the `HTTP_PORT` and `HTTPS_PORT`
 environment variables respectively.
 
-This can be useful for testing load balancing setups where you wish to see which upstream
-server handled the request, or for checking injected headers.
+This can be useful for testing a variety of situations.
+
+For example, you might use it to test load balancing and routing setups where
+you wish to see which upstream server handled the request.
+
+It can also be useful for checking injected headers.
+
+There is a provided example Envoy configuration (`Service: HTTP/S echo`).
+
+To make use of it you should:
+
+- add a proxy with the `Service: HTTP/S echo` configuration and mapping the following ports
+  - 10000 -> 10000
+  - 10001 -> 10001
+  - 10002 -> 10002
+- create an `HTTP/S echo` service called `echo`
+- connect the proxy and the `echo` service together on a network
+
+With this setup you should be able to view the following endpoints:
+
+- [http://localhost:10000/http](http://localhost:10000/http)
+- [http://localhost:10000/https](http://localhost:10000/https)
+- [https://localhost:10001/http](https://localhost:10001/http)
+- [https://localhost:10001/https](https://localhost:10001/https)
+- [https://localhost:10002](https://localhost:10002)
+
+Port `10000` is an `HTTP` port that routes the paths `/http` and `/https`
+to the respective ports on the `echo` service.
+
+Port `10001` is an `HTTPS` port that does the same.
+
+Port `10002` is a `TCP` passthrough port that proxies to the `HTTPS` port
+on the `echo` service.
+
+All `HTTPS` certificates are "snake-oil" so you will need to use `-k` with `curl`
+or accept untrusted certificates if viewing in a browser.

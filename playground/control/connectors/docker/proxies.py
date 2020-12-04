@@ -84,6 +84,10 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             []
             if logging.get("default", "info") in ['', "info"]
             else [f"ENVOY_LOG_LEVEL={logging['default']}"])
+        exposed = {
+            f"{internal}/tcp": {}
+            for external, internal
+            in port_mappings}
         return {
             'Image': image,
             'Cmd': ["python", "/hot-restarter.py", "/start_envoy.sh"],
@@ -96,6 +100,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 "envoy.playground.proxy": name,
             },
             "Env": environment,
+            "ExposedPorts": exposed,
             "HostConfig": {
                 "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
