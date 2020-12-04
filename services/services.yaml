@@ -158,10 +158,16 @@ services:
         Redis in-memory data store
       envoy.playground.logo: "redis.svg"
       envoy.playground.readme: README
-      envoy.playground.ports: 6395
-      envoy.playground.port.6395.info: |
+      envoy.playground.ports: 6379
+      envoy.playground.port.6379.info: |
         Redis server port
       envoy.playground.example.name: "Service: Redis"
+      envoy.playground.example.description: |
+        Connects to a `Redis` service named `redis`.
+
+        Exposes `TCP`/`redis` on port `10000`.
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-redis.yaml
 
   solid:

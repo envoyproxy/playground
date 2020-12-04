@@ -1,6 +1,6 @@
 static_resources:
   listeners:
-  - name: postgres_listener
+  - name: postgres-listener
     address:
       socket_address:
         address: 0.0.0.0
@@ -15,14 +15,14 @@ static_resources:
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
           stat_prefix: postgres_tcp
-          cluster: postgres_cluster
+          cluster: postgres-cluster
 
   clusters:
-  - name: postgres_cluster
+  - name: postgres-cluster
     connect_timeout: 1s
     type: strict_dns
     load_assignment:
-      cluster_name: postgres_cluster
+      cluster_name: postgres-cluster
       endpoints:
       - lb_endpoints:
         - endpoint:
