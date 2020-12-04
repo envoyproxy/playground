@@ -40,7 +40,8 @@ class ServiceDocsCreator(object):
         service_type['service_type'] = service
         if service_type['labels'].get('envoy.playground.example.description'):
             service_type['example_description'] = convert(
-                service_type['labels']['envoy.playground.example.description'])
+                service_type['labels'][
+                    'envoy.playground.example.description']).strip()
         return service_type
 
     def create_service_rst(self):
