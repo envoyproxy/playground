@@ -78,6 +78,10 @@ services:
       envoy.playground.port.9411.info: |
         Zipkin compatible endpoint (optional)
       envoy.playground.example.name: "Service: Jaeger"
+      envoy.playground.example.description: |
+        Exposes `HTTP` on port `10000` which proxies to an echo service.
+
+        Exposes `HTTP` on port `10001` which proxies to the Jaeger web console.
       envoy.playground.example.config: envoy-jaeger.yaml
 
   mariadb:

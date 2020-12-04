@@ -1,0 +1,22 @@
+
+Provides an example of an asynchronous web server.
+
+Container has some other aiolibs for example for connecting
+to `mariadb` or `postgres` servers.
+
+#### Ports
+
+- 8000/HTTP
+
+#### Environment vars
+
+None are used by default with this service.
+
+#### Configuration
+
+Can be configured by editing the python `run.py`.
+
+#### Envoy example configurations
+
+A `python-envoy.yaml` file is provided which proxies to a service named `python`,
+and connects to port `8000`

@@ -30,13 +30,14 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/"
+                  prefix: "/trace"
                 route:
                   cluster: service-to-trace
                 decorator:
                   operation: checkAvailability
           http_filters:
           - name: envoy.filters.http.router
+            typed_config: {}
           use_remote_address: true
 
   - address:
@@ -58,7 +59,7 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/"
+                  prefix: "*"
                 route:
                   cluster: jaeger
           http_filters:
@@ -66,9 +67,10 @@ static_resources:
 
   clusters:
   - name: service-to-trace
-    connect_timeout: 1s
+    connect_timeout: 0.250s
     type: strict_dns
     lb_policy: round_robin
+    http2_protocol_options: {}
     load_assignment:
       cluster_name: service-to-trace
       endpoints:
@@ -78,7 +80,6 @@ static_resources:
               socket_address:
                 address: echo
                 port_value: 80
-
   - name: jaeger
     connect_timeout: 1s
     type: strict_dns
