@@ -6,6 +6,8 @@ import sys
 
 import yaml
 
+from m2r2 import convert
+
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
@@ -36,6 +38,9 @@ class ServiceDocsCreator(object):
     def _get_service_vars(self, service):
         service_type = self.service_types[service]
         service_type['service_type'] = service
+        if service_type['labels'].get('envoy.playground.example.description'):
+            service_type['example_description'] = convert(
+                service_type['labels']['envoy.playground.example.description'])
         return service_type
 
     def create_service_rst(self):

@@ -2,10 +2,12 @@
 .. |Envoy icon| image:: ../_static/img/envoy.svg
   :width: 22
   :alt: Envoy
+  :target: #
 
 ..  figure:: _include/{{service_type}}/{{labels['envoy.playground.logo']}}
     :figwidth: 100px
     :align: right
+    :class: service-image
 
 {{labels['envoy.playground.service']}}
 {% for i in range(labels['envoy.playground.service']|length) %}={% endfor %}
@@ -61,6 +63,8 @@
    .. tab:: |Envoy icon| example
 
       Example name: ``{{labels['envoy.playground.example.name']}}``
+
+      {{example_description}}
 
       .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.example.config']}}
          :language: yaml
