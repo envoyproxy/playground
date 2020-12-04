@@ -17,7 +17,7 @@ To make use of it you should:
 - add a proxy with the `Service: HTTP/S echo` configuration and mapping the following ports
   - 10000 -> 10000
   - 20000 -> 20000 (Optional: admin)
-- create an `MariaDB` service called `mariadb`
+- create a `MariaDB` service called `mariadb`
 - connect the proxy and the `mariadb` service together on a network
 
 With this setup you should be able to connect to MariaDB on port `10000`.

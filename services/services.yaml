@@ -100,6 +100,8 @@ services:
       envoy.playground.example.name: "Service: MariaDB"
       envoy.playground.example.description: |
         Exposes `TCP`/`mysql` on port `10000` which proxies to a service named `mariadb`
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-mariadb.yaml
 
   postgres:
@@ -116,6 +118,10 @@ services:
       envoy.playground.port.5432.info: |
         PostgreSQL server port
       envoy.playground.example.name: "Service: Postgres"
+      envoy.playground.example.description: |
+        Exposes `TCP`/`postgres` on port `10000` which proxies to a service named `postgres`
+
+        Exposes `HTTP` on port `20000` for the Envoy admin interface.
       envoy.playground.example.config: envoy-postgres.yaml
 
   python:
