@@ -23,16 +23,6 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             return
         if not await self.connector.images.exists(command.data.image):
             await self.connector.images.pull(command.data.image)
-        mounts = OrderedDict()
-        if command.data.configuration and command.data.config_path:
-            config = base64.b64encode(
-                command.data.configuration.encode('utf-8')).decode()
-            mounts[os.path.dirname(command.data.config_path)] = (
-                await self.connector.volumes.populate(
-                    'service',
-                    command.data.name,
-                    'config',
-                    {os.path.basename(command.data.config_path): config}))
         _environment = [
             "%s=%s" % (k, v)
             for k, v
@@ -43,8 +33,23 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
                 command.data.image,
                 command.data.name,
                 _environment,
-                mounts),
+                await self._get_service_mounts(command.data)),
             command.data.name)
+
+    async def _get_service_mounts(
+            self,
+            data: ServiceCreateCommandAttribs) -> OrderedDict:
+        mounts = OrderedDict()
+        if data.configuration and data.config_path:
+            config = base64.b64encode(
+                data.configuration.encode('utf-8')).decode()
+            mounts[os.path.dirname(data.config_path)] = (
+                await self.connector.volumes.populate(
+                    'service',
+                    data.name,
+                    'config',
+                    {os.path.basename(data.config_path): config}))
+        return mounts
 
     def _get_service_config(
             self,

@@ -35,18 +35,20 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
                 name_matches = (
                     f"/envoy__playground__{self.name}__{command.data.name}"
                     in container["Names"])
-                if not name_matches:
-                    continue
-                volumes = [
-                    v['Name']
-                    for v in container['Mounts']]
-                try:
-                    await self._remove_container(container)
-                except PlaytimeError as e:
-                    await self.connector.emit_error(e.args[0])
-                    return
-                if volumes:
-                    await self._remove_volumes(volumes)
+                if name_matches:
+                    await self._delete_container(container)
+
+    async def _delete_container(self, container):
+        try:
+            await container.stop()
+            await container.wait()
+            await container.delete(v=True, force=True)
+            return True
+        except DockerError as e:
+            if e.args[0] == 409:
+                raise PlaytimeError(e.args[1]['message'])
+            # todo: log warning ?
+            return False
 
     async def list(self) -> list:
         if not self._docker_resource or not self.name:
@@ -109,16 +111,16 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         return _resources
 
     async def _remove_container(self, container):
+        volumes = [
+            v['Name']
+            for v in container['Mounts']]
         try:
-            await container.stop()
-            await container.wait()
-            await container.delete(v=True, force=True)
-            return True
-        except DockerError as e:
-            if e.args[0] == 409:
-                raise PlaytimeError(e.args[1]['message'])
-            # todo: log warning ?
-            return False
+            await self._delete_container(container)
+        except PlaytimeError as e:
+            await self.connector.emit_error(e.args[0])
+            return
+        if volumes:
+            await self._remove_volumes(volumes)
 
     async def _remove_volumes(self, volumes):
         _volumes = await self.docker.volumes.list()
