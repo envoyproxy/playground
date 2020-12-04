@@ -104,7 +104,7 @@ export class BaseServiceModal extends React.Component {
             }
             return (
                 <ContainerStarting
-                  message={messages[status]}
+                  message={messages[status] || messages.default}
                   color='info'
                   icon={service_types[service_type].icon}
                   iconAlt={name}
