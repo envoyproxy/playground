@@ -27,7 +27,7 @@ services:
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: HTTP/S echo"
       envoy.playground.example.description: |
-        Connects to an `http-echo` service named `echo`.
+        Connects to an `HTTP/S echo` service named `echo`.
 
         Exposes `HTTP` on port `10000`, and `HTTPS` on ports `10001`, and `10002`.
       envoy.playground.example.config: envoy-echo.yaml
@@ -130,6 +130,10 @@ services:
       envoy.playground.config.default: "run.py"
       envoy.playground.config.highlight: "py"
       envoy.playground.example.name: "Service: Python (asyncio)"
+      envoy.playground.example.description: |
+        Connects to a `Python (asyncio)` service named `python`.
+
+        Exposes `HTTP` on port `10000`.
       envoy.playground.example.config: envoy-python.yaml
       envoy.playground.example.setup.config: playground.yaml
       envoy.playground.example.setup.name: "Python asyncio"
