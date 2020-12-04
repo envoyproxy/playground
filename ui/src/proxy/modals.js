@@ -2,58 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
-import {Alert, Col, Row} from 'reactstrap';
+import {Alert} from 'reactstrap';
 
 import {clearForm, updateForm, updateUI} from '../app/store';
-import {AlertStartFailed} from '../shared/alerts';
+import {ContainerError} from '../shared/error';
 import {PortMappingForm} from '../shared/forms';
-import {PlaygroundFailLogs} from '../shared/logs';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
     ProxyForm, ProxyCertificatesForm} from './forms';
 
 import EnvoyLogo from '../app/images/envoy.svg';
-
-
-export class BaseProxyError extends React.PureComponent {
-    static propTypes = exact({
-        dispatch: PropTypes.func,
-        form: PropTypes.object.isRequired,
-    });
-
-    render () {
-        const {dispatch, form} = this.props;
-        const {logs=[], name} = form;
-        const message = "Failed starting Envoy proxy (" + name  + "). See logs for errors.";
-        return (
-            <div>
-              <AlertStartFailed
-                onReconfigure={evt => dispatch(updateForm({status: null}))}
-                message={message}
-                icon={EnvoyLogo}
-                alt="Envoy logo"
-              />
-              <Row className="pt-2 bg-light ml-0 mr-0">
-                <Col sm={12}>
-                  <PlaygroundFailLogs logs={logs} />
-                </Col>
-              </Row>
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-    };
-}
-
-const ProxyError = connect(mapStateToProps)(BaseProxyError);
-export {ProxyError};
 
 
 export class ProxyStarting extends React.PureComponent {
@@ -140,9 +99,9 @@ export class ProxyModal extends React.Component {
     }
 
     render () {
-        const {form} = this.props;
+        const {dispatch, form} = this.props;
         const {success} = this.state;
-        const {status, validation} = form;
+        const {logs=[], name, status, validation} = form;
         if (success) {
             return (
                 <ProxyStarting success={success} form={form} status={status} />);
@@ -157,7 +116,14 @@ export class ProxyModal extends React.Component {
             );
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
-                <ProxyError />
+                <ContainerError
+                  icon={EnvoyLogo}
+                  iconAlt="Envoy"
+                  name={name}
+                  logs={logs}
+                  message={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+                  onReconfigure={evt => dispatch(updateForm({status: null}))}
+                />
             );
         }
         return (

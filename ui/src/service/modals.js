@@ -6,12 +6,12 @@ import {connect} from 'react-redux';
 
 import {Alert} from 'reactstrap';
 
-import {clearForm, updateUI} from '../app/store';
+import {clearForm, updateForm, updateUI} from '../app/store';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ServiceError} from './error';
+import {ContainerError} from '../shared/error';
 import {ServicePorts} from './ports';
 import {ServiceReadme} from './readme';
 
@@ -119,10 +119,9 @@ export class BaseServiceModal extends React.Component {
     }
 
     render () {
-        const {form, status, service_types} = this.props;
-        const {validation} = form;
+        const {dispatch, form, status, service_types} = this.props;
+        const {logs=[], name, service_type, validation} = form;
         const {success} = this.state;
-
         if (success) {
             return (
                 <ServiceStarting
@@ -145,8 +144,13 @@ export class BaseServiceModal extends React.Component {
             );
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
-                <ServiceError
-                  service_types={service_types}
+                <ContainerError
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
+                  name={name}
+                  logs={logs}
+                  message={"Failed starting service (" + name  + "). See logs for errors."}
+                  onReconfigure={evt => dispatch(updateForm({status: null}))}
                 />
             );
         }
