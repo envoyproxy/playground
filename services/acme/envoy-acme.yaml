@@ -36,7 +36,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: echo
+                address: acme
                 port_value: 14000
     transport_socket:
       name: envoy.transport_sockets.tls

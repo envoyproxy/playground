@@ -19,7 +19,7 @@ services:
       envoy.playground.example.description: |
         Connects to an `ACME letsencrypt (pebble)` service named `acme`.
 
-        Exposes `HTTPS` on ports `10001`, and `10002`, proxying to the ACME ports.
+        Exposes `HTTPS` on ports `10001`, and `10002`, proxying to the ACME endpoint and admin ports.
 
   http-echo:
     image: mendhak/http-https-echo
