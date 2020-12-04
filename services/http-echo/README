@@ -1,4 +1,3 @@
-
 Echos back request and request headers as json.
 
 `HTTP` and `HTTPS` listening ports can be configured with the `HTTP_PORT` and `HTTPS_PORT`
@@ -35,3 +34,6 @@ Port `10001` is an `HTTPS` port that does the same.
 
 Port `10002` is a `TCP` passthrough port that proxies to the `HTTPS` port
 on the `echo` service.
+
+All `HTTPS` certificates are "snake-oil" so you will need to use `-k` with `curl`
+or accept untrusted certificates if viewing in a browser.
