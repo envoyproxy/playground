@@ -10,9 +10,9 @@ you wish to see which upstream server handled the request.
 
 It can also be useful for checking injected headers.
 
-To make use of the example Envoy configuration you will need to:
+To make use of the provided example Envoy configuration you will need to:
 
-- add this proxy mapping the following ports
+- add a proxy with the `Service: HTTP/S echo` configuration and mapping the following ports
   - 10000 -> 10000
   - 10001 -> 10001
   - 10002 -> 10002
