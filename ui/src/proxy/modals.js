@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Alert} from 'reactstrap';
-
 import {clearForm, updateForm, updateUI} from '../app/store';
-import {ContainerError} from '../shared/error';
+import {ContainerError, ContainerStarting} from '../shared/container';
 import {PortMappingForm} from '../shared/forms';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
@@ -13,40 +11,6 @@ import {
     ProxyForm, ProxyCertificatesForm} from './forms';
 
 import EnvoyLogo from '../app/images/envoy.svg';
-
-
-export class ProxyStarting extends React.PureComponent {
-    static propTypes = exact({
-        status: PropTypes.string.isRequired,
-        form: PropTypes.object.isRequired,
-        success: PropTypes.bool
-    });
-
-    render () {
-        const {form, status, success} = this.props;
-        const {name} = form;
-        let color = 'info';
-        let message = <span>Pulling container image for Envoy proxy ({name})...</span>;
-        if (success) {
-            message = <span>Envoy proxy has started ({name})!</span>;
-            color = 'success';
-        } else if (status === 'creating') {
-            message = <span>Creating volumes for Envoy proxy ({name})...</span>;
-        } else if (status === 'start') {
-            message = <span>Starting Envoy proxy container ({name})...</span>;
-        }
-        return (
-            <Alert color={color}>
-              <img
-                alt="Envoy logo"
-                src={EnvoyLogo}
-                width="24px"
-                className="mr-2" />
-              {message}
-            </Alert>
-        );
-    }
-}
 
 
 export class ProxyModal extends React.Component {
@@ -102,18 +66,31 @@ export class ProxyModal extends React.Component {
         const {dispatch, form} = this.props;
         const {success} = this.state;
         const {logs=[], name, status, validation} = form;
+        const messages = {
+            default: <span>Pulling container image for Envoy proxy ({name})...</span>,
+            success: <span>Envoy proxy has started ({name})!</span>,
+            creating: <span>Creating volumes for Envoy proxy ({name})...</span>,
+            start: <span>Starting Envoy proxy container ({name})...</span>};
         if (success) {
             return (
-                <ProxyStarting success={success} form={form} status={status} />);
+                <ContainerStarting
+                  message={messages.success}
+                  color='success'
+                  icon={EnvoyLogo}
+                  iconAlt={name}
+                />);
         }
-
         if (status === 'initializing' || status === 'creating' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
             return (
-                <ProxyStarting form={form} status={status} />
-            );
+                <ContainerStarting
+                  message={messages[status]}
+                  color='info'
+                  icon={EnvoyLogo}
+                  iconAlt={name}
+                />);
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
                 <ContainerError

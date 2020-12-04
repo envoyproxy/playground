@@ -4,52 +4,14 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert} from 'reactstrap';
-
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ContainerError} from '../shared/error';
+import {ContainerError, ContainerStarting} from '../shared/container';
 import {ServicePorts} from './ports';
 import {ServiceReadme} from './readme';
-
-
-export class ServiceStarting extends React.PureComponent {
-    static propTypes = exact({
-        status: PropTypes.string.isRequired,
-        form: PropTypes.object.isRequired,
-        service_types: PropTypes.object.isRequired,
-        success: PropTypes.bool,
-    });
-
-    render () {
-        const {form, status, success, service_types} = this.props;
-        const {name, service_type} = form;
-        let color = 'info';
-
-        let message = <span>Pulling container image for service ({name})...</span>;
-        if (success) {
-            message = <span>Service has started ({name})!</span>;
-            color = 'success';
-        } else if (status === 'creating') {
-            message = <span>Creating volumes for service ({name})...</span>;
-        } else if (status === 'start') {
-            message = <span>Starting service container ({name})...</span>;
-        }
-        return (
-            <Alert color={color}>
-              <img
-                alt="Service logo"
-                src={service_types[service_type].icon}
-                width="24px"
-                className="mr-2" />
-              {message}
-            </Alert>
-        );
-    }
-}
 
 
 export class BaseServiceModal extends React.Component {
@@ -122,13 +84,18 @@ export class BaseServiceModal extends React.Component {
         const {dispatch, form, status, service_types} = this.props;
         const {logs=[], name, service_type, validation} = form;
         const {success} = this.state;
+        const messages = {
+            default: <span>Pulling container image for service ({name})...</span>,
+            success: <span>Service has started ({name})!</span>,
+            creating: <span>Creating volumes for service ({name})...</span>,
+            start: <span>Starting service container ({name})...</span>};
         if (success) {
             return (
-                <ServiceStarting
-                  success={success}
-                  form={form}
-                  status={status}
-                  service_types={service_types}
+                <ContainerStarting
+                  message={messages.success}
+                  color='success'
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
                 />);
         }
         if (status === 'initializing' || status === 'creating' || status === 'start') {
@@ -136,12 +103,12 @@ export class BaseServiceModal extends React.Component {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }
             return (
-                <ServiceStarting
-                  form={form}
-                  status={status}
-                  service_types={service_types}
-                />
-            );
+                <ContainerStarting
+                  message={messages[status]}
+                  color='info'
+                  icon={service_types[service_type].icon}
+                  iconAlt={name}
+                />);
         } else if (status === 'exited' || status === 'destroy' || status === 'die') {
             return (
                 <ContainerError
