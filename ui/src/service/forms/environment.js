@@ -1,8 +1,7 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
-
-import {connect} from 'react-redux';
 
 import {Button, Col, Input, Row} from 'reactstrap';
 
