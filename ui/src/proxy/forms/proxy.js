@@ -186,7 +186,6 @@ export class BaseProxyForm extends React.PureComponent {
 
 const mapStateToProps = function(state, other) {
     return {
-        form: state.form.value,
         proxies: state.proxy.value,
         meta: state.meta.value,
         examples: state.example.value,

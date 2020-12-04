@@ -15,7 +15,7 @@ import BinaryIcon from '../../app/images/binary.png';
 //      - valid filenames
 
 
-export class BaseProxyBinariesForm extends React.PureComponent {
+export class ProxyBinariesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -42,12 +42,3 @@ export class BaseProxyBinariesForm extends React.PureComponent {
         );
     }
 }
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-    };
-}
-
-const ProxyBinariesForm = connect(mapStateToProps)(BaseProxyBinariesForm);
-export {ProxyBinariesForm};

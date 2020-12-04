@@ -83,7 +83,7 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
 }
 
 
-export class BaseServiceEnvironmentForm extends React.Component {
+export class ServiceEnvironmentForm extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
@@ -194,15 +194,3 @@ export class BaseServiceEnvironmentForm extends React.Component {
         );
     }
 }
-
-
-const mapEnvFormStateToProps = function(state) {
-    return {
-        form: state.form.value,
-        service_types: state.service_type.value,
-    };
-}
-
-
-const ServiceEnvironmentForm = connect(mapEnvFormStateToProps)(BaseServiceEnvironmentForm);
-export {ServiceEnvironmentForm}

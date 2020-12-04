@@ -26,18 +26,35 @@ export class BaseServiceModal extends React.Component {
     state = {success: false};
 
     get tabs () {
-        const {form, service_types} = this.props;
+        const {dispatch, form, service_types} = this.props;
         const {errors, name='', service_type} = form;
-        const tabs = {Service: <ServiceForm />};
+        const tabs = {
+            Service: (
+                <ServiceForm
+                  service_types={service_types}
+                  form={form}
+                />)};
         if (service_type && service_type !== undefined) {
             const service_config = service_types[service_type];
             const {image, labels={}} = service_config;
             if (name.length > 2 && !errors.name) {
                 const configPath  = labels['envoy.playground.config.path'];
                 if (configPath) {
-                    tabs.Configuration = <ServiceConfigurationForm />;
+                    tabs.Configuration = (
+                        <ServiceConfigurationForm
+                          service_types={service_types}
+                          form={form}
+                          dispatch={dispatch}
+                        />);
                 }
-                tabs.Environment = <ServiceEnvironmentForm service_type={service_type} />;
+                tabs.Environment = (
+                    <ServiceEnvironmentForm
+                      service_type={service_type}
+                      service_types={service_types}
+                      form={form}
+                      dispatch={dispatch}
+                    />)
+                ;
                 const ports = labels['envoy.playground.ports'];
                 if (ports) {
                     tabs.Ports = (

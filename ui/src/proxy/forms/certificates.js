@@ -17,7 +17,7 @@ import CertificateIcon from '../../app/images/certificate.svg';
 
 
 
-export class BaseProxyCertificatesForm extends React.PureComponent {
+export class ProxyCertificatesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -52,13 +52,3 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
         );
     }
 }
-
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-    };
-};
-
-const ProxyCertificatesForm = connect(mapStateToProps)(BaseProxyCertificatesForm);
-export {ProxyCertificatesForm};

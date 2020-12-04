@@ -15,7 +15,7 @@ import {PlaygroundEditor} from '../../shared/editor';
 //      - not too long
 
 
-export class BaseServiceConfigurationForm extends React.PureComponent {
+export class ServiceConfigurationForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -74,14 +74,3 @@ export class BaseServiceConfigurationForm extends React.PureComponent {
         );
     }
 }
-
-
-const mapStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-        service_types: state.service_type.value
-    };
-}
-
-const ServiceConfigurationForm = connect(mapStateToProps)(BaseServiceConfigurationForm);
-export {ServiceConfigurationForm};

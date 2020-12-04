@@ -12,7 +12,7 @@ import {
 import {updateForm} from '../../app/store';
 
 
-export class BaseProxyLoggingForm extends React.PureComponent {
+export class ProxyLoggingForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -57,12 +57,3 @@ export class BaseProxyLoggingForm extends React.PureComponent {
         );
     }
 }
-
-const mapLoggingStateToProps = function(state, other) {
-    return {
-        form: state.form.value,
-    };
-}
-
-const ProxyLoggingForm = connect(mapLoggingStateToProps)(BaseProxyLoggingForm);
-export {ProxyLoggingForm};

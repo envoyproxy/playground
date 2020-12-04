@@ -24,20 +24,32 @@ export class ProxyModal extends React.Component {
     state = {success: false};
 
     get tabs () {
-        const {form} = this.props;
+        const {dispatch, form} = this.props;
         const {name=''} = form;
         let tabs = {Proxy: <ProxyForm />};
         if (name.length > 2) {
             tabs = {
                 ...tabs,
                 ...{Logging: (
-                    <ProxyLoggingForm />),
-                    Certificates: (
-                        <ProxyCertificatesForm />),
-                    Binaries: (
-                        <ProxyBinariesForm />),
+                    <ProxyLoggingForm
+                      dispatch={dispatch}
+                      form={form}
+                    />),
                     Ports: (
-                        <PortMappingForm />)}};
+                        <PortMappingForm
+                          dispatch={dispatch}
+                          form={form}
+                        />),
+                    Certificates: (
+                        <ProxyCertificatesForm
+                          dispatch={dispatch}
+                          form={form}
+                        />),
+                    Binaries: (
+                        <ProxyBinariesForm
+                          dispatch={dispatch}
+                          form={form}
+                        />)}};
         }
         return tabs;
     }
