@@ -187,6 +187,10 @@ services:
       envoy.playground.port.8443.info: |
         Solid data pod endpoint
       envoy.playground.example.name: "Service: Solid node"
+      envoy.playground.example.description: |
+        Connects to a `Solid` node named `solid`.
+
+        Exposes `HTTPS` on port `10000`.
       envoy.playground.example.config: envoy-solid.yaml
 
   zipkin:

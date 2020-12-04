@@ -28,12 +28,12 @@ To make use of it you should:
 
 With this setup you should be able to view the following endpoints:
 
-- [https://localhost:10000](https://localhost:10001)
+- [https://localhost:10000](https://localhost:10000)
 - [https://localhost:10001](https://localhost:10001)
 
-Port `10000` is an `TCP` passthrough port that routes to the endpoint port of the `acme` service.
+Port `10000` is a `TCP` passthrough port that routes to the endpoint port of the `acme` service.
 
-Port `10001` is an `TCP` passthrough port that routes to the admin port of the `acme` service.
+Port `10001` is a `TCP` passthrough port that routes to the admin port of the `acme` service.
 
 All `HTTPS` certificates are "snake-oil" so you will need to use `-k` with `curl`
 or accept untrusted certificates if viewing in a browser.
