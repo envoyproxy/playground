@@ -188,7 +188,7 @@ services:
         Solid data pod endpoint
       envoy.playground.example.name: "Service: Solid node"
       envoy.playground.example.description: |
-        Connects to a `Solid` node named `solid`.
+        Connects to a `Solid server (node)` named `solid`.
 
         Exposes `HTTPS` on port `10000`.
       envoy.playground.example.config: envoy-solid.yaml

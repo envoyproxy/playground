@@ -26,7 +26,3 @@ static_resources:
               socket_address:
                 address: solid
                 port_value: 8443
-    transport_socket:
-      name: envoy.transport_sockets.tls
-      typed_config:
-        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
