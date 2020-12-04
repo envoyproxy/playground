@@ -26,6 +26,10 @@ services:
       envoy.playground.logo: "http-echo.svg"
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: HTTP/S echo"
+      envoy.playground.example.description: |
+        Connects to an `http-echo` service named `echo`.
+
+        Exposes `HTTP` on port `10000`, and `HTTPS` on ports `10001`, and `10002`.
       envoy.playground.example.config: envoy-echo.yaml
       envoy.playground.ports: 80,443
       envoy.playground.port.80.type: HTTP
