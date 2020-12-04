@@ -54,7 +54,7 @@ def test_api(patch_playground):
 
 def test_api_metadata():
     _api = DummyPlaygroundAPI()
-    assert _api._envoy_image == "envoyproxy/envoy-dev:latest"
+    assert _api._envoy_image == "envoyproxy/envoy-dev-playground:latest"
     assert _api.metadata == dict(
         version=_api._envoy_image,
         max_network_connections=MAX_NETWORK_CONNECTIONS,
