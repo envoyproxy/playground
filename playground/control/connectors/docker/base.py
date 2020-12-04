@@ -35,8 +35,8 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
                 name_matches = (
                     f"/envoy__playground__{self.name}__{command.data.name}"
                     in container["Names"])
-                if not name_matches:
-                    continue
+                if name_matches:
+                    await self._delete_container(container)
 
     async def _delete_container(self, container):
         try:

@@ -23,7 +23,6 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             return
         if not await self.connector.images.exists(command.data.image):
             await self.connector.images.pull(command.data.image)
-        mounts = self._get_service_mounts(command.data)
         _environment = [
             "%s=%s" % (k, v)
             for k, v
@@ -34,7 +33,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
                 command.data.image,
                 command.data.name,
                 _environment,
-                mounts),
+                await self._get_service_mounts(command.data)),
             command.data.name)
 
     async def _get_service_mounts(
