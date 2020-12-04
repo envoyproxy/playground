@@ -21,11 +21,11 @@ To make use of the provided example Envoy configuration (`Service: HTTP/S echo`)
 
 With this setup you should be able to view the following endpoints:
 
-- http://localhost:10000/http
-- http://localhost:10000/https
-- https://localhost:10001/http
-- https://localhost:10001/https
-- https://localhost:10002
+- [http://localhost:10000/http](http://localhost:10000/http)
+- [http://localhost:10000/https](http://localhost:10000/https)
+- [https://localhost:10001/http](https://localhost:10001/http)
+- [https://localhost:10001/https](https://localhost:10001/https)
+- [https://localhost:10002](https://localhost:10002)
 
 Port `10000` is an `HTTP` port that routes the paths `/http` and `/https`
 to the respective ports on the `echo` service.
