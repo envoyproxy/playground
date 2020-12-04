@@ -64,7 +64,9 @@
 
       Example name: ``{{labels['envoy.playground.example.name']}}``
 
-      {{example_description}}
+{% if example_description %}
+      .. mdinclude:: {{example_description}}
+{% endif %}
 
       .. literalinclude:: _include/{{service_type}}/{{labels['envoy.playground.example.config']}}
          :language: yaml
