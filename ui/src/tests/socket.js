@@ -9,6 +9,11 @@ jest.mock('reconnecting-websocket');
 let addListeners;
 
 
+class DummyPlaygroundSocket extends PlaygroundSocket {
+    addListeners = addListeners;
+}
+
+
 beforeEach(() => {
     addListeners = PlaygroundSocket.prototype.addListeners;
     PlaygroundSocket.prototype.addListeners = jest.fn();
@@ -32,8 +37,17 @@ test('socket constructor', () => {
     expect(socket.addListeners.mock.calls).toEqual([[]]);
     expect(socket._state).toEqual('starting');
     expect(socket.disconnected).toEqual(false);
-    expect(socket.listeners).toEqual({
-        message: socket.onMessage,
-        close: socket.onDisconnect,
-        open: socket.onConnect});
+    expect(socket.listeners).toEqual(['message', 'close', 'open']);
+});
+
+
+test('socket addListeners', () => {
+    const playground = {api: 'API', store: 'STORE'};
+    const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
+    socket.ws = {addEventListener: jest.fn()};
+    socket.addListeners();
+    expect(socket.ws.addEventListener.mock.calls).toEqual([
+        ['message', socket.message],
+        ['close', socket.close],
+        ['open', socket.open]]);
 });

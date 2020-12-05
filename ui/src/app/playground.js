@@ -9,6 +9,13 @@ import {
 
 
 export default class Playground {
+    _updaters = [
+        updateMeta,
+        updateServiceTypes,
+        loadServices,
+        loadProxies,
+        loadNetworks,
+        updateExamples];
 
     constructor (store, apiAddress, socketAddress) {
         this.store = store;
@@ -25,13 +32,7 @@ export default class Playground {
     };
 
     get updaters () {
-        return [
-            updateMeta,
-            updateServiceTypes,
-            loadServices,
-            loadProxies,
-            loadNetworks,
-            updateExamples];
+        return this._updaters;
     }
 
     load = async () => {

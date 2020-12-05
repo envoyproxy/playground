@@ -9,6 +9,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
 export default class PlaygroundSocket {
+    _listeners = ['message', 'close', 'open'];
 
     constructor(playground, address) {
         const {api, store} = playground;
@@ -23,29 +24,16 @@ export default class PlaygroundSocket {
     }
 
     get listeners () {
-        return {
-            message: this.onMessage,
-            close: this.onDisconnect,
-            open: this.onConnect};
+        return this._listeners;
     }
 
     addListeners () {
-        for (const [_event, handler] of Object.entries(this.listeners)) {
-            this.ws.addEventListener(_event, event => {
-                handler(event);
-            });
+        for (const event of this.listeners) {
+            this.ws.addEventListener(event, this[event]);
         }
     }
 
-    onConnect = async (evt) => {
-        const {dispatch} = this.store;
-        if (this.disconnected) {
-            await dispatch(updateUI({toast: null}));
-            await this.playground.load();
-        }
-    };
-
-    onDisconnect = async (evt) => {
+    close = async (evt) => {
         // todo: check Reason to prevent onload firing
         const {target} = evt;
         const {dispatch} = this.store;
@@ -55,7 +43,7 @@ export default class PlaygroundSocket {
         }
     };
 
-    onMessage = async (event) => {
+    message = async (event) => {
         const {dispatch} = this.store;
         const {loadUI} = this.playground;
         const eventData = JSON.parse(event.data);
@@ -170,4 +158,12 @@ export default class PlaygroundSocket {
             }
         }
     }
+
+    open = async (evt) => {
+        const {dispatch} = this.store;
+        if (this.disconnected) {
+            await dispatch(updateUI({toast: null}));
+            await this.playground.load();
+        }
+    };
 }

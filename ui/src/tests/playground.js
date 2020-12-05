@@ -78,3 +78,21 @@ test('playground loadData', async () => {
     expect(playground.loadResources.mock.calls).toEqual([['DATA']]);
     expect(playground.loadUI.mock.calls).toEqual([['DATA']]);
 });
+
+
+test('playground loadResources', async () => {
+    const playground = new Playground();
+    playground.store = {dispatch: jest.fn(async () => {})};
+    playground._updaters = [
+        jest.fn(() => 'UPDATE 1'),
+        jest.fn(() => 'UPDATE 2'),
+        jest.fn(() => 'UPDATE 3')];
+    await playground.loadResources('DATA');
+    for (const updater of playground._updaters) {
+        expect(updater.mock.calls).toEqual([['DATA']]);
+    }
+    expect(playground.store.dispatch.mock.calls).toEqual([
+        ['UPDATE 1'],
+        ['UPDATE 2'],
+        ['UPDATE 3']]);
+});
