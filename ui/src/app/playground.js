@@ -50,7 +50,7 @@ export default class Playground {
         }
     };
 
-    loadUI = async (data) => {
+    loadUI = async () => {
         const {dispatch, getState} = this.store;
         const {network, proxy, service} = getState();
         await dispatch(
