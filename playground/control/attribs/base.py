@@ -11,7 +11,8 @@ from playground.control.constants import (
     MIN_NAME_LENGTH,
     MAX_NAME_LENGTH,
     RE_NAME,
-    RE_NOT_NAME)
+    RE_NOT_NAME,
+    RE_UUID)
 
 
 class ValidatingAttribs(object):
@@ -37,5 +38,9 @@ class AttribsWithName(ValidatingAttribs):
 
 
 @attr.s
-class ContainerDeleteAttribs(AttribsWithName):
-    pass
+class ContainerDeleteAttribs(ValidatingAttribs):
+    id = attr.ib(
+        type=str,
+        validator=[
+            has_length(10),
+            matches_re(RE_UUID)])

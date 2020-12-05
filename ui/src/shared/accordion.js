@@ -51,7 +51,7 @@ export default class Accordion extends React.Component {
 	return (
 	    <div className="container p-0 control-pane-scroll">
 	      {children.map((child, index) => {
-                  const {children: content, onEdit, onDelete, title, resource} = child.props;
+                  const {children: content, id, onEdit, onDelete, title, resource} = child.props;
                   const _logo = logo(resource);
 		  return (
 		      <Card className="p-0 m-0" key={index}>
@@ -67,7 +67,7 @@ export default class Accordion extends React.Component {
                           {title}
                           <ActionRemove
                             title={title}
-                            name={title}
+                            name={id}
                             className="float-right ml-2 mr-2"
                             remove={evt => this.onDelete(evt, onDelete)} />
                           {editable &&
