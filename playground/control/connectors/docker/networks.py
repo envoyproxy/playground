@@ -72,15 +72,18 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
     async def _delete_network(
             self,
             command: PlaygroundCommand) -> None:
-        for network in await self.docker.networks.list():
-            if "envoy.playground.network" in network["Labels"]:
-                if network["Name"] == "__playground_%s" % command.data.name:
-                    _network = await self.docker.networks.get(
-                        network["Id"])
-                    info = await _network.show()
-                    for container in info["Containers"].keys():
-                        await _network.disconnect({"Container": container})
-                    await _network.delete()
+        try:
+            network = await self.docker.networks.get(command.data.id)
+        except DockerError:
+            # todo: raise playtime error
+            return
+        info = await network.show()
+        if "envoy.playground.network" not in info["Labels"]:
+            # raise error/warning ?
+            return
+        for container in info["Containers"].keys():
+            await network.disconnect({"Container": container})
+        await network.delete()
 
     async def _disconnect(self, network, containers):
         for container in containers:

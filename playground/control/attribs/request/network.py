@@ -124,5 +124,9 @@ class NetworkEditAttribs(ValidatingAttribs):
 
 
 @attr.s
-class NetworkDeleteAttribs(AttribsWithName):
-    pass
+class NetworkDeleteAttribs(ValidatingAttribs):
+    id = attr.ib(
+        type=str,
+        validator=[
+            has_length(10),
+            matches_re(RE_UUID)])

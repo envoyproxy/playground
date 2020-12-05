@@ -25,18 +25,29 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         for resource in await self.list():
             await self.delete(dict(name=resource['name']))
 
+    async def get(self, uuid):
+        types = {
+            f'envoy.playground.{container_type}'
+            for container_type
+            in ['service', 'proxy']}
+        try:
+            container = await self.docker.containers.get(uuid)
+        except DockerError:
+            return
+        return (
+            container
+            if types.intersection(container['Config']['Labels'].keys())
+            else None)
+
     @method_decorator(cmd(attribs=ContainerDeleteAttribs))
     async def delete(
             self,
             command: PlaygroundCommand) -> None:
-        # todo: use uuid
-        for container in await self.docker.containers.list():
-            if f"envoy.playground.{self.name}" in container["Labels"]:
-                name_matches = (
-                    f"/envoy__playground__{self.name}__{command.data.name}"
-                    in container["Names"])
-                if name_matches:
-                    await self._delete_container(container)
+        container = await self.get(command.data.id)
+        if not container:
+            # raise error/warning ?
+            return
+        await self._delete_container(container)
 
     async def _delete_container(self, container):
         try:
