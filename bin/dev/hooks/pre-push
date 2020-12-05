@@ -65,5 +65,11 @@ else
     echo "Eslint not found, install it (eg with yarn or npm) to ensure commits are linting before pushing"
 fi
 
+if [[ "$(which shellcheck)" ]]; then
+    echo "Running shellcheck"
+    find . -name "*.sh" | grep -v node_modules | xargs shellcheck -x
+else
+    echo "Shellcheck not found, install it to ensure commits are linting before pushing"
+fi
 
 exit 0
