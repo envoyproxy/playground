@@ -48,6 +48,32 @@ export class PlaygroundFilesFieldList extends React.PureComponent {
 }
 
 
+export class PlaygroundFilesFieldChooser extends React.PureComponent {
+    static propTypes = exact({
+        onChange: PropTypes.func.isRequired,
+        name: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+    });
+
+    render () {
+        const {onChange, name, title} = this.props;
+        return (
+            <PlaygroundFormGroupRow
+              label={name}
+              title={title}>
+              <Col sm={8}>
+                <CustomInput
+                  type="file"
+                  onInput={onChange}
+                  id={name}
+                  name={name} />
+              </Col>
+            </PlaygroundFormGroupRow>
+        );
+    }
+}
+
+
 export class PlaygroundFilesField extends React.PureComponent {
     static propTypes = exact({
         onChange: PropTypes.func.isRequired,
@@ -65,17 +91,11 @@ export class PlaygroundFilesField extends React.PureComponent {
             name, prefix, title} = this.props;
         return (
               <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label={name}
-                  title={title}>
-                  <Col sm={8}>
-                    <CustomInput
-                      type="file"
-                      onInput={onChange}
-                      id={name}
-                      name={name} />
-                  </Col>
-                </PlaygroundFormGroupRow>
+                <PlaygroundFilesFieldChooser
+                  name={name}
+                  onChange={onChange}
+                  title={title}
+                />
                 <PlaygroundFilesFieldList
                   onDelete={onDelete}
                   icon={icon}
