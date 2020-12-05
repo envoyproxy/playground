@@ -22,14 +22,20 @@ export default class Playground {
         this.socket = new PlaygroundSocket(this, this.socketAddress);
         this.modals = {};
         this.toast = {};
-    }
+    };
 
     load = async () => {
         await this.loadData(await this.api.get("/resources"));
-    }
+    };
 
     loadData = async (data) => {
+        await this.loadResources(data);
+        await this.loadUI(data);
+    };
+
+    loadResources = async (data) => {
         const {meta} = data;
+        const {dispatch, getState} = this.store;
         const initialUpdates = [
             updateMeta(meta),
             updateServiceTypes(data),
@@ -38,15 +44,19 @@ export default class Playground {
             loadNetworks(data),
             updateExamples(data)];
         for (const update of initialUpdates) {
-            await this.store.dispatch(update);
+            await dispatch(update);
         }
-        const {network, proxy, service} = this.store.getState();
-        await this.store.dispatch(
+    };
+
+    loadUI = async (data) => {
+        const {dispatch, getState} = this.store;
+        const {network, proxy, service} = getState();
+        await dispatch(
             updateCloud({
                 networks: network.value,
                 proxies: proxy.value,
                 services: service.value}));
-        await this.store.dispatch(
+        await dispatch(
             updateEdges({
                 proxies: proxy.value}));
     }
