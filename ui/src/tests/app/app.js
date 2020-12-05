@@ -21,7 +21,6 @@ class DummyPlaygroundApp extends PlaygroundApp {
 
     componentDidMount () {
     }
-
     componentWantsToMount = PlaygroundApp.prototype.componentDidMount;
 }
 
