@@ -19,21 +19,20 @@ export class PlaygroundFilesFieldList extends React.PureComponent {
     });
 
     get headers () {
-        return {11: 'Path'};
+        return [[11, 'Path']];
     }
 
     row = (name) => {
         const {icon, prefix} = this.props;
         return [
-            [11, (
-                <>
-                  <img
-                    alt={name}
-                    src={icon}
-                    width="18px"
-                    className="m-2 ml-1 mr-2"  />
-                  {prefix}{name}
-                </>)]];
+            <>
+              <img
+                alt={name}
+                src={icon}
+                width="18px"
+                className="m-2 ml-1 mr-2"  />
+              {prefix}{name}
+            </>];
     };
 
     render () {

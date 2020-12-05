@@ -99,7 +99,7 @@ export class ProxyModal extends React.Component {
             }
             return (
                 <ContainerStarting
-                  message={messages[status]}
+                  message={messages[status] || messages.default}
                   color='info'
                   icon={EnvoyLogo}
                   iconAlt={name}

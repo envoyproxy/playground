@@ -84,7 +84,7 @@ export class AlertValidation extends React.PureComponent {
             <Alert color="danger">
               {Object.entries(validation).map(([k, v], i) => {
                   return (
-                      <Row>
+                      <Row key={i}>
                         <Col sm={1} className="font-weight-bold">
                           &nbsp;
                         </Col>
