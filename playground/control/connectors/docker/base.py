@@ -23,7 +23,7 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
 
     async def clear(self):
         for resource in await self.list():
-            await self.delete(dict(name=resource['name']))
+            await self.delete(dict(id=resource['id']))
 
     async def get(self, uuid):
         types = {

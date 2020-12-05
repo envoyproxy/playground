@@ -75,10 +75,10 @@ class BaseResources extends React.PureComponent {
         }
     };
 
-    deleteResource = async (name) => {
+    deleteResource = async (id) => {
         // send API request to delete resource
         const {api, dispatch} = this.props;
-        const {errors} = await this.context.post('/' + api + '/delete', {name});
+        const {errors} = await this.context.post('/' + api + '/delete', {id});
         if (errors) {
             await dispatch(updateForm({validation: errors}));
         }
@@ -178,10 +178,12 @@ class BaseResources extends React.PureComponent {
                 editable={editable}
                 logo={_logo}>
 	        {Object.entries(resources).map(([name, content], index) => {
+                    const {id} = content;
 		    return (
                         <AccordionItem
                           key={index}
                           title={name}
+                          id={id}
                           onEdit={this.editResource}
                           resource={content}
                           onDelete={this.deleteResource}>
