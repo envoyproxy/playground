@@ -7,10 +7,6 @@ import PlaygroundSocket from '../app/socket';
 jest.mock('../app/api');
 jest.mock('../app/socket');
 
-const playgroundInit = jest.fn();
-
-
-
 let init;
 
 
