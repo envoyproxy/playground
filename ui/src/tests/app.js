@@ -8,7 +8,6 @@ import {
     playground, store} from '../app';
 
 
-
 test('PlaygroundApp render', () => {
     const app = shallow(<PlaygroundApp />);
     expect(app.text()).toBe('<Provider />');
