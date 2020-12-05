@@ -12,8 +12,14 @@ export class Playground {
 
     constructor (store, apiAddress, socketAddress) {
         this.store = store;
-        this.api = new PlaygroundAPI(apiAddress);
-        this.socket = new PlaygroundSocket(this, socketAddress);
+        this.apiAddress = apiAddress;
+        this.socketAddress = socketAddress;
+        this.init();
+    }
+
+    init () {
+        this.api = new PlaygroundAPI(this.apiAddress);
+        this.socket = new PlaygroundSocket(this, this.socketAddress);
         this.modals = {};
         this.toast = {};
     }
