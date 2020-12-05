@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {CustomInput, Col, Row} from 'reactstrap';
+import {Col, Row} from 'reactstrap';
 
 import {ActionRemove} from '../../actions';
 
@@ -22,7 +22,7 @@ export class PlaygroundFieldListHeaders extends React.PureComponent {
                   <span>&nbsp;</span>
                 </div>
               </Col>
-              {Object.entries(headers).map(([k, v], i) => {
+              {headers.map(([k, v], i) => {
                   return (
                       <Col sm={k} key={i} className="m-0 p-0">
                         <div className="p-1 bg-dark">
@@ -37,9 +37,14 @@ export class PlaygroundFieldListHeaders extends React.PureComponent {
 
 
 export class PlaygroundFieldListItem extends React.PureComponent {
+    static propTypes = exact({
+        item: PropTypes.object.isRequired,
+        name: PropTypes.string.isRequired,
+        onDelete: PropTypes.func.isRequired,
+    });
 
     render () {
-        const {name, onDelete, item} = this.props;
+        const {headers, name, onDelete, item} = this.props;
         return (
             <Row className="pl-5 pr-5">
               <Col sm={1} className="m-0 p-0">
@@ -50,10 +55,12 @@ export class PlaygroundFieldListItem extends React.PureComponent {
                     remove={evt => onDelete(name)} />
                 </div>
               </Col>
-              {Object.entries(item).map(([k, v], i) => {
+              {headers.map(([k, v], i) => {
                   return (
-                      <Col sm={k} className="m-0 p-0 border-bottom bg-white">
-                        {v}
+                      <Col sm={k}
+                           key={i}
+                           className="m-0 p-0 border-bottom bg-white">
+                        {item[i]}
                       </Col>
                   );
               })}
@@ -63,16 +70,24 @@ export class PlaygroundFieldListItem extends React.PureComponent {
 
 
 export class PlaygroundFieldListItems extends React.PureComponent {
+    static propTypes = exact({
+        keys: PropTypes.array.isRequired,
+        headers: PropTypes.array.isRequired,
+        row: PropTypes.func.isRequired,
+        onDelete: PropTypes.func.isRequired,
+    });
 
     render () {
-        const {items, onDelete, row} = this.props;
+        const {headers, keys, onDelete, row} = this.props;
         return (
             <>
-              {items.map((item, i) => {
+              {keys.map((item, i) => {
                   return (
                       <PlaygroundFieldListItem
                         onDelete={onDelete}
                         item={row(item)}
+                        name={item}
+                        headers={headers}
                         key={i}
                       />);
               })}
@@ -83,8 +98,32 @@ export class PlaygroundFieldListItems extends React.PureComponent {
 
 
 export class PlaygroundFieldList extends React.PureComponent {
+    static propTypes = exact({
+        headers: PropTypes.object.isRequired,
+        keys: PropTypes.array.isRequired,
+        row: PropTypes.func.isRequired,
+        onDelete: PropTypes.func.isRequired,
+    });
 
     render () {
-        return (<span />);
+        const {headers, row, keys, onDelete} = this.props;
+        if (keys.length === 0) {
+            return '';
+        }
+        return (
+            <Row className="mt-2 pb-3">
+              <Col>
+                <PlaygroundFieldListHeaders
+                  headers={headers}
+                />
+                <PlaygroundFieldListItems
+                  keys={keys}
+                  headers={headers}
+                  onDelete={onDelete}
+                  row={row}
+                />
+              </Col>
+            </Row>);
+
     }
 }

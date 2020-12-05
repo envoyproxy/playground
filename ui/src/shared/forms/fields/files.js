@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {CustomInput, Col, Row} from 'reactstrap';
+import {Col, CustomInput} from 'reactstrap';
 
 import {
     PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '..';
-import {PlaygroundFieldListHeaders, PlaygroundFieldListItems} from './list';
+import {PlaygroundFieldList} from './list';
 
 
 export class PlaygroundFilesFieldList extends React.PureComponent {
@@ -18,36 +18,33 @@ export class PlaygroundFilesFieldList extends React.PureComponent {
         icon: PropTypes.string.isRequired,
     });
 
-    render () {
-        const {onDelete, icon, files, prefix} = this.props;
+    get headers () {
+        return {11: 'Path'};
+    }
 
-        if (Object.keys(files).length === 0) {
-            return '';
-        }
+    row = (name) => {
+        const {icon, prefix} = this.props;
+        return [
+            [11, (
+                <>
+                  <img
+                    alt={name}
+                    src={icon}
+                    width="18px"
+                    className="m-2 ml-1 mr-2"  />
+                  {prefix}{name}
+                </>)]];
+    };
+
+    render () {
+        const {onDelete, files} = this.props;
         return (
-            <Row className="mt-2 pb-3">
-              <Col>
-                <PlaygroundFieldListHeaders
-                  headers={{
-                      11: 'Path'}}
-                />
-                <PlaygroundFieldListItems
-                  items={Object.keys(files)}
-                  onDelete={onDelete}
-                  row={(name) => {
-                          return {
-                              11: (
-                                  <>
-                                    <img
-                                      alt={name}
-                                      src={icon}
-                                      width="18px"
-                                      className="m-2 ml-1 mr-2"  />
-                                    {prefix}{name}
-                                  </>)}}}
-                />
-              </Col>
-            </Row>);
+            <PlaygroundFieldList
+              headers={this.headers}
+              onDelete={onDelete}
+              row={this.row}
+              keys={Object.keys(files)}
+            />);
     }
 }
 

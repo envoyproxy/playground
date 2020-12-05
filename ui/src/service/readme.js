@@ -30,7 +30,6 @@ export class ServiceReadme extends React.Component {
     updateReadme = async () => {
         const response = await fetch(this.getReadmeURL());
         const content = await response.text();
-        console.log("README", content);
         this.setState({content});
     };
 
