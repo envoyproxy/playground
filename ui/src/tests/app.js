@@ -19,5 +19,7 @@ beforeEach(() => {
 
 
 test('playground constructor', () => {
-    const playground = new Playground();
+    const store = {};
+    const playground = new Playground(store, 'API', 'SOCKET');
+    expect(playground.store).toEqual(store);
 });
