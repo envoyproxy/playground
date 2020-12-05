@@ -5,7 +5,7 @@ import PlaygroundSocket from '../app/socket';
 import {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
-    updateServiceTypes, updateCloud, updateEdges, updateExamples,
+    updateServiceTypes, updateExamples,
 } from "../app/store";
 
 
