@@ -42,6 +42,7 @@ each(renderTest).test('PlaygroundFieldList render', (_onDelete, headers, keys, e
     const col = row.find(Col);
     const fieldHeaders = col.find(PlaygroundFieldListHeaders);
     expect(fieldHeaders.props().headers).toEqual(headers);
+    expect(fieldHeaders.props().onDelete).toEqual(onDelete);
     const fieldItems = col.find(PlaygroundFieldListItems);
     expect(fieldItems.props().headers).toEqual(headers);
     expect(fieldItems.props().keys).toEqual(keys);
