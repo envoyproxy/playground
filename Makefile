@@ -103,12 +103,13 @@ dev-ui:
 dev-ui-test:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
-		ui yarn test
+			ui yarn test
 
 dev-ui-sh:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
-		ui sh
+		-p 5555:3000 \
+			ui sh
 
 dev-site:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \

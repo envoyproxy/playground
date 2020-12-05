@@ -8,7 +8,7 @@ import {
 } from "./store";
 
 
-export class Playground {
+export default class Playground {
 
     constructor (store, apiAddress, socketAddress) {
         this.store = store;

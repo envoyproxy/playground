@@ -8,7 +8,7 @@ import PlaygroundAPI from './api';
 import {apiAddress, socketAddress} from './constants';
 import {PlaygroundContext} from "./context";
 import {Layout} from '../layout';
-import {Playground} from './playground';
+import Playground from './playground';
 import PlaygroundSocket from  './socket';
 import store from "./store";
 
@@ -18,17 +18,22 @@ import './css/prism.css';
 import './css/app.css';
 
 
-const playground = new Playground(store, apiAddress, socketAddress);
-
-
-export class PlaygroundApp extends React.PureComponent {
+export class PlaygroundApp extends React.Component {
     static propTypes = exact({});
 
+    state = {playground: ''}
+
     async componentDidMount () {
+        const playground = new Playground(store, apiAddress, socketAddress);
         await playground.load();
+        this.setState({playground});
     }
 
     render () {
+        const {playground} = this.state;
+        if (playground.length === 0) {
+            return '';
+        }
         return (
             <Provider store={store}>
               <PlaygroundContext.Provider value={playground}>
