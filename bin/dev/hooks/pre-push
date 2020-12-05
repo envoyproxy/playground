@@ -51,6 +51,7 @@ done
 
 if [[ "$(which flake8)" ]]; then
     echo "Running flake8"
+    flake8 playground/control tests services context
 else
     echo "Flake8 not found, install it (eg with pip) to ensure commits are linting before pushing"
 fi
