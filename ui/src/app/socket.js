@@ -22,6 +22,21 @@ export default class PlaygroundSocket {
         this.disconnected = false;
     }
 
+    get listeners () {
+        return {
+            message: this.onMessage,
+            close: this.onDisconnect,
+            open: this.onConnect};
+    }
+
+    addListeners () {
+        for (const [_event, handler] of Object.entries(this.listeners)) {
+            this.ws.addEventListener(_event, event => {
+                handler(event);
+            });
+        }
+    }
+
     refreshIcons = async () => {
         const {dispatch} = this.store;
         const {network, service, proxy} = this.store.getState();
@@ -166,17 +181,5 @@ export default class PlaygroundSocket {
                 }
             }
         }
-    }
-
-    addListeners = () => {
-        this.ws.addEventListener('message', (event) => {
-            this.onMessage(event);
-        });
-        this.ws.addEventListener('close', (event) => {
-            this.onDisconnect(event);
-        });
-        this.ws.addEventListener('open', (event) => {
-            this.onConnect(event);
-        });
     }
 }

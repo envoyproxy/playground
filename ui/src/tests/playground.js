@@ -57,3 +57,13 @@ test('playground load', async () => {
     expect(playground.api.get.mock.calls).toEqual([['/resources']]);
     expect(playground.loadData.mock.calls).toEqual([['DATA']]);
 });
+
+
+test('playground loadData', async () => {
+    const playground = new Playground();
+    playground.loadResources = jest.fn(async () => {});
+    playground.loadUI = jest.fn(async () => {});
+    await playground.loadData('DATA');
+    expect(playground.loadResources.mock.calls).toEqual([['DATA']]);
+    expect(playground.loadUI.mock.calls).toEqual([['DATA']]);
+});
