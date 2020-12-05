@@ -57,4 +57,13 @@ else
 fi
 
 
+if [[ "$(which eslint)" ]]; then
+    echo "Running eslint"
+    eslint ui/src
+    eslint site/src
+else
+    echo "Eslint not found, install it (eg with yarn or npm) to ensure commits are linting before pushing"
+fi
+
+
 exit 0
