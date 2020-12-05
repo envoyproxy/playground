@@ -31,12 +31,16 @@ js_tests () {
     local testtype;
     testtype="$1"
     _docker_compose build ui
+    _docker_compose build site
     _docker_compose_run ui yarn install
+    _docker_compose_run site yarn install
     if [[ -z "$testtype" || "$testtype" == "test" ]]; then
 	_docker_compose_run ui yarn test --coverage
+	_docker_compose_run site yarn test --coverage
     fi
     if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
 	_docker_compose_run ui yarn lint
+	_docker_compose_run site yarn lint
     fi
 }
 
