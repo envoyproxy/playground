@@ -49,11 +49,7 @@ export class PortMappingListForm extends React.PureComponent {
                   Internal port
                 </span>
             )],
-            [4, (
-                <span>
-                  Endpoint type
-                </span>
-            )]];
+            [4, <span>Endpoint type</span>]];
     };
 
     row = (name) => {

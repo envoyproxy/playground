@@ -19,7 +19,7 @@ import {PlaygroundFieldList} from '../../shared/forms/fields/list';
 //      - not too long
 
 
-export class ServiceEnvironmentListForm extends React.PureComponent {
+export class ServiceEnvironmentFieldList extends React.PureComponent {
     static propTypes = exact({
         onDelete: PropTypes.func.isRequired,
         vars: PropTypes.object,
@@ -27,23 +27,15 @@ export class ServiceEnvironmentListForm extends React.PureComponent {
 
     get headers () {
         return [
-            [6, (
-                <span>
-                  Variable name
-                </span>
-            )],
-            [5, (
-                <span>
-                  Variable value
-                </span>
-            )]];
+            [6, <span>Variable name</span>],
+            [5, <span>Variable value</span>]];
     };
 
     row = (name) => {
         const {vars={}} = this.props;
         return [
-            <div>{name}</div>,
-            <div>{vars[name]}</div>];
+            <span>{name}</span>,
+            <span>{vars[name]}</span>];
     };
 
     render () {
@@ -162,7 +154,7 @@ export class ServiceEnvironmentForm extends React.Component {
                       onClick={this.onClick}>+</Button>
                   </Col>
                 </PlaygroundFormGroupRow>
-                <ServiceEnvironmentListForm
+                <ServiceEnvironmentFieldList
                   onDelete={this.onDelete}
                   vars={{...vars}} />
               </PlaygroundFormGroup>
