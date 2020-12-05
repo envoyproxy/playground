@@ -8,7 +8,10 @@ import {Col, Row, Table} from 'reactstrap';
 
 export class ServicePorts extends React.Component {
     static propTypes = exact({
-        ports: PropTypes.string.isRequired,
+        ports: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
         labels: PropTypes.object.isRequired,
     });
 
@@ -35,7 +38,7 @@ export class ServicePorts extends React.Component {
                     <tbody className="bg-white">
                       {(ports + '').split(',').map((port, i) => {
                           return (
-                              <tr>
+                              <tr key={i}>
                                 <td>{port}</td>
                                 <td>{labels['envoy.playground.port.' + port + '.type'] || 'TCP'}</td>
                                 <td>{labels['envoy.playground.port.' + port + '.info']}</td>

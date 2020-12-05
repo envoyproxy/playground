@@ -3,15 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Button, Col, Input, Row} from 'reactstrap';
+import {Button, Col, Input} from 'reactstrap';
 
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow} from '../../shared/forms';
-
 import {updateForm} from '../../app/store';
-
-import {ActionRemove} from '../../shared/actions';
+import {PlaygroundFieldList} from '../../shared/forms/fields/list';
 
 
 // VALIDATION REQUIRED
@@ -23,61 +21,40 @@ import {ActionRemove} from '../../shared/actions';
 
 export class ServiceEnvironmentListForm extends React.PureComponent {
     static propTypes = exact({
-        vars: PropTypes.object,
         onDelete: PropTypes.func.isRequired,
+        vars: PropTypes.object,
     });
+
+    get headers () {
+        return [
+            [6, (
+                <span>
+                  Variable name
+                </span>
+            )],
+            [5, (
+                <span>
+                  Variable value
+                </span>
+            )]];
+    };
+
+    row = (name) => {
+        const {vars={}} = this.props;
+        return [
+            <div>{name}</div>,
+            <div>{vars[name]}</div>];
+    };
 
     render () {
         const {onDelete, vars={}} = this.props;
         return (
-            <Row className="mt-2 pb-3">
-              <Col>
-                <Row className="pl-5 pr-5">
-                  <Col sm={1} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      <span>&nbsp;</span>
-                    </div>
-                  </Col>
-                  <Col sm={6} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      Variable name
-                    </div>
-                  </Col>
-                  <Col sm={5} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      Variable value
-                    </div>
-                  </Col>
-                </Row>
-                {Object.entries(vars).map(([k, v], index) => {
-                    let value = v;
-                    if (v === null || v === undefined || v.length === 0) {
-                        value = <span>&nbsp;</span>;
-                    }
-                    return (
-                        <Row key={index} className="pl-5 pr-5">
-                          <Col sm={1} className="m-0 p-0">
-                            <div className="p-2 bg-white">
-                              <ActionRemove
-                                title={k}
-                                name={k}
-                                remove={e => onDelete(k)} />
-                            </div>
-                          </Col>
-                          <Col sm={6} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              {k}
-                            </div>
-                          </Col>
-                          <Col sm={5} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              {value}
-                            </div>
-                          </Col>
-                        </Row>);
-                })}
-              </Col>
-            </Row>);
+            <PlaygroundFieldList
+              headers={this.headers}
+              onDelete={onDelete}
+              row={this.row}
+              keys={Object.keys(vars)}
+            />);
     }
 }
 

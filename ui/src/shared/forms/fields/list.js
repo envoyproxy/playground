@@ -10,7 +10,7 @@ import {ActionRemove} from '../../actions';
 
 export class PlaygroundFieldListHeaders extends React.PureComponent {
     static propTypes = exact({
-        headers: PropTypes.object.isRequired,
+        headers: PropTypes.array.isRequired,
     });
 
     render () {
@@ -38,7 +38,8 @@ export class PlaygroundFieldListHeaders extends React.PureComponent {
 
 export class PlaygroundFieldListItem extends React.PureComponent {
     static propTypes = exact({
-        item: PropTypes.object.isRequired,
+        item: PropTypes.array.isRequired,
+        headers: PropTypes.array.isRequired,
         name: PropTypes.string.isRequired,
         onDelete: PropTypes.func.isRequired,
     });
@@ -99,7 +100,7 @@ export class PlaygroundFieldListItems extends React.PureComponent {
 
 export class PlaygroundFieldList extends React.PureComponent {
     static propTypes = exact({
-        headers: PropTypes.object.isRequired,
+        headers: PropTypes.array.isRequired,
         keys: PropTypes.array.isRequired,
         row: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired,
