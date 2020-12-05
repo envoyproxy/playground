@@ -56,7 +56,7 @@ py_tests () {
 	_docker_compose_run control mypy --namespace-packages playground/control
     fi
     if [[ -z "$testtype" || "$testtype" == "lint" ]]; then
-	_docker_compose_run control flake8 playground/control tests/ services/
+	_docker_compose_run control flake8 playground/control tests/ services/ bin/
     fi
 }
 

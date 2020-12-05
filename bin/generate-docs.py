@@ -6,7 +6,7 @@ import sys
 
 import yaml
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 
 jinja_env = Environment(
