@@ -6,20 +6,20 @@ import {connect} from 'react-redux';
 import {
     ActionClear,
     ActionLoad, ActionSave} from '../shared/actions';
-import {APIContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 import EnvoyLogo from '../app/images/envoy.svg';
 import {updateUI} from '../app/store';
 
 
 class BaseHeader extends React.PureComponent {
-    static contextType = APIContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         version: PropTypes.string,
     });
 
     clear = async () => {
-        await this.context.get('/clear');
+        await this.context.api.get('/clear');
     };
 
     save = async () => {

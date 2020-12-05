@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import Accordion, {AccordionItem} from './accordion';
-import {APIContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 import {URLMangler} from './utils';
@@ -35,7 +35,7 @@ class ResourceInfoItem extends React.PureComponent {
 }
 
 class BaseResources extends React.PureComponent {
-    static contextType = APIContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         api: PropTypes.string.isRequired,
         dispatch: PropTypes.func.isRequired,
@@ -67,7 +67,7 @@ class BaseResources extends React.PureComponent {
         const {api, dispatch, form} = this.props;
         const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
         data.env = env || vars;
-        const {errors} = await this.context.post('/' + api + '/add', data);
+        const {errors} = await this.context.api.post('/' + api + '/add', data);
         if (errors) {
             await dispatch(updateForm({validation: errors}));
         } else {
@@ -78,7 +78,7 @@ class BaseResources extends React.PureComponent {
     deleteResource = async (id) => {
         // send API request to delete resource
         const {api, dispatch} = this.props;
-        const {errors} = await this.context.post('/' + api + '/delete', {id});
+        const {errors} = await this.context.api.post('/' + api + '/delete', {id});
         if (errors) {
             await dispatch(updateForm({validation: errors}));
         }
@@ -93,7 +93,7 @@ class BaseResources extends React.PureComponent {
     updateResource = async (data) => {
         const {api, dispatch} = this.props;
         const {name, status, ...update} = data;
-        const {errors} = await this.context.post('/' + api + '/edit', update);
+        const {errors} = await this.context.api.post('/' + api + '/edit', update);
         if (errors) {
             await dispatch(updateForm({validation: errors}));
         }

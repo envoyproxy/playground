@@ -14,7 +14,7 @@ import ToastWidget, {FailToast} from "../shared/toast";
 import {
     AlertDisconnected,
     AlertNotImplemented} from '../shared/alerts';
-import {ModalContext, ToastContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 
 export {Header, Left, Right, Content, Footer};
 
@@ -37,21 +37,19 @@ export class SocketDisconnectedToast extends React.PureComponent {
 }
 
 
-export class BaseLayout extends React.PureComponent {
-    static contextType = ModalContext;
-    static propTypes = exact({
-        toast: PropTypes.object.isRequired
-    })
+export class Layout extends React.PureComponent {
+    static contextType = PlaygroundContext;
+    static propTypes = exact({});
 
     componentDidMount () {
-        const {toast} = this.props;
+        const {modals, toast} = this.context;
         toast['socket-disconnected'] = {
             toast: SocketDisconnectedToast,
             title: () => "Socket disconnected!"};
         toast['errors'] = {
             toast: FailToast,
             title: () => "Socket disconnected!"};
-        this.context['not-implemented'] = {
+        modals['not-implemented'] = {
             modal: NotImplementedModal,
             title: () => "Not implemented!"};
     }
@@ -77,18 +75,6 @@ export class BaseLayout extends React.PureComponent {
               <ModalWidget />
               <ToastWidget />
             </>
-        );
-    }
-}
-
-
-export default class Layout extends React.PureComponent {
-    static contextType = ToastContext;
-    static propTypes = exact({})
-
-    render () {
-        return (
-            <BaseLayout toast={this.context} />
         );
     }
 }

@@ -3,8 +3,8 @@ import exact from 'prop-types-exact';
 
 import {Provider} from 'react-redux';
 
-import Layout from '../layout';
-import {APIContext, ModalContext, ToastContext} from "./context";
+import {Layout} from '../layout';
+import {PlaygroundContext} from "./context";
 import store, {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
@@ -19,15 +19,18 @@ import API, {PlaygroundSocket} from './api';
 
 import {apiAddress, socketAddress} from './constants';
 
-const api = new API(apiAddress);
+export class Playground {
 
+    constructor () {
+        this.api = new API(apiAddress);
+        this.socket = new PlaygroundSocket(socketAddress, store, this.api);
+        this.store = store;
+        this.modals = {};
+        this.toast = {};
+    }
 
-export default class PlaygroundApp extends React.PureComponent {
-    static propTypes = exact({});
-
-    async componentDidMount () {
-        new PlaygroundSocket(socketAddress, store, api);
-        const data = await api.get("/resources");
+    load = async () => {
+        const data = await this.api.get("/resources");
         const {meta} = data;
         const initialUpdates = [
             updateMeta(meta),
@@ -37,23 +40,29 @@ export default class PlaygroundApp extends React.PureComponent {
             loadNetworks(data),
             updateExamples(data)];
         for (const update of initialUpdates) {
-            await store.dispatch(update);
+            await this.store.dispatch(update);
         }
-        const {network, proxy, service} = store.getState();
-        await store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
-        await store.dispatch(updateEdges({proxies: proxy.value}));
+        const {network, proxy, service} = this.store.getState();
+        await this.store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
+        await this.store.dispatch(updateEdges({proxies: proxy.value}));
+    }
+}
+
+const playground = new Playground();
+
+export default class PlaygroundApp extends React.PureComponent {
+    static propTypes = exact({});
+
+    async componentDidMount () {
+        await playground.load();
     }
 
     render () {
         return (
             <Provider store={store}>
-              <APIContext.Provider value={api}>
-                <ModalContext.Provider value={{}}>
-                  <ToastContext.Provider value={{}}>
-                    <Layout />
-                  </ToastContext.Provider>
-                </ModalContext.Provider>
-              </APIContext.Provider>
+              <PlaygroundContext.Provider value={playground}>
+                <Layout />
+              </PlaygroundContext.Provider>
             </Provider>
         );
     }

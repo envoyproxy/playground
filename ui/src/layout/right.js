@@ -1,19 +1,20 @@
 import React from 'react';
 import exact from 'prop-types-exact';
 
-import {ModalContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 import {ServiceResources} from '../service';
 
 
 export default class Right extends React.PureComponent {
-    static contextType = ModalContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({});
 
     render () {
+        const {modals} = this.context;
         return (
             <div className="App-right">
               <ServiceResources
-                modals={this.context} />
+                modals={modals} />
             </div>);
     }
 }

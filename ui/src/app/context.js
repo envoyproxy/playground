@@ -1,8 +1,6 @@
 import React from 'react';
 
-const APIContext = React.createContext();
-const ModalContext = React.createContext();
-const ToastContext = React.createContext();
+const PlaygroundContext = React.createContext();
 
 
-export {APIContext, ModalContext, ToastContext};
+export {PlaygroundContext};
