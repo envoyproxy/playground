@@ -35,7 +35,7 @@ export default class Playground {
 
     loadResources = async (data) => {
         const {meta} = data;
-        const {dispatch, getState} = this.store;
+        const {dispatch} = this.store;
         const initialUpdates = [
             updateMeta(meta),
             updateServiceTypes(data),
