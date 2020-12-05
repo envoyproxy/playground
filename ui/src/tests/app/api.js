@@ -1,5 +1,5 @@
 
-import PlaygroundAPI from '../app/api';
+import PlaygroundAPI from '../../app/api';
 
 
 test('api constructor', () => {

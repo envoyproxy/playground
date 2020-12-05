@@ -5,12 +5,12 @@ import {shallow} from "enzyme";
 
 import {
     PlaygroundApp, PlaygroundContext,
-    store} from '../app';
-import {Layout} from '../layout';
+    store} from '../../app';
+import {Layout} from '../../layout';
 
 const mockLoad = jest.fn(async () => {});
 
-jest.mock('../app/playground', () => {
+jest.mock('../../app/playground', () => {
     return function () {
         return {load: mockLoad};
     };

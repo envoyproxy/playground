@@ -1,7 +1,7 @@
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import PlaygroundSocket from '../app/socket';
+import PlaygroundSocket from '../../app/socket';
 
 
 jest.mock('reconnecting-websocket');

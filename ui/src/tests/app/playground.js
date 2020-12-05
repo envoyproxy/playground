@@ -1,16 +1,16 @@
 
-import {Playground} from '../app';
-import PlaygroundAPI from '../app/api';
-import PlaygroundSocket from '../app/socket';
+import {Playground} from '../../app';
+import PlaygroundAPI from '../../app/api';
+import PlaygroundSocket from '../../app/socket';
 import {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
     updateServiceTypes, updateExamples,
-} from "../app/store";
+} from "../../app/store";
 
 
-jest.mock('../app/api');
-jest.mock('../app/socket');
+jest.mock('../../app/api');
+jest.mock('../../app/socket');
 
 let init;
 
