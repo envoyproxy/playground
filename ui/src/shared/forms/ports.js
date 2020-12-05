@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Button, Col, Input, Row } from 'reactstrap';
+    Button, Col, Input} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import EdgeLogo from '../../app/images/edge.svg';
 import EnvoyLogo from '../../app/images/envoy.svg';
-import {ActionRemove} from '../actions';
 import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
 import {PlaygroundSelectInput} from '.';
+import {PlaygroundFieldList} from './fields/list';
 
 
 // VALIDATION REQUIRED
@@ -20,85 +20,57 @@ import {PlaygroundSelectInput} from '.';
 //  - port from
 //      - int in port range
 
+
 export class PortMappingListForm extends React.PureComponent {
     static propTypes = exact({
         onDelete: PropTypes.func.isRequired,
-        port_mappings: PropTypes.array,
+        port_mappings: PropTypes.array.isRequired,
     });
+
+    get headers () {
+        return [
+            [4, (
+                <span>
+                  <img
+                    alt="external"
+                    src={EdgeLogo}
+                    width="24px"
+                    className="ml-1 mr-2"  />
+                  External ports
+                </span>
+            )],
+            [3, (
+                <span>
+                  <img
+                    alt="envoy"
+                    src={EnvoyLogo}
+                    width="24px"
+                    className="ml-1 mr-2"  />
+                  Internal port
+                </span>
+            )],
+            [4, <span>Endpoint type</span>]];
+    };
+
+    row = (name) => {
+        const {port_mappings=[]} = this.props;
+        const mappings = Object.fromEntries(
+            port_mappings.map(m => [m.mapping_from, m]));
+        return [
+            <div>{name}</div>,
+            <div>{mappings[name].mapping_to}</div>,
+            <div>{mappings[name].mapping_type ? mappings[name].mapping_type.toUpperCase() : 'Generic TCP'}</div>];
+    };
 
     render () {
         const {onDelete, port_mappings=[]} = this.props;
-        const title = '';
-
-        if (port_mappings.length === 0) {
-            return '';
-        }
         return (
-            <Row className="mt-2 pb-3">
-              <Col>
-                <Row className="pl-5 pr-5">
-                  <Col sm={1} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      <span>&nbsp;</span>
-                    </div>
-                  </Col>
-                  <Col sm={4} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      <img
-                        alt={title}
-                        src={EdgeLogo}
-                        width="24px"
-                        className="ml-1 mr-2"  />
-                      External port
-                    </div>
-                  </Col>
-                  <Col sm={3} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      <img
-                        alt={title}
-                        src={EnvoyLogo}
-                        width="24px"
-                        className="ml-1 mr-2"  />
-                      Internal port
-                    </div>
-                  </Col>
-                  <Col sm={4} className="m-0 p-0">
-                    <div className="p-1 bg-dark">
-                      Endpoint type
-                    </div>
-                  </Col>
-                </Row>
-                {port_mappings.map((mapping, index) => {
-                    const {mapping_from, mapping_to, mapping_type} = mapping;
-                    return (
-                        <Row key={index} className="pl-5 pr-5">
-                          <Col sm={1} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              <ActionRemove
-                                title={mapping_from}
-                                name={mapping_from}
-                                remove={e => onDelete(mapping_from)} />
-                            </div>
-                          </Col>
-                          <Col sm={4} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              {mapping_from}
-                            </div>
-                          </Col>
-                          <Col sm={3} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              {mapping_to}
-                            </div>
-                          </Col>
-                          <Col sm={4} className="m-0 p-0 border-bottom">
-                            <div className="p-2 bg-white">
-                              {((mapping_type && mapping_type.toUpperCase()) || 'Generic TCP')}
-                            </div>
-                          </Col>
-                        </Row>);
-                })}
-              </Col>
-            </Row>);
+            <PlaygroundFieldList
+              headers={this.headers}
+              onDelete={onDelete}
+              row={this.row}
+              keys={port_mappings.map(m => m.mapping_from)}
+            />);
     }
 }
 
