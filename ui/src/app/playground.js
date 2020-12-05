@@ -1,5 +1,6 @@
 
-import API, {PlaygroundSocket} from './api';
+import PlaygroundAPI from './api';
+import PlaygroundSocket from './socket';
 import {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
@@ -11,7 +12,7 @@ export class Playground {
 
     constructor (store, apiAddress, socketAddress) {
         this.store = store;
-        this.api = new API(apiAddress);
+        this.api = new PlaygroundAPI(apiAddress);
         this.socket = new PlaygroundSocket(this, socketAddress);
         this.modals = {};
         this.toast = {};

@@ -4,10 +4,12 @@ import exact from 'prop-types-exact';
 
 import {Provider} from 'react-redux';
 
+import PlaygroundAPI from './api';
 import {apiAddress, socketAddress} from './constants';
 import {PlaygroundContext} from "./context";
 import {Layout} from '../layout';
 import {Playground} from './playground';
+import PlaygroundSocket from  './socket';
 import store from "./store";
 
 /* css */
@@ -36,3 +38,8 @@ export class PlaygroundApp extends React.PureComponent {
         );
     }
 }
+
+export {
+    apiAddress, socketAddress, store,
+    Playground, PlaygroundAPI,
+    PlaygroundContext, PlaygroundSocket};

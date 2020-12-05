@@ -1,8 +1,5 @@
 
-export {default as PlaygroundSocket} from './socket';
-
-
-export default class API {
+export default class PlaygroundAPI {
 
     constructor (address) {
         this.address = address;
