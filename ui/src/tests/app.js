@@ -1,7 +1,5 @@
-import {render} from '@testing-library/react';
-import {Playground, PlaygroundApp} from '../app';
 
-import 'reactstrap';
+import {Playground} from '../app';
 
 const originalConsoleError = global.console.error;
 
@@ -17,12 +15,6 @@ beforeEach(() => {
         }
         originalConsoleError(...args);
     };
-});
-
-
-test('renders learn react link', () => {
-    render(<PlaygroundApp />);
-    // expect(screen.getByRole('banner')[0]).toHaveTextContent('Envoy playground');
 });
 
 
