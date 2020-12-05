@@ -2,8 +2,7 @@
 import {shallow} from "enzyme";
 
 import {
-    PlaygroundFormGroup,
-    PlaygroundFormGroupRow} from '../../../../shared/forms';
+    PlaygroundFormGroup} from '../../../../shared/forms';
 import {
     PlaygroundFilesField, PlaygroundFilesFieldList,
     PlaygroundFilesFieldChooser} from '../../../../shared/forms/fields/files';
@@ -26,7 +25,7 @@ test('PlaygroundFilesField render', () => {
     expect(files.text()).toEqual(
         "<PlaygroundFormGroup />");
     const group = files.find(PlaygroundFormGroup);
-    const chooser = files.find(PlaygroundFilesFieldChooser);
+    const chooser = group.find(PlaygroundFilesFieldChooser);
     expect(chooser.props()).toEqual({
         "name": "NAME",
         "onChange": onChange,
