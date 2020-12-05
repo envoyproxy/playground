@@ -49,4 +49,6 @@ do
   fi
 done
 
+echo "Running linters..."
+
 exit 0
