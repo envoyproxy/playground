@@ -49,4 +49,27 @@ do
   fi
 done
 
+if [[ "$(which flake8)" ]]; then
+    echo "Running flake8"
+    flake8 playground/control tests/ services/ bin/
+else
+    echo "Flake8 not found, install it (eg with pip) to ensure commits are linting before pushing"
+fi
+
+
+if [[ "$(which eslint)" ]]; then
+    echo "Running eslint"
+    eslint ui/src
+    eslint site/src
+else
+    echo "Eslint not found, install it (eg with yarn or npm) to ensure commits are linting before pushing"
+fi
+
+if [[ "$(which shellcheck)" ]]; then
+    echo "Running shellcheck"
+    find . -name "*.sh" | grep -v node_modules | xargs shellcheck -x
+else
+    echo "Shellcheck not found, install it to ensure commits are linting before pushing"
+fi
+
 exit 0
