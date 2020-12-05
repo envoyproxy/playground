@@ -49,8 +49,11 @@ do
   fi
 done
 
-echo "Running linters..."
+if [[ "$(which flake8)" ]]; then
+    echo "Running flake8"
+else
+    echo "Flake8 not found, install it (eg with pip) to ensure commits are linting before pushing"
+fi
 
-exit 1
 
 exit 0
