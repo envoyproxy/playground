@@ -48,14 +48,16 @@ export class PlaygroundFieldListItem extends React.PureComponent {
         const {headers, name, onDelete, item} = this.props;
         return (
             <Row className="pl-5 pr-5">
-              <Col sm={1} className="m-0 p-0">
-                <div className="p-2 bg-white border-bottom">
-                  <ActionRemove
-                    title={name}
-                    name={name}
-                    remove={evt => onDelete(name)} />
-                </div>
-              </Col>
+              {onDelete &&
+               <Col sm={1} className="m-0 p-0">
+                 <div className="p-2 bg-white border-bottom">
+                   <ActionRemove
+                     title={name}
+                     name={name}
+                     remove={evt => onDelete(name)} />
+                 </div>
+               </Col>
+              }
               {headers.map(([k, v], i) => {
                   return (
                       <Col sm={k}
@@ -75,7 +77,7 @@ export class PlaygroundFieldListItems extends React.PureComponent {
         keys: PropTypes.array.isRequired,
         headers: PropTypes.array.isRequired,
         row: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
@@ -103,7 +105,7 @@ export class PlaygroundFieldList extends React.PureComponent {
         headers: PropTypes.array.isRequired,
         keys: PropTypes.array.isRequired,
         row: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
@@ -125,6 +127,5 @@ export class PlaygroundFieldList extends React.PureComponent {
                 />
               </Col>
             </Row>);
-
     }
 }
