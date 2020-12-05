@@ -4,8 +4,7 @@ import {Provider} from 'react-redux';
 import {shallow} from "enzyme";
 
 import {
-    apiAddress, socketAddress,
-    Playground, PlaygroundApp, PlaygroundContext,
+    PlaygroundApp, PlaygroundContext,
     store} from '../app';
 import {Layout} from '../layout';
 
