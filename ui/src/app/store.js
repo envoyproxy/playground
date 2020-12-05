@@ -13,7 +13,7 @@ const metaSlice = createSlice({
     },
     reducers: {
         updateMeta: (state, action) => {
-            state.value = {...state.value, ...action.payload};
+            state.value = {...state.value, ...action.meta.payload};
         },
     }
 });

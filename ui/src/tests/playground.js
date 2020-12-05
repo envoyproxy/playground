@@ -2,13 +2,17 @@
 import {Playground} from '../app';
 import PlaygroundAPI from '../app/api';
 import PlaygroundSocket from '../app/socket';
+import {
+    updateMeta, loadNetworks,
+    loadProxies, loadServices,
+    updateServiceTypes, updateCloud, updateEdges, updateExamples,
+} from "../app/store";
 
 
 jest.mock('../app/api');
 jest.mock('../app/socket');
 
 let init;
-
 
 
 class DummyPlayground extends Playground {
@@ -34,6 +38,13 @@ test('playground constructor', () => {
     expect(playground.apiAddress).toEqual('API');
     expect(playground.socketAddress).toEqual('SOCKET');
     expect(playground.init.mock.calls).toEqual([[]]);
+    expect(playground.updaters).toEqual([
+        updateMeta,
+        updateServiceTypes,
+        loadServices,
+        loadProxies,
+        loadNetworks,
+        updateExamples]);
 });
 
 

@@ -24,6 +24,16 @@ export default class Playground {
         this.toast = {};
     };
 
+    get updaters () {
+        return [
+            updateMeta,
+            updateServiceTypes,
+            loadServices,
+            loadProxies,
+            loadNetworks,
+            updateExamples];
+    }
+
     load = async () => {
         await this.loadData(await this.api.get("/resources"));
     };
@@ -34,17 +44,9 @@ export default class Playground {
     };
 
     loadResources = async (data) => {
-        const {meta} = data;
         const {dispatch} = this.store;
-        const initialUpdates = [
-            updateMeta(meta),
-            updateServiceTypes(data),
-            loadServices(data),
-            loadProxies(data),
-            loadNetworks(data),
-            updateExamples(data)];
-        for (const update of initialUpdates) {
-            await dispatch(update);
+        for (const update of this.updaters) {
+            await dispatch(update(data));
         }
     };
 
