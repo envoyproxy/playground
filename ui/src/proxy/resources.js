@@ -3,11 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
 import EnvoyLogo from '../app/images/envoy.svg';
+import {connect} from '../app/store';
 import APIResources from '../shared/resources';
-import {ProxyModal} from './modals';
+import {ProxyFormModal} from './modals';
 
 
 export class BaseProxyResources extends React.PureComponent {
@@ -29,17 +28,16 @@ export class BaseProxyResources extends React.PureComponent {
               resources={proxies}
               logo={EnvoyLogo}
               addModal={{
-                  modal: ProxyModal,
+                  modal: ProxyFormModal,
                   title: this.addModalTitle,
                   action: 'Create proxy'}} />);
     }
 }
 
-const mapStateToProps = function(state) {
+export const mapStateToProps = function(state) {
     return {
         proxies: state.proxy.value,
     };
 }
 
-const ProxyResources = connect(mapStateToProps)(BaseProxyResources);
-export default ProxyResources;
+export default connect(mapStateToProps)(BaseProxyResources);

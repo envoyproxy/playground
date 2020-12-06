@@ -14,7 +14,7 @@ import {ServicePorts} from './ports';
 import {ServiceReadme} from './readme';
 
 
-export class BaseServiceModal extends React.Component {
+export class BaseServiceFormModal extends React.Component {
     static propTypes = exact({
         status: PropTypes.string.isRequired,
         form: PropTypes.object.isRequired,
@@ -154,5 +154,5 @@ const mapModalStateToProps = function(state, other) {
     };
 }
 
-const ServiceModal = connect(mapModalStateToProps)(BaseServiceModal);
-export {ServiceModal};
+const ServiceFormModal = connect(mapModalStateToProps)(BaseServiceFormModal);
+export {ServiceFormModal};

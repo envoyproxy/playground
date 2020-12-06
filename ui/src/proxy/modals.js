@@ -14,7 +14,7 @@ import {
 import EnvoyLogo from '../app/images/envoy.svg';
 
 
-export class ProxyModal extends React.Component {
+export class ProxyFormModal extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,

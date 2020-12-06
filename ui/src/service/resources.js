@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
-import APIResources from '../shared/resources';
 import ServiceLogo from '../app/images/service.png';
-
-import {ServiceModal} from './modals';
+import {connect} from '../app/store';
+import APIResources from '../shared/resources';
+import {ServiceFormModal} from './modals';
 
 
 export class BaseServiceResources extends React.PureComponent {
@@ -40,19 +38,18 @@ export class BaseServiceResources extends React.PureComponent {
               resources={services}
               logo={this.getLogo}
               addModal={{
-                  modal: ServiceModal,
+                  modal: ServiceFormModal,
                   title: this.addModalTitle,
                   action: 'Create service'}} />);
     }
 }
 
 
-const mapStateToProps = function(state) {
+export const mapStateToProps = (state) => {
     return {
         services: state.service.value,
         service_types: state.service_type.value,
     };
-}
+};
 
-const ServiceResources = connect(mapStateToProps)(BaseServiceResources);
-export default ServiceResources;
+export default connect(mapStateToProps)(BaseServiceResources);
