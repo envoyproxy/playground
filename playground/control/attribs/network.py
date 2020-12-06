@@ -44,10 +44,16 @@ class NetworkEditAttribsMixin(object):
     async def _validate_network(self, api) -> None:
         networks = await api.connector.networks.list()
 
-        # self.name ?
-        if self.id not in [n['id'] for n in networks]:
-            raise PlaygroundError(
-                f'Unrecognized network id {self.id}.', self)
+        if getattr(self, 'id', None):
+            if self.id not in [n['id'] for n in networks]:
+                raise PlaygroundError(
+                    f'Unrecognized network id {self.id}.', self)
+        else:
+            for network in networks:
+                if network['name'] == self.name:
+                    raise PlaygroundError(
+                        f'A network with the name {self.name} already exists.',
+                        self)
 
     # api: p.c.api.PlaygroundAPI
     async def _validate_resources(self, api, resource: str) -> None:
