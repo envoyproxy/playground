@@ -1,7 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
 - main
@@ -9,19 +5,20 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: |
-    make test
-  displayName: 'Run test suites'
-
-- script: |
-    make build
-  displayName: 'Build the production Docker image'
-
-- script: |
-    make integration-test
-  displayName: 'Run integration tests against the built image'
-
-- script: |
-    make coverage
-  displayName: 'Upload to codecov.io'
+stages:
+  - stage: playground
+    jobs:
+      - job: tests
+        dependsOn: []
+        steps:
+        - script: make test
+          displayName: 'Run test suites'
+        - script: make coverage
+          displayName: 'Upload to codecov.io'
+      - job: build
+        dependsOn: []
+        steps:
+        - script: make build
+          displayName: 'Build the production Docker image'
+        - script: make integration-test
+          displayName: 'Run integration tests against the built image'

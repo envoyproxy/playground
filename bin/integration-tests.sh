@@ -2,6 +2,16 @@
 
 echo "Run integration tests..."
 
+echo "Load or pull playground image"
+
+if [[ -e /tmp/docker/playground.tar.gz ]]; then
+    docker load < /tmp/docker/playground.tar.gz
+else
+    docker pull phlax/envoy-playground:0.1.5-alpha
+    docker tag phlax/envoy-playground:0.1.5-alpha envoy-playground
+fi
+
+docker images
 
 echo "Start playground"
 docker run -d \
@@ -10,7 +20,7 @@ docker run -d \
        --privileged \
        -p 8000:8080 \
        -v /var/run/docker.sock:/var/run/docker.sock \
-          phlax/envoy-playground:0.1.2-alpha
+          envoy-playground
 
 echo "Start selenium"
 docker run --rm \
@@ -27,6 +37,11 @@ docker run --rm \
        --net host \
        -v /tests:/tests \
        python:3.8-slim \
-        sh -c 'pip install selenium && python /tests/test_playground.py'
+        sh -c "\
+	   pip install selenium pytest-selenium \
+	   && pytest --driver Remote \
+	      	     --capability browserName firefox \
+		     -v \
+		     /tests"
 
 echo "Done"
