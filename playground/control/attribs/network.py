@@ -55,17 +55,18 @@ class NetworkEditAttribsMixin(object):
 
     # api: p.c.api.PlaygroundAPI
     async def _validate_resources(self, api, resource: str) -> None:
-        resource = getattr(self, resource, None)
-        if not resource:
+        resources = getattr(self, resource, None)
+        if not resources:
             return
-        # check all of the requested services are present
-        # in the list
-        resources = set(
-            s['name']
-            for s
-            in await getattr(api.connector, resource).list())
-        _resources = set(resource)
-        if (resources ^ _resources) & _resources:
+        self._all_present(
+            resource,
+            set(resources),
+            set(s['name']
+                for s
+                in await getattr(api.connector, resource).list()))
+
+    def _all_present(self, resource, subset, superset):
+        if (superset ^ subset) & subset:
             raise PlaygroundError(
                 f'Connection to unrecognized {resource} requested.',
                 self)
@@ -84,6 +85,7 @@ class NetworkEditAttribs(ValidatingAttribs, NetworkEditAttribsMixin):
     id = id_attrib_factory()
     proxies = resource_attrib_factory()
     services = resource_attrib_factory()
+
 
 @attr.s
 class NetworkDeleteAttribs(ValidatingAttribs):
