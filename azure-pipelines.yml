@@ -9,19 +9,21 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: |
-    make test
-  displayName: 'Run test suites'
-
-- script: |
-    make build
-  displayName: 'Build the production Docker image'
-
-- script: |
-    make integration-test
-  displayName: 'Run integration tests against the built image'
-
-- script: |
-    make coverage
-  displayName: 'Upload to codecov.io'
+stages:
+  - stage: unit-tests
+    jobs:
+      - job: tests
+        dependsOn: []
+        steps:
+        - script: make test
+          displayName: 'Run test suites'
+        - script: make coverage
+          displayName: 'Upload to codecov.io'
+  - stage: build
+    jobs:
+      - job: build
+        dependsOn: []
+        - script: make build
+          displayName: 'Build the production Docker image'
+        - script: make integration-test
+          displayName: 'Run integration tests against the built image'
