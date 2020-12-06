@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 #
 # A git commit hook that will automatically run format checking and DCO signoff
 # checking before the push is successful.
