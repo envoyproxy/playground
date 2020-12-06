@@ -49,11 +49,10 @@ export class Layout extends React.PureComponent {
 
 export class Page extends React.PureComponent {
     static contextType = PlaygroundContext;
-    static propTypes = exact({});
     static contextTypes = {
         modals: PropTypes.object.isRequired,
-        toast: PropTypes.object.isRequired,
-    }
+        toast: PropTypes.object.isRequired};
+    static propTypes = exact({});
 
     _widgets = {
         toast: {
