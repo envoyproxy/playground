@@ -33,6 +33,7 @@ def resource_attrib_factory():
 
 
 class NetworkEditAttribsMixin(object):
+    _id = ''
 
     # api: p.c.api.PlaygroundAPI
     async def validate(self, api) -> None:
@@ -42,7 +43,15 @@ class NetworkEditAttribsMixin(object):
 
     # api: p.c.api.PlaygroundAPI
     async def _validate_network(self, api) -> None:
-        raise NotImplementedError
+        networks = [
+            n.get(self._id)
+            for n
+            in await api.connector.networks.list()
+            if n]
+        _id = getattr(self, self._id, None)
+        if _id not in networks:
+            raise PlaygroundError(
+                f'Unrecognized network {self._id}: {_id}.', self)
 
     # api: p.c.api.PlaygroundAPI
     async def _validate_resources(self, api, resource: str) -> None:
@@ -64,32 +73,17 @@ class NetworkEditAttribsMixin(object):
 
 @attr.s(kw_only=True)
 class NetworkAddAttribs(AttribsWithName, NetworkEditAttribsMixin):
+    _id = 'name'
     proxies = resource_attrib_factory()
     services = resource_attrib_factory()
-
-    # api: p.c.api.PlaygroundAPI
-    async def _validate_network(self, api) -> None:
-        networks = await api.connector.networks.list()
-        for network in networks:
-            if network['name'] == self.name:
-                raise PlaygroundError(
-                    f'A network with the name {self.name} already exists.',
-                    self)
 
 
 @attr.s
 class NetworkEditAttribs(ValidatingAttribs, NetworkEditAttribsMixin):
+    _id = 'id'
     id = id_attrib_factory()
     proxies = resource_attrib_factory()
     services = resource_attrib_factory()
-
-    # api: p.c.api.PlaygroundAPI
-    async def _validate_network(self, api) -> None:
-        networks = await api.connector.networks.list()
-        if self.id not in [n['id'] for n in networks]:
-            raise PlaygroundError(
-                f'Unrecognized network id {self.id}.', self)
-
 
 @attr.s
 class NetworkDeleteAttribs(ValidatingAttribs):
