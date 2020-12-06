@@ -79,7 +79,7 @@ class BaseServiceForm extends React.PureComponent {
                       name="service_type"
                       value={service_type}
                       onChange={this.onTypeChange}
-                      noOption="Select a service type"
+                      placeholder="Select a service type"
                       options={Object.entries(service_types).map(([k, v])  => [k, v.title])}
                     />
                   </Col>

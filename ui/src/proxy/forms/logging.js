@@ -45,7 +45,7 @@ export class ProxyLoggingForm extends React.PureComponent {
                       onChange={this.onChange}
                       value={logging.default}
                       name="mapping_type"
-                      noOption="Select log level"
+                      placeholder="Select log level"
                       options={[
                           ['info', 'info (default)'],
                           ['debug', 'debug'],

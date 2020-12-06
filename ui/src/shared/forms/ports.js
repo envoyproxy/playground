@@ -149,7 +149,7 @@ export class BasePortMappingForm extends React.Component {
                       onChange={this.onChange}
                       value={mapping_type}
                       name="mapping_type"
-                      noOption="Generic TCP (default)"
+                      placeholder="Generic TCP (default)"
                       options={[['http', 'HTTP'], ['https', 'HTTPS']]} />
                   </Col>
                   <Col sm={2}>
