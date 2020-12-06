@@ -76,6 +76,7 @@ class NetworkAddAttribs(AttribsWithName, NetworkEditAttribsMixin):
                     f'A network with the name {self.name} already exists.',
                     self)
 
+
 @attr.s
 class NetworkEditAttribs(ValidatingAttribs, NetworkEditAttribsMixin):
     id = id_attrib_factory()
@@ -88,6 +89,7 @@ class NetworkEditAttribs(ValidatingAttribs, NetworkEditAttribsMixin):
         if self.id not in [n['id'] for n in networks]:
             raise PlaygroundError(
                 f'Unrecognized network id {self.id}.', self)
+
 
 @attr.s
 class NetworkDeleteAttribs(ValidatingAttribs):
