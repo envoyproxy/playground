@@ -27,10 +27,10 @@ export class BaseProxyResources extends React.PureComponent {
               api="proxy"
               title="Proxies"
               resources={proxies}
+              logo={EnvoyLogo}
               addModal={{
                   modal: ProxyModal,
                   title: this.addModalTitle,
-                  logo: EnvoyLogo,
                   action: 'Create proxy'}} />);
     }
 }

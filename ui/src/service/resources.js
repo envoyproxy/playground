@@ -38,10 +38,10 @@ export class BaseServiceResources extends React.PureComponent {
               api="service"
               title="Services"
               resources={services}
+              logo={this.getLogo}
               addModal={{
                   modal: ServiceModal,
                   title: this.addModalTitle,
-                  logo: this.getLogo,
                   action: 'Create service'}} />);
     }
 }
