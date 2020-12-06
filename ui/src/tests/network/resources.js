@@ -1,12 +1,7 @@
 
 import React from 'react';
-import {connect} from 'react-redux';
 
-import {combineReducers} from 'redux';
-import {Provider} from 'react-redux';
-import {createSlice, configureStore} from '@reduxjs/toolkit';
-
-import {mount, shallow} from "enzyme";
+import {shallow} from "enzyme";
 
 import NetworkResources, {
     BaseNetworkResources,

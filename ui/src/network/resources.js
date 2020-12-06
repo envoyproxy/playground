@@ -22,7 +22,7 @@ export class BaseNetworkResources extends React.PureComponent {
     }
 
     render () {
-        const {dispatch, networks} = this.props;
+        const {networks} = this.props;
         return (
             <APIResources
               api="network"
