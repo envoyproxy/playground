@@ -44,7 +44,7 @@ const NetworkCreating = connect(mapStateToProps)(BaseNetworkCreating);
 export {NetworkCreating};
 
 
-export class BaseNetworkModal extends React.PureComponent {
+export class BaseNetworkFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
@@ -91,5 +91,5 @@ const mapModalStateToProps = function(state, other) {
     };
 }
 
-const NetworkModal = connect(mapModalStateToProps)(BaseNetworkModal);
-export {NetworkModal};
+const NetworkFormModal = connect(mapModalStateToProps)(BaseNetworkFormModal);
+export {NetworkFormModal};

@@ -45,7 +45,7 @@ export class PlaygroundFilesForm extends React.PureComponent {
         const {
             icon, form, fileType, warnings,
             messages, prefix, title} = this.props;
-        const files = form[fileType] || {};
+        const files = Object.keys(form[fileType] || {});
         return (
             <PlaygroundForm
               warnings={warnings}

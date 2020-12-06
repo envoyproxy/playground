@@ -1,63 +1,40 @@
 
 import {
-    loadNetworks, loadProxies, loadServices,
     updateForm, updateUI, removeProxy, clearForm,
     updateProxies, removeNetwork, updateNetworks,
-    removeService, updateServices, updateCloud, updateEdges,
-    updateMeta, updateServiceTypes, updateExamples,
+    removeService, updateServices,
 } from "../app/store";
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
 export default class PlaygroundSocket {
+    _listeners = ['message', 'close', 'open'];
 
-    constructor(address, store, api) {
-        this.store = store;
+    constructor(playground, address) {
+        const {api, store} = playground;
+        this.playground = playground;
         this.address = address;
         this.ws = new ReconnectingWebSocket(address);
+        this.store = store;
+        this.api = api;
         this.addListeners();
         this._state = 'starting';
         this.disconnected = false;
-        this.api = api;
     }
 
-    refreshIcons = async () => {
-        const {dispatch} = this.store;
-        const {network, service, proxy} = this.store.getState();
-        await dispatch(updateCloud({
-            services: service.value,
-            proxies: proxy.value,
-            networks: network.value,
-        }));
-        await dispatch(updateEdges({
-            proxies: proxy.value,
-        }));
+    get listeners () {
+        return this._listeners;
     }
 
-    onConnect = async (evt) => {
-        const {dispatch} = this.store;
-        if (this.disconnected) {
-            await dispatch(updateUI({toast: null}));
-            const data = await this.api.get("/resources");
-            const {meta} = data;
-            const initialUpdates = [
-                updateMeta(meta),
-                updateServiceTypes(data),
-                loadServices(data),
-                loadProxies(data),
-                loadNetworks(data),
-                updateExamples(data)];
-            for (const update of initialUpdates) {
-                await this.store.dispatch(update);
-            }
-            const {network, proxy, service} = this.store.getState();
-            await this.store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
-            await this.store.dispatch(updateEdges({proxies: proxy.value}));
+    addListeners () {
+        for (const event of this.listeners) {
+            this.ws.addEventListener(event, this[event]);
         }
-    };
+    }
 
-    onDisconnect = async (evt) => {
+    close = async (evt) => {
+        // todo: check Reason to prevent onload firing
         const {target} = evt;
         const {dispatch} = this.store;
         if (target._shouldReconnect) {
@@ -66,8 +43,9 @@ export default class PlaygroundSocket {
         }
     };
 
-    onMessage = async (event) => {
+    message = async (event) => {
         const {dispatch} = this.store;
+        const {loadUI} = this.playground;
         const eventData = JSON.parse(event.data);
         // console.log("INCOMING", eventData);
         if (eventData.playtime_errors) {
@@ -79,19 +57,19 @@ export default class PlaygroundSocket {
         if (eventData.type === "network") {
             if (eventData.action === "destroy") {
                 await dispatch(removeNetwork(eventData.id));
-                this.refreshIcons();
+                loadUI();
             } else if (eventData.action === "create") {
                 await dispatch(updateNetworks(eventData));
                 await dispatch(updateUI({modal: null}));
                 await dispatch(clearForm());
-                this.refreshIcons();
+                loadUI();
             } else if (eventData.action === "connect" || eventData.action === "disconnect") {
                 const {service, proxy} = this.store.getState();
                 await dispatch(updateNetworks({
                     services: service.value,
                     proxies: proxy.value,
                     ...eventData}));
-                await this.refreshIcons();
+                await loadUI();
             }
         } else if (eventData.type === "container") {
             if (eventData.resource === "proxy") {
@@ -102,7 +80,7 @@ export default class PlaygroundSocket {
                 if (status === "creating") {
                     proxies[name] = {name};
                     await dispatch(updateProxies({proxies}));
-                    this.refreshIcons();
+                    loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
@@ -112,25 +90,25 @@ export default class PlaygroundSocket {
                         proxies[name].port_mappings = port_mappings;
                     }
                     await dispatch(updateProxies({proxies}));
-                    this.refreshIcons();
+                    loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "exited") {
                     await dispatch(removeProxy(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "destroy") {
                     await dispatch(removeProxy(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "die") {
                     await dispatch(removeProxy(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === eventData.name) {
                         await dispatch(updateForm({status, logs}));
                     }
@@ -145,32 +123,32 @@ export default class PlaygroundSocket {
                 if (status === "creating") {
                     services[name] = {name, service_type};
                     await dispatch(updateServices({services}));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "start") {
                     services[name] = {name, id, image, service_type};
                     await dispatch(updateServices({services}));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "exited") {
                     await dispatch(removeService(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "destroy") {
                     await dispatch(removeService(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === name) {
                         await dispatch(updateForm({status}));
                     }
                 } else if (eventData.status === "die") {
                     await dispatch(removeService(eventData.id));
-                    await this.refreshIcons();
+                    await loadUI();
                     if (formName && formName === eventData.name) {
                         await dispatch(updateForm({status, logs}));
                     }
@@ -181,15 +159,11 @@ export default class PlaygroundSocket {
         }
     }
 
-    addListeners = () => {
-        this.ws.addEventListener('message', (event) => {
-            this.onMessage(event);
-        });
-        this.ws.addEventListener('close', (event) => {
-            this.onDisconnect(event);
-        });
-        this.ws.addEventListener('open', (event) => {
-            this.onConnect(event);
-        });
-    }
+    open = async (evt) => {
+        const {dispatch} = this.store;
+        if (this.disconnected) {
+            await dispatch(updateUI({toast: null}));
+            await this.playground.load();
+        }
+    };
 }

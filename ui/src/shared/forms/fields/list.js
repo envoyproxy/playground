@@ -11,17 +11,20 @@ import {ActionRemove} from '../../actions';
 export class PlaygroundFieldListHeaders extends React.PureComponent {
     static propTypes = exact({
         headers: PropTypes.array.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
-        const {headers} = this.props;
+        const {headers, onDelete} = this.props;
         return (
             <Row className="pl-5 pr-5">
-              <Col sm={1} className="m-0 p-0">
-                <div className="p-1 bg-dark">
-                  <span>&nbsp;</span>
-                </div>
-              </Col>
+              {onDelete &&
+               <Col sm={1} className="m-0 p-0">
+                 <div className="p-1 bg-dark">
+                   <span>&nbsp;</span>
+                 </div>
+               </Col>
+              }
               {headers.map(([k, v], i) => {
                   return (
                       <Col sm={k} key={i} className="m-0 p-0">
@@ -41,21 +44,23 @@ export class PlaygroundFieldListItem extends React.PureComponent {
         item: PropTypes.array.isRequired,
         headers: PropTypes.array.isRequired,
         name: PropTypes.string.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
         const {headers, name, onDelete, item} = this.props;
         return (
             <Row className="pl-5 pr-5">
-              <Col sm={1} className="m-0 p-0">
-                <div className="p-2 bg-white border-bottom">
-                  <ActionRemove
-                    title={name}
-                    name={name}
-                    remove={evt => onDelete(name)} />
-                </div>
-              </Col>
+              {onDelete &&
+               <Col sm={1} className="m-0 p-0">
+                 <div className="p-2 bg-white border-bottom">
+                   <ActionRemove
+                     title={name}
+                     name={name}
+                     remove={evt => onDelete(name)} />
+                 </div>
+               </Col>
+              }
               {headers.map(([k, v], i) => {
                   return (
                       <Col sm={k}
@@ -75,7 +80,7 @@ export class PlaygroundFieldListItems extends React.PureComponent {
         keys: PropTypes.array.isRequired,
         headers: PropTypes.array.isRequired,
         row: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
@@ -103,7 +108,7 @@ export class PlaygroundFieldList extends React.PureComponent {
         headers: PropTypes.array.isRequired,
         keys: PropTypes.array.isRequired,
         row: PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired,
+        onDelete: PropTypes.func,
     });
 
     render () {
@@ -116,6 +121,7 @@ export class PlaygroundFieldList extends React.PureComponent {
               <Col>
                 <PlaygroundFieldListHeaders
                   headers={headers}
+                  onDelete={onDelete}
                 />
                 <PlaygroundFieldListItems
                   keys={keys}
@@ -125,6 +131,5 @@ export class PlaygroundFieldList extends React.PureComponent {
                 />
               </Col>
             </Row>);
-
     }
 }

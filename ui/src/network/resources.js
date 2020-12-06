@@ -2,21 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
 import APIResources from '../shared/resources';
 import CloudLogo from '../app/images/cloud.svg';
-import {NetworkModal} from './modals';
+import {connect} from '../app/store';
+import {NetworkFormModal} from './modals';
 
 
 export class BaseNetworkResources extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
+        dispatch: PropTypes.func,
         networks: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
-    modalTitle = (name, edit) => {
+    addModalTitle = (name, edit) => {
         if (edit) {
             return "Update network (" +  name + ")";
         }
@@ -24,29 +22,27 @@ export class BaseNetworkResources extends React.PureComponent {
     }
 
     render () {
-        const {modals, networks} = this.props;
+        const {networks} = this.props;
         return (
             <APIResources
               api="network"
               title="Networks"
               logo={CloudLogo}
-              modals={modals}
               editable={true}
-              editClose="Close"
-              modal={NetworkModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create network"
+              addModal={{
+                  modal: NetworkFormModal,
+                  title: this.addModalTitle,
+                  editClose: "Close",
+                  action: 'Create network'}}
               resources={networks} />);
     }
 }
 
 
-const mapStateToProps = function(state) {
+export const mapStateToProps = function(state) {
     return {
         networks: state.network.value,
     };
-}
+};
 
-const NetworkResources = connect(mapStateToProps)(BaseNetworkResources);
-
-export default NetworkResources;
+export default connect(mapStateToProps)(BaseNetworkResources);

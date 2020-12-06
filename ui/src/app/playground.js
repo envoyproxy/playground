@@ -1,60 +1,66 @@
-import React from 'react';
-import exact from 'prop-types-exact';
 
-import {Provider} from 'react-redux';
-
-import Layout from '../layout';
-import {APIContext, ModalContext, ToastContext} from "./context";
-import store, {
+import PlaygroundAPI from './api';
+import PlaygroundSocket from './socket';
+import {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
     updateServiceTypes, updateCloud, updateEdges, updateExamples,
 } from "./store";
 
-/* css */
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/prism.css';
-import './css/app.css';
-import API, {PlaygroundSocket} from './api';
 
-import {apiAddress, socketAddress} from './constants';
+export default class Playground {
+    _updaters = [
+        updateMeta,
+        updateServiceTypes,
+        loadServices,
+        loadProxies,
+        loadNetworks,
+        updateExamples];
 
-const api = new API(apiAddress);
-
-
-export default class PlaygroundApp extends React.PureComponent {
-    static propTypes = exact({});
-
-    async componentDidMount () {
-        new PlaygroundSocket(socketAddress, store, api);
-        const data = await api.get("/resources");
-        const {meta} = data;
-        const initialUpdates = [
-            updateMeta(meta),
-            updateServiceTypes(data),
-            loadServices(data),
-            loadProxies(data),
-            loadNetworks(data),
-            updateExamples(data)];
-        for (const update of initialUpdates) {
-            await store.dispatch(update);
-        }
-        const {network, proxy, service} = store.getState();
-        await store.dispatch(updateCloud({networks: network.value, proxies: proxy.value, services: service.value}));
-        await store.dispatch(updateEdges({proxies: proxy.value}));
+    constructor (store, apiAddress, socketAddress) {
+        this.store = store;
+        this.apiAddress = apiAddress;
+        this.socketAddress = socketAddress;
+        this.init();
     }
 
-    render () {
-        return (
-            <Provider store={store}>
-              <APIContext.Provider value={api}>
-                <ModalContext.Provider value={{}}>
-                  <ToastContext.Provider value={{}}>
-                    <Layout />
-                  </ToastContext.Provider>
-                </ModalContext.Provider>
-              </APIContext.Provider>
-            </Provider>
-        );
+    init () {
+        this.api = new PlaygroundAPI(this.apiAddress);
+        this.socket = new PlaygroundSocket(this, this.socketAddress);
+        this.modals = {};
+        this.toast = {};
+    };
+
+    get updaters () {
+        return this._updaters;
+    }
+
+    load = async () => {
+        await this.loadData(await this.api.get("/resources"));
+    };
+
+    loadData = async (data) => {
+        await this.loadResources(data);
+        await this.loadUI(data);
+    };
+
+    loadResources = async (data) => {
+        const {dispatch} = this.store;
+        for (const update of this.updaters) {
+            await dispatch(update(data));
+        }
+    };
+
+    loadUI = async () => {
+        const {dispatch, getState} = this.store;
+        const {network, proxy, service} = getState();
+        await dispatch(
+            updateCloud({
+                networks: network.value,
+                proxies: proxy.value,
+                services: service.value}));
+        await dispatch(
+            updateEdges({
+                proxies: proxy.value}));
     }
 }

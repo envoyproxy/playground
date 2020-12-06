@@ -3,44 +3,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
-import APIResources from '../shared/resources';
 import EnvoyLogo from '../app/images/envoy.svg';
-import {ProxyModal} from './modals';
+import {connect} from '../app/store';
+import APIResources from '../shared/resources';
+import {ProxyFormModal} from './modals';
 
 
 export class BaseProxyResources extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
+        dispatch: PropTypes.func,
         proxies: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
-    modalTitle = (name) => {
+    addModalTitle = (name) => {
         return "Create an Envoy proxy";
     }
 
     render () {
-        const {modals, proxies} = this.props;
+        const {proxies} = this.props;
         return (
             <APIResources
               api="proxy"
               title="Proxies"
-              logo={EnvoyLogo}
               resources={proxies}
-              modal={ProxyModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create proxy"
-              modals={modals} />);
+              logo={EnvoyLogo}
+              addModal={{
+                  modal: ProxyFormModal,
+                  title: this.addModalTitle,
+                  action: 'Create proxy'}} />);
     }
 }
 
-const mapStateToProps = function(state) {
+export const mapStateToProps = function(state) {
     return {
         proxies: state.proxy.value,
     };
 }
 
-const ProxyResources = connect(mapStateToProps)(BaseProxyResources);
-export default ProxyResources;
+export default connect(mapStateToProps)(BaseProxyResources);

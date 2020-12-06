@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Toast, ToastHeader, ToastBody} from 'reactstrap';
 
 import {updateUI} from '../app/store';
-import {ToastContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 
 import {AlertErrors} from './alerts';
 
@@ -58,7 +58,7 @@ export class ToastParts extends React.PureComponent {
 
 
 export class BaseToastWidget extends React.PureComponent {
-    static contextType = ToastContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         ui: PropTypes.object.isRequired,
@@ -66,6 +66,7 @@ export class BaseToastWidget extends React.PureComponent {
     });
 
     render () {
+        const {toast: toasts} = this.context;
         const {className, dispatch, ui} = this.props;
         const {toast} = ui;
         const isOpen = Boolean(toast);
@@ -77,7 +78,7 @@ export class BaseToastWidget extends React.PureComponent {
                 {isOpen &&
                  <ToastParts
                    dispatch={dispatch}
-                   {...this.context[toast]} />
+                   {...toasts[toast]} />
                 }
               </Toast>
             </>

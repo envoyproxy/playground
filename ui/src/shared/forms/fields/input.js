@@ -43,7 +43,7 @@ export class PlaygroundSelectInput extends React.PureComponent {
     static propTypes = exact({
         onChange: PropTypes.func.isRequired,
         options: PropTypes.array.isRequired,
-        noOption: PropTypes.string.isRequired,
+        placeholder: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
 
         value: PropTypes.string,
@@ -51,7 +51,7 @@ export class PlaygroundSelectInput extends React.PureComponent {
 
     render () {
         const {
-            value, name, noOption,
+            value, name, placeholder,
             onChange, options} = this.props;
         return (
             <CustomInput
@@ -60,7 +60,7 @@ export class PlaygroundSelectInput extends React.PureComponent {
               name={name}
               value={value}
               onChange={onChange}>
-              <option value="">{noOption}</option>
+              <option value="">{placeholder}</option>
               {options.map(([k, v], index) => {
                   return (
                       <option value={k} key={index}>{v}</option>);

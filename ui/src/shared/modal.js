@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 
 import {updateUI, clearForm} from '../app/store';
-import {ModalContext} from '../app/context';
+import {PlaygroundContext} from '../app/context';
 
 
 export class PlaygroundModalFooter extends React.PureComponent {
@@ -135,7 +135,7 @@ export class ModalParts extends React.PureComponent {
 
 
 export class BaseModalWidget extends React.PureComponent {
-    static contextType = ModalContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         ui: PropTypes.object.isRequired,
@@ -144,6 +144,7 @@ export class BaseModalWidget extends React.PureComponent {
     });
 
     render () {
+        const {modals} = this.context;
         const {className, dispatch, ui, form} = this.props;
         const {modal} = ui;
         const {status, validation} = form;
@@ -161,7 +162,7 @@ export class BaseModalWidget extends React.PureComponent {
                    status={status || ''}
                    dispatch={dispatch}
                    form={form}
-                   {...this.context[modal]} />
+                   {...modals[modal]} />
                 }
               </Modal>
             </>

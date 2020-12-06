@@ -32,7 +32,7 @@ export class ExampleSearch extends React.PureComponent {
             <PlaygroundSelectInput
               name="example"
               onChange={onExampleSelect}
-              noOption="Select an example"
+              placeholder="Select an example"
               options={examples.map(k => [k, k])}
             />
         );

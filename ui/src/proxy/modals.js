@@ -14,7 +14,7 @@ import {
 import EnvoyLogo from '../app/images/envoy.svg';
 
 
-export class ProxyModal extends React.Component {
+export class ProxyFormModal extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
@@ -99,7 +99,7 @@ export class ProxyModal extends React.Component {
             }
             return (
                 <ContainerStarting
-                  message={messages[status]}
+                  message={messages[status] || messages.default}
                   color='info'
                   icon={EnvoyLogo}
                   iconAlt={name}

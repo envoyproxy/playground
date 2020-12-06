@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {connect} from 'react-redux';
-
-import APIResources from '../shared/resources';
 import ServiceLogo from '../app/images/service.png';
-
-import {ServiceModal} from './modals';
+import {connect} from '../app/store';
+import APIResources from '../shared/resources';
+import {ServiceFormModal} from './modals';
 
 
 export class BaseServiceResources extends React.PureComponent {
@@ -15,7 +13,6 @@ export class BaseServiceResources extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
         services: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
     getLogo = (service_type) => {
@@ -28,32 +25,31 @@ export class BaseServiceResources extends React.PureComponent {
         return icon;
     };
 
-    modalTitle = (name) => {
+    addModalTitle = (name) => {
         return "Create a service";
     }
 
     render () {
-        const {modals, services} = this.props;
+        const {services} = this.props;
         return (
             <APIResources
               api="service"
               title="Services"
-              logo={this.getLogo}
               resources={services}
-              modal={ServiceModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create service"
-              modals={modals} />);
+              logo={this.getLogo}
+              addModal={{
+                  modal: ServiceFormModal,
+                  title: this.addModalTitle,
+                  action: 'Create service'}} />);
     }
 }
 
 
-const mapStateToProps = function(state) {
+export const mapStateToProps = (state) => {
     return {
         services: state.service.value,
         service_types: state.service_type.value,
     };
-}
+};
 
-const ServiceResources = connect(mapStateToProps)(BaseServiceResources);
-export default ServiceResources;
+export default connect(mapStateToProps)(BaseServiceResources);
