@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: unit-tests
+  - stage: unit_tests
     jobs:
       - job: tests
         dependsOn: []
