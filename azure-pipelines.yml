@@ -8,7 +8,7 @@ pool:
 stages:
   - stage: playground
     jobs:
-      - job: tests
+      - job: unit.tests
         dependsOn: []
         steps:
         - script: make test
