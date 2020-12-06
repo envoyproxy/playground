@@ -42,7 +42,7 @@ test('Page render', () => {
 
 test('Layout render', () => {
     const layout = shallow(<Layout />);
-    const div = layout.find('div');
+    const div = layout.find('div').first();
     expect(div.props().className).toEqual('container-fluid');
     const rows = div.find(Row);
 
@@ -54,13 +54,13 @@ test('Layout render', () => {
 
     expect(rows.at(1).props().className).toEqual('p-0');
     const cols = rows.at(1).find(Col);
-    expect(cols.at(0).props().className).toEqual('p-0');
+    expect(cols.at(0).props().className).toEqual('p-0 App-left');
     const left = cols.at(0).find(Left);
     expect(left.props()).toEqual({});
     expect(cols.at(1).props().className).toEqual('p-0');
     const content = cols.at(1).find(Content);
     expect(content.props()).toEqual({});
-    expect(cols.at(2).props().className).toEqual('p-0');
+    expect(cols.at(2).props().className).toEqual('p-0 App-right');
     const right = cols.at(2).find(Right);
     expect(right.props()).toEqual({});
 

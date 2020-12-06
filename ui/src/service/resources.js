@@ -15,7 +15,6 @@ export class BaseServiceResources extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
         services: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
     getLogo = (service_type) => {
@@ -33,7 +32,7 @@ export class BaseServiceResources extends React.PureComponent {
     }
 
     render () {
-        const {modals, services} = this.props;
+        const {services} = this.props;
         return (
             <APIResources
               api="service"
@@ -42,8 +41,7 @@ export class BaseServiceResources extends React.PureComponent {
               resources={services}
               modal={ServiceModal}
               modalTitle={this.modalTitle}
-              modalAction="Create service"
-              modals={modals} />);
+              modalAction="Create service" />);
     }
 }
 

@@ -11,9 +11,8 @@ import {NetworkModal} from './modals';
 
 export class BaseNetworkResources extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
+        dispatch: PropTypes.func,
         networks: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
     modalTitle = (name, edit) => {
@@ -24,13 +23,12 @@ export class BaseNetworkResources extends React.PureComponent {
     }
 
     render () {
-        const {modals, networks} = this.props;
+        const {networks} = this.props;
         return (
             <APIResources
               api="network"
               title="Networks"
               logo={CloudLogo}
-              modals={modals}
               editable={true}
               editClose="Close"
               modal={NetworkModal}

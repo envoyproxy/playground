@@ -20,6 +20,7 @@ export {Header, Left, Right, Content, Footer};
 
 
 export class Layout extends React.PureComponent {
+    static propTypes = exact({});
 
     render () {
         return  (
@@ -28,12 +29,18 @@ export class Layout extends React.PureComponent {
                 <Col className="p-0"><Header /></Col>
               </Row>
               <Row className="p-0">
-                <Col className="p-0" xs="3"><Left /></Col>
+                <Col className="p-0 App-left" xs="3">
+                  <Left />
+                </Col>
                 <Col className="p-0" xs="6"><Content /></Col>
-                <Col className="p-0" xs="3"><Right /></Col>
+                <Col className="p-0 App-right" xs="3">
+                  <Right />
+                </Col>
               </Row>
               <Row className="p-0">
-                <Col className="p-0"><Footer /></Col>
+                <Col className="p-0">
+                  <Footer />
+                </Col>
               </Row>
             </div>);
     }

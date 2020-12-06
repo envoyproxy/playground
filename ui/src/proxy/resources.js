@@ -5,16 +5,16 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import APIResources from '../shared/resources';
+import {PlaygroundContext} from '../app/context';
 import EnvoyLogo from '../app/images/envoy.svg';
+import APIResources from '../shared/resources';
 import {ProxyModal} from './modals';
 
 
 export class BaseProxyResources extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
+        dispatch: PropTypes.func,
         proxies: PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
     });
 
     modalTitle = (name) => {
@@ -22,7 +22,7 @@ export class BaseProxyResources extends React.PureComponent {
     }
 
     render () {
-        const {modals, proxies} = this.props;
+        const {proxies} = this.props;
         return (
             <APIResources
               api="proxy"
@@ -31,8 +31,7 @@ export class BaseProxyResources extends React.PureComponent {
               resources={proxies}
               modal={ProxyModal}
               modalTitle={this.modalTitle}
-              modalAction="Create proxy"
-              modals={modals} />);
+              modalAction="Create proxy" />);
     }
 }
 
