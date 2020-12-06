@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 
 import APIResources from '../shared/resources';
 import CloudLogo from '../app/images/cloud.svg';
-import {NetworkModal} from './modals';
+import {NetworkFormModal} from './modals';
 
 
 export class BaseNetworkResources extends React.PureComponent {
@@ -30,7 +30,7 @@ export class BaseNetworkResources extends React.PureComponent {
               title="Networks"
               logo={CloudLogo}
               addModal={{
-                  modal: NetworkModal,
+                  modal: NetworkFormModal,
                   title: this.addModalTitle,
                   editable: true,
                   editClose: "Close",
