@@ -102,7 +102,8 @@ class BaseResources extends React.PureComponent {
             modal, title} = addModal;
         const {modals} =  this.context;
         modals[api] = {
-            title, modal, action, editAction, editClose,
+            title, modal, action,
+            editAction, editClose,
             icon: logo,
             onUpdate: this.updateResource,
             onSubmit: this.createResource};

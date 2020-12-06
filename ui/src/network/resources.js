@@ -28,10 +28,10 @@ export class BaseNetworkResources extends React.PureComponent {
               api="network"
               title="Networks"
               logo={CloudLogo}
+              editable={true}
               addModal={{
                   modal: NetworkFormModal,
                   title: this.addModalTitle,
-                  editable: true,
                   editClose: "Close",
                   action: 'Create network'}}
               resources={networks} />);

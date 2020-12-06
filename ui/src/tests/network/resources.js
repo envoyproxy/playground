@@ -24,10 +24,10 @@ test('NetworkResources render', () => {
     expect(api.props().logo).toEqual('cloud.svg');
     expect(api.props().title).toEqual('Networks');
     expect(api.props().resources).toEqual(networks);
+    expect(api.props().editable).toEqual(true);
     expect(api.props().addModal).toEqual({
         modal: NetworkFormModal,
         title: resources.instance().addModalTitle,
-        editable: true,
         editClose: "Close",
         action: 'Create network'});
 });
