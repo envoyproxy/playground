@@ -5,7 +5,6 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {PlaygroundContext} from '../app/context';
 import EnvoyLogo from '../app/images/envoy.svg';
 import APIResources from '../shared/resources';
 import {ProxyModal} from './modals';
