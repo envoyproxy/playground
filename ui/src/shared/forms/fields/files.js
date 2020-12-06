@@ -13,7 +13,7 @@ import {PlaygroundFieldList} from './list';
 export class PlaygroundFilesFieldList extends React.PureComponent {
     static propTypes = exact({
         onDelete: PropTypes.func.isRequired,
-        files: PropTypes.object.isRequired,
+        files: PropTypes.array.isRequired,
         prefix: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired,
     });
@@ -42,7 +42,7 @@ export class PlaygroundFilesFieldList extends React.PureComponent {
               headers={this.headers}
               onDelete={onDelete}
               row={this.row}
-              keys={Object.keys(files)}
+              keys={files}
             />);
     }
 }
@@ -78,7 +78,7 @@ export class PlaygroundFilesField extends React.PureComponent {
     static propTypes = exact({
         onChange: PropTypes.func.isRequired,
         onDelete: PropTypes.func.isRequired,
-        files: PropTypes.object.isRequired,
+        files: PropTypes.array.isRequired,
         name: PropTypes.string.isRequired,
         prefix: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
@@ -100,7 +100,7 @@ export class PlaygroundFilesField extends React.PureComponent {
                   onDelete={onDelete}
                   icon={icon}
                   prefix={prefix}
-                  files={{...files}} />
+                  files={[...Object.keys(files)]} />
               </PlaygroundFormGroup>);
     }
 }
