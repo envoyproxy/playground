@@ -7,7 +7,7 @@ import {Provider} from 'react-redux';
 import PlaygroundAPI from './api';
 import {apiAddress, socketAddress} from './constants';
 import {PlaygroundContext} from "./context";
-import {Layout} from '../layout';
+import {Page} from '../layout';
 import Playground from './playground';
 import PlaygroundSocket from  './socket';
 import store from "./store";
@@ -37,7 +37,9 @@ export class PlaygroundApp extends React.Component {
         return (
             <Provider store={store}>
               <PlaygroundContext.Provider value={playground}>
-                <Layout />
+                <div className="App">
+                  <Page />
+                </div>
               </PlaygroundContext.Provider>
             </Provider>
         );

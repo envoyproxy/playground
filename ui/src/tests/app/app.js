@@ -6,7 +6,7 @@ import {shallow} from "enzyme";
 import {
     PlaygroundApp, PlaygroundContext,
     store} from '../../app';
-import {Layout} from '../../layout';
+import {Page} from '../../layout';
 
 const mockLoad = jest.fn(async () => {});
 
@@ -34,8 +34,10 @@ test('PlaygroundApp render', () => {
     expect(provider.props().store).toEqual(store);
     const context = provider.find(PlaygroundContext.Provider);
     expect(context.props().value).toEqual('PLAYGROUND');
-    const layout = context.find(Layout);
-    expect(layout.props()).toEqual({});
+    const div = context.find('div');
+    expect(div.props().className).toEqual('App');
+    const page = div.find(Page);
+    expect(page.props()).toEqual({});
 });
 
 
