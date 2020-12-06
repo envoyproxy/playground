@@ -16,7 +16,7 @@ export class BaseProxyResources extends React.PureComponent {
         proxies: PropTypes.object.isRequired,
     });
 
-    modalTitle = (name) => {
+    addModalTitle = (name) => {
         return "Create an Envoy proxy";
     }
 
@@ -26,11 +26,12 @@ export class BaseProxyResources extends React.PureComponent {
             <APIResources
               api="proxy"
               title="Proxies"
-              logo={EnvoyLogo}
               resources={proxies}
-              modal={ProxyModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create proxy" />);
+              addModal={{
+                  modal: ProxyModal,
+                  title: this.addModalTitle,
+                  logo: EnvoyLogo,
+                  action: 'Create proxy'}} />);
     }
 }
 

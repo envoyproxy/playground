@@ -15,7 +15,7 @@ export class BaseNetworkResources extends React.PureComponent {
         networks: PropTypes.object.isRequired,
     });
 
-    modalTitle = (name, edit) => {
+    addModalTitle = (name, edit) => {
         if (edit) {
             return "Update network (" +  name + ")";
         }
@@ -28,12 +28,13 @@ export class BaseNetworkResources extends React.PureComponent {
             <APIResources
               api="network"
               title="Networks"
-              logo={CloudLogo}
-              editable={true}
-              editClose="Close"
-              modal={NetworkModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create network"
+              addModal={{
+                  modal: NetworkModal,
+                  title: this.addModalTitle,
+                  logo: CloudLogo,
+                  editable: true,
+                  editClose: "Close",
+                  action: 'Create network'}}
               resources={networks} />);
     }
 }

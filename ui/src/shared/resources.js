@@ -46,9 +46,7 @@ class BaseResources extends React.PureComponent {
         ]).isRequired,
         title: PropTypes.string.isRequired,
         resources: PropTypes.object.isRequired,
-        modal: PropTypes.elementType.isRequired,
-        modalTitle: PropTypes.func.isRequired,
-        modalAction: PropTypes.string.isRequired,
+        addModal: PropTypes.object.isRequired,
         editable: PropTypes.bool,
         editClose: PropTypes.string,
         editAction: PropTypes.string,
@@ -101,10 +99,10 @@ class BaseResources extends React.PureComponent {
     componentDidMount () {
         // create the resource modal
         const {
-            api, logo, modal,
-            editAction, editClose,
-            modalAction: action,
-            modalTitle: title} = this.props;
+            api, addModal} = this.props;
+        const {
+            action, editAction, editClose,
+            logo, modal, title} = addModal;
         const {modals} =  this.context;
         modals[api] = {
             title, modal, action, editAction, editClose,

@@ -27,7 +27,7 @@ export class BaseServiceResources extends React.PureComponent {
         return icon;
     };
 
-    modalTitle = (name) => {
+    addModalTitle = (name) => {
         return "Create a service";
     }
 
@@ -37,11 +37,12 @@ export class BaseServiceResources extends React.PureComponent {
             <APIResources
               api="service"
               title="Services"
-              logo={this.getLogo}
               resources={services}
-              modal={ServiceModal}
-              modalTitle={this.modalTitle}
-              modalAction="Create service" />);
+              addModal={{
+                  modal: ServiceModal,
+                  title: this.addModalTitle,
+                  logo: this.getLogo,
+                  action: 'Create service'}} />);
     }
 }
 
