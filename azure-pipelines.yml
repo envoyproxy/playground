@@ -23,6 +23,7 @@ stages:
     jobs:
       - job: build
         dependsOn: []
+        steps:
         - script: make build
           displayName: 'Build the production Docker image'
         - script: make integration-test
