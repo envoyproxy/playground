@@ -56,6 +56,7 @@ services:
     - ../bin/integration-tests.sh:/usr/local/bin/integration-tests.sh:shared
     - ../.cache/integration/docker:/var/lib/docker
     - ../tests/integration:/tests
+    - ../tmp/docker:/tmp/docker
 
   integration-start:
     image: busybox
