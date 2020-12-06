@@ -37,11 +37,11 @@ docker run --rm \
        --net host \
        -v /tests:/tests \
        python:3.8-slim \
-        sh -c '\
+        sh -c "\
 	   pip install selenium pytest-selenium \
 	   && pytest --driver Remote \
 	      	     --capability browserName firefox \
 		     -v \
-		     /tests
+		     /tests"
 
 echo "Done"
