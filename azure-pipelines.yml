@@ -19,8 +19,6 @@ stages:
           displayName: 'Run test suites'
         - script: make coverage
           displayName: 'Upload to codecov.io'
-  - stage: build
-    jobs:
       - job: build
         dependsOn: []
         steps:
