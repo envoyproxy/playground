@@ -14,119 +14,73 @@ from playground.control.constants import (
 from playground.control.exceptions import PlaygroundError
 
 
-@attr.s(kw_only=True)
-class NetworkAddAttribs(AttribsWithName):
-    proxies = attr.ib(
-        type=list,
-        default=[],
-        validator=[
-            instance_of(list),
-            has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
-            all_members(lambda m: type(m) == str)])
-    services = attr.ib(
-        type=list,
-        default=[],
-        validator=[
-            instance_of(list),
-            has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
-            all_members(lambda m: type(m) == str)])
-
-    # api: p.c.api.PlaygroundAPI
-    async def validate(self, api) -> None:
-        networks = await api.connector.networks.list()
-
-        for network in networks:
-            if network['name'] == self.name:
-                raise PlaygroundError(
-                    f'A network with the name {self.name} already exists.',
-                    self)
-
-        if self.services:
-            # check all of the requested services are present
-            # in the service list
-            services = set(
-                s['name']
-                for s
-                in await api.connector.services.list())
-            _services = set(self.services)
-            if (services ^ _services) & _services:
-                raise PlaygroundError(
-                    'Connection to unrecognized service requested.',
-                    self)
-
-        if self.proxies:
-            # check all of the requested proxies are present in the proxy list
-            proxies = set(
-                s['name']
-                for s
-                in await api.connector.proxies.list())
-            _proxies = set(self.proxies)
-            if (proxies ^ _proxies) & _proxies:
-                raise PlaygroundError(
-                    'Connection to unrecognized proxy requested.',
-                    self)
-
-
-@attr.s
-class NetworkEditAttribs(ValidatingAttribs):
-    id = attr.ib(
+def id_attrib_factory():
+    return attr.ib(
         type=str,
         validator=[
             has_length(10),
             matches_re(RE_UUID)])
-    proxies = attr.ib(
+
+
+def resource_attrib_factory():
+    return attr.ib(
         type=list,
         default=[],
         validator=[
             instance_of(list),
             has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
             all_members(lambda m: type(m) == str)])
-    services = attr.ib(
-        type=list,
-        default=[],
-        validator=[
-            instance_of(list),
-            has_length(f'<{MAX_NETWORK_CONNECTIONS}'),
-            all_members(lambda m: type(m) == str)])
+
+
+class NetworkEditAttribsMixin(object):
 
     # api: p.c.api.PlaygroundAPI
-    async def validate(self, api):
+    async def validate(self, api) -> None:
+        await self._validate_network(api)
+        await self._validate_resources(api, 'services')
+        await self._validate_resources(api, 'proxies')
+
+    # api: p.c.api.PlaygroundAPI
+    async def _validate_network(self, api) -> None:
         networks = await api.connector.networks.list()
 
+        # self.name ?
         if self.id not in [n['id'] for n in networks]:
             raise PlaygroundError(
                 f'Unrecognized network id {self.id}.', self)
 
-        if self.services:
-            # check all of the requested services are present
-            # in the service list
-            services = set(
-                s['name']
-                for s
-                in await api.connector.services.list())
-            _services = set(self.services)
-            if (services ^ _services) & _services:
-                raise PlaygroundError(
-                    'Connection to unrecognized service requested.',
-                    self)
+    # api: p.c.api.PlaygroundAPI
+    async def _validate_resources(self, api, resource: str) -> None:
+        resource = getattr(self, resource, None)
+        if not resource:
+            return
+        # check all of the requested services are present
+        # in the list
+        resources = getattr(api.connector, resource)
+        resources = set(
+            s['name']
+            for s
+            in await resources.list())
+        _resources = set(self.resources)
+        if (resources ^ _resources) & _resources:
+            raise PlaygroundError(
+                f'Connection to unrecognized {resource} requested.',
+                self)
 
-        if self.proxies:
-            # check all of the requested proxies are present in the proxy list
-            proxies = set(
-                s['name']
-                for s
-                in await api.connector.proxies.list())
-            _proxies = set(self.proxies)
-            if (proxies ^ _proxies) & _proxies:
-                raise PlaygroundError(
-                    'Connection to unrecognized proxy requested.',
-                    self)
+
+@attr.s(kw_only=True)
+class NetworkAddAttribs(AttribsWithName, NetworkEditAttribsMixin):
+    proxies = resource_attrib_factory()
+    services = resource_attrib_factory()
+
+
+@attr.s
+class NetworkEditAttribs(ValidatingAttribs, NetworkEditAttribsMixin):
+    id = id_attrib_factory()
+    proxies = resource_attrib_factory()
+    services = resource_attrib_factory()
 
 
 @attr.s
 class NetworkDeleteAttribs(ValidatingAttribs):
-    id = attr.ib(
-        type=str,
-        validator=[
-            has_length(10),
-            matches_re(RE_UUID)])
+    id = id_attrib_factory()
