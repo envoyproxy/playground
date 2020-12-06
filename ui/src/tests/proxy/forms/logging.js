@@ -7,10 +7,7 @@ import {updateForm} from '../../../app/store';
 import {
     ProxyLoggingForm, ProxyLoggingDefaultField} from '../../../proxy/forms/logging';
 import {
-    PlaygroundFormGroup, PlaygroundFormGroupRow} from '../../../shared/forms';
-import {
     PlaygroundSelectInput} from '../../../shared/forms/fields/input';
-import BinaryIcon from '../../../app/images/binary.png';
 
 
 jest.mock('../../../app/store', () => {
