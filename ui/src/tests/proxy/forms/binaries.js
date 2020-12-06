@@ -1,7 +1,6 @@
 
 import {shallow} from "enzyme";
 
-import {PlaygroundFilesForm} from '../../../shared/forms';
 import {ProxyBinariesForm} from '../../../proxy/forms/binaries';
 import BinaryIcon from '../../../app/images/binary.png';
 
