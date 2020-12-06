@@ -12,6 +12,38 @@ import {
 import {updateForm} from '../../app/store';
 
 
+export class ProxyLoggingDefaultField extends React.PureComponent {
+    static propTypes = exact({
+        onChange: PropTypes.func.isRequired,
+        logging: PropTypes.object.isRequired,
+    });
+
+    get options () {
+        return [
+            ['info', 'info (default)'],
+            ['debug', 'debug'],
+            ['trace', 'trace']];
+    }
+
+    render () {
+        const {logging, onChange} = this.props;
+        return (
+            <PlaygroundFormGroupRow
+              label="log_level"
+              title="Default log level">
+              <Col sm={8}>
+                <PlaygroundSelectInput
+                  onChange={onChange}
+                  value={logging.default}
+                  name="mapping_type"
+                  placeholder="Select log level"
+                  options={this.options} />
+              </Col>
+            </PlaygroundFormGroupRow>);
+    }
+}
+
+
 export class ProxyLoggingForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -27,8 +59,8 @@ export class ProxyLoggingForm extends React.PureComponent {
     onChange = async (evt) => {
         const {dispatch, form} = this.props;
         const {logging={}} = form;
-        const update = {default: evt.target.value};
-        dispatch(updateForm({logging: {...logging, ...update}}));
+        const update = {'default': evt.target.value};
+        await dispatch(updateForm({logging: {...logging, ...update}}));
     }
 
     render () {
@@ -37,21 +69,10 @@ export class ProxyLoggingForm extends React.PureComponent {
         return (
             <PlaygroundForm messages={this.messages}>
               <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="log_level"
-                  title="Default log level">
-                  <Col sm={8}>
-                    <PlaygroundSelectInput
-                      onChange={this.onChange}
-                      value={logging.default}
-                      name="mapping_type"
-                      placeholder="Select log level"
-                      options={[
-                          ['info', 'info (default)'],
-                          ['debug', 'debug'],
-                          ['trace', 'trace']]} />
-                  </Col>
-                </PlaygroundFormGroupRow>
+                <ProxyLoggingDefaultField
+                  logging={logging}
+                  onChange={this.onChange}
+                />
               </PlaygroundFormGroup>
             </PlaygroundForm>
         );
