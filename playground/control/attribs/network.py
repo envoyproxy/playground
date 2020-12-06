@@ -41,6 +41,10 @@ class NetworkEditAttribsMixin(object):
         await self._validate_resources(api, 'proxies')
 
     # api: p.c.api.PlaygroundAPI
+    async def _validate_network(self, api) -> None:
+        raise NotImplementedError
+
+    # api: p.c.api.PlaygroundAPI
     async def _validate_resources(self, api, resource: str) -> None:
         resource = getattr(self, resource, None)
         if not resource:
@@ -50,8 +54,8 @@ class NetworkEditAttribsMixin(object):
         resources = set(
             s['name']
             for s
-            in await resources.list())
-        _resources = set(getattr(api.connector, resource))
+            in await getattr(api.connector, resource).list())
+        _resources = set(resource)
         if (resources ^ _resources) & _resources:
             raise PlaygroundError(
                 f'Connection to unrecognized {resource} requested.',
