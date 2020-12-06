@@ -6,9 +6,11 @@ from .event import (
     ContainerEventAttribs,
     ImageEventAttribs,
     NetworkEventAttribs)
-from .request import (
-    NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
-    ProxyAddAttribs, ProxyCreateCommandAttribs,
+from .network import (
+    NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs)
+from .proxy import (
+    ProxyAddAttribs, ProxyCreateCommandAttribs)
+from .service import (
     ServiceAddAttribs, ServiceCreateCommandAttribs)
 
 
