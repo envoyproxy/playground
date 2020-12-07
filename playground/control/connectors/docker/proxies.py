@@ -53,12 +53,12 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 'proxy',
                 data.name,
                 'certs',
-                data.certs.items()),
+                data.certs),
             '/binary': await self.connector.volumes.populate(
                 'proxy',
                 data.name,
                 'binary',
-                data.binaries.items()),
+                data.binaries),
             '/logs': await self.connector.volumes.create(
                 'proxy', data.name, 'logs')}
 

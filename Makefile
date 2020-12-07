@@ -92,9 +92,8 @@ dev-control-sh:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
 		--rm \
-		--entrypoint /bin/bash \
 		-p 8000:8080 \
-			control
+			control /bin/bash
 
 dev-ui:
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose run \
