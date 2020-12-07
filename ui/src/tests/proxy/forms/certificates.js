@@ -13,7 +13,7 @@ test('ProxyCertificatesForm render', () => {
           dispatch={dispatch}
           form={_form} />);
     expect(form.text()).toEqual('<PlaygroundFilesForm />');
-    expect(form.props().fileType).toEqual('certificates');
+    expect(form.props().fileType).toEqual('certs');
     expect(form.props().dispatch).toEqual(dispatch);
     expect(form.props().form).toEqual(_form);
     expect(form.props().title).toEqual('Add a cert/key');
