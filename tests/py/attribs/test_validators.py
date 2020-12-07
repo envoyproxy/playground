@@ -44,16 +44,13 @@ def test_validator_length(patch_playground, valid, testlen, error):
     _patch_error = patch_playground(
         'attribs.validators._LengthValidator._type_error')
 
-    with _patch_error as m_error:
-        m_error.return_value = DummyException
-        validator = _LengthValidator(valid)
-
+    def _validate(validator, m_error, thing):
         if not error:
-            validator('INST', 'ATTR', [''] * testlen)
+            validator('INST', 'ATTR', thing * testlen)
             assert not m_error.called
         else:
             with pytest.raises(DummyException):
-                validator('INST', 'ATTR', [''] * testlen)
+                validator('INST', 'ATTR', thing * testlen)
 
             msg = getattr(validator, f'_err_{error}')
             _valid = (
@@ -62,5 +59,12 @@ def test_validator_length(patch_playground, valid, testlen, error):
                 else valid)
             assert (
                 list(m_error.call_args)
-                == [(msg, 'ATTR', [''] * testlen,
+                == [(msg, 'ATTR', thing * testlen,
                      _valid), {}])
+
+    with _patch_error as m_error:
+        m_error.return_value = DummyException
+        validator = _LengthValidator(valid)
+        _validate(validator, m_error, [''])
+        _validate(validator, m_error, ('', ))
+        _validate(validator, m_error, 'X')
