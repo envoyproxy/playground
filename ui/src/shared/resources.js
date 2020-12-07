@@ -18,15 +18,20 @@ class ResourceInfoItem extends React.PureComponent {
             PropTypes.object,
             PropTypes.array,
         ]).isRequired,
+        even: PropTypes.bool.isRequired,
         handleItem: PropTypes.func.isRequired,
     })
 
     render () {
-        const {k, v, handleItem} = this.props;
+        const {k, v, handleItem, even} = this.props;
+        let color = 'bg-light';
+        if (even) {
+            color = 'bg-white';
+        }
         return (
             <dl className="row m-0 bg-light p-0 small">
-              <dt className="col col-sm-4 bg-light text-right text-dark m-0">{k}</dt>
-              <dd className="col col-sm-8 bg-white m-0">
+              <dt className="col col-sm-4 bg-light border-bottom text-right text-dark m-0 pt-1 pb-1">{k}</dt>
+              <dd className={"col col-sm-8 pt-1 pb-1 m-0 " + color}>
                 {handleItem(k, v)}
               </dd>
             </dl>);
@@ -47,6 +52,7 @@ class BaseResources extends React.PureComponent {
         title: PropTypes.string.isRequired,
         resources: PropTypes.object.isRequired,
         addModal: PropTypes.object.isRequired,
+        editable: PropTypes.bool,
     });
 
     addResource = async (evt) => {
@@ -157,7 +163,7 @@ class BaseResources extends React.PureComponent {
         };
         return (
 	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-light">
+              <header className="pt-1 pb-1 bg-dark">
                 <img
                   alt={title}
                   src={headerLogo}
@@ -169,6 +175,7 @@ class BaseResources extends React.PureComponent {
                   title={title}
                   add={this.addResource} />
               </header>
+              <div className="p-0 pt-1 bg-medium">
               <Accordion
                 editable={editable}
                 logo={_logo}>
@@ -188,6 +195,7 @@ class BaseResources extends React.PureComponent {
                                     key={i}
                                     k={k}
                                     v={v}
+                                    even={Boolean(i % 2)}
                                     handleItem={this.handleItem}
                                   />);
 	                  })}
@@ -195,6 +203,7 @@ class BaseResources extends React.PureComponent {
 		    );
 	        })}
               </Accordion>
+              </div>
             </section>);
         }
 }

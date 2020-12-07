@@ -52,6 +52,14 @@
     background-color: #ccc !important;
 }
 
+.bg-darkish {
+    background-color: #ddd !important;
+}
+
+.bg-medium {
+    background-color: #eee !important;
+}
+
 .border-dark {
     border-color: #999 !important;
 }
