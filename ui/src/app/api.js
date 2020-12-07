@@ -32,7 +32,6 @@ export default class PlaygroundAPI {
         const state = store.getState();
         const form = state.form.value;
         const service_types = state.service_type.value;
-        const meta = state.meta.value;
         if (Object.keys(form).length === 0) {
             return;
         }
