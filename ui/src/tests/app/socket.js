@@ -57,7 +57,10 @@ test('socket addListeners', () => {
 
 const msgTest = [
     [{playtime_errors: null, type: 'HANDLER1'}],
-];
+    [{playtime_errors: null, type: 'HANDLER2'}],
+    [{playtime_errors: 'ERRORS', type: 'HANDLER1'}],
+    [{playtime_errors: 'ERRORS', type: 'HANDLER2'}],
+    [{playtime_errors: 'ERRORS', type: null}]];
 
 
 each(msgTest).test('socket message', async (parsed) => {
@@ -78,7 +81,7 @@ each(msgTest).test('socket message', async (parsed) => {
     if (parsed.playtime_errors) {
         expect(playground.api.handleErrors.mock.calls).toEqual([[parsed]]);
         expect(playground.api.handleOne.mock.calls).toEqual([]);
-        expect(playground.api.handleTwo.mock.calls).toEqual([[]]);
+        expect(playground.api.handleTwo.mock.calls).toEqual([]);
     } else {
         expect(playground.api.handleErrors.mock.calls).toEqual([]);
         if (parsed.type === 'HANDLER1') {
