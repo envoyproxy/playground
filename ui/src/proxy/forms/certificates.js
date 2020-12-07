@@ -40,7 +40,7 @@ export class ProxyCertificatesForm extends React.PureComponent {
         const {dispatch, form} = this.props;
         return (
             <PlaygroundFilesForm
-              fileType="certificates"
+              fileType="certs"
               dispatch={dispatch}
               form={form}
               icon={CertificateIcon}

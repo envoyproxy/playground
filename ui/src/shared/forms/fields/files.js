@@ -100,7 +100,7 @@ export class PlaygroundFilesField extends React.PureComponent {
                   onDelete={onDelete}
                   icon={icon}
                   prefix={prefix}
-                  files={[...Object.keys(files)]} />
+                  files={[...files]} />
               </PlaygroundFormGroup>);
     }
 }
