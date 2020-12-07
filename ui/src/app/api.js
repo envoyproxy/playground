@@ -14,7 +14,7 @@ export default class PlaygroundAPI {
     }
 
     async get (path) {
-        const response = await fetch(this.address + path);
+        const response = await fetch(this._getAddress(path));
         return await response.json();
     }
 

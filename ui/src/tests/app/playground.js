@@ -53,7 +53,7 @@ test('playground init', () => {
     playground.apiAddress = 'API';
     playground.socketAddress = 'SOCKET';
     playground.init();
-    expect(PlaygroundAPI.mock.calls).toEqual([['API']]);
+    expect(PlaygroundAPI.mock.calls).toEqual([[playground, 'API']]);
     expect(PlaygroundSocket.mock.calls).toEqual([[playground, 'SOCKET']]);
     expect(playground.modals).toEqual({});
     expect(playground.toast).toEqual({});
