@@ -48,6 +48,7 @@ class NetworkEditAttribsMixin(object):
             for n
             in await api.connector.networks.list()
             if n]
+
         _id = getattr(self, self._id, None)
         if _id not in networks:
             raise PlaygroundError(
@@ -61,7 +62,7 @@ class NetworkEditAttribsMixin(object):
         self._all_present(
             resource,
             set(resources),
-            set(s['name']
+            set(s.get(self._id)
                 for s
                 in await getattr(api.connector, resource).list()))
 
