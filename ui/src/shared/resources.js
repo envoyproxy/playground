@@ -61,11 +61,10 @@ class BaseResources extends React.PureComponent {
         const {api, dispatch, form} = this.props;
         const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
         data.env = env || vars;
+        await dispatch(updateForm({status: 'initializing'}));
         const {errors} = await this.context.api.post('/' + api + '/add', data);
         if (errors) {
-            await dispatch(updateForm({validation: errors}));
-        } else {
-            await dispatch(updateForm({status: 'initializing'}));
+            await dispatch(updateForm({validation: errors, status: ''}));
         }
     };
 

@@ -16,6 +16,7 @@ class ContainerEventAttribs(ValidatingAttribs):
 @attr.s(kw_only=True)
 class ImageEventAttribs(ValidatingAttribs):
     action = attr.ib(type=str)
+    image = attr.ib(type=str)
 
 
 @attr.s(kw_only=True)

@@ -29,7 +29,7 @@ class PlaygroundAPI(object):
 
     def __init__(self, services: Union[tuple, None] = None):
         self._sockets: list = []
-        self.connector = PlaygroundDockerClient()
+        self.connector = PlaygroundDockerClient(self)
         self.handler = PlaygroundEventHandler(self)
         self.services = PlaygroundServiceDiscovery(services)
 

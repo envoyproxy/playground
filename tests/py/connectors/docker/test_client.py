@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from playground.control.connectors.docker import client
+from playground.control.api.listener import PlaygroundAPI
 
 
 class DummyPlaygroundClient(client.PlaygroundDockerClient):
@@ -12,6 +13,12 @@ class DummyPlaygroundClient(client.PlaygroundDockerClient):
         self.networks = MagicMock()
         self.proxies = MagicMock()
         self.services = MagicMock()
+
+
+class DummyPlaygroundAPI(PlaygroundAPI):
+
+    def __init__(self):
+        pass
 
 
 def test_docker_client(patch_playground):
@@ -33,7 +40,9 @@ def test_docker_client(patch_playground):
     def _run_test(
             m_aiodocker, m_images, m_volumes, m_proxies,
             m_services, m_networks, m_events):
-        _connector = client.PlaygroundDockerClient()
+        api = DummyPlaygroundAPI()
+        _connector = client.PlaygroundDockerClient(api)
+        assert _connector.api == api
         assert _connector.docker == m_aiodocker.return_value
         assert (
             list(m_aiodocker.call_args)
@@ -60,7 +69,7 @@ def test_docker_client(patch_playground):
             == [(_connector, ), {}])
         assert (
             list(m_events.call_args)
-            == [((m_aiodocker.return_value), ), {}])
+            == [((_connector), ), {}])
 
     with _patch_aiodocker as m_aiodocker:
         with _patch_images as m_images:

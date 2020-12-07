@@ -23,6 +23,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             self,
             volume: str,
             mount: str,
+            container_type: str,
             files: Union[dict, OrderedDict]) -> None:
 
         if not await self.connector.images.exists(self._mount_image):
@@ -30,7 +31,8 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
-            config = self._get_mount_config(volume, v, mount, k)
+            config = self._get_mount_config(
+                container_type, volume, v, mount, k)
             container = await self.docker.containers.create_or_replace(
                 config=config,
                 name=volume)
@@ -50,7 +52,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
         if files:
             # write files into the volume
-            await self.write(volume.name, mount, files)
+            await self.write(volume.name, mount, container_type, files)
         return volume
 
     async def _get_config(
@@ -71,6 +73,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
     def _get_mount_config(
             self,
+            container_type: str,
             name: str,
             content: str,
             mount: str,
@@ -97,7 +100,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
                 ],
             },
             "Labels": {
-                "envoy.playground.temp.resource": "proxy",
+                "envoy.playground.temp.resource": container_type,
                 "envoy.playground.temp.mount": mount,
                 "envoy.playground.temp.target": target,
             }}

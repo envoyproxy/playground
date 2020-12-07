@@ -102,9 +102,10 @@ export class BaseServiceFormModal extends React.Component {
         const {logs=[], name, service_type, validation} = form;
         const {success} = this.state;
         const messages = {
-            default: <span>Pulling container image for service ({name})...</span>,
+            default: <span>Creating service ({name})...</span>,
+            pull_start: <span>Pulling service image ({name})...</span>,
             success: <span>Service has started ({name})!</span>,
-            creating: <span>Creating volumes for service ({name})...</span>,
+            volume_create: <span>Creating volumes for service ({name})...</span>,
             start: <span>Starting service container ({name})...</span>};
         if (success) {
             return (
@@ -115,7 +116,7 @@ export class BaseServiceFormModal extends React.Component {
                   iconAlt={name}
                 />);
         }
-        if (status === 'initializing' || status === 'creating' || status === 'start') {
+        if (status === 'initializing' || status === 'volume_create' || status === 'pull_start' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }

@@ -1,4 +1,6 @@
 
+import each from 'jest-each';
+
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import PlaygroundSocket from '../../app/socket';
@@ -50,4 +52,49 @@ test('socket addListeners', () => {
         ['message', socket.message],
         ['close', socket.close],
         ['open', socket.open]]);
+});
+
+
+const msgTest = [
+    [{playtime_errors: null, type: 'HANDLER1'}],
+    [{playtime_errors: null, type: 'HANDLER2'}],
+    [{playtime_errors: 'ERRORS', type: 'HANDLER1'}],
+    [{playtime_errors: 'ERRORS', type: 'HANDLER2'}],
+    [{playtime_errors: 'ERRORS', type: null}]];
+
+
+each(msgTest).test('socket message', async (parsed) => {
+    const playground = {
+        api: {
+            handlers: {HANDLER1: 'handleOne', HANDLER2: 'handleTwo'},
+            handleErrors: jest.fn(),
+            handleOne: jest.fn(),
+            handleTwo: jest.fn(),
+        },
+        store: 'STORE'};
+    const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
+    const _parse = global.JSON.parse;
+    global.JSON.parse = jest.fn(()  => parsed);
+    await socket.message({data: 'DATA'});
+    expect(global.JSON.parse.mock.calls).toEqual([['DATA']]);
+
+    if (parsed.playtime_errors) {
+        expect(playground.api.handleErrors.mock.calls).toEqual([[parsed]]);
+        expect(playground.api.handleOne.mock.calls).toEqual([]);
+        expect(playground.api.handleTwo.mock.calls).toEqual([]);
+    } else {
+        expect(playground.api.handleErrors.mock.calls).toEqual([]);
+        if (parsed.type === 'HANDLER1') {
+            expect(playground.api.handleOne.mock.calls).toEqual([[parsed]]);
+            expect(playground.api.handleTwo.mock.calls).toEqual([]);
+        } else if (parsed.type === 'HANDLER2')  {
+            expect(playground.api.handleOne.mock.calls).toEqual([]);
+            expect(playground.api.handleTwo.mock.calls).toEqual([[parsed]]);
+        } else {
+            expect(playground.api.handleOne.mock.calls).toEqual([]);
+            expect(playground.api.handleTwo.mock.calls).toEqual([[]]);
+        }
+    }
+
+    global.JSON.parse = _parse;
 });
