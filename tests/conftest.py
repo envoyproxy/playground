@@ -4,8 +4,11 @@ from unittest.mock import patch
 import pytest
 
 
-def _patch(path):
-    return patch(f'playground.control.{path}')
+def _patch(path, *args, **kwargs):
+    return patch(
+        f'playground.control.{path}',
+        *args,
+        **kwargs)
 
 
 @pytest.fixture
