@@ -7,10 +7,19 @@ import {
 
 
 export default class PlaygroundAPI {
+    _handlers = {
+        image: 'handleImage',
+        network: 'handleNetwork',
+        proxy: 'handleProxy',
+        service: 'handleService'};
 
     constructor (playground, address) {
         this.address = address;
         this.playground = playground;
+    }
+
+    get handlers () {
+        return this._handlers;
     }
 
     async get (path) {

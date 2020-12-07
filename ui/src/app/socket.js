@@ -44,17 +44,9 @@ export default class PlaygroundSocket {
         const {playtime_errors, type} = data;
         // console.log("INCOMING", data);
         if (playtime_errors) {
-            await this.handleErrors(data);
+            await this.api.handleErrors(data);
         } else {
-            if (type === "network") {
-                await this.api.handleNetwork(data);
-            } else if (type === "proxy") {
-                await this.api.handleProxy(data);
-            } else if (type === "service") {
-                await this.api.handleService(data);
-            } else if (type === "image") {
-                await this.api.handleImage(data);
-            }
+            await this.api[this.api.handlers[type]](data);
         }
     }
 
