@@ -18,6 +18,7 @@ def test_api_handler(patch_playground):
     assert _handler.handler == dict(
         errors=_handler.handle_errors,
         image=_handler.handle_image,
-        container=_handler.handle_container,
+        service=_handler.handle_service,
+        proxy=_handler.handle_proxy,
         network=_handler.handle_network)
     assert _handler.debug == []

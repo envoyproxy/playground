@@ -45,7 +45,7 @@ def test_api(patch_playground):
             assert _api.connector == m_docker.return_value
             assert (
                 list(m_docker.call_args)
-                == [(), {}])
+                == [(_api, ), {}])
             assert _api.handler == m_handler.return_value
             assert (
                 list(m_handler.call_args)
