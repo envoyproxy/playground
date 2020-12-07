@@ -2,15 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Collapse, CardBody, Card, CardHeader} from 'reactstrap';
+import {
+    Col, Collapse, CardBody,
+    Card, CardHeader, Row} from 'reactstrap';
 
 import {ActionRemove, ActionEdit} from './actions';
 
 
-// todo: remove this
 export class AccordionItem extends React.PureComponent {
+    static propTypes = exact({
+        children: PropTypes.array.isRequired,
+        title: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
+        resource: PropTypes.object.isRequired,
+        onEdit: PropTypes.func,
+        onDelete: PropTypes.func,
+    });
+
     render() {
-        return "ITEM";
+        const {children} = this.props;
+        return children;
     }
 }
 
@@ -22,15 +33,17 @@ export default class Accordion extends React.Component {
         logo: PropTypes.func,
     });
 
-    constructor(props) {
-        super(props);
-        this.toggle = this.toggle.bind(this);
-        this.state = { open: 0, cards: [1, 2, 3, 4, 5] };
-    }
+    state = {open: 0, cards: []};
 
-    toggle(e) {
-	let event = e.target.dataset.event;
-        this.setState({ open: this.state.open === Number(event) ? 0 : Number(event) });
+    toggle = (evt) => {
+        const {value: name} = evt.currentTarget.attributes.name;
+        let {open} = this.state;
+        if (name !== open) {
+            open = name;
+        } else {
+            open = null;
+        }
+        this.setState({open});
     }
 
     onDelete = (evt, handler) => {
@@ -49,35 +62,46 @@ export default class Accordion extends React.Component {
 	const {open} = this.state;
         const {editable, children, logo} = this.props;
 	return (
-	    <div className="container p-0 control-pane-scroll">
+	    <div className="container control-pane-scroll p-0 pl-1 pr-1 pb-3">
 	      {children.map((child, index) => {
                   const {children: content, id, onEdit, onDelete, title, resource} = child.props;
                   const _logo = logo(resource);
+                  let isOpen = false;
+                  console.log('ITEM', open, id);
+                  if (open === id || open === index) {
+                      isOpen = true;
+                  }
 		  return (
 		      <Card className="p-0 m-0" key={index}>
 			<CardHeader
-                          className="p-0 pl-3 m-0"
+                          className="p-0 pl-1 m-0 bg-darkish font-weight-light"
                           onClick={this.toggle}
-                          data-event={index}>
-                          <img
-                            alt={title}
-                            src={_logo}
-                            className="mr-2"
-                            width="18px" />
-                          {title}
-                          <ActionRemove
-                            title={title}
-                            name={id}
-                            className="float-right ml-2 mr-2"
-                            remove={evt => this.onDelete(evt, onDelete)} />
-                          {editable &&
-                           <ActionEdit
-                             title={title}
-                             className="float-right ml-2 mr-2"
-                             edit={evt => this.onEdit(evt, onEdit)} />
-                          }
+                          name={id}>
+                          <Row className="m-0">
+                            <Col sm={8}>
+                              <img
+                                alt={title}
+                                src={_logo}
+                                className="mr-2"
+                                width="18px" />
+                              {title}
+                            </Col>
+                            <Col sm={4} className="text-right">
+                              <ActionRemove
+                                title={title}
+                                name={id}
+                                className="mr-2"
+                                remove={evt => this.onDelete(evt, onDelete)} />
+                              {editable &&
+                               <ActionEdit
+                                 title={title}
+                                 className="mr-2"
+                                 edit={evt => this.onEdit(evt, onEdit)} />
+                              }
+                            </Col>
+                          </Row>
                            </CardHeader>
-			<Collapse isOpen={open === index}>
+			<Collapse isOpen={isOpen}>
 		          <CardBody className="p-0">
                             {content}
                           </CardBody>
