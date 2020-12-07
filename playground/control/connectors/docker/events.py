@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+from functools import cached_property
 from typing import AsyncGenerator
 
 
@@ -12,7 +13,7 @@ class PlaygroundDockerEvents(object):
         self.docker = connector.docker
         self.publisher = None
 
-    @property
+    @cached_property
     def mapping(self):
         return dict(
             container=dict(
