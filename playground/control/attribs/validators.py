@@ -45,7 +45,7 @@ class _LengthValidator(object):
         elif str(self.length).startswith('<'):
             self._lt(inst, attr, value)
         else:
-            return self._eq(inst, attr, value)
+            self._eq(inst, attr, value)
 
     def __repr__(self) -> str:
         return self._repr.format(length=self.length)
