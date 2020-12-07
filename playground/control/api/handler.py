@@ -46,16 +46,11 @@ class PlaygroundEventHandler(object):
             self,
             event: PlaygroundEvent) -> None:
         # print('IMAGE EVENT!', event)
-        if event.data.action == 'pull_start':
+        if event.data.action in ['pull_start', 'build_start']:
             await self.api.publish(
                 dict(type='image',
                      image=event.data.image,
-                     status='pull_start'))
-        elif event.data.action == 'build_start':
-            await self.api.publish(
-                dict(type='image',
-                     image=event.data.image,
-                     status='build_start'))
+                     status=event.data.action))
 
     @method_decorator(handler(attribs=NetworkEventAttribs))
     async def handle_network(
