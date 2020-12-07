@@ -80,9 +80,11 @@ export class ProxyFormModal extends React.Component {
         const {success} = this.state;
         const {logs=[], name, status, validation} = form;
         const messages = {
-            default: <span>Pulling container image for Envoy proxy ({name})...</span>,
+            default: <span>Creating Envoy proxy ({name})...</span>,
+            pull_start: <span>Pulling container image for Envoy proxy ({name})...</span>,
+            build_start: <span>Building container image for Envoy proxy ({name})...</span>,
             success: <span>Envoy proxy has started ({name})!</span>,
-            creating: <span>Creating volumes for Envoy proxy ({name})...</span>,
+            volume_create: <span>Creating volumes for Envoy proxy ({name})...</span>,
             start: <span>Starting Envoy proxy container ({name})...</span>};
         if (success) {
             return (
@@ -93,7 +95,7 @@ export class ProxyFormModal extends React.Component {
                   iconAlt={name}
                 />);
         }
-        if (status === 'initializing' || status === 'creating' || status === 'start') {
+        if (status === 'initializing' || status === 'volume_create' || status === 'pull_start' || status === 'build_start' || status === 'start') {
             if (status === 'start') {
                 this.timer = setTimeout(this.updateStatus, 1000);
             }

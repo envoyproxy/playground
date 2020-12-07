@@ -25,7 +25,7 @@ export default class Playground {
     }
 
     init () {
-        this.api = new PlaygroundAPI(this.apiAddress);
+        this.api = new PlaygroundAPI(this, this.apiAddress);
         this.socket = new PlaygroundSocket(this, this.socketAddress);
         this.modals = {};
         this.toast = {};
