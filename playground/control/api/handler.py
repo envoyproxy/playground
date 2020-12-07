@@ -18,99 +18,22 @@ class PlaygroundEventHandler(object):
         self.handler = dict(
             errors=self.handle_errors,
             image=self.handle_image,
-            container=self.handle_container,
+            proxy=self.handle_proxy,
+            service=self.handle_service,
             network=self.handle_network)
         self.debug = []
 
     @method_decorator(handler(attribs=ContainerEventAttribs))
-    async def handle_container(
+    async def handle_proxy(
             self,
             event: PlaygroundEvent) -> None:
-        handlers = ["destroy", "start", "die"]
-        if event.data.action not in handlers:
-            return
-        is_playground_container = set([
-            "envoy.playground.proxy",
-            "envoy.playground.service"]).intersection(
-                event.data.attributes)
-        is_proxy_create_container = (
-            "envoy.playground.temp.resource" in event.data.attributes
-            and event.data.status == 'start')
-        if is_playground_container:
-            await getattr(
-                self,
-                'handle_container_%s' % event.data.action)(event)
-        elif is_proxy_create_container:
-            await self.handle_proxy_creation(event)
+        await self._handle_container('proxy', event)
 
-    async def handle_container_die(
+    @method_decorator(handler(attribs=ContainerEventAttribs))
+    async def handle_service(
             self,
             event: PlaygroundEvent) -> None:
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event.data.attributes
-            else "service")
-        try:
-            # todo: think of a way to not try to fetch logs when container
-            #   has been killed intentionally
-            container = await self.connector.get_container(event.data.id)
-            logs = await container.log(stdout=True, stderr=True)
-            await container.delete(force=True, v=True)
-        except DockerError:
-            # most likely been killed
-            logs = []
-        await self.api.publish(
-            dict(type="container",
-                 resource=resource,
-                 id=event.data.id[:10],
-                 logs=logs,
-                 name=event.data.attributes["name"].replace(
-                     f'envoy__playground__{resource}__', ''),
-                 status=event.data.status))
-
-    async def handle_container_destroy(
-            self,
-            event: PlaygroundEvent) -> None:
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event.data.attributes
-            else "service")
-        await self.api.publish(
-            dict(type="container",
-                 resource=resource,
-                 id=event.data.id[:10],
-                 name=event.data.attributes["name"].replace(
-                     f'envoy__playground__{resource}__', ''),
-                 status=event.data.status))
-
-    async def handle_container_start(
-            self,
-            event: PlaygroundEvent) -> None:
-        resource = (
-            "proxy"
-            if "envoy.playground.proxy" in event.data.attributes
-            else "service")
-        container = await self.connector.get_container(event.data.id)
-        to_publish = dict(
-            type="container",
-            resource=resource,
-            id=event.data.id[:10],
-            image=event.data.attributes['image'],
-            name=event.data.attributes["name"].replace(
-                f'envoy__playground__{resource}__', ''),
-            status=event.data.status)
-        ports = container['HostConfig']['PortBindings'] or {}
-        port_mappings = []
-        for container_port, mappings in ports.items():
-            for mapping in mappings:
-                if mapping['HostPort']:
-                    port_mappings.append(
-                        dict(mapping_from=mapping['HostPort'],
-                             mapping_to=container_port.split('/')[0]))
-        if port_mappings:
-            to_publish["port_mappings"] = port_mappings
-        await self.api.publish(
-            to_publish)
+        await self._handle_container('service', event)
 
     # @method_decorator(handler(attribs=ContainerEventAttribs))
     async def handle_errors(
@@ -122,11 +45,17 @@ class PlaygroundEventHandler(object):
     async def handle_image(
             self,
             event: PlaygroundEvent) -> None:
-        if event.data.action == 'pull':
-            # todo: if image is one configured for envoy or services
-            #  then emit a signal to ui. This will be more useful
-            #  when socket events are fixed.
-            pass
+        # print('IMAGE EVENT!', event)
+        if event.data.action == 'pull_start':
+            await self.api.publish(
+                dict(type='image',
+                     image=event.data.image,
+                     status='pull_start'))
+        elif event.data.action == 'build_start':
+            await self.api.publish(
+                dict(type='image',
+                     image=event.data.image,
+                     status='build_start'))
 
     @method_decorator(handler(attribs=NetworkEventAttribs))
     async def handle_network(
@@ -204,14 +133,90 @@ class PlaygroundEventHandler(object):
                          name: dict(name=name, id=nid[:10],
                                     containers=containers)}))
 
-    async def handle_proxy_creation(
+    async def _handle_container(
             self,
+            resource: str,
+            event: PlaygroundEvent) -> None:
+        handlers = ["destroy", "start", "die"]
+        if event.data.action not in handlers:
+            return
+        is_volume_container = (
+            "envoy.playground.temp.resource"
+            in event.data.attributes)
+        (await getattr(
+            self,
+            f'_handle_container_{event.data.action}')(
+                resource, event)
+         if not is_volume_container
+         else await self._handle_container_volume(resource, event))
+
+    async def _handle_container_die(
+            self,
+            resource: str,
+            event: PlaygroundEvent) -> None:
+        try:
+            # todo: think of a way to not try to fetch logs when container
+            #   has been killed intentionally
+            container = await self.connector.get_container(event.data.id)
+            logs = await container.log(stdout=True, stderr=True)
+            await container.delete(force=True, v=True)
+        except DockerError:
+            # most likely been killed
+            logs = []
+        await self.api.publish(
+            dict(type=resource,
+                 id=event.data.id[:10],
+                 logs=logs,
+                 name=event.data.attributes["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
+                 status=event.data.status))
+
+    async def _handle_container_destroy(
+            self,
+            resource: str,
             event: PlaygroundEvent) -> None:
         await self.api.publish(
-            dict(type="container",
-                 resource=event.data.attributes["name"].split('__')[1],
+            dict(type=resource,
+                 id=event.data.id[:10],
+                 name=event.data.attributes["name"].replace(
+                     f'envoy__playground__{resource}__', ''),
+                 status=event.data.status))
+
+    async def _handle_container_start(
+            self,
+            resource: str,
+            event: PlaygroundEvent) -> None:
+        container = await self.connector.get_container(event.data.id)
+        to_publish = dict(
+            type=resource,
+            id=event.data.id[:10],
+            image=event.data.attributes['image'],
+            name=event.data.attributes["name"].replace(
+                f'envoy__playground__{resource}__', ''),
+            status=event.data.status)
+        port_mappings = []
+        if resource == 'proxy':
+            ports = container['HostConfig']['PortBindings'] or {}
+            for container_port, mappings in ports.items():
+                for mapping in mappings:
+                    if mapping['HostPort']:
+                        port_mappings.append(
+                            dict(mapping_from=mapping['HostPort'],
+                                 mapping_to=container_port.split('/')[0]))
+        if port_mappings:
+            to_publish["port_mappings"] = port_mappings
+        await self.api.publish(to_publish)
+
+    async def _handle_container_volume(
+            self,
+            resource: str,
+            event: PlaygroundEvent) -> None:
+        if event.data.status != 'start':
+            return
+        await self.api.publish(
+            dict(type=resource,
                  name=event.data.attributes["name"].split('__')[2],
-                 status='creating'))
+                 status='volume_create'))
 
     def subscribe(self):
         self.connector.subscribe(self.handler, debug=self.debug)

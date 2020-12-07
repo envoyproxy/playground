@@ -22,14 +22,15 @@ from playground.control.decorators import cmd, method_decorator
 class PlaygroundDockerClient(object):
     _envoy_label = "envoy.playground"
 
-    def __init__(self):
+    def __init__(self, api):
+        self.api = api
         self.docker = aiodocker.Docker()
         self.images = PlaygroundDockerImages(self)
         self.volumes = PlaygroundDockerVolumes(self)
         self.proxies = PlaygroundDockerProxies(self)
         self.services = PlaygroundDockerServices(self)
         self.networks = PlaygroundDockerNetworks(self)
-        self.events = PlaygroundDockerEvents(self.docker)
+        self.events = PlaygroundDockerEvents(self)
         self._subscribers = []
 
     @method_decorator(cmd)
