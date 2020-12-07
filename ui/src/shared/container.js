@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Alert, Col, Row} from 'reactstrap';
+import {Alert, Col, Progress, Row} from 'reactstrap';
 
 import {AlertStartFailed} from '../shared/alerts';
 import {PlaygroundFailLogs} from '../shared/logs';
@@ -18,15 +18,29 @@ export class ContainerStarting extends React.PureComponent {
     });
 
     render () {
-        const {color, icon, iconAlt, message} = this.props;
+        const {
+            color, icon, iconAlt,
+            message, progress} = this.props;
         return (
             <Alert color={color}>
-              <img
-                alt={iconAlt}
-                src={icon}
-                width="24px"
-                className="mr-2" />
-              {message}
+              <Row className="m-2">
+                <Col className="lead">
+                  <img
+                    alt={iconAlt}
+                    src={icon}
+                    width="32px"
+                    className="mr-2" />
+                  {message}
+                </Col>
+              </Row>
+              <Row className="m-2 pt-3 pb-3 pl-2 pr-2">
+                <Col>
+                  <Progress
+                    striped
+                    color={color}
+                    value={progress} />
+                </Col>
+              </Row>
             </Alert>
         );
     }

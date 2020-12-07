@@ -80,16 +80,17 @@ export class ProxyFormModal extends React.Component {
         const {success} = this.state;
         const {logs=[], name, status, validation} = form;
         const messages = {
-            default: <span>Creating Envoy proxy ({name})...</span>,
-            pull_start: <span>Pulling container image for Envoy proxy ({name})...</span>,
-            build_start: <span>Building container image for Envoy proxy ({name})...</span>,
-            success: <span>Envoy proxy has started ({name})!</span>,
-            volume_create: <span>Creating volumes for Envoy proxy ({name})...</span>,
-            start: <span>Starting Envoy proxy container ({name})...</span>};
+            default: [10,  <span>Creating Envoy proxy ({name})...</span>],
+            pull_start: [20,  <span>Pulling container image for Envoy proxy ({name})...</span>],
+            build_start: [30,  <span>Building container image for Envoy proxy ({name})...</span>],
+            success: [100,  <span>Envoy proxy has started ({name})!</span>],
+            volume_create: [40,  <span>Creating volumes for Envoy proxy ({name})...</span>],
+            start: [90,  <span>Starting Envoy proxy container ({name})...</span>]};
         if (success) {
             return (
                 <ContainerStarting
-                  message={messages.success}
+                  progress={messages.success[0]}
+                  message={messages.success[1]}
                   color='success'
                   icon={EnvoyLogo}
                   iconAlt={name}
@@ -101,7 +102,8 @@ export class ProxyFormModal extends React.Component {
             }
             return (
                 <ContainerStarting
-                  message={messages[status] || messages.default}
+                  progress={(messages[status] || messages.default)[0]}
+                  message={(messages[status] || messages.default)[1]}
                   color='info'
                   icon={EnvoyLogo}
                   iconAlt={name}
