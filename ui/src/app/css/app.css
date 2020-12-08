@@ -106,21 +106,21 @@
     color: yellow;
 }
 
-.ReactVirtualized__Grid {
+.playground-lazy-log .ReactVirtualized__Grid {
     background-color: #eee !important;
     color: #222 !important;
 }
 
-.ReactVirtualized__Grid__innerScrollContainer > div:hover {
+.playground-lazy-log .ReactVirtualized__Grid__innerScrollContainer > div:hover {
     background-color: #ccc !important;
 }
 
-.ReactVirtualized__Grid__innerScrollContainer a {
+.playground-lazy-log .ReactVirtualized__Grid__innerScrollContainer a {
     width: 3em !important;
     margin: 0 !important;
     margin-left: .7em !important;
 }
 
-.ReactVirtualized__Grid__innerScrollContainer a:before {
+.playground-lazy-log .ReactVirtualized__Grid__innerScrollContainer a:before {
     content: '>>>' !important;
 }
