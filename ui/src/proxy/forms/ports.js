@@ -24,7 +24,7 @@ import {PlaygroundFieldList} from '../../shared/forms/fields/list';
 //      - int in port range
 
 
-export class ProxyPortsListForm extends React.PureComponent {
+export class ProxyPortsFieldList extends React.PureComponent {
     static propTypes = exact({
         onDelete: PropTypes.func.isRequired,
         port_mappings: PropTypes.array.isRequired,
@@ -161,7 +161,7 @@ export class BaseProxyPortsForm extends React.Component {
                       onClick={this.onClick}>+</Button>
                   </Col>
                 </PlaygroundFormGroupRow>
-                <ProxyPortsListForm
+                <ProxyPortsFieldList
 		  onDelete={this.onDelete}
 		  port_mappings={[...port_mappings]} />
               </PlaygroundFormGroup>
