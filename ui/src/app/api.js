@@ -132,38 +132,24 @@ export default class PlaygroundAPI {
         const form = store.getState().form.value;
         const {service_type, name: formName} = form;
         const {id, name, image, status, logs} = data;
-        const services = {};
-        if (status === "volume_create") {
-            services[name] = {name, service_type};
+        let updated = false;
+        if (['volume_create', 'start'].indexOf(status) !== -1) {
+            const services = {};
+            services[name] = {id, name, image, service_type};
             await dispatch(updateServices({services}));
-            await loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "start") {
-            services[name] = {name, id, image, service_type};
-            await dispatch(updateServices({services}));
-            await loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "exited") {
+            updated = true;
+        } else if (['exited', 'destroy', 'die'].indexOf(status) !== -1) {
             await dispatch(removeService(data.id));
+            updated = true;
+        }
+        if (updated) {
             await loadUI();
             if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "destroy") {
-            await dispatch(removeService(data.id));
-            await loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "die") {
-            await dispatch(removeService(data.id));
-            await loadUI();
-            if (formName && formName === data.name) {
-                await dispatch(updateForm({status, logs}));
+                const update = {status};
+                if (status === 'die') {
+                    update.logs = logs;
+                }
+                await dispatch(updateForm(update));
             }
         }
     }
