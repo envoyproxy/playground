@@ -27,8 +27,8 @@ export class ServiceEnvironmentFieldList extends React.PureComponent {
 
     get headers () {
         return [
-            [5, <span>Variable name</span>],
-            [6, <span>Variable value</span>]];
+            [5, <div>Variable name</div>],
+            [6, <div>Variable value</div>]];
     };
 
     row = (name) => {
