@@ -26,7 +26,12 @@ test('PlaygroundFailLogs render', () => {
     expect(logs.text()).toEqual('<PlaygroundLazyLog />');
     const lazy = logs.find(PlaygroundLazyLog);
     expect(getHighlight.mock.calls).toEqual([[]]);
-    expect(lazy.props()).toEqual({"highlight": ['START', 'STOP'], "logs": ['LOG1', 'LOG2']});
+    expect(lazy.props()).toEqual({
+        "className": "playground-fail-log",
+        "enableSearch": true,
+        "highlightLineClassName": "log-error",
+        "highlight": ['START', 'STOP'],
+        "logs": ['LOG1', 'LOG2']});
 });
 
 
@@ -83,4 +88,18 @@ test('PlaygroundLazyLog render props', () => {
     expect(_lazy.props().extraLines).toEqual(23);
     expect(_lazy.props().foo).toEqual("FOO");
     expect(_lazy.props().bar).toEqual("BAZ");
+});
+
+
+test('PlaygroundLazyLog render empty', () => {
+    const logs = [];
+    const lazy = shallow(
+        <PlaygroundLazyLog
+          highlight={[1, 1000]}
+          extraLines={23}
+          foo="FOO"
+          bar="BAZ"
+          logs={logs} />);
+    expect(lazy.text()).toEqual('');
+    expect(lazy.props().children).toEqual();
 });

@@ -71,7 +71,6 @@ export class BaseNetworkFormModal extends React.PureComponent {
             Network: <NetworkForm />,
         };
         if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
-            console.log(connectedProxies);
             const tabTitle = 'Proxies (' + connectedProxies.length + '/' + Object.keys(proxies).length + ')';
             tabs[tabTitle] = (
                 <NetworkConnectionsForm

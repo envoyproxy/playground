@@ -45,7 +45,6 @@ export class ServicePortsFieldList extends React.PureComponent {
 
     render () {
         const {ports=''} = this.props;
-        console.log(ports);
         return (
             <PlaygroundFieldList
               headers={this.headers}

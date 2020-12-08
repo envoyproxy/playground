@@ -7,6 +7,7 @@ import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
+import {PlaygroundSection} from './section';
 import {URLMangler} from './utils';
 
 
@@ -147,64 +148,68 @@ class BaseResources extends React.PureComponent {
         return <div>{v}</div>;
     };
 
+    renderTitle = (title) => {
+        return (
+            <>
+              {title}
+              <ActionAdd
+                className="ml-2 mr-2"
+                title={title}
+                add={this.addResource} />
+            </>);
+    }
+
+    getLogo = (child) => {
+        const {logo} = this.props;
+        if (logo instanceof Function) {
+            return logo();
+        }
+        const {service_type} = child;
+        if (service_type) {
+            return logo(service_type);
+        }
+        return logo;
+    };
+
+
     render () {
         const {editable, logo, resources, title} = this.props;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();
         }
-
-        const _logo = (child) => {
-            const {service_type} = child;
-            if (service_type) {
-                return logo(service_type);
-            }
-            return logo;
-        };
         return (
-	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-dark border-top border-bottom">
-                <img
-                  alt={title}
-                  src={headerLogo}
-                  className="ml-2 mr-2"
-                  width="24px" />
-                {title}
-                <ActionAdd
-                  className="ml-2 mr-2"
-                  title={title}
-                  add={this.addResource} />
-              </header>
-              <div className="p-0 pt-1 bg-medium scrollable">
-              <Accordion
-                editable={editable}
-                logo={_logo}>
-	        {Object.entries(resources).map(([name, content], index) => {
-                    const {id} = content;
-		    return (
-                        <AccordionItem
-                          key={index}
-                          title={name}
-                          id={id}
-                          onEdit={this.editResource}
-                          resource={content}
-                          onDelete={this.deleteResource}>
-	                  {Object.entries(content).map(([k, v], i) => {
-                              return (
-                                  <ResourceInfoItem
-                                    key={i}
-                                    k={k}
-                                    v={v}
-                                    even={Boolean(i % 2)}
+            <PlaygroundSection
+              title={this.renderTitle(title)}
+              icon={headerLogo}>
+                <Accordion
+                  editable={editable}
+                  logo={this.getLogo}>
+	          {Object.entries(resources).map(([name, content], index) => {
+                      const {id} = content;
+		      return (
+                          <AccordionItem
+                            key={index}
+                            title={name}
+                            id={id}
+                            onEdit={this.editResource}
+                            resource={content}
+                            onDelete={this.deleteResource}>
+	                    {Object.entries(content).map(([k, v], i) => {
+                                return (
+                                    <ResourceInfoItem
+                                      key={i}
+                                      k={k}
+                                      v={v}
+                                      even={Boolean(i % 2)}
                                     handleItem={this.handleItem}
-                                  />);
-	                  })}
-                        </AccordionItem>
-		    );
-	        })}
-              </Accordion>
-              </div>
-            </section>);
+                                    />);
+	                    })}
+                          </AccordionItem>
+		      );
+	          })}
+                </Accordion>
+            </PlaygroundSection>);
         }
 }
 

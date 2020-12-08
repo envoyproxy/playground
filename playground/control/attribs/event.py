@@ -24,3 +24,5 @@ class NetworkEventAttribs(ValidatingAttribs):
     id = attr.ib(type=str)
     action = attr.ib(type=str)
     name = attr.ib(type=str)
+    proxy = attr.ib(type=str, default='')
+    service = attr.ib(type=str, default='')

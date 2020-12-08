@@ -38,11 +38,11 @@ const getX = (resource) => {
 
 const getXY = () => {
     return [600, 400];
-}
+};
 
 const getXyIcons = () => {
     return [50, 50];
-}
+};
 
 const getY = (resource) => {
     if (resource === 'cloud') {
@@ -373,6 +373,74 @@ const formSlice = createSlice({
 export const {updateForm, clearForm} = formSlice.actions;
 
 
+const logNetwork = (log, action, proxy, service) => {
+    if (action === 'destroy') {
+        log.push('removed');
+    } else if (action === 'create') {
+        log.push('created');
+    } else if (action === 'connect') {
+        log.push('connected');
+        log.push(' (');
+        log.push(proxy || service);
+        log.push(')');
+    } else if (action === 'disconnect') {
+        log.push('disconnected');
+        log.push(' (');
+        log.push(proxy || service);
+        log.push(')');
+    } else {
+        log.push(action);
+    }
+};
+
+
+const logProxy = (log, status) => {
+    const messages = {
+        start: 'started',
+        build_start: 'building proxy image',
+        image_pull: 'pulling image',
+        volume_create: 'creating volumes',
+        die: 'stopping',
+        destroy: 'removed'};
+    log.push(messages[status]);
+};
+
+const logService = (log, status) => {
+    const messages = {
+        start: 'started',
+        image_pull: 'pulling image',
+        volume_create: 'creating volumes',
+        die: 'stopping',
+        destroy: 'removed'};
+    log.push(messages[status]);
+};
+
+
+const eventSlice = createSlice({
+    name: 'event',
+    initialState: {
+        value: []
+    },
+    reducers: {
+        logEvent: (state, action) => {
+            let {action: _action, name, proxy, service, status, type} = action.payload;
+            const log = [type, ' (', name, '): '];
+            if (type === 'network') {
+                logNetwork(log, _action, proxy, service);
+            } else if (type === 'service') {
+                logService(log, status);
+            } else if (type === 'proxy') {
+                logProxy(log, status);
+            }
+            state.value = [...state.value, log.join('')];
+        },
+
+    }
+});
+
+export const {logEvent} = eventSlice.actions;
+
+
 const exampleSlice = createSlice({
     name: 'example',
     initialState: {
@@ -405,6 +473,7 @@ export const {removeExample, updateExamples} = exampleSlice.actions;
 const rootReducer = combineReducers({
     example: exampleSlice.reducer,
     proxy: proxySlice.reducer,
+    event: eventSlice.reducer,
     network: networkSlice.reducer,
     service:  serviceSlice.reducer,
     service_type:  serviceTypeSlice.reducer,

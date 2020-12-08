@@ -67,7 +67,6 @@ export default class Accordion extends React.Component {
                   const {children: content, id, onEdit, onDelete, title, resource} = child.props;
                   const _logo = logo(resource);
                   let isOpen = false;
-                  console.log('ITEM', open, id);
                   if (open === id || open === index) {
                       isOpen = true;
                   }

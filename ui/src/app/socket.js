@@ -1,5 +1,5 @@
 
-import {updateUI} from "../app/store";
+import {logEvent, updateUI} from "../app/store";
 
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
@@ -41,8 +41,10 @@ export default class PlaygroundSocket {
 
     message = async (event) => {
         const data = JSON.parse(event.data);
+        const {dispatch} = this.store;
         const {playtime_errors, type} = data;
         // console.log("INCOMING", data);
+        await dispatch(logEvent(data));
         if (playtime_errors) {
             await this.api.handleErrors(data);
         } else {

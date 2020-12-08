@@ -4,6 +4,8 @@ import asyncio
 from functools import cached_property
 from typing import AsyncGenerator
 
+from aiodocker import DockerError
+
 
 class PlaygroundDockerEvents(object):
 
@@ -25,6 +27,7 @@ class PlaygroundDockerEvents(object):
                 action='Action',
                 id='Actor/ID',
                 name="Actor/Attributes/name",
+                container="Actor/Attributes/container",
             ),
             image=dict(
                 action='Action',
@@ -58,7 +61,12 @@ class PlaygroundDockerEvents(object):
         for k, v in self.mapping[event['Type']].items():
             data[k] = event[v.split('/')[0]]
             for item in v.split('/')[1:]:
-                data[k] = data[k][item]
+                v = data[k].get(item)
+                if v:
+                    data[k] = v
+                else:
+                    del data[k]
+                    break
         event_type = (
             self._get_container_type(data)
             if event['Type'] == 'container'
@@ -89,6 +97,24 @@ class PlaygroundDockerEvents(object):
         await publisher(data)
 
     async def _handle_network(self, publisher, data):
+        # todo: bail immediately if not playground network
+        container = data.pop('container', None)
+        target = None
+        if container:
+            try:
+                target = await self.connector.get_container(container)
+            except DockerError:
+                return
+        if target:
+            if target['Name'].startswith('/envoy__playground__proxy__'):
+                data['proxy'] = target['Name'].replace(
+                    '/envoy__playground__proxy__', '')
+            elif target['Name'].startswith('/envoy__playground__service__'):
+                data['service'] = target['Name'].replace(
+                    '/envoy__playground__service__', '')
+            else:
+                return
+        data['name'] = data['name'].replace('__playground_', '')
         await publisher(data)
 
     async def publish(self, event_type, *args, **kwargs):
