@@ -72,9 +72,9 @@ class BaseResources extends React.Component {
         const {removing} = this.state;
         data.env = env || vars;
         await dispatch(updateForm({status: 'initializing'}));
-        if (removing.indexOf(data.name) !== -1) {
-            this.setState({removing: removing.filter(v => v !== data.name)});
-        }
+        this.setState(state => {
+            return {removing: removing.filter(v => v !== data.name)};
+        });
         if (api === 'network') {
             const update = {action: 'init', name: data.name, type: api};
             await dispatch(logEvent(update));

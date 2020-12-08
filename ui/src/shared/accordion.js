@@ -75,7 +75,6 @@ export default class Accordion extends React.Component {
                   if (className) {
                       _className += ' ' + className;
                   }
-                  console.log('ACCORDION', className);
 		  return (
 		      <Card className={_className} key={index}>
 			<CardHeader
