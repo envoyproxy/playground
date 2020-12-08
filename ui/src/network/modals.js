@@ -4,8 +4,6 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Alert} from 'reactstrap';
-
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {ContainerStarting} from '../shared/container';
 import {NetworkForm, NetworkConnectionsForm} from './forms';

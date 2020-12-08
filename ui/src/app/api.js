@@ -1,6 +1,6 @@
 
 import {
-    updateForm, updateUI, removeProxy, clearForm,
+    updateForm, updateUI, removeProxy,
     updateProxies, removeNetwork, updateNetworks,
     removeService, updateServices,
 } from "../app/store";
