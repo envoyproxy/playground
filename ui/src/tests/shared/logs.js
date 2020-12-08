@@ -5,8 +5,6 @@ import {shallow} from "enzyme";
 
 import {LazyLog} from 'react-lazylog';
 
-import {Col, Row} from 'reactstrap';
-
 import {
     PlaygroundFailLogs, PlaygroundLazyLog} from '../../shared/logs';
 
