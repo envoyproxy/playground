@@ -6,44 +6,69 @@ import exact from 'prop-types-exact';
 import {LazyLog} from 'react-lazylog';
 
 
+export class PlaygroundLazyLog  extends React.PureComponent {
+
+    render () {
+        const {
+            highlight=[],
+            extraLines=2,
+            logs, ...props} = this.props;
+        if (!logs) {
+            return '';
+        }
+        return (
+            <div className="playground-lazy-log">
+              <LazyLog
+                enableSearch
+                extraLines={extraLines}
+                scrollToLine={(highlight[1] || logs.length) + 2}
+                highlight={highlight}
+                text={logs.join('')}
+                {...props}
+              />
+            </div>);
+    }
+}
+
+
 export class PlaygroundFailLogs extends React.PureComponent {
     static propTypes = exact({
         logs: PropTypes.array.isRequired,
     });
 
-    render () {
+    isError = (line) => {
+        const _line = line.toLowerCase();
+        return (
+            _line.indexOf('error') !== -1
+                || _line.indexOf('invalid') !== -1);
+    }
+
+    getHighlight = () => {
         const {logs} = this.props;
         let i = 1;
         let highlightStart;
         let highlightStop;
-        let highlight;
         for (const line of logs) {
-            if (line.toLowerCase().indexOf('error') !== -1 || line.toLowerCase().indexOf('invalid') !== -1) {
+            if (this.isError(line)) {
                 if (!highlightStart) {
                     highlightStart = i;
                 } else {
                     highlightStop = i;
                 }
-            } else {
-                if (highlightStart) {
-                    if (!highlightStop) {
-                        highlightStop = i;
-                    }
-                }
             }
             i += 1;
         }
         if (highlightStart) {
-            highlight = [highlightStart,  highlightStop || logs.length + 1];
+            return [highlightStart,  highlightStop || logs.length + 1];
         }
+        return [];
+    }
+
+    render () {
+        const {logs} = this.props;
         return (
-            <div style={{ height: '50vh', width: '100%' }}>
-              <LazyLog
-                enableSearch
-                extraLines={2}
-                scrollToLine={(highlightStop || logs.length) + 2}
-                highlight={highlight}
-                text={logs.join('')} />
-            </div>);
+              <PlaygroundLazyLog
+                highlight={this.getHighlight()}
+                logs={logs} />);
     }
 }
