@@ -5,11 +5,11 @@ import exact from 'prop-types-exact';
 
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ContainerError, ContainerStarting} from '../shared/container';
-import {PortMappingForm} from '../shared/forms';
 import {PlaygroundFormTabs} from '../shared/tabs';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
-    ProxyForm, ProxyCertificatesForm} from './forms';
+    ProxyForm, ProxyCertificatesForm,
+    ProxyPortsForm} from './forms';
 
 import EnvoyLogo from '../app/images/envoy.svg';
 
@@ -37,7 +37,7 @@ export class ProxyFormModal extends React.Component {
                       form={form}
                     />),
                     Ports: (
-                        <PortMappingForm
+                        <ProxyPortsForm
                           dispatch={dispatch}
                           form={form}
                         />),
