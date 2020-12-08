@@ -1,6 +1,6 @@
 
 import {
-    updateForm, updateUI, removeProxy, clearForm,
+    updateForm, updateUI, removeProxy,
     updateProxies, removeNetwork, updateNetworks,
     removeService, updateServices,
 } from "../app/store";
@@ -67,9 +67,9 @@ export default class PlaygroundAPI {
             await dispatch(removeNetwork(data.id));
             loadUI();
         } else if (data.action === "create") {
+            const {action: status} = data;
             await dispatch(updateNetworks(data));
-            await dispatch(updateUI({modal: null}));
-            await dispatch(clearForm());
+            await dispatch(updateForm({status}));
             loadUI();
         } else if (data.action === "connect" || data.action === "disconnect") {
             const {service, proxy} = store.getState();
