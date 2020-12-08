@@ -3,7 +3,57 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Col, Row, Table} from 'reactstrap';
+import {Col, Row} from 'reactstrap';
+
+import CloudLogo from '../app/images/cloud.svg';
+import {PlaygroundFieldList} from '../shared/forms/fields/list';
+
+
+export class ServicePortsFieldList extends React.PureComponent {
+    static propTypes = exact({
+        labels: PropTypes.object.isRequired,
+        ports: PropTypes.array.isRequired,
+    });
+
+    get headers () {
+        return [
+            [2, (
+                <div className="text-center">
+                  <img
+                    alt="external"
+                    src={CloudLogo}
+                    width="20px"
+                    className="ml-1 mr-2"  />
+                  Port
+                </div>
+            )],
+            [2, (
+                <span>
+                  Type
+                </span>
+            )],
+            [8, <span>Information</span>]];
+    };
+
+    row = (port) => {
+        const {labels} = this.props;
+        return [
+            <div className="p-1 text-center">{port}</div>,
+            <div className="p-1">{labels['envoy.playground.port.' + port + '.type'] || 'TCP'}</div>,
+            <div className="p-1">{labels['envoy.playground.port.' + port + '.info']}</div>];
+    };
+
+    render () {
+        const {ports=''} = this.props;
+        console.log(ports);
+        return (
+            <PlaygroundFieldList
+              headers={this.headers}
+              row={this.row}
+              keys={(ports + '').split(',')}
+            />);
+    }
+}
 
 
 export class ServicePorts extends React.Component {
@@ -27,25 +77,9 @@ export class ServicePorts extends React.Component {
               </Row>
               <Row className="pl-3 pr-3">
                 <Col sm={12} className="bg-light p-3">
-                  <Table>
-                    <thead className="bg-dark">
-                      <tr>
-                        <th>Port</th>
-                        <th>Type</th>
-                        <th>Information</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white">
-                      {(ports + '').split(',').map((port, i) => {
-                          return (
-                              <tr key={i}>
-                                <td>{port}</td>
-                                <td>{labels['envoy.playground.port.' + port + '.type'] || 'TCP'}</td>
-                                <td>{labels['envoy.playground.port.' + port + '.info']}</td>
-                              </tr>);
-                      })}
-                    </tbody>
-                  </Table>
+                  <ServicePortsFieldList
+                    labels={labels}
+		    ports={ports} />
                 </Col>
               </Row>
             </>

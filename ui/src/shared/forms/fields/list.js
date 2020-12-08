@@ -53,7 +53,7 @@ export class PlaygroundFieldListItem extends React.PureComponent {
             <Row className="pl-5 pr-5">
               {onDelete &&
                <Col sm={1} className="m-0 p-0">
-                 <div className="p-2 bg-white border-bottom">
+                 <div className="p-1 pr-3 text-right bg-white border-bottom">
                    <ActionRemove
                      title={name}
                      name={name}
