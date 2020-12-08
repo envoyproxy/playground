@@ -26,11 +26,11 @@ export class ProxyVersionField extends React.PureComponent {
     }
 
     render () {
-        const {form, onChange} = this.props;
+        const {form} = this.props;
         const {version} = form;
         return (
             <PlaygroundSelectInput
-              onChange={onChange}
+              onChange={this.onChange}
               value={version}
               name="mapping_type"
               placeholder="Version (optional)"

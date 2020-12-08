@@ -18,8 +18,19 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             self,
             command: PlaygroundCommand) -> None:
         # todo: add logging and error handling
-        if not await self.connector.images.exists(command.data.image):
-            errors = await self.connector.images.build(command.data.image)
+        if command.data.version.startswith('dev'):
+            image = 'envoyproxy/envoy-dev'
+        else:
+            image = 'envoyproxy/envoy'
+        if ':' in command.data.version:
+            tag = command.data.version.split(':')[1]
+        else:
+            tag = 'latest'
+        image = f'{image}:{tag}'
+
+        # todo: check for the correct image.
+        if not await self.connector.images.exists(image):
+            errors = await self.connector.images.build(image)
             if errors:
                 # todo: publish failure
                 print('FAILED BUILDING IMAGE')
@@ -32,7 +43,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
         # todo: add error handling
         await self._start_container(
             self._get_proxy_config(
-                command.data.image,
+                image,
                 command.data.name,
                 command.data.logging,
                 await self._get_mounts(command.data),

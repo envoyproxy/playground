@@ -105,6 +105,7 @@ export class BaseProxyForm extends React.PureComponent {
                   </Col>
                   <Col sm={2}>
                     <ProxyVersionField
+                      dispatch={dispatch}
                       form={form}
                       version={version}
                     />
