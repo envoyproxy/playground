@@ -382,7 +382,6 @@ const eventSlice = createSlice({
         logEvent: (state, action) => {
             let {action: _action, name, proxy, service, status, type} = action.payload;
             const log = [type, '(', name, '): '];
-            console.log(action.payload);
             if (type === 'network') {
                 if (_action === 'destroy') {
                     log.push('removed');
