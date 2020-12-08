@@ -14,7 +14,7 @@ export class ProxyVersionField extends React.PureComponent {
     });
 
     onChange = async (evt) => {
-        const {dispatch, form} = this.props;
+        const {dispatch} = this.props;
         await dispatch(updateForm({version: evt.target.value}));
     }
 
