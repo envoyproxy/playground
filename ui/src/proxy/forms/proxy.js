@@ -14,15 +14,6 @@ import {ProxyConfigForm} from './config';
 import Yaml from 'js-yaml';
 
 
-const code =
-`static_resources:
-  clusters:
-    ...
-  listeners:
-    ...
-`;
-
-
 export class BaseProxyForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -88,7 +79,7 @@ export class BaseProxyForm extends React.PureComponent {
 
     render () {
         const {dispatch, examples, form, meta, proxies} = this.props;
-        const {configuration=code, name='', errors={}} = form;
+        const {configuration, name='', errors={}} = form;
         const {min_name_length} = meta;
         let showConfig = true;
         if (name.length < min_name_length) {

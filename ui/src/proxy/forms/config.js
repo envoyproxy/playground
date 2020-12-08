@@ -15,6 +15,15 @@ import {PlaygroundFormGroup} from '../../shared/forms';
 //      - ideally valid envoy config
 
 
+const code =
+`static_resources:
+  clusters:
+    ...
+  listeners:
+    ...
+`;
+
+
 export class ProxyConfigForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -46,7 +55,7 @@ export class ProxyConfigForm extends React.PureComponent {
     }
 
     render ()  {
-        const {configuration, examples, errors, onChange} = this.props;
+        const {configuration=code, examples, errors, onChange} = this.props;
         const {envoy={}} = examples;
         const {configuration: configErrors=[]} =  errors;
         return (
