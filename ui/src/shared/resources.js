@@ -210,13 +210,13 @@ class BaseResources extends React.Component {
                 <Accordion
                   editable={editable}
                   logo={this.getLogo}>
-	          {Object.entries(resources).map(([name, content], index) => {
+                  {Object.entries(resources).map(([name, content], index) => {
                       const {id} = content;
                       let className = '';
                       if (removing.indexOf(name) !== -1) {
                           className = 'removing';
                       }
-		      return (
+                      return (
                           <AccordionItem
                             key={index}
                             title={name}
@@ -225,7 +225,7 @@ class BaseResources extends React.Component {
                             onEdit={this.editResource}
                             resource={content}
                             onDelete={this.deleteResource}>
-	                    {Object.entries(content).map(([k, v], i) => {
+                            {Object.entries(content).map(([k, v], i) => {
                                 return (
                                     <ResourceInfoItem
                                       key={i}
@@ -234,10 +234,10 @@ class BaseResources extends React.Component {
                                       even={Boolean(i % 2)}
                                       handleItem={this.handleItem}
                                     />);
-	                    })}
+                            })}
                           </AccordionItem>
-		      );
-	          })}
+                      );
+                  })}
                 </Accordion>
             </PlaygroundSection>);
         }
