@@ -16,9 +16,6 @@ export class PlaygroundLazyLog  extends React.PureComponent {
             highlight=[],
             extraLines=2,
             logs, ...props} = this.props;
-        if (!logs) {
-            return '';
-        }
         return (
             <div className="playground-lazy-log">
               <LazyLog
@@ -58,6 +55,8 @@ export class PlaygroundFailLogs extends React.PureComponent {
                 } else {
                     highlightStop = i;
                 }
+            } else if (highlightStart && !highlightStop) {
+                highlightStop = i - 1;
             }
             i += 1;
         }
