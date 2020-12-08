@@ -8,7 +8,7 @@ import {
     ActionLoad, ActionSave} from '../shared/actions';
 import {PlaygroundContext} from '../app/context';
 import EnvoyLogo from '../app/images/envoy.svg';
-import {updateUI} from '../app/store';
+import {logEvent, updateUI} from '../app/store';
 
 
 class BaseHeader extends React.PureComponent {
@@ -19,6 +19,11 @@ class BaseHeader extends React.PureComponent {
     });
 
     clear = async () => {
+        const {dispatch} = this.props;
+        await dispatch(logEvent({
+            status: 'clear',
+            name: 'all',
+            type: 'playground'}));
         await this.context.api.get('/clear');
     };
 

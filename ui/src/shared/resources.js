@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
-import {clearForm, updateForm, updateUI} from '../app/store';
+import {clearForm, logEvent, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 import {PlaygroundSection} from './section';
 import {URLMangler} from './utils';
@@ -40,7 +40,7 @@ class ResourceInfoItem extends React.PureComponent {
 
 }
 
-class BaseResources extends React.PureComponent {
+class BaseResources extends React.Component {
     static contextType = PlaygroundContext;
     static propTypes = exact({
         api: PropTypes.string.isRequired,
@@ -56,6 +56,8 @@ class BaseResources extends React.PureComponent {
         editable: PropTypes.bool,
     });
 
+    state = {removing: []};
+
     addResource = async (evt) => {
         // open the add resource modal
         const {dispatch, api} = this.props;
@@ -67,8 +69,18 @@ class BaseResources extends React.PureComponent {
         // send API request to create resource
         const {api, dispatch, form} = this.props;
         const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
+        const {removing} = this.state;
         data.env = env || vars;
         await dispatch(updateForm({status: 'initializing'}));
+        this.setState(state => {
+            return {removing: removing.filter(v => v !== data.name)};
+        });
+        if (api === 'network') {
+            const update = {action: 'init', name: data.name, type: api};
+            await dispatch(logEvent(update));
+        } else {
+            await dispatch(logEvent({status: 'create', name: data.name, type: api}));
+        }
         const {errors} = await this.context.api.post('/' + api + '/add', data);
         if (errors) {
             await dispatch(updateForm({validation: errors, status: ''}));
@@ -77,7 +89,19 @@ class BaseResources extends React.PureComponent {
 
     deleteResource = async (id) => {
         // send API request to delete resource
-        const {api, dispatch} = this.props;
+        const {api, dispatch, resources} = this.props;
+        let name;
+        for (const resource of Object.values(resources)) {
+            if (resource.id === id) {
+                name = resource.name;
+                break;
+            }
+        }
+        this.setState(state => {
+            state.removing.push(name);
+            return state;
+        });
+        await dispatch(logEvent({status: 'remove', action: 'remove', name, type: api}));
         const {errors} = await this.context.api.post('/' + api + '/delete', {id});
         if (errors) {
             await dispatch(updateForm({validation: errors}));
@@ -174,6 +198,7 @@ class BaseResources extends React.PureComponent {
 
     render () {
         const {editable, logo, resources, title} = this.props;
+        const {removing} = this.state;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();
@@ -185,29 +210,34 @@ class BaseResources extends React.PureComponent {
                 <Accordion
                   editable={editable}
                   logo={this.getLogo}>
-	          {Object.entries(resources).map(([name, content], index) => {
+                  {Object.entries(resources).map(([name, content], index) => {
                       const {id} = content;
-		      return (
+                      let className = '';
+                      if (removing.indexOf(name) !== -1) {
+                          className = 'removing';
+                      }
+                      return (
                           <AccordionItem
                             key={index}
                             title={name}
                             id={id}
+                            className={className}
                             onEdit={this.editResource}
                             resource={content}
                             onDelete={this.deleteResource}>
-	                    {Object.entries(content).map(([k, v], i) => {
+                            {Object.entries(content).map(([k, v], i) => {
                                 return (
                                     <ResourceInfoItem
                                       key={i}
                                       k={k}
                                       v={v}
                                       even={Boolean(i % 2)}
-                                    handleItem={this.handleItem}
+                                      handleItem={this.handleItem}
                                     />);
-	                    })}
+                            })}
                           </AccordionItem>
-		      );
-	          })}
+                      );
+                  })}
                 </Accordion>
             </PlaygroundSection>);
         }
