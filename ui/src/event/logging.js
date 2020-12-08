@@ -5,13 +5,14 @@ import exact from 'prop-types-exact';
 
 import EventsLogo from '../app/images/events.svg';
 import {PlaygroundLazyLog} from '../shared/logs';
+import {PlaygroundSection} from '../shared/section';
 import {connect} from '../app/store';
 
 
 export class BaseEventLogging extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
-        events: PropTypes.object.isRequired,
+        events: PropTypes.array.isRequired,
     });
 
     getLogo = (service_type) => {
@@ -32,23 +33,15 @@ export class BaseEventLogging extends React.PureComponent {
         const {events} = this.props;
         const title = 'Events';
         return (
-	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-dark border-top border-bottom">
-                <img
-                  alt={title}
-                  src={EventsLogo}
-                  className="ml-2 mr-2"
-                  width="24px" />
-                {title}
-              </header>
-              <div className="pt-2 bg-medium">
-                <PlaygroundLazyLog
-                  searchEnabled
-                  lineEnding={'\n'}
-                  extraLines={0}
-                  logs={events}/>
-              </div>
-            </section>);
+            <PlaygroundSection
+              title='Events'
+              icon={EventsLogo}>
+              <PlaygroundLazyLog
+                searchEnabled
+                lineEnding={'\n'}
+                extraLines={0}
+                logs={events}/>
+            </PlaygroundSection>);
     }
 }
 

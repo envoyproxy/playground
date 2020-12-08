@@ -38,11 +38,11 @@ const getX = (resource) => {
 
 const getXY = () => {
     return [600, 400];
-}
+};
 
 const getXyIcons = () => {
     return [50, 50];
-}
+};
 
 const getY = (resource) => {
     if (resource === 'cloud') {
@@ -424,7 +424,7 @@ const eventSlice = createSlice({
     reducers: {
         logEvent: (state, action) => {
             let {action: _action, name, proxy, service, status, type} = action.payload;
-            const log = [type, '(', name, '): '];
+            const log = [type, ' (', name, '): '];
             if (type === 'network') {
                 logNetwork(log, _action, proxy, service);
             } else if (type === 'service') {

@@ -32,10 +32,11 @@
 
 .control-pane {
     height: 45vh;
+    position: relative;
+    left: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
 .scrollable {
@@ -88,8 +89,7 @@
     position: relative;
     top: 0;
     left: 0;
-    height: 100vh;
-    width: 100vh;
+    height: calc(45vh - 3em);
     y-overflow: scroll;
 }
 

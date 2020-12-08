@@ -7,6 +7,7 @@ import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
 import {clearForm, updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
+import {PlaygroundSection} from './section';
 import {URLMangler} from './utils';
 
 
@@ -147,38 +148,44 @@ class BaseResources extends React.PureComponent {
         return <div>{v}</div>;
     };
 
+    renderTitle = (title) => {
+        return (
+            <>
+              {title}
+              <ActionAdd
+                className="ml-2 mr-2"
+                title={title}
+                add={this.addResource} />
+            </>);
+    }
+
+    getLogo = (child) => {
+        const {editable, logo, resources, title} = this.props;
+        let headerLogo = logo;
+        if (logo instanceof Function) {
+            headerLogo = logo();
+        }
+        const {service_type} = child;
+        if (service_type) {
+            return logo(service_type);
+        }
+        return logo;
+    };
+
+
     render () {
         const {editable, logo, resources, title} = this.props;
         let headerLogo = logo;
         if (logo instanceof Function) {
             headerLogo = logo();
         }
-
-        const _logo = (child) => {
-            const {service_type} = child;
-            if (service_type) {
-                return logo(service_type);
-            }
-            return logo;
-        };
         return (
-	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-dark border-top border-bottom">
-                <img
-                  alt={title}
-                  src={headerLogo}
-                  className="ml-2 mr-2"
-                  width="24px" />
-                {title}
-                <ActionAdd
-                  className="ml-2 mr-2"
-                  title={title}
-                  add={this.addResource} />
-              </header>
-              <div className="p-0 pt-1 bg-medium scrollable">
+            <PlaygroundSection
+              title={this.renderTitle(title)}
+              icon={headerLogo}>
                 <Accordion
                   editable={editable}
-                  logo={_logo}>
+                  logo={this.getLogo}>
 	          {Object.entries(resources).map(([name, content], index) => {
                       const {id} = content;
 		      return (
@@ -203,8 +210,7 @@ class BaseResources extends React.PureComponent {
 		      );
 	          })}
                 </Accordion>
-              </div>
-            </section>);
+            </PlaygroundSection>);
         }
 }
 
