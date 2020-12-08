@@ -5,8 +5,6 @@ import exact from 'prop-types-exact';
 
 import {LazyLog} from 'react-lazylog';
 
-import {PlaygroundEditor} from './editor';
-
 
 export class PlaygroundFailLogs extends React.PureComponent {
     static propTypes = exact({
