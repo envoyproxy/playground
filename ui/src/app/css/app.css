@@ -83,3 +83,9 @@
     right: 20px;
     z-index: 2001;
 }
+
+
+.playground-lazy-log {
+    height: 50vh;
+    width: 100%;
+}

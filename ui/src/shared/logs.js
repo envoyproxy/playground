@@ -3,7 +3,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {PlaygroundEditor} from './editor';
+import {LazyLog} from 'react-lazylog';
+
+
+export class PlaygroundLazyLog  extends React.PureComponent {
+    static propTypes = {
+        logs: PropTypes.array.isRequired,
+    };
+
+    render () {
+        const {
+            highlight=[],
+            extraLines=2,
+            logs, ...props} = this.props;
+        return (
+            <div className="playground-lazy-log">
+              <LazyLog
+                enableSearch
+                extraLines={extraLines}
+                scrollToLine={(highlight[1] || logs.length) + 4}
+                highlight={highlight}
+                text={logs.join('')}
+                {...props}
+              />
+            </div>);
+    }
+}
 
 
 export class PlaygroundFailLogs extends React.PureComponent {
@@ -11,17 +36,41 @@ export class PlaygroundFailLogs extends React.PureComponent {
         logs: PropTypes.array.isRequired,
     });
 
+    isError = (line) => {
+        const _line = line.toLowerCase();
+        return (
+            _line.indexOf('error') !== -1
+                || _line.indexOf('invalid') !== -1);
+    }
+
+    getHighlight = () => {
+        const {logs} = this.props;
+        let i = 1;
+        let highlightStart;
+        let highlightStop;
+        for (const line of logs) {
+            if (this.isError(line)) {
+                if (!highlightStart) {
+                    highlightStart = i;
+                } else {
+                    highlightStop = i;
+                }
+            } else if (highlightStart && !highlightStop) {
+                highlightStop = i - 1;
+            }
+            i += 1;
+        }
+        if (highlightStart) {
+            return [highlightStart,  highlightStop || logs.length];
+        }
+        return [];
+    }
+
     render () {
         const {logs} = this.props;
         return (
-            <>
-              <PlaygroundEditor
-                title="Logs"
-                name="logs"
-                content={logs.join('')}
-                format="yaml"
-                onChange={code => code}
-              />
-            </>);
+              <PlaygroundLazyLog
+                highlight={this.getHighlight()}
+                logs={logs} />);
     }
 }
