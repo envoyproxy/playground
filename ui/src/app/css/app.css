@@ -38,7 +38,7 @@
     position: relative;
 }
 
-.control-pane-scroll {
+.scrollable {
     overflow-y: auto;
 }
 
