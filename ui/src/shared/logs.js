@@ -77,6 +77,8 @@ export class PlaygroundFailLogs extends React.PureComponent {
         return (
             <PlaygroundLazyLog
               enableSearch
+              className="playground-fail-log"
+              highlightLineClassName="log-error"
               highlight={this.getHighlight()}
               logs={logs} />);
     }
