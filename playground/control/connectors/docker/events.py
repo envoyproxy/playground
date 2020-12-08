@@ -4,6 +4,8 @@ import asyncio
 from functools import cached_property
 from typing import AsyncGenerator
 
+from aiodocker import DockerError
+
 
 class PlaygroundDockerEvents(object):
 
@@ -97,8 +99,13 @@ class PlaygroundDockerEvents(object):
     async def _handle_network(self, publisher, data):
         # todo: bail immediately if not playground network
         container = data.pop('container', None)
+        target = None
         if container:
-            target = await self.connector.get_container(container)
+            try:
+                target = await self.connector.get_container(container)
+            except DockerError:
+                return
+        if target:
             if target['Name'].startswith('/envoy__playground__proxy__'):
                 data['proxy'] = target['Name'].replace(
                     '/envoy__playground__proxy__', '')

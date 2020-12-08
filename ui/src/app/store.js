@@ -373,6 +373,49 @@ const formSlice = createSlice({
 export const {updateForm, clearForm} = formSlice.actions;
 
 
+const logNetwork = (log, action, proxy, service) => {
+    if (action === 'destroy') {
+        log.push('removed');
+    } else if (action === 'create') {
+        log.push('created');
+    } else if (action === 'connect') {
+        log.push('connected');
+        log.push(' (');
+        log.push(proxy || service);
+        log.push(')');
+    } else if (action === 'disconnect') {
+        log.push('disconnected');
+        log.push(' (');
+        log.push(proxy || service);
+        log.push(')');
+    } else {
+        log.push(action);
+    }
+};
+
+
+const logProxy = (log, status) => {
+    const messages = {
+        start: 'started',
+        build_start: 'building proxy image',
+        image_pull: 'pulling image',
+        volume_create: 'creating volumes',
+        die: 'stopping',
+        destroy: 'removed'};
+    log.push(messages[status]);
+};
+
+const logService = (log, status) => {
+    const messages = {
+        start: 'started',
+        image_pull: 'pulling image',
+        volume_create: 'creating volumes',
+        die: 'stopping',
+        destroy: 'removed'};
+    log.push(messages[status]);
+};
+
+
 const eventSlice = createSlice({
     name: 'event',
     initialState: {
@@ -383,53 +426,12 @@ const eventSlice = createSlice({
             let {action: _action, name, proxy, service, status, type} = action.payload;
             const log = [type, '(', name, '): '];
             if (type === 'network') {
-                if (_action === 'destroy') {
-                    log.push('removed');
-                } else if (_action === 'create') {
-                    log.push('created');
-                } else if (_action === 'connect') {
-                    log.push('connected');
-                    log.push(' (');
-                    log.push(proxy || service);
-                    log.push(')');
-                } else if (_action === 'disconnect') {
-                    log.push('disconnected');
-                    log.push(' (');
-                    log.push(proxy || service);
-                    log.push(')');
-                } else {
-                    log.push(_action);
-                }
+                logNetwork(log, _action, proxy, service);
             } else if (type === 'service') {
-                if (status === 'start') {
-                    log.push('started');
-                } else if (status === 'volume_create') {
-                    log.push('creating volumes');
-                } else if (status === 'image_pull') {
-                    log.push('pulling image');
-                } else if (status === 'die') {
-                    log.push('stopping');
-                } else if (status === 'destroy') {
-                    log.push('removed');
-                } else {
-                    log.push(status);
-                }
+                logService(log, status);
             } else if (type === 'proxy') {
-                if (status === 'start') {
-                    log.push('started');
-                } else if (status === 'volume_create') {
-                    log.push('creating volumes');
-                } else if (status === 'image_pull') {
-                    log.push('pulling image');
-                } else if (status === 'die') {
-                    log.push('stopping');
-                } else if (status === 'destroy') {
-                    log.push('removed');
-                } else {
-                    log.push(status);
-                }
+                logProxy(log, status);
             }
-
             state.value = [...state.value, log.join('')];
         },
 

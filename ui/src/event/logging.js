@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import ServiceLogo from '../app/images/service.png';
+import EventsLogo from '../app/images/events.svg';
 import {PlaygroundLazyLog} from '../shared/logs';
 import {connect} from '../app/store';
 
@@ -18,7 +18,7 @@ export class BaseEventLogging extends React.PureComponent {
     getLogo = (service_type) => {
         const {service_types={}} = this.props;
         if (!service_type) {
-            return ServiceLogo;
+            return EventsLogo;
         }
         const _service_type = service_types[service_type] || {};
         const {icon} = _service_type;
@@ -37,7 +37,7 @@ export class BaseEventLogging extends React.PureComponent {
               <header className="pt-1 pb-1 bg-dark border-top border-bottom">
                 <img
                   alt={title}
-                  src={ServiceLogo}
+                  src={EventsLogo}
                   className="ml-2 mr-2"
                   width="24px" />
                 {title}
