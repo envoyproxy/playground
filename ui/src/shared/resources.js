@@ -163,7 +163,7 @@ class BaseResources extends React.PureComponent {
         };
         return (
 	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-dark">
+              <header className="pt-1 pb-1 bg-dark border-top border-bottom">
                 <img
                   alt={title}
                   src={headerLogo}
@@ -175,7 +175,7 @@ class BaseResources extends React.PureComponent {
                   title={title}
                   add={this.addResource} />
               </header>
-              <div className="p-0 pt-1 bg-medium">
+              <div className="p-0 pt-1 bg-medium scrollable">
               <Accordion
                 editable={editable}
                 logo={_logo}>
