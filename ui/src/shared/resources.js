@@ -244,8 +244,6 @@ class BaseResources extends React.Component {
 }
 
 
-
-
 const mapStateToProps = function(state) {
     return {
         form: state.form.value,
