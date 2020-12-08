@@ -21,7 +21,7 @@ export class PlaygroundLazyLog  extends React.PureComponent {
               <LazyLog
                 enableSearch
                 extraLines={extraLines}
-                scrollToLine={(highlight[1] || logs.length) + 2}
+                scrollToLine={(highlight[1] || logs.length) + 4}
                 highlight={highlight}
                 text={logs.join('')}
                 {...props}
@@ -59,7 +59,7 @@ export class PlaygroundFailLogs extends React.PureComponent {
             i += 1;
         }
         if (highlightStart) {
-            return [highlightStart,  highlightStop || logs.length + 1];
+            return [highlightStart,  highlightStop || logs.length];
         }
         return [];
     }
