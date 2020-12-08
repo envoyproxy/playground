@@ -161,15 +161,14 @@ class BaseResources extends React.PureComponent {
 
     getLogo = (child) => {
         const {logo} = this.props;
-        let _logo = logo;
         if (logo instanceof Function) {
-            _logo = logo();
+            return logo();
         }
         const {service_type} = child;
         if (service_type) {
-            return _logo(service_type);
+            return logo(service_type);
         }
-        return _logo;
+        return logo;
     };
 
 
