@@ -124,3 +124,7 @@
 .playground-lazy-log .ReactVirtualized__Grid__innerScrollContainer a:before {
     content: '>>>' !important;
 }
+
+.accordion-item.removing {
+    opacity: .5;
+}

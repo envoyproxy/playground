@@ -378,6 +378,10 @@ const logNetwork = (log, action, proxy, service) => {
         log.push('removed');
     } else if (action === 'create') {
         log.push('created');
+    } else if (action === 'init') {
+        log.push('creating');
+    } else if (action === 'remove') {
+        log.push('removing');
     } else if (action === 'connect') {
         log.push('connected');
         log.push(' (');
@@ -396,6 +400,8 @@ const logNetwork = (log, action, proxy, service) => {
 
 const logProxy = (log, status) => {
     const messages = {
+        create: 'creating',
+        remove: 'removing',
         start: 'started',
         build_start: 'building proxy image',
         image_pull: 'pulling image',
@@ -410,8 +416,16 @@ const logService = (log, status) => {
         start: 'started',
         image_pull: 'pulling image',
         volume_create: 'creating volumes',
-        die: 'stopping',
+        remove: 'removing',
+        create: 'creating',
+        die: 'stopped',
         destroy: 'removed'};
+    log.push(messages[status]);
+};
+
+
+const logPlayground = (log, status) => {
+    const messages = {clear: 'clear'};
     log.push(messages[status]);
 };
 
@@ -431,6 +445,8 @@ const eventSlice = createSlice({
                 logService(log, status);
             } else if (type === 'proxy') {
                 logProxy(log, status);
+          } else if (type === 'playground') {
+                logPlayground(log, status);
             }
             state.value = [...state.value, log.join('')];
         },

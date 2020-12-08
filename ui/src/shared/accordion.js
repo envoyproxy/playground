@@ -17,6 +17,7 @@ export class AccordionItem extends React.PureComponent {
         resource: PropTypes.object.isRequired,
         onEdit: PropTypes.func,
         onDelete: PropTypes.func,
+        className: PropTypes.string,
     });
 
     render() {
@@ -64,14 +65,19 @@ export default class Accordion extends React.Component {
 	return (
 	    <div className="container control-pane-scroll p-0 pl-1 pr-1 pb-3">
 	      {children.map((child, index) => {
-                  const {children: content, id, onEdit, onDelete, title, resource} = child.props;
+                  const {className, children: content, id, onEdit, onDelete, title, resource} = child.props;
                   const _logo = logo(resource);
                   let isOpen = false;
                   if (open === id || open === index) {
                       isOpen = true;
                   }
+                  let _className = "p-0 m-0 accordion-item";
+                  if (className) {
+                      _className += ' ' + className;
+                  }
+                  console.log('ACCORDION', className);
 		  return (
-		      <Card className="p-0 m-0" key={index}>
+		      <Card className={_className} key={index}>
 			<CardHeader
                           className="p-0 pl-1 m-0 bg-darkish font-weight-light"
                           onClick={this.toggle}
