@@ -89,3 +89,17 @@ test('PlaygroundLazyLog render props', () => {
     expect(_lazy.props().foo).toEqual("FOO");
     expect(_lazy.props().bar).toEqual("BAZ");
 });
+
+
+test('PlaygroundLazyLog render empty', () => {
+    const logs = [];
+    const lazy = shallow(
+        <PlaygroundLazyLog
+          highlight={[1, 1000]}
+          extraLines={23}
+          foo="FOO"
+          bar="BAZ"
+          logs={logs} />);
+    expect(lazy.text()).toEqual('');
+    expect(lazy.props().children).toEqual();
+});
