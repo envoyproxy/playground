@@ -2,15 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {
     Button, Col, Input} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import EdgeLogo from '../../app/images/edge.svg';
 import EnvoyLogo from '../../app/images/envoy.svg';
-import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
-import {PlaygroundSelectInput} from '.';
-import {PlaygroundFieldList} from './fields/list';
+import {
+    PlaygroundForm, PlaygroundFormGroup,
+    PlaygroundFormGroupRow, PlaygroundSelectInput} from '../../shared/forms';
+import {PlaygroundFieldList} from '../../shared/forms/fields/list';
 
 
 // VALIDATION REQUIRED
@@ -21,7 +24,7 @@ import {PlaygroundFieldList} from './fields/list';
 //      - int in port range
 
 
-export class PortMappingListForm extends React.PureComponent {
+export class ProxyPortsFieldList extends React.PureComponent {
     static propTypes = exact({
         onDelete: PropTypes.func.isRequired,
         port_mappings: PropTypes.array.isRequired,
@@ -36,7 +39,7 @@ export class PortMappingListForm extends React.PureComponent {
                     src={EdgeLogo}
                     width="24px"
                     className="ml-1 mr-2"  />
-                  External ports
+                  External port
                 </span>
             )],
             [3, (
@@ -75,7 +78,7 @@ export class PortMappingListForm extends React.PureComponent {
 }
 
 
-export class BasePortMappingForm extends React.Component {
+export class BaseProxyPortsForm extends React.Component {
     static propTypes = exact({
         dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
@@ -158,7 +161,7 @@ export class BasePortMappingForm extends React.Component {
                       onClick={this.onClick}>+</Button>
                   </Col>
                 </PlaygroundFormGroupRow>
-                <PortMappingListForm
+                <ProxyPortsFieldList
 		  onDelete={this.onDelete}
 		  port_mappings={[...port_mappings]} />
               </PlaygroundFormGroup>
@@ -166,3 +169,14 @@ export class BasePortMappingForm extends React.Component {
         );
     }
 }
+
+
+const mapModalStateToProps = function(state) {
+    return {
+        form: state.form.value,
+    };
+};
+
+
+const ProxyPortsForm = connect(mapModalStateToProps)(BaseProxyPortsForm);
+export {ProxyPortsForm};

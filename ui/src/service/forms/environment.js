@@ -27,15 +27,22 @@ export class ServiceEnvironmentFieldList extends React.PureComponent {
 
     get headers () {
         return [
-            [6, <span>Variable name</span>],
-            [5, <span>Variable value</span>]];
+            [5, <div>Variable name</div>],
+            [6, <div>Variable value</div>]];
     };
 
     row = (name) => {
         const {vars={}} = this.props;
+        const value = vars[name] + '';
+        let className = 'p-1 ';
+        if (['true', 'false'].indexOf(value) !== -1) {
+            className += 'text-primary';
+        } else {
+            className += 'text-muted';
+        }
         return [
-            <span>{name}</span>,
-            <span>{vars[name]}</span>];
+            <div className="p-1 pl-2">{name}</div>,
+            <div className={className}>{value}</div>];
     };
 
     render () {

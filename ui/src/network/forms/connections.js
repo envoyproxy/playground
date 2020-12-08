@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
+
 import {connect} from 'react-redux';
 
 import {Col, Label, Input, Row} from 'reactstrap';
@@ -9,53 +10,55 @@ import {PlaygroundForm, PlaygroundFormGroup} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
-export class BaseNetworkProxiesForm extends React.PureComponent {
+export class BaseNetworkConnectionsForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         networks: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
         proxies: PropTypes.object.isRequired,
         form: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        type: PropTypes.string.isRequired,
     });
 
-    get messages () {
-        return ["Add and remove proxies from this network"];
-    }
-
     onChange = async (evt) => {
-        const {dispatch, form, networks, onUpdate} = this.props;
-        const {edit, proxies=[], ...data} = form;
+        const {dispatch, form, networks, onUpdate, type} = this.props;
+        const {edit, ...data} = form;
         const {name} =  data;
-        let _proxies;
+        const connections = form[type] || [];
+        let _connections;
         if (edit) {
-            _proxies = [...(networks[name].proxies || [])];
+            _connections = [...(networks[name][type] || [])];
         } else {
-            _proxies = [...proxies];
+            _connections = [...connections];
         }
         if (evt.currentTarget.checked) {
-            _proxies.push(evt.currentTarget.name);
+            _connections.push(evt.currentTarget.name);
         } else {
-            _proxies = _proxies.filter(i => i !== evt.currentTarget.name);
+            _connections = _connections.filter(i => i !== evt.currentTarget.name);
         }
+        const update = {};
+        update[type] = _connections;
         if (edit) {
-            await dispatch(updateForm({proxies: _proxies}));
-            await onUpdate({...data, proxies: _proxies});
+            await dispatch(updateForm(update));
+            await onUpdate({...data, ...update});
         } else {
-            await dispatch(updateForm({proxies: _proxies}));
+            await dispatch(updateForm(update));
         }
     };
 
     render () {
-        const  {form, proxies, networks} = this.props;
+        const  {form, networks, type} = this.props;
         const {edit, name} = form;
+        const connections = this.props[type];
         return (
             <PlaygroundForm
               messages={this.messages}>
               <PlaygroundFormGroup check>
-                {Object.entries(proxies).map(([k, v], i) => {
-                    let checked  = (form.proxies || []).indexOf(k) !== -1;
+                {Object.entries(connections).map(([k, v], i) => {
+                    let checked  = (form[type] || []).indexOf(k) !== -1;
                     if (edit) {
-                        checked = (networks[name].proxies || []).indexOf(k) !== -1;
+                        checked = (networks[name][type] || []).indexOf(k) !== -1;
                     }
                     return (
                         <Row className="p-1 pl-3 ml-2" key={i}>
@@ -84,9 +87,10 @@ const mapNetworkStateToProps = function(state, other) {
     return {
         networks: state.network.value,
         proxies: state.proxy.value,
+        services: state.service.value,
         form: state.form.value,
     };
 }
 
-const NetworkProxiesForm = connect(mapNetworkStateToProps)(BaseNetworkProxiesForm);
-export {NetworkProxiesForm};
+const NetworkConnectionsForm = connect(mapNetworkStateToProps)(BaseNetworkConnectionsForm);
+export {NetworkConnectionsForm};

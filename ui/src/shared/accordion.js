@@ -33,7 +33,7 @@ export default class Accordion extends React.Component {
         logo: PropTypes.func,
     });
 
-    state = {open: 0, cards: []};
+    state = {open: null, cards: []};
 
     toggle = (evt) => {
         const {value: name} = evt.currentTarget.attributes.name;

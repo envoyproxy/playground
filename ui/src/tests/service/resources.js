@@ -3,6 +3,7 @@ import React from 'react';
 
 import {shallow} from "enzyme";
 
+import ServiceLogo from '../../app/images/service.png';
 import ServiceResources, {
     BaseServiceResources,
     mapStateToProps} from '../../service/resources';
@@ -44,6 +45,22 @@ test('ServiceResources addModalTitle', () => {
           service_types={service_types}
         />);
     expect(resources.instance().addModalTitle('NAME')).toEqual('Create a service');
+});
+
+
+test('ServiceResources getLogo', () => {
+    const dispatch = jest.fn();
+    const services = {RES1: '', RES2: ''};
+    const service_types = {TYPE1: {icon: 'ICON1'}, TYPE2: {icon: 'ICON2'}};
+    const resources = shallow(
+        <BaseServiceResources
+          dispatch={dispatch}
+          services={services}
+          service_types={service_types}
+        />);
+    expect(resources.instance().getLogo()).toEqual(ServiceLogo);
+    expect(resources.instance().getLogo('FOO')).toEqual();
+    expect(resources.instance().getLogo('TYPE2')).toEqual('ICON2');
 });
 
 

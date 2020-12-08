@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {Alert} from 'reactstrap';
 
 import {PlaygroundFormTabs} from '../shared/tabs';
-import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
+import {NetworkForm, NetworkConnectionsForm} from './forms';
 import CloudLogo from '../app/images/cloud.svg';
 
 
@@ -54,17 +54,41 @@ export class BaseNetworkFormModal extends React.PureComponent {
         form: PropTypes.object.isRequired,
     });
 
+
+    get messages () {
+        return {
+            services: ["Add and remove services from this network"],
+            proxies: ["Add and remove proxies from this network"]};
+    }
+
     get tabs () {
         const {form, onUpdate, proxies, services} = this.props;
-        const {name='', errors={}} = form;
+        const {
+            name='', errors={},
+            proxies: connectedProxies=[],
+            services: connectedServices=[]} = form;
         const tabs = {
             Network: <NetworkForm />,
         };
         if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
-            tabs.Proxies = <NetworkProxiesForm onUpdate={onUpdate} />;
+            console.log(connectedProxies);
+            const tabTitle = 'Proxies (' + connectedProxies.length + '/' + Object.keys(proxies).length + ')';
+            tabs[tabTitle] = (
+                <NetworkConnectionsForm
+                  messages={this.messages.proxies}
+                  type="proxies"
+                  onUpdate={onUpdate}
+                />);
+
         }
         if ((name.length > 2 && !errors.name) && Object.keys(services).length > 0){
-            tabs.Services = <NetworkServicesForm onUpdate={onUpdate} />;
+            const tabTitle = 'Services (' + connectedServices.length + '/' + Object.keys(services).length + ')';
+            tabs[tabTitle] = (
+                <NetworkConnectionsForm
+                  messages={this.messages.services}
+                  type="services"
+                  onUpdate={onUpdate}
+                />);
         }
         return tabs;
     }
