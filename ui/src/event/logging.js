@@ -11,8 +11,7 @@ import {connect} from '../app/store';
 export class BaseEventLogging extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
-        services: PropTypes.object.isRequired,
-        service_types: PropTypes.object.isRequired,
+        events: PropTypes.object.isRequired,
     });
 
     getLogo = (service_type) => {
