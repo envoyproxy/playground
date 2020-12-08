@@ -27,7 +27,7 @@ test('ProxyPortsFieldList render', () => {
                 src={EdgeLogo}
                 width="24px"
                 className="ml-1 mr-2"  />
-              External ports
+              External port
             </span>
         )],
         [3, (
