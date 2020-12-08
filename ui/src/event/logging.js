@@ -15,20 +15,6 @@ export class BaseEventLogging extends React.PureComponent {
         events: PropTypes.array.isRequired,
     });
 
-    getLogo = (service_type) => {
-        const {service_types={}} = this.props;
-        if (!service_type) {
-            return EventsLogo;
-        }
-        const _service_type = service_types[service_type] || {};
-        const {icon} = _service_type;
-        return icon;
-    };
-
-    addModalTitle = (name) => {
-        return "Create a service";
-    }
-
     render () {
         const {events} = this.props;
         return (
