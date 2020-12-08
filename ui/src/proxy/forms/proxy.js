@@ -14,6 +14,8 @@ import {ProxyConfigForm} from './config';
 
 import Yaml from 'js-yaml';
 
+import {ProxyVersionField} from './version';
+
 
 export class BaseProxyForm extends React.PureComponent {
     static propTypes = exact({
@@ -80,7 +82,7 @@ export class BaseProxyForm extends React.PureComponent {
 
     render () {
         const {dispatch, examples, form, meta, proxies} = this.props;
-        const {configuration, name='', errors={}} = form;
+        const {configuration, name='', errors={}, version} = form;
         const {min_name_length} = meta;
         let showConfig = true;
         if (name.length < min_name_length) {
@@ -92,7 +94,7 @@ export class BaseProxyForm extends React.PureComponent {
                 <PlaygroundFormGroupRow
                   title="Name*"
                   label="name">
-                  <Col sm={8}>
+                  <Col sm={5}>
 	            <PlaygroundNameInput
                       placeholder="Enter proxy name"
                       errors={errors}
@@ -100,6 +102,15 @@ export class BaseProxyForm extends React.PureComponent {
                       meta={meta}
                       taken={Object.keys(proxies)}
                       onChange={this.onNameChange} />
+                  </Col>
+                  <Col sm={2}>
+                    <ProxyVersionField
+                      form={form}
+                      version={version}
+                    />
+                  </Col>
+                  <Col sm={1}>
+                    &nbsp;
                   </Col>
                 </PlaygroundFormGroupRow>
                 {showConfig &&
