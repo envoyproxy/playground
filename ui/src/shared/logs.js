@@ -9,21 +9,27 @@ import {LazyLog} from 'react-lazylog';
 export class PlaygroundLazyLog  extends React.PureComponent {
     static propTypes = {
         logs: PropTypes.array.isRequired,
+        className: PropTypes.string,
+        lineEnding: PropTypes.string,
     };
 
     render () {
         const {
             highlight=[],
             extraLines=2,
+            className='playground-lazy-log',
+            lineEnding='',
             logs, ...props} = this.props;
+        if (logs.length === 0) {
+            return '';
+        }
         return (
-            <div className="playground-lazy-log">
+            <div className={className}>
               <LazyLog
-                enableSearch
                 extraLines={extraLines}
                 scrollToLine={(highlight[1] || logs.length) + 4}
                 highlight={highlight}
-                text={logs.join('')}
+                text={logs.join(lineEnding)}
                 {...props}
               />
             </div>);
@@ -69,8 +75,9 @@ export class PlaygroundFailLogs extends React.PureComponent {
     render () {
         const {logs} = this.props;
         return (
-              <PlaygroundLazyLog
-                highlight={this.getHighlight()}
-                logs={logs} />);
+            <PlaygroundLazyLog
+              enableSearch
+              highlight={this.getHighlight()}
+              logs={logs} />);
     }
 }

@@ -84,12 +84,34 @@
     z-index: 2001;
 }
 
-
 .playground-lazy-log {
-    height: 50vh;
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vh;
+    y-overflow: scroll;
+}
+
+.playground-event-logs {
     width: 100%;
+}
 
+.ReactVirtualized__Grid {
+    background-color: #eee !important;
+    color: #222 !important;
+}
 
-.scroller {
-    height: 100%;
+.ReactVirtualized__Grid__innerScrollContainer > div:hover {
+    background-color: #ccc !important;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer a {
+    width: 3em !important;
+    margin: 0 !important;
+    margin-left: .7em !important;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer a:before {
+    content: '>>>' !important;
 }

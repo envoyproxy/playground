@@ -176,33 +176,33 @@ class BaseResources extends React.PureComponent {
                   add={this.addResource} />
               </header>
               <div className="p-0 pt-1 bg-medium scrollable">
-              <Accordion
-                editable={editable}
-                logo={_logo}>
-	        {Object.entries(resources).map(([name, content], index) => {
-                    const {id} = content;
-		    return (
-                        <AccordionItem
-                          key={index}
-                          title={name}
-                          id={id}
-                          onEdit={this.editResource}
-                          resource={content}
-                          onDelete={this.deleteResource}>
-	                  {Object.entries(content).map(([k, v], i) => {
-                              return (
-                                  <ResourceInfoItem
-                                    key={i}
-                                    k={k}
-                                    v={v}
-                                    even={Boolean(i % 2)}
+                <Accordion
+                  editable={editable}
+                  logo={_logo}>
+	          {Object.entries(resources).map(([name, content], index) => {
+                      const {id} = content;
+		      return (
+                          <AccordionItem
+                            key={index}
+                            title={name}
+                            id={id}
+                            onEdit={this.editResource}
+                            resource={content}
+                            onDelete={this.deleteResource}>
+	                    {Object.entries(content).map(([k, v], i) => {
+                                return (
+                                    <ResourceInfoItem
+                                      key={i}
+                                      k={k}
+                                      v={v}
+                                      even={Boolean(i % 2)}
                                     handleItem={this.handleItem}
-                                  />);
-	                  })}
-                        </AccordionItem>
-		    );
-	        })}
-              </Accordion>
+                                    />);
+	                    })}
+                          </AccordionItem>
+		      );
+	          })}
+                </Accordion>
               </div>
             </section>);
         }

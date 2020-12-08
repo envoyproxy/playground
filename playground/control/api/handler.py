@@ -75,18 +75,26 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.api.publish(
-                dict(type="network",
-                     action=event.data.action,
-                     networks={
-                         name: dict(name=name, id=nid[:10],
-                                    containers=containers)}))
+            _event = dict(
+                type="network",
+                action=event.data.action,
+                name=event.data.name,
+                networks={
+                    name: dict(
+                        name=name, id=nid[:10],
+                        containers=containers)})
+            if event.data.proxy:
+                _event['proxy'] = event.data.proxy
+            if event.data.service:
+                _event['service'] = event.data.service
+            await self.api.publish(_event)
 
     async def handle_network_create(
             self,
             event: PlaygroundEvent) -> None:
         name = event.data.name
         nid = event.data.id
+        # todo: move this to connector
         network = await self.connector.get_network(nid)
         info = await network.show()
         name = info["Labels"]["envoy.playground.network"]
@@ -95,6 +103,7 @@ class PlaygroundEventHandler(object):
         await self.api.publish(
             dict(type="network",
                  action=event.data.action,
+                 name=event.data.name,
                  networks={name: dict(name=name, id=nid[:10])}))
 
     async def handle_network_destroy(
@@ -102,6 +111,7 @@ class PlaygroundEventHandler(object):
             event: PlaygroundEvent) -> None:
         await self.api.publish(
             dict(type="network",
+                 name=event.data.name,
                  action=event.data.action,
                  id=event.data.id[:10]))
 
@@ -121,12 +131,19 @@ class PlaygroundEventHandler(object):
                 container[:10]
                 for container
                 in info["Containers"].keys()]
-            await self.api.publish(
-                dict(type="network",
-                     action=event.data.action,
-                     networks={
-                         name: dict(name=name, id=nid[:10],
-                                    containers=containers)}))
+            _event = dict(
+                type="network",
+                action=event.data.action,
+                name=event.data.name,
+                networks={
+                    name: dict(
+                        name=name, id=nid[:10],
+                        containers=containers)})
+            if event.data.proxy:
+                _event['proxy'] = event.data.proxy
+            if event.data.service:
+                _event['service'] = event.data.service
+            await self.api.publish(_event)
 
     async def _handle_container(
             self,

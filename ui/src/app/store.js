@@ -380,7 +380,58 @@ const eventSlice = createSlice({
     },
     reducers: {
         logEvent: (state, action) => {
-            state.value = [...state.value, action.payload];
+            let {action: _action, name, proxy, service, status, type} = action.payload;
+            const log = [type, '(', name, '): '];
+            console.log(action.payload);
+            if (type === 'network') {
+                if (_action === 'destroy') {
+                    log.push('removed');
+                } else if (_action === 'create') {
+                    log.push('created');
+                } else if (_action === 'connect') {
+                    log.push('connected');
+                    log.push(' (');
+                    log.push(proxy || service);
+                    log.push(')');
+                } else if (_action === 'disconnect') {
+                    log.push('disconnected');
+                    log.push(' (');
+                    log.push(proxy || service);
+                    log.push(')');
+                } else {
+                    log.push(_action);
+                }
+            } else if (type === 'service') {
+                if (status === 'start') {
+                    log.push('started');
+                } else if (status === 'volume_create') {
+                    log.push('creating volumes');
+                } else if (status === 'image_pull') {
+                    log.push('pulling image');
+                } else if (status === 'die') {
+                    log.push('stopping');
+                } else if (status === 'destroy') {
+                    log.push('removed');
+                } else {
+                    log.push(status);
+                }
+            } else if (type === 'proxy') {
+                if (status === 'start') {
+                    log.push('started');
+                } else if (status === 'volume_create') {
+                    log.push('creating volumes');
+                } else if (status === 'image_pull') {
+                    log.push('pulling image');
+                } else if (status === 'die') {
+                    log.push('stopping');
+                } else if (status === 'destroy') {
+                    log.push('removed');
+                } else {
+                    log.push(status);
+                }
+            }
+
+            state.value = [...state.value, log.join('')];
         },
 
     }
