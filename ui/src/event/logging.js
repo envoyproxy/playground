@@ -31,7 +31,6 @@ export class BaseEventLogging extends React.PureComponent {
 
     render () {
         const {events} = this.props;
-        const title = 'Events';
         return (
             <PlaygroundSection
               title='Events'
