@@ -26,7 +26,12 @@ test('PlaygroundFailLogs render', () => {
     expect(logs.text()).toEqual('<PlaygroundLazyLog />');
     const lazy = logs.find(PlaygroundLazyLog);
     expect(getHighlight.mock.calls).toEqual([[]]);
-    expect(lazy.props()).toEqual({"highlight": ['START', 'STOP'], "logs": ['LOG1', 'LOG2']});
+    expect(lazy.props()).toEqual({
+        "className": "playground-fail-log",
+        "enableSearch": true,
+        "highlightLineClassName": "log-error",
+        "highlight": ['START', 'STOP'],
+        "logs": ['LOG1', 'LOG2']});
 });
 
 

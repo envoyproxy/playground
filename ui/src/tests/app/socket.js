@@ -4,7 +4,7 @@ import each from 'jest-each';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import PlaygroundSocket from '../../app/socket';
-import {updateUI} from '../../app/store';
+import {logEvent, updateUI} from '../../app/store';
 
 
 jest.mock('reconnecting-websocket');
@@ -67,6 +67,7 @@ const msgTest = [
 
 
 each(msgTest).test('socket message', async (parsed) => {
+    logEvent.mockImplementation(() => 'LOGGED');
     const playground = {
         api: {
             handlers: {HANDLER1: 'handleOne', HANDLER2: 'handleTwo'},
@@ -74,13 +75,15 @@ each(msgTest).test('socket message', async (parsed) => {
             handleOne: jest.fn(),
             handleTwo: jest.fn(),
         },
-        store: 'STORE'};
+        store: {dispatch: jest.fn(async () => {})}};
     const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
     const _parse = global.JSON.parse;
     global.JSON.parse = jest.fn(()  => parsed);
-    await socket.message({data: 'DATA'});
+    const event = {data: 'DATA'};
+    await socket.message(event);
     expect(global.JSON.parse.mock.calls).toEqual([['DATA']]);
-
+    expect(logEvent.mock.calls).toEqual([[parsed]]);
+    expect(playground.store.dispatch.mock.calls).toEqual([["LOGGED"]]);
     if (parsed.playtime_errors) {
         expect(playground.api.handleErrors.mock.calls).toEqual([[parsed]]);
         expect(playground.api.handleOne.mock.calls).toEqual([]);
