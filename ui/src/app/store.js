@@ -373,6 +373,22 @@ const formSlice = createSlice({
 export const {updateForm, clearForm} = formSlice.actions;
 
 
+const eventSlice = createSlice({
+    name: 'event',
+    initialState: {
+        value: []
+    },
+    reducers: {
+        logEvent: (state, action) => {
+            state.value = [...state.value, action.payload];
+        },
+
+    }
+});
+
+export const {logEvent} = eventSlice.actions;
+
+
 const exampleSlice = createSlice({
     name: 'example',
     initialState: {
@@ -405,6 +421,7 @@ export const {removeExample, updateExamples} = exampleSlice.actions;
 const rootReducer = combineReducers({
     example: exampleSlice.reducer,
     proxy: proxySlice.reducer,
+    event: eventSlice.reducer,
     network: networkSlice.reducer,
     service:  serviceSlice.reducer,
     service_type:  serviceTypeSlice.reducer,

@@ -88,4 +88,8 @@
 .playground-lazy-log {
     height: 50vh;
     width: 100%;
+
+
+.scroller {
+    height: 100%;
 }
