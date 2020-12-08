@@ -4,9 +4,12 @@ import each from 'jest-each';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import PlaygroundSocket from '../../app/socket';
+import {updateUI} from '../../app/store';
 
 
 jest.mock('reconnecting-websocket');
+jest.mock('../../app/store');
+
 
 let addListeners;
 
@@ -97,4 +100,39 @@ each(msgTest).test('socket message', async (parsed) => {
     }
 
     global.JSON.parse = _parse;
+});
+
+
+test('socket close', async () => {
+    updateUI.mockReturnValue(23);
+    const playground = {api: 'API', store: 'STORE'};
+    const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
+    socket.store = {dispatch: jest.fn(async () => {})};
+    const evt = {target: {_shouldReconnect: false}};
+    await socket.close(evt);
+    expect(socket.disconnected).toEqual(false);
+    expect(socket.store.dispatch.mock.calls).toEqual([]);
+    expect(updateUI.mock.calls).toEqual([]);
+    evt.target._shouldReconnect = true;
+    await socket.close(evt);
+    expect(socket.disconnected).toEqual(true);
+    expect(socket.store.dispatch.mock.calls).toEqual([[23]]);
+    expect(updateUI.mock.calls).toEqual([[{"toast": "socket-disconnected"}]]);
+});
+
+
+test('socket open', async () => {
+    updateUI.mockReturnValue(23);
+    const playground = {api: 'API', store: 'STORE', load: jest.fn(async () => {})};
+    const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
+    socket.store = {dispatch: jest.fn(async () => {})};
+    await socket.open({});
+    expect(socket.store.dispatch.mock.calls).toEqual([]);
+    expect(updateUI.mock.calls).toEqual([]);
+    expect(playground.load.mock.calls).toEqual([]);
+    socket.disconnected = true;
+    await socket.open({});
+    expect(socket.store.dispatch.mock.calls).toEqual([[23]]);
+    expect(updateUI.mock.calls).toEqual([[{toast: null}]]);
+    expect(playground.load.mock.calls).toEqual([[]]);
 });
