@@ -32,7 +32,6 @@ export class BaseEventLogging extends React.PureComponent {
     render () {
         const {events} = this.props;
         const title = 'Events';
-        const headerLogo = '';
         return (
 	    <section className="control-pane">
               <header className="pt-1 pb-1 bg-dark border-top border-bottom">
