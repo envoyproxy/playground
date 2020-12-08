@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 
 import {BaseAliasForm} from './alias';
-import {BasePortMappingForm} from './ports';
 
 export {
     FormIntroMessage,
@@ -22,6 +21,5 @@ const mapModalStateToProps = function(state) {
 
 
 const AliasForm = connect(mapModalStateToProps)(BaseAliasForm);
-const PortMappingForm = connect(mapModalStateToProps)(BasePortMappingForm);
 
-export {AliasForm, PortMappingForm};
+export {AliasForm};

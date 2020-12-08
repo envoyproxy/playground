@@ -2,15 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {
     Button, Col, Input} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import EdgeLogo from '../../app/images/edge.svg';
 import EnvoyLogo from '../../app/images/envoy.svg';
-import {PlaygroundForm, PlaygroundFormGroup, PlaygroundFormGroupRow} from './base';
-import {PlaygroundSelectInput} from '.';
-import {PlaygroundFieldList} from './fields/list';
+import {
+    PlaygroundForm, PlaygroundFormGroup,
+    PlaygroundFormGroupRow, PlaygroundSelectInput} from '../../shared/forms';
+import {PlaygroundFieldList} from '../../shared/forms/fields/list';
 
 
 // VALIDATION REQUIRED
@@ -166,3 +169,14 @@ export class BaseProxyPortsForm extends React.Component {
         );
     }
 }
+
+
+const mapModalStateToProps = function(state) {
+    return {
+        form: state.form.value,
+    };
+};
+
+
+const ProxyPortsForm = connect(mapModalStateToProps)(BaseProxyPortsForm);
+export {ProxyPortsForm};
