@@ -1,6 +1,4 @@
 
-import each from 'jest-each';
-
 import {shallow} from "enzyme";
 
 import {
