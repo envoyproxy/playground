@@ -3,6 +3,7 @@ import React from 'react';
 
 import {shallow} from "enzyme";
 
+import ServiceLogo from '../../app/images/service.png';
 import ServiceResources, {
     BaseServiceResources,
     mapStateToProps} from '../../service/resources';
@@ -57,6 +58,7 @@ test('ServiceResources getLogo', () => {
           services={services}
           service_types={service_types}
         />);
+    expect(resources.instance().getLogo()).toEqual(ServiceLogo);
     expect(resources.instance().getLogo('FOO')).toEqual();
     expect(resources.instance().getLogo('TYPE2')).toEqual('ICON2');
 });
