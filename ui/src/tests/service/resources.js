@@ -47,6 +47,21 @@ test('ServiceResources addModalTitle', () => {
 });
 
 
+test('ServiceResources getLogo', () => {
+    const dispatch = jest.fn();
+    const services = {RES1: '', RES2: ''};
+    const service_types = {TYPE1: {icon: 'ICON1'}, TYPE2: {icon: 'ICON2'}};
+    const resources = shallow(
+        <BaseServiceResources
+          dispatch={dispatch}
+          services={services}
+          service_types={service_types}
+        />);
+    expect(resources.instance().getLogo('FOO')).toEqual();
+    expect(resources.instance().getLogo('TYPE2')).toEqual('ICON2');
+});
+
+
 test('ServiceResources mapStateToProps', () => {
     const state = {
         service_type: {value: 'SERVICE TYPES VALUE'},
