@@ -63,12 +63,17 @@ export class BaseNetworkFormModal extends React.PureComponent {
 
     get tabs () {
         const {form, onUpdate, proxies, services} = this.props;
-        const {name='', errors={}} = form;
+        const {
+            name='', errors={},
+            proxies: connectedProxies=[],
+            services: connectedServices=[]} = form;
         const tabs = {
             Network: <NetworkForm />,
         };
         if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
-            tabs.Proxies = (
+            console.log(connectedProxies);
+            const tabTitle = 'Proxies (' + connectedProxies.length + '/' + Object.keys(proxies).length + ')';
+            tabs[tabTitle] = (
                 <NetworkConnectionsForm
                   messages={this.messages.proxies}
                   type="proxies"
@@ -77,7 +82,8 @@ export class BaseNetworkFormModal extends React.PureComponent {
 
         }
         if ((name.length > 2 && !errors.name) && Object.keys(services).length > 0){
-            tabs.Services = (
+            const tabTitle = 'Services (' + connectedServices.length + '/' + Object.keys(services).length + ')';
+            tabs[tabTitle] = (
                 <NetworkConnectionsForm
                   messages={this.messages.services}
                   type="services"
