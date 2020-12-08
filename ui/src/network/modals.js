@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {Alert} from 'reactstrap';
 
 import {PlaygroundFormTabs} from '../shared/tabs';
-import {NetworkForm, NetworkProxiesForm, NetworkServicesForm} from './forms';
+import {NetworkForm, NetworkConnectionsForm} from './forms';
 import CloudLogo from '../app/images/cloud.svg';
 
 
@@ -54,6 +54,13 @@ export class BaseNetworkFormModal extends React.PureComponent {
         form: PropTypes.object.isRequired,
     });
 
+
+    get messages () {
+        return {
+            services: ["Add and remove services from this network"],
+            proxies: ["Add and remove proxies from this network"]};
+    }
+
     get tabs () {
         const {form, onUpdate, proxies, services} = this.props;
         const {name='', errors={}} = form;
@@ -61,10 +68,21 @@ export class BaseNetworkFormModal extends React.PureComponent {
             Network: <NetworkForm />,
         };
         if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
-            tabs.Proxies = <NetworkProxiesForm onUpdate={onUpdate} />;
+            tabs.Proxies = (
+                <NetworkConnectionsForm
+                  messages={this.messages.proxies}
+                  type="proxies"
+                  onUpdate={onUpdate}
+                />);
+
         }
         if ((name.length > 2 && !errors.name) && Object.keys(services).length > 0){
-            tabs.Services = <NetworkServicesForm onUpdate={onUpdate} />;
+            tabs.Services = (
+                <NetworkConnectionsForm
+                  messages={this.messages.services}
+                  type="services"
+                  onUpdate={onUpdate}
+                />);
         }
         return tabs;
     }

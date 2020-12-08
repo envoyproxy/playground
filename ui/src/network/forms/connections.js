@@ -2,17 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {Col, Label, Input, Row} from 'reactstrap';
 
 import {PlaygroundForm, PlaygroundFormGroup} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
-export class NetworkConnectionsForm extends React.PureComponent {
+export class BaseNetworkConnectionsForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         networks: PropTypes.object.isRequired,
-        connections: PropTypes.object.isRequired,
+        services: PropTypes.object.isRequired,
+        proxies: PropTypes.object.isRequired,
         form: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
         type: PropTypes.string.isRequired,
@@ -22,7 +25,7 @@ export class NetworkConnectionsForm extends React.PureComponent {
         const {dispatch, form, networks, onUpdate, type} = this.props;
         const {edit, ...data} = form;
         const {name} =  data;
-        const connections = form[type];
+        const connections = form[type] || [];
         let _connections;
         if (edit) {
             _connections = [...(networks[name][type] || [])];
@@ -45,8 +48,9 @@ export class NetworkConnectionsForm extends React.PureComponent {
     };
 
     render () {
-        const  {form, connections, networks, type} = this.props;
+        const  {form, networks, type} = this.props;
         const {edit, name} = form;
+        const connections = this.props[type];
         return (
             <PlaygroundForm
               messages={this.messages}>
@@ -77,3 +81,16 @@ export class NetworkConnectionsForm extends React.PureComponent {
         );
     }
 }
+
+
+const mapNetworkStateToProps = function(state, other) {
+    return {
+        networks: state.network.value,
+        proxies: state.proxy.value,
+        services: state.service.value,
+        form: state.form.value,
+    };
+}
+
+const NetworkConnectionsForm = connect(mapNetworkStateToProps)(BaseNetworkConnectionsForm);
+export {NetworkConnectionsForm};
