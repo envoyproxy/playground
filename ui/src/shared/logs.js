@@ -7,6 +7,9 @@ import {LazyLog} from 'react-lazylog';
 
 
 export class PlaygroundLazyLog  extends React.PureComponent {
+    static propTypes = {
+        logs: PropTypes.array.isRequired,
+    };
 
     render () {
         const {
