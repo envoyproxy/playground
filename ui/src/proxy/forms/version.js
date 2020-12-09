@@ -21,8 +21,9 @@ export class ProxyVersionField extends React.PureComponent {
     get options () {
         return [
             ['envoy-dev:latest', 'envoy-dev:latest (default)'],
-            ['envoy:v1.16', 'envoy:v1.16'],
-            ['envoy:v1.15', 'envoy:v1.15']];
+            ['envoy:v1.16-latest', 'envoy:v1.16-latest'],
+            ['envoy:v1.15-latest', 'envoy:v1.15-latest'],
+            ['envoy:v1.14-latest', 'envoy:v1.14-latest']];
     }
 
     render () {

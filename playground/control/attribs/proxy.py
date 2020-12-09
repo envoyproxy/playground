@@ -54,6 +54,9 @@ class ProxyAddAttribs(AttribsWithName):
     version = attr.ib(
         type=str,
         default='')
+    pull_latest = attr.ib(
+        type=bool,
+        default=False)
 
 
 @attr.s
@@ -96,3 +99,6 @@ class ProxyCreateCommandAttribs(AttribsWithName):
     version = attr.ib(
         type=str,
         default='')
+    pull_latest = attr.ib(
+        type=bool,
+        default=False)

@@ -10,7 +10,7 @@ from playground.control.utils import mktar_from_docker_context
 
 class PlaygroundDockerImages(PlaygroundDockerContext):
 
-    async def build(self, image_tag: str) -> Union[list, None]:
+    async def build(self, build_from: str, image_tag: str) -> Union[list, None]:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
         await self.connector.events.publish(
@@ -20,6 +20,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
             result = await self.docker.images.build(
                 fileobj=tar_obj,
                 encoding="gzip",
+                buildargs=dict(BUILD_FROM=build_from),
                 tag=image_tag)
             tar_obj.close()
         except aiodocker.DockerError as e:
@@ -39,4 +40,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
         await self.connector.events.publish('image_pull', image_tag)
-        await self.docker.images.pull(image_tag)
+        try:
+            await self.docker.images.pull(image_tag)
+        except aiodocker.DockerError as e:
+            return e

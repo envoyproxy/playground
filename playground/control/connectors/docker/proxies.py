@@ -18,19 +18,29 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             self,
             command: PlaygroundCommand) -> None:
         # todo: add logging and error handling
-        if command.data.version.startswith('dev'):
-            image = 'envoyproxy/envoy-dev'
-        else:
-            image = 'envoyproxy/envoy'
-        if ':' in command.data.version:
-            tag = command.data.version.split(':')[1]
-        else:
-            tag = 'latest'
-        image = f'{image}:{tag}'
-
-        # todo: check for the correct image.
-        if not await self.connector.images.exists(image):
-            errors = await self.connector.images.build(image)
+        use_dev = (
+            not command.data.version
+            or command.data.version.startswith('envoy-dev'))
+        image = (
+            'envoyproxy/envoy-dev'
+            if use_dev
+            else 'envoyproxy/envoy')
+        tag = (
+            command.data.version.split(':')[1]
+            if ':' in command.data.version
+            else 'latest')
+        base_image = f'{image}:{tag}'
+        envoy_image = (
+            f"envoyproxy/{base_image.split('/')[1].split(':')[0]}"
+            f"-playground:{base_image.split(':')[1]}")
+        should_pull = (
+            command.data.pull_latest
+            or not await self.connector.images.exists(envoy_image))
+        if should_pull:
+            errors = await self.connector.images.pull(base_image)
+            if not errors:
+                errors = await self.connector.images.build(
+                    base_image, envoy_image)
             if errors:
                 # todo: publish failure
                 print('FAILED BUILDING IMAGE')
@@ -43,7 +53,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
         # todo: add error handling
         await self._start_container(
             self._get_proxy_config(
-                image,
+                envoy_image,
                 command.data.name,
                 command.data.logging,
                 await self._get_mounts(command.data),
