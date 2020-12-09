@@ -36,7 +36,7 @@ class PlaygroundAPI(object):
     @cached_property
     def metadata(self):
         return dict(
-            version='v0.2.2-alpha',
+            version='v0.2.3-alpha',
             max_network_connections=MAX_NETWORK_CONNECTIONS,
             min_name_length=MIN_NAME_LENGTH,
             max_name_length=MAX_NAME_LENGTH,
