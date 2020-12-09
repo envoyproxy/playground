@@ -128,3 +128,9 @@
 .accordion-item.removing {
     opacity: .5;
 }
+
+.nav-item  a:active,
+.nav-item  a:focus {
+ outline: none !important;
+ ie-dummy: expression(this.hideFocus=true) !important;
+}
