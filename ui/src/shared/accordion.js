@@ -66,7 +66,7 @@ export default class Accordion extends React.Component {
 	    <div className="container control-pane-scroll p-0 pl-1 pr-1 pb-3">
 	      {children.map((child, index) => {
                   const {className, children: content, id, onEdit, onDelete, title, resource} = child.props;
-                  const _logo = logo(resource);
+                  const _logo = logo(resource.service_type);
                   let isOpen = false;
                   if (open === id || open === index) {
                       isOpen = true;

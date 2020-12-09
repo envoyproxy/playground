@@ -143,11 +143,7 @@ class BaseResources extends React.Component {
     getLogo = (child) => {
         const {logo} = this.props;
         if (logo instanceof Function) {
-            return logo();
-        }
-        const {service_type} = child;
-        if (service_type) {
-            return logo(service_type);
+            return logo(child);
         }
         return logo;
     };
