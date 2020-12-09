@@ -46,9 +46,9 @@ export default class PlaygroundSocket {
         // console.log("INCOMING", data);
         await dispatch(logEvent(data));
         if (playtime_errors) {
-            await this.api.handleErrors(data);
+            await this.api.errors(data);
         } else {
-            await this.api[this.api.handlers[type]](data);
+            await this.api[type].handle(data);
         }
     }
 

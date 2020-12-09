@@ -70,10 +70,9 @@ each(msgTest).test('socket message', async (parsed) => {
     logEvent.mockImplementation(() => 'LOGGED');
     const playground = {
         api: {
-            handlers: {HANDLER1: 'handleOne', HANDLER2: 'handleTwo'},
-            handleErrors: jest.fn(),
-            handleOne: jest.fn(),
-            handleTwo: jest.fn(),
+            errors: jest.fn(),
+            HANDLER1: {handle: jest.fn()},
+            HANDLER2: {handle: jest.fn()},
         },
         store: {dispatch: jest.fn(async () => {})}};
     const socket = new DummyPlaygroundSocket(playground, 'ADDRESS');
@@ -85,20 +84,20 @@ each(msgTest).test('socket message', async (parsed) => {
     expect(logEvent.mock.calls).toEqual([[parsed]]);
     expect(playground.store.dispatch.mock.calls).toEqual([["LOGGED"]]);
     if (parsed.playtime_errors) {
-        expect(playground.api.handleErrors.mock.calls).toEqual([[parsed]]);
-        expect(playground.api.handleOne.mock.calls).toEqual([]);
-        expect(playground.api.handleTwo.mock.calls).toEqual([]);
+        expect(playground.api.errors.mock.calls).toEqual([[parsed]]);
+        expect(playground.api.HANDLER1.handle.mock.calls).toEqual([]);
+        expect(playground.api.HANDLER2.handle.mock.calls).toEqual([]);
     } else {
-        expect(playground.api.handleErrors.mock.calls).toEqual([]);
+        expect(playground.api.errors.mock.calls).toEqual([]);
         if (parsed.type === 'HANDLER1') {
-            expect(playground.api.handleOne.mock.calls).toEqual([[parsed]]);
-            expect(playground.api.handleTwo.mock.calls).toEqual([]);
+            expect(playground.api.HANDLER1.handle.mock.calls).toEqual([[parsed]]);
+            expect(playground.api.HANDLER2.handle.mock.calls).toEqual([]);
         } else if (parsed.type === 'HANDLER2')  {
-            expect(playground.api.handleOne.mock.calls).toEqual([]);
-            expect(playground.api.handleTwo.mock.calls).toEqual([[parsed]]);
+            expect(playground.api.HANDLER1.handle.mock.calls).toEqual([]);
+            expect(playground.api.HANDLER2.handle.mock.calls).toEqual([[parsed]]);
         } else {
-            expect(playground.api.handleOne.mock.calls).toEqual([]);
-            expect(playground.api.handleTwo.mock.calls).toEqual([[]]);
+            expect(playground.api.HANDLER1.handle.mock.calls).toEqual([]);
+            expect(playground.api.HANDLER2.handle.mock.calls).toEqual([[]]);
         }
     }
 
