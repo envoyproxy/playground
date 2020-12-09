@@ -40,7 +40,7 @@ extras_require['docs'] = [
 # TODO: Fix classifiers
 setup(
     name='playground.control',
-    version='0.2.1',
+    version='0.2.2',
     description='playground.control',
     long_description="playground.control",
     url='https://github.com/envoyproxy/playground',
