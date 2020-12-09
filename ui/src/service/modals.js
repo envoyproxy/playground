@@ -4,17 +4,15 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {clearForm, updateForm, updateUI} from '../app/store';
-import {PlaygroundFormTabs} from '../shared/tabs';
+import {PlaygroundFormModal} from '../shared/modal';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ContainerError, ContainerStarting} from '../shared/container';
 import {ServicePorts} from './ports';
 import {ServiceReadme} from './readme';
 
 
-export class BaseServiceFormModal extends React.Component {
+export class BaseServiceFormModal extends React.PureComponent {
     static propTypes = exact({
         status: PropTypes.string.isRequired,
         form: PropTypes.object.isRequired,
@@ -23,7 +21,16 @@ export class BaseServiceFormModal extends React.Component {
         dispatch: PropTypes.func.isRequired,
     });
 
-    state = {success: false};
+    get activityMessages () {
+        const {form} = this.props;
+        const {name} = form;
+        return {
+            default: [10, <span>Creating service ({name})...</span>],
+            pull_start: [20, <span>Pulling service image ({name})...</span>],
+            success: [100, <span>Service has started ({name})!</span>],
+            volume_create: [30, <span>Creating volumes for service ({name})...</span>],
+            start: [90, <span>Starting service container ({name})...</span>]};
+    }
 
     get tabs () {
         const {dispatch, form, service_types} = this.props;
@@ -77,73 +84,16 @@ export class BaseServiceFormModal extends React.Component {
         return tabs;
     }
 
-    updateStatus = () => {
-        const {status} = this.props;
-        if (status === 'start') {
-            this.setState({success: true});
-            this.timer = setTimeout(this.closeModal, 1000);
-        }
-    }
-
-    closeModal = () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
-        dispatch(clearForm());
-    }
-
-    componentWillUnmount() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
-    }
-
     render () {
-        const {dispatch, form, status, service_types} = this.props;
-        const {logs=[], name, service_type, validation} = form;
-        const {success} = this.state;
-        const messages = {
-            default: [10, <span>Creating service ({name})...</span>],
-            pull_start: [20, <span>Pulling service image ({name})...</span>],
-            success: [100, <span>Service has started ({name})!</span>],
-            volume_create: [30, <span>Creating volumes for service ({name})...</span>],
-            start: [90, <span>Starting service container ({name})...</span>]};
-        if (success) {
-            return (
-                <ContainerStarting
-                  progress={messages.success[0]}
-                  message={messages.success[1]}
-                  color='success'
-                  icon={service_types[service_type].icon}
-                  iconAlt={name}
-                />);
-        }
-        if (status === 'initializing' || status === 'volume_create' || status === 'pull_start' || status === 'start') {
-            if (status === 'start') {
-                this.timer = setTimeout(this.updateStatus, 1000);
-            }
-            return (
-                <ContainerStarting
-                  progress={(messages[status] || messages.default)[0]}
-                  message={(messages[status] || messages.default)[1]}
-                  color='info'
-                  icon={service_types[service_type].icon}
-                  iconAlt={name}
-                />);
-        } else if (status === 'exited' || status === 'destroy' || status === 'die') {
-            return (
-                <ContainerError
-                  icon={service_types[service_type].icon}
-                  iconAlt={name}
-                  name={name}
-                  logs={logs}
-                  message={"Failed starting service (" + name  + "). See logs for errors."}
-                  onReconfigure={evt => dispatch(updateForm({status: null}))}
-                />
-            );
-        }
+        const {form, service_types} = this.props;
+        const {name, service_type} = form;
         return (
-            <PlaygroundFormTabs
-              validation={validation}
+            <PlaygroundFormModal
+              icon={(service_types[service_type] || {}).icon}
+              messages={this.activityMessages}
+              failMessage={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+              success='start'
+              fail={['exited', 'destroy', 'die']}
               tabs={this.tabs} />
         );
     }
@@ -155,7 +105,7 @@ const mapModalStateToProps = function(state, other) {
         service_types: state.service_type.value,
         form: state.form.value,
     };
-}
+};
 
 const ServiceFormModal = connect(mapModalStateToProps)(BaseServiceFormModal);
 export {ServiceFormModal};
