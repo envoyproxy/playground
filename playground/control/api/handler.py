@@ -215,6 +215,9 @@ class PlaygroundEventHandler(object):
                         port_mappings.append(
                             dict(mapping_from=mapping['HostPort'],
                                  mapping_to=container_port.split('/')[0]))
+        else:
+            to_publish['service_type'] = container[
+                'Config']['Labels']['envoy.playground.service.type']
         if port_mappings:
             to_publish["port_mappings"] = port_mappings
         await self.api.publish(to_publish)

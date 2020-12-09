@@ -3,9 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {clearForm, updateForm, updateUI} from '../app/store';
-import {ContainerError, ContainerStarting} from '../shared/container';
-import {PlaygroundFormTabs} from '../shared/tabs';
+import {PlaygroundFormModal} from '../shared/modal';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
     ProxyForm, ProxyCertificatesForm,
@@ -14,7 +12,7 @@ import {
 import EnvoyLogo from '../app/images/envoy.svg';
 
 
-export class ProxyFormModal extends React.Component {
+export class ProxyFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         status: PropTypes.string.isRequired,
@@ -22,7 +20,17 @@ export class ProxyFormModal extends React.Component {
         form: PropTypes.object.isRequired,
     });
 
-    state = {success: false};
+    get activityMessages () {
+        const {form} = this.props;
+        const {name} = form;
+        return {
+            default: [10,  <span>Creating Envoy proxy ({name})...</span>],
+            pull_start: [20,  <span>Pulling container image for Envoy proxy ({name})...</span>],
+            build_start: [30,  <span>Building container image for Envoy proxy ({name})...</span>],
+            success: [100,  <span>Envoy proxy has started ({name})!</span>],
+            volume_create: [40,  <span>Creating volumes for Envoy proxy ({name})...</span>],
+            start: [90,  <span>Starting Envoy proxy container ({name})...</span>]};
+    }
 
     get tabs () {
         const {dispatch, form} = this.props;
@@ -55,74 +63,16 @@ export class ProxyFormModal extends React.Component {
         return tabs;
     }
 
-    updateStatus = () => {
-        const {status} = this.props;
-        if (status === 'start') {
-            this.setState({success: true});
-            this.timer = setTimeout(this.closeModal, 1000);
-        }
-    }
-
-    closeModal = () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
-        dispatch(clearForm());
-    }
-
-    componentWillUnmount() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
-    }
-
     render () {
-        const {dispatch, form} = this.props;
-        const {success} = this.state;
-        const {logs=[], name, status, validation} = form;
-        const messages = {
-            default: [10,  <span>Creating Envoy proxy ({name})...</span>],
-            pull_start: [20,  <span>Pulling container image for Envoy proxy ({name})...</span>],
-            build_start: [30,  <span>Building container image for Envoy proxy ({name})...</span>],
-            success: [100,  <span>Envoy proxy has started ({name})!</span>],
-            volume_create: [40,  <span>Creating volumes for Envoy proxy ({name})...</span>],
-            start: [90,  <span>Starting Envoy proxy container ({name})...</span>]};
-        if (success) {
-            return (
-                <ContainerStarting
-                  progress={messages.success[0]}
-                  message={messages.success[1]}
-                  color='success'
-                  icon={EnvoyLogo}
-                  iconAlt={name}
-                />);
-        }
-        if (status === 'initializing' || status === 'volume_create' || status === 'pull_start' || status === 'build_start' || status === 'start') {
-            if (status === 'start') {
-                this.timer = setTimeout(this.updateStatus, 1000);
-            }
-            return (
-                <ContainerStarting
-                  progress={(messages[status] || messages.default)[0]}
-                  message={(messages[status] || messages.default)[1]}
-                  color='info'
-                  icon={EnvoyLogo}
-                  iconAlt={name}
-                />);
-        } else if (status === 'exited' || status === 'destroy' || status === 'die') {
-            return (
-                <ContainerError
-                  icon={EnvoyLogo}
-                  iconAlt="Envoy"
-                  name={name}
-                  logs={logs}
-                  message={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
-                  onReconfigure={evt => dispatch(updateForm({status: null}))}
-                />
-            );
-        }
+        const {form} = this.props;
+        const {name=''} = form;
         return (
-            <PlaygroundFormTabs
-              validation={validation}
+            <PlaygroundFormModal
+              icon={EnvoyLogo}
+              messages={this.activityMessages}
+              failMessage={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+              success='start'
+              fail={['exited', 'destroy', 'die']}
               tabs={this.tabs} />
         );
     }

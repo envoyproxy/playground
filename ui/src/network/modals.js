@@ -4,10 +4,8 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {PlaygroundFormTabs} from '../shared/tabs';
-import {ContainerStarting} from '../shared/container';
 import {NetworkForm, NetworkConnectionsForm} from './forms';
-import {clearForm, updateUI} from '../app/store';
+import {PlaygroundFormModal} from '../shared/modal';
 import CloudLogo from '../app/images/cloud.svg';
 
 
@@ -25,6 +23,14 @@ export class BaseNetworkFormModal extends React.PureComponent {
         return {
             services: ["Add and remove services from this network"],
             proxies: ["Add and remove proxies from this network"]};
+    }
+
+    get activityMessages () {
+        const {form} = this.props;
+        const {name} = form;
+        return {
+            initializing: [30,  <span>Creating network ({name})...</span>],
+            create: [100,  <span>Network created ({name})...</span>]};
     }
 
     get tabs () {
@@ -58,46 +64,12 @@ export class BaseNetworkFormModal extends React.PureComponent {
         return tabs;
     }
 
-    updateStatus = () => {
-        const {status} = this.props;
-        if (status === 'create') {
-            this.setState({success: true});
-            this.timer = setTimeout(this.closeModal, 1000);
-        }
-    }
-
-    closeModal = () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
-        dispatch(clearForm());
-    }
-
     render () {
-        const {form} = this.props;
-        const {success, status, validation} = form;
-        const {name} = form;
-        console.log('NETWORK', status, success, form);
-        let color = 'info';
-        const messages = {
-            initializing: [30,  <span>Creating network ({name})...</span>],
-            create: [100,  <span>Network created ({name})...</span>]};
-        if (status === "initializing" || status === 'create') {
-            if (status === 'create') {
-                color = 'success';
-                this.timer = setTimeout(this.updateStatus, 1000);
-            }
-            return (
-                <ContainerStarting
-                  progress={messages[status][0]}
-                  message={messages[status][1]}
-                  color={color}
-                  icon={CloudLogo}
-                  iconAlt={name}
-                />);
-        }
         return (
-            <PlaygroundFormTabs
-              validation={validation}
+            <PlaygroundFormModal
+              icon={CloudLogo}
+              messages={this.activityMessages}
+              success='create'
               tabs={this.tabs} />
         );
     }
@@ -106,10 +78,12 @@ export class BaseNetworkFormModal extends React.PureComponent {
 
 const mapModalStateToProps = function(state, other) {
     return {
+        form: state.form.value,
         proxies: state.proxy.value,
         services: state.service.value,
     };
-}
+};
+
 
 const NetworkFormModal = connect(mapModalStateToProps)(BaseNetworkFormModal);
 export {NetworkFormModal};

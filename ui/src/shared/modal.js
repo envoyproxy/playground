@@ -5,8 +5,10 @@ import {connect} from 'react-redux';
 
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 
-import {updateUI, clearForm} from '../app/store';
+import {updateUI, clearForm, updateForm} from '../app/store';
 import {PlaygroundContext} from '../app/context';
+import {ContainerError, ContainerStarting} from './container';
+import {PlaygroundFormTabs} from './tabs';
 
 
 export class PlaygroundModalFooter extends React.PureComponent {
@@ -180,3 +182,80 @@ const mapStateToProps = function(state, other) {
 
 const ModalWidget = connect(mapStateToProps)(BaseModalWidget);
 export default ModalWidget;
+
+
+export class BasePlaygroundFormModal extends React.PureComponent {
+    static propTypes = exact({
+        dispatch: PropTypes.func.isRequired,
+        form: PropTypes.object.isRequired,
+        success: PropTypes.object.isRequired,
+        tabs: PropTypes.object.isRequired,
+    });
+
+    closeModal = () => {
+        const {dispatch} = this.props;
+        dispatch(updateUI({modal: null}));
+        dispatch(clearForm());
+    }
+
+    updateStatus = () => {
+        const {form, success} = this.props;
+        const {status} = form;
+        if (status === success) {
+            this.timer = setTimeout(this.closeModal, 1000);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+    }
+
+    render () {
+        const {
+            dispatch, icon, iconAlt, fail, failMessage, form, messages,
+            success, tabs} = this.props;
+        const {name, logs, status='', validation} = form;
+        let color = 'info';
+        if ((status || '').length > 0) {
+            if (status === success) {
+                color = 'success';
+                this.timer = setTimeout(this.updateStatus, 1000);
+            } else if (fail.indexOf(status) !== -1) {
+                return (
+                    <ContainerError
+                      icon={icon}
+                      iconAlt={iconAlt || name}
+                      name={name}
+                      logs={logs}
+                      message={failMessage}
+                      onReconfigure={evt => dispatch(updateForm({status: null}))}
+                    />);
+            }
+            return (
+                <ContainerStarting
+                  progress={(messages[status] || messages.default)[0]}
+                  message={(messages[status] || messages.default)[1]}
+                  color={color}
+                  icon={icon}
+                  iconAlt={iconAlt || name}
+                />);
+        }
+        return (
+            <PlaygroundFormTabs
+              validation={validation}
+              tabs={tabs} />
+        );
+    }
+}
+
+
+const mapPlaygroundModalStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+const PlaygroundFormModal = connect(mapPlaygroundModalStateToProps)(BasePlaygroundFormModal);
+export {PlaygroundFormModal};
