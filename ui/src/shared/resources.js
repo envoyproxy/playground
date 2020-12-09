@@ -57,7 +57,6 @@ class BaseResources extends React.Component {
 
     state = {removing: []};
 
-
     get api () {
         const {api} = this.props;
         const {api: _api} = this.context;
@@ -197,7 +196,7 @@ class BaseResources extends React.Component {
                   })}
                 </Accordion>
             </PlaygroundSection>);
-        }
+    }
 }
 
 

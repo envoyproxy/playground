@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {withShortcut, ShortcutConsumer} from 'react-keybind';
+
 import {Col, Row} from 'reactstrap';
 
 import Header from "./header";
@@ -20,7 +22,6 @@ export {Header, Left, Right, Content, Footer};
 
 
 export class Layout extends React.PureComponent {
-    static propTypes = exact({});
 
     render () {
         return  (
@@ -47,12 +48,15 @@ export class Layout extends React.PureComponent {
 }
 
 
-export class Page extends React.PureComponent {
+export class BasePage extends React.PureComponent {
     static contextType = PlaygroundContext;
     static contextTypes = {
+        api:  PropTypes.object.isRequired,
         modals: PropTypes.object.isRequired,
         toast: PropTypes.object.isRequired};
-    static propTypes = exact({});
+    static propTypes = exact({
+        shortcut: PropTypes.object.isRequired,
+    });
 
     _widgets = {
         toast: {
@@ -72,9 +76,33 @@ export class Page extends React.PureComponent {
     }
 
     componentDidMount () {
-        const {modals, toast} = this.context;
+        const {api, modals, toast} = this.context;
+        const {shortcut} = this.props;
         Object.assign(modals, this.widgets.modals);
         Object.assign(toast, this.widgets.toast);
+        shortcut.registerShortcut(
+            api.proxy.add,
+            ['ctrl+alt+p', 'cmd+alt+p'],
+            'Create proxy',
+            'Create an Envoy proxy');
+        shortcut.registerShortcut(
+            api.service.add,
+            ['ctrl+alt+s', 'cmd+alt+s'],
+            'Create service',
+            'Create a service');
+        shortcut.registerShortcut(
+            api.network.add,
+            ['ctrl+alt+n', 'cmd+alt+n'],
+            'Create network',
+            'Create a network');
+    }
+
+    componentWillUnmount () {
+        const {api} = this.context;
+        const {shortcut} = this.props;
+        shortcut.unregisterShortcut(api.proxy.add, ['ctrl+alt+p', 'cmd+alt+p']);
+        shortcut.unregisterShortcut(api.service.add, ['ctrl+alt+s', 'cmd+alt+s']);
+        shortcut.unregisterShortcut(api.network.add, ['ctrl+alt+n', 'cmd+alt+n']);
     }
 
     render () {
@@ -87,3 +115,6 @@ export class Page extends React.PureComponent {
         );
     }
 }
+
+const Page = withShortcut(BasePage);
+export {Page}

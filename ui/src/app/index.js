@@ -4,6 +4,8 @@ import exact from 'prop-types-exact';
 
 import {Provider} from 'react-redux';
 
+import {ShortcutProvider} from 'react-keybind';
+
 import PlaygroundAPI from './api';
 import {apiAddress, socketAddress} from './constants';
 import {PlaygroundContext} from "./context";
@@ -35,13 +37,15 @@ export class PlaygroundApp extends React.Component {
             return '';
         }
         return (
-            <Provider store={store}>
-              <PlaygroundContext.Provider value={playground}>
-                <div className="App">
-                  <Page />
-                </div>
-              </PlaygroundContext.Provider>
-            </Provider>
+            <ShortcutProvider>
+              <Provider store={store}>
+                <PlaygroundContext.Provider value={playground}>
+                  <div className="App">
+                    <Page />
+                  </div>
+                </PlaygroundContext.Provider>
+              </Provider>
+            </ShortcutProvider>
         );
     }
 }
