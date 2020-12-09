@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col} from 'reactstrap';
+import {Col, CustomInput, Label, Input} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import {
@@ -94,7 +94,7 @@ export class BaseProxyForm extends React.PureComponent {
                 <PlaygroundFormGroupRow
                   title="Name*"
                   label="name">
-                  <Col sm={5}>
+                  <Col sm={4}>
 	            <PlaygroundNameInput
                       placeholder="Enter proxy name"
                       errors={errors}
@@ -103,7 +103,7 @@ export class BaseProxyForm extends React.PureComponent {
                       taken={Object.keys(proxies)}
                       onChange={this.onNameChange} />
                   </Col>
-                  <Col sm={2}>
+                  <Col sm={3}>
                     <ProxyVersionField
                       dispatch={dispatch}
                       form={form}
@@ -112,6 +112,18 @@ export class BaseProxyForm extends React.PureComponent {
                   </Col>
                   <Col sm={1}>
                     &nbsp;
+                  </Col>
+                </PlaygroundFormGroupRow>
+                <PlaygroundFormGroupRow
+                  title=""
+                  label="">
+                  <Col sm={5}>
+                    <CustomInput
+                      type="checkbox"
+                      id="exampleCustomCheckbox"
+                      label="Pull newest container image." />
+                  </Col>
+                  <Col sm={3}>
                   </Col>
                 </PlaygroundFormGroupRow>
                 {showConfig &&
