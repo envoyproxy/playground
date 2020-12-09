@@ -124,3 +124,17 @@ class PlaygroundDockerNetworks(PlaygroundDockerResources):
             "Container": container["id"],
             "EndpointConfig": {
                 "Aliases": [container['name']]}}
+
+    async def _mangle_resource(self, resource, _resource):
+        try:
+            _actual_network = await self.docker.networks.get(resource["Id"])
+            info = await _actual_network.show()
+        except DockerError:
+            # todo: raise playtime error ?
+            pass
+        else:
+            if info["Containers"]:
+                _resource["containers"] = [
+                    container[:10]
+                    for container
+                    in info["Containers"].keys()]
