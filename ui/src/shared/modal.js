@@ -83,7 +83,7 @@ export class ModalParts extends React.PureComponent {
 
     close = (e) => {
         const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
+        dispatch(updateUI({modal: null, tabs: {}}));
         dispatch(clearForm());
     }
 
@@ -157,7 +157,7 @@ export class BaseModalWidget extends React.PureComponent {
 
     close = (e) => {
         const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
+        dispatch(updateUI({modal: null, tabs: {}}));
         dispatch(clearForm());
     }
 
@@ -222,7 +222,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
 
     closeModal = () => {
         const {dispatch} = this.props;
-        dispatch(updateUI({modal: null}));
+        dispatch(updateUI({modal: null, tabs: {}}));
         dispatch(clearForm());
     }
 
