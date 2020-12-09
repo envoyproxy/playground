@@ -208,6 +208,10 @@ class PlaygroundEventHandler(object):
             status=event.data.status)
         port_mappings = []
         if resource == 'proxy':
+            # todo: move this outta here
+            ports = container['HostConfig']['PortBindings'] or {}
+            to_publish['image'] = self.connector.proxies._get_image_name(
+                event.data.attributes['image'])
             ports = container['HostConfig']['PortBindings'] or {}
             for container_port, mappings in ports.items():
                 for mapping in mappings:

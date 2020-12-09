@@ -76,3 +76,9 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
                     '%s:%s' % (v.name, k)
                     for k, v
                     in mounts.items()]}}
+
+    async def _mangle_resource(self, resource, _resource):
+        _resource['image'] = resource['Image']
+        _resource['type'] = 'service'
+        _resource["service_type"] = resource["Labels"][
+            "envoy.playground.service.type"]

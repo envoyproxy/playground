@@ -61,6 +61,12 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             # todo: log warning ?
             return False
 
+    def _get_image_name(self, playground_image):
+        envoy_image = playground_image.split(
+            '/')[1].split(':')[0].replace('-playground', '')
+        tag = playground_image.split(':')[1]
+        return f"envoyproxy/{envoy_image}:{tag}"
+
     async def list(self) -> list:
         if not self._docker_resource or not self.name:
             return []
@@ -84,40 +90,9 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
                 continue
             _resource = dict(
                 name=resource["Labels"][label],
-                id=resource["Id"][:10])
-
-            # todo move these bits outa here
-            if name == "proxy":
-                _resource['image'] = resource['Image']
-                _resource['type'] = 'proxy'
-                _resource['port_mappings'] = [
-                    {'mapping_from': m.get('PublicPort'),
-                     'mapping_to': m.get('PrivatePort')}
-                    for m
-                    in resource['Ports']
-                    if m.get('PublicPort')]
-                if not _resource['port_mappings']:
-                    del _resource['port_mappings']
-
-            if name == "service":
-                _resource['image'] = resource['Image']
-                _resource['type'] = 'service'
-                _resource["service_type"] = resource["Labels"][
-                    "envoy.playground.service.type"]
-
-            if name == "network":
-                try:
-                    _actual_network = await resources.get(resource["Id"])
-                    info = await _actual_network.show()
-                except DockerError:
-                    # todo: raise playtime error ?
-                    pass
-                else:
-                    if info["Containers"]:
-                        _resource["containers"] = [
-                            container[:10]
-                            for container
-                            in info["Containers"].keys()]
+                id=resource["Id"][:10],
+                type=name)
+            await self._mangle_resource(resource, _resource)
             _resources.append(_resource)
         return _resources
 

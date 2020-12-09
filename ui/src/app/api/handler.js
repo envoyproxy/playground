@@ -204,9 +204,12 @@ export class PlaygroundAPIProxies extends PlaygroundAPIContainers {
     apiType = 'proxy'
 
     handle = async (data) => {
-        const {name, port_mappings} = data;
+        const {image, name, port_mappings} = data;
         const _updateProxies = (proxies) => {
             proxies[name].port_mappings = port_mappings;
+            if (image) {
+                proxies[name].image = image;
+            }
             return updateProxies({proxies});
         };
         await this._handle(data, _updateProxies, removeProxy);

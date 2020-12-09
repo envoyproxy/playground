@@ -129,3 +129,14 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                     '%s:%s' % (v.name, k)
                     for k, v
                     in mounts.items()]}}
+
+    async def _mangle_resource(self, resource, _resource):
+        _resource['image'] = self._get_image_name(resource['Image'])
+        _resource['port_mappings'] = [
+            {'mapping_from': m.get('PublicPort'),
+             'mapping_to': m.get('PrivatePort')}
+            for m
+            in resource['Ports']
+            if m.get('PublicPort')]
+        if not _resource['port_mappings']:
+            del _resource['port_mappings']
