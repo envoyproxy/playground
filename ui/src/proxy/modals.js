@@ -68,6 +68,7 @@ export class ProxyFormModal extends React.PureComponent {
         const {name=''} = form;
         return (
             <PlaygroundFormModal
+              type="proxy"
               icon={EnvoyLogo}
               messages={this.activityMessages}
               failMessage={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}

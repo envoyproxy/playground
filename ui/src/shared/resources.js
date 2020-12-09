@@ -119,6 +119,7 @@ class BaseResources extends React.Component {
                 </>
             );
         } else if (k === 'image') {
+            // todo: attach mangler to playground obj
             let imageURL = new URLMangler().docker(v);
             return (
                 <a href={imageURL}>

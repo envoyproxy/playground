@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 
 import {updateUI, clearForm, updateForm} from '../app/store';
 import {PlaygroundContext} from '../app/context';
@@ -20,10 +20,14 @@ export class PlaygroundModalFooter extends React.PureComponent {
         disabled: PropTypes.bool,
         editClose: PropTypes.string,
         editAction: PropTypes.string,
+        actionWarning: PropTypes.string,
     });
 
     render () {
-        const {action, editAction, editClose, edit, onClose, disabled=false, onSubmit} = this.props;
+        const {
+            action, actionWarning,
+            editAction, editClose, edit,
+            onClose, disabled=false, onSubmit} = this.props;
         let cancelAction = "Cancel";
         let _action = action;
         if (edit) {
@@ -37,7 +41,12 @@ export class PlaygroundModalFooter extends React.PureComponent {
             }
         }
         return (
-            <>
+            <ModalFooter className="bg-light">
+              {actionWarning &&
+               <Alert color="warning">
+                 {actionWarning}
+               </Alert>
+              }
               {_action &&
                <Button
                  color="primary"
@@ -47,7 +56,7 @@ export class PlaygroundModalFooter extends React.PureComponent {
               <Button
                 color="secondary"
                 onClick={onClose}>{cancelAction}</Button>
-            </>);
+            </ModalFooter>);
     }
 }
 
@@ -69,6 +78,7 @@ export class ModalParts extends React.PureComponent {
         errors: PropTypes.object,
         editClose: PropTypes.string,
         editAction: PropTypes.string,
+        actionWarning: PropTypes.string,
     });
 
     close = (e) => {
@@ -87,7 +97,8 @@ export class ModalParts extends React.PureComponent {
 
     render () {
         const {
-            modal: Content, onSubmit, onUpdate, form, editAction, editClose,
+            actionWarning, modal: Content,
+            onSubmit, onUpdate, form, editAction, editClose,
             dispatch, action, title, status, icon} = this.props;
         let disabled = false;
         const {name, errors={}, edit=false, valid, validation} = form;
@@ -121,16 +132,15 @@ export class ModalParts extends React.PureComponent {
                    status={status} />
                 }
               </ModalBody>
-              <ModalFooter className="bg-light">
-                <PlaygroundModalFooter
-                  action={action}
-                  edit={edit}
-                  editAction={editAction}
-                  editClose={editClose}
-                  disabled={disabled}
-                  onSubmit={onSubmit}
-                  onClose={this.close} />
-              </ModalFooter>
+              <PlaygroundModalFooter
+                action={action}
+                actionWarning={actionWarning}
+                edit={edit}
+                editAction={editAction}
+                editClose={editClose}
+                disabled={disabled}
+                onSubmit={onSubmit}
+                onClose={this.close} />
             </>);
     }
 }
@@ -154,9 +164,13 @@ export class BaseModalWidget extends React.PureComponent {
     render () {
         const {modals} = this.context;
         const {className, dispatch, ui, form} = this.props;
-        const {modal} = ui;
+        const {modal, tabs={}} = ui;
         const {status, validation} = form;
+        let {warning} = form;
         const isOpen = Boolean(modal);
+        if (!tabs[modal] || tabs[modal] === 0) {
+            warning = '';
+        }
         return (
             <>
               <Modal
@@ -167,6 +181,7 @@ export class BaseModalWidget extends React.PureComponent {
                 className={className}>
                 {isOpen &&
                  <ModalParts
+                   actionWarning={warning}
                    errors={validation}
                    status={status || ''}
                    dispatch={dispatch}
@@ -199,6 +214,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         messages: PropTypes.array.isRequired,
         tabs: PropTypes.object.isRequired,
         icon: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
         iconAlt: PropTypes.string,
         fail: PropTypes.array,
         failMessage: PropTypes.string,
@@ -227,7 +243,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
     render () {
         const {
             dispatch, icon, iconAlt, fail=[], failMessage, form, messages,
-            success, tabs} = this.props;
+            success, tabs, type} = this.props;
         const {name, logs, status='', validation} = form;
         let color = 'info';
         if ((status || '').length > 0) {
@@ -257,6 +273,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         return (
             <PlaygroundFormTabs
               validation={validation}
+              name={type}
               tabs={tabs} />
         );
     }
