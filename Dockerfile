@@ -8,6 +8,7 @@ FROM python:3.8-slim
 COPY --from=builder /app/build /code/build
 ADD ./playground /code/playground
 ADD ./setup.py /code
+ADD ./context /code/context
 WORKDIR /code
 RUN pip install -e . && rm -rf /root/.cache
 COPY ./services/ /code/build/static
