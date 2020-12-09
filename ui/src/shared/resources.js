@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 
 import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
-import {updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 import {PlaygroundSection} from './section';
 import {URLMangler} from './utils';
