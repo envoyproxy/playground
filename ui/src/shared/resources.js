@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
-import {clearForm, logEvent, updateForm, updateUI} from '../app/store';
+import {updateForm, updateUI} from '../app/store';
 import {ActionAdd} from './actions';
 import {PlaygroundSection} from './section';
 import {URLMangler} from './utils';
@@ -58,69 +58,27 @@ class BaseResources extends React.Component {
 
     state = {removing: []};
 
-    addResource = async (evt) => {
-        // open the add resource modal
-        const {dispatch, api} = this.props;
-        await dispatch(clearForm());
-        await dispatch(updateUI({modal: api}));
-    };
 
-    createResource = async () => {
-        // send API request to create resource
-        const {api, dispatch, form} = this.props;
-        const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
-        const {removing} = this.state;
-        data.env = env || vars;
-        await dispatch(updateForm({status: 'initializing'}));
-        this.setState(state => {
-            return {removing: removing.filter(v => v !== data.name)};
-        });
-        if (api === 'network') {
-            const update = {action: 'init', name: data.name, type: api};
-            await dispatch(logEvent(update));
-        } else {
-            await dispatch(logEvent({status: 'create', name: data.name, type: api}));
-        }
-        const {errors} = await this.context.api.post('/' + api + '/add', data);
-        if (errors) {
-            await dispatch(updateForm({validation: errors, status: ''}));
-        }
-    };
+    get api () {
+        const {api} = this.props;
+        const {api: _api} = this.context;
+        return _api[api];
+    }
 
-    deleteResource = async (id) => {
+    delete = async (id) => {
         // send API request to delete resource
-        const {api, dispatch, resources} = this.props;
-        let name;
-        for (const resource of Object.values(resources)) {
-            if (resource.id === id) {
-                name = resource.name;
-                break;
-            }
-        }
+        // todo: move this to a store var
         this.setState(state => {
-            state.removing.push(name);
+            state.removing.push(id);
             return state;
         });
-        await dispatch(logEvent({status: 'remove', action: 'remove', name, type: api}));
-        const {errors} = await this.context.api.post('/' + api + '/delete', {id});
-        if (errors) {
-            await dispatch(updateForm({validation: errors}));
-        }
+        await this.api.delete(id);
     };
 
-    editResource = async (evt) => {
-        const {api, dispatch, resources} = this.props;
-        dispatch(updateForm({...resources[evt.target.title], edit: true}));
-        dispatch(updateUI({modal: api}));
-    };
-
-    updateResource = async (data) => {
-        const {api, dispatch} = this.props;
-        const {name, status, ...update} = data;
-        const {errors} = await this.context.api.post('/' + api + '/edit', update);
-        if (errors) {
-            await dispatch(updateForm({validation: errors}));
-        }
+    edit = async (evt) => {
+        // send API request to edit resource
+        const {title} = evt.target;
+        await this.api.edit(title);
     };
 
     componentDidMount () {
@@ -135,8 +93,8 @@ class BaseResources extends React.Component {
             title, modal, action,
             editAction, editClose,
             icon: logo,
-            onUpdate: this.updateResource,
-            onSubmit: this.createResource};
+            onUpdate: this.api.update,
+            onSubmit: this.api.create};
     }
 
     handleItem = (k, v) => {
@@ -179,7 +137,7 @@ class BaseResources extends React.Component {
               <ActionAdd
                 className="ml-2 mr-2"
                 title={title}
-                add={this.addResource} />
+                add={this.api.add} />
             </>);
     }
 
@@ -213,7 +171,7 @@ class BaseResources extends React.Component {
                   {Object.entries(resources).map(([name, content], index) => {
                       const {id} = content;
                       let className = '';
-                      if (removing.indexOf(name) !== -1) {
+                      if (removing.indexOf(id) !== -1) {
                           className = 'removing';
                       }
                       return (
@@ -222,9 +180,9 @@ class BaseResources extends React.Component {
                             title={name}
                             id={id}
                             className={className}
-                            onEdit={this.editResource}
+                            onEdit={this.edit}
                             resource={content}
-                            onDelete={this.deleteResource}>
+                            onDelete={this.delete}>
                             {Object.entries(content).map(([k, v], i) => {
                                 return (
                                     <ResourceInfoItem
