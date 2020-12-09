@@ -16,72 +16,75 @@ export class PlaygroundAPIResources {
         this.store = store;
     }
 
-    _getName = (id) => {
+    getResources = () => {
         const {getState} = this.store;
         const state = getState();
-        for (const resource of Object.values(state[this.apiType].value)) {
-            if (resource.id === id) {
-                return resource.name;
-            }
-        }
-        return undefined;
+        return state[this.apiType].value;
+    }
+
+    _getName = (id) => {
+        return Object.values(this.getResources()).filter(v => v.id === id)[0].name;
     };
 
     add = async () => {
         const {dispatch} = this.store;
         await dispatch(clearForm());
         await dispatch(updateUI({modal: this.apiType}));
-    }
+    };
+
+    call = async (command, payload) => {
+        const {dispatch} = this.store;
+        const {errors} = await this.api.post('/' + this.apiType + '/' + command, payload);
+        if (errors) {
+            await dispatch(updateForm({validation: errors, status: ''}));
+        }
+    };
 
     create = async () => {
         const {dispatch, getState} = this.store;
         const state = getState();
         const {value: form} = state.form;
         const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
+        // this is wrong for networks
         data.env = env || vars;
         await dispatch(updateForm({status: 'initializing'}));
-        if (this.apiType === 'network') {
-            const update = {action: 'init', name: data.name, type: this.apiType};
-            await dispatch(logEvent(update));
-        } else {
-            await dispatch(logEvent({status: 'create', name: data.name, type: this.apiType}));
-        }
-        const {errors} = await this.api.post('/' + this.apiType + '/add', data);
-        if (errors) {
-            await dispatch(updateForm({validation: errors, status: ''}));
-        }
-    }
+        await this.log('create', data);
+        await this.call('add', data);
+    };
+
+    log = async (event, data) => {
+        return await this._log(event, data);
+    };
 
     delete = async (id) => {
-        const {dispatch} = this.store;
-        const name = this._getName(id);
-        await dispatch(logEvent({
-            status: 'remove',
-            action: 'remove',
-            name,
-            type: this.apiType}));
-        const {errors} = await this.api.post('/' + this.apiType + '/delete', {id});
-        if (errors) {
-            await dispatch(updateForm({validation: errors}));
-        }
-        return name;
+        await this.log('delete', id);
+        await this.call('delete', {id});
     }
 
     edit = async (name) => {
-        const {dispatch, getState} = this.store;
-        const state = getState();
-        dispatch(updateForm({...state[this.apiType].value[name], edit: true}));
+        const {dispatch} = this.store;
+        dispatch(updateForm({...this.getResources()[name], edit: true}));
         dispatch(updateUI({modal: this.apiType}));
     }
 
     update = async (data) => {
-        const {dispatch} = this.store;
         const {name, status, ...update} = data;
-        const {errors} = await this.api.post('/' + this.apiType + '/edit', update);
-        if (errors) {
-            await dispatch(updateForm({validation: errors}));
-        }
+        await this.call('edit', update);
     }
+
+    _log = async (event, data) => {
+        const {dispatch} = this.store;
+        if (event === 'create') {
+            await dispatch(logEvent({status: 'create', name: data.name, type: this.apiType}));
+        } else if (event === 'delete') {
+            const name = this._getName(data);
+            await dispatch(logEvent({
+                status: 'remove',
+                action: 'remove',
+                name,
+                type: this.apiType}));
+        }
+    };
 }
 
 
@@ -116,6 +119,16 @@ export class PlaygroundAPIImages extends PlaygroundAPIResources {
 
 export class PlaygroundAPINetworks extends PlaygroundAPIResources {
     apiType = 'network'
+
+    log = async (event, data) => {
+        const {dispatch} = this.store;
+        if (event === 'create') {
+            const update = {action: 'init', name: data.name, type: this.apiType};
+            await dispatch(logEvent(update));
+        } else {
+            await this._log(event, data);
+        }
+    };
 
     handle = async (data) => {
         const {loadUI} = this.playground;
