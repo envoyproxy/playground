@@ -36,7 +36,7 @@ class PlaygroundAPI(object):
     @cached_property
     def metadata(self):
         return dict(
-            version=self._envoy_image,
+            version='v0.2.1-alpha',
             max_network_connections=MAX_NETWORK_CONNECTIONS,
             min_name_length=MIN_NAME_LENGTH,
             max_name_length=MAX_NAME_LENGTH,
@@ -104,9 +104,7 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        kwargs = attr.asdict(request.data)
-        kwargs['image'] = self._envoy_image
-        await self.connector.proxies.create(kwargs)
+        await self.connector.proxies.create(attr.asdict(request.data))
         return self.ok
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))

@@ -51,10 +51,16 @@ class ProxyAddAttribs(AttribsWithName):
         type=OrderedDict,
         default=OrderedDict())
 
+    version = attr.ib(
+        type=str,
+        default='')
+    pull_latest = attr.ib(
+        type=bool,
+        default=False)
+
 
 @attr.s
 class ProxyCreateCommandAttribs(AttribsWithName):
-    image = attr.ib(type=str)
     configuration = attr.ib(
         type=str,
         validator=[
@@ -89,3 +95,10 @@ class ProxyCreateCommandAttribs(AttribsWithName):
     logging = attr.ib(
         type=OrderedDict,
         default=OrderedDict())
+
+    version = attr.ib(
+        type=str,
+        default='')
+    pull_latest = attr.ib(
+        type=bool,
+        default=False)
