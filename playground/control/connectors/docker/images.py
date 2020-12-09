@@ -10,7 +10,10 @@ from playground.control.utils import mktar_from_docker_context
 
 class PlaygroundDockerImages(PlaygroundDockerContext):
 
-    async def build(self, build_from: str, image_tag: str) -> Union[list, None]:
+    async def build(
+            self,
+            build_from: str,
+            image_tag: str) -> Union[list, None]:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
         await self.connector.events.publish(
@@ -24,6 +27,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 tag=image_tag)
             tar_obj.close()
         except aiodocker.DockerError as e:
+            # todo: improve on this
             return e.args
         try:
             await self.docker.images.inspect(name=image_tag)
