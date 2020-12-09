@@ -189,7 +189,12 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
         success: PropTypes.object.isRequired,
+        messages: PropTypes.array.isRequired,
         tabs: PropTypes.object.isRequired,
+        icon: PropTypes.string.isRequired,
+        iconAlt: PropTypes.string,
+        fail: PropTypes.array,
+        failMessage: PropTypes.string,
     });
 
     closeModal = () => {
@@ -214,7 +219,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
 
     render () {
         const {
-            dispatch, icon, iconAlt, fail, failMessage, form, messages,
+            dispatch, icon, iconAlt, fail=[], failMessage, form, messages,
             success, tabs} = this.props;
         const {name, logs, status='', validation} = form;
         let color = 'info';
