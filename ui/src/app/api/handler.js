@@ -135,27 +135,25 @@ export class PlaygroundAPINetworks extends PlaygroundAPIResources {
         const {dispatch} = this.store;
         if (data.action === "destroy") {
             await dispatch(removeNetwork(data.id));
-            loadUI();
         } else if (data.action === "create") {
             const {action: status} = data;
             await dispatch(updateNetworks(data));
             await dispatch(updateForm({status}));
-            loadUI();
         } else if (data.action === "connect" || data.action === "disconnect") {
             const {service, proxy} = this.store.getState();
             await dispatch(updateNetworks({
                 services: service.value,
                 proxies: proxy.value,
                 ...data}));
-            await loadUI();
         }
+        await loadUI();
     };
 }
 
 
 export class PlaygroundAPIContainers extends PlaygroundAPIResources {
 
-    _update = async (name, status, logs) => {
+    _updateContainerForm = async (name, status, logs) => {
         const {loadUI} = this.playground;
         const {dispatch} = this.store;
         const form = this.store.getState().form.value;
@@ -173,16 +171,16 @@ export class PlaygroundAPIContainers extends PlaygroundAPIResources {
     _handle = async (data, onUpdate, onRemove) => {
         const {dispatch} = this.store;
         const {id, name, status, logs} = data;
-
+        let _dispatch;
         if (['volume_create', 'start'].indexOf(status) !== -1) {
             const update = {};
             update[name] = {id, name};
-            await dispatch(onUpdate(update));
-            await this._update(name, status, logs);
+            _dispatch = onUpdate(update);
         } else if (['exited', 'destroy', 'die'].indexOf(status) !== -1) {
-            await dispatch(onRemove(data.id));
-            await this._update(name, status, logs);
+            _dispatch = onRemove(data.id);
         }
+        await dispatch(_dispatch);
+        await this._updateContainerForm(name, status, logs);
     }
 }
 
