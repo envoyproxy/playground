@@ -5,7 +5,7 @@ import {Col, Row} from 'reactstrap';
 
 import {
     Content, Footer, Header,
-    Left, Page, Right, Layout} from '../../layout';
+    Left, Right, Layout} from '../../layout';
 import {BasePage} from '../../layout/page';
 import {
     AlertDisconnected,

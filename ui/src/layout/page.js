@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {withShortcut, ShortcutConsumer} from 'react-keybind';
+import {withShortcut} from 'react-keybind';
 
 import {Col, Row} from 'reactstrap';
 
