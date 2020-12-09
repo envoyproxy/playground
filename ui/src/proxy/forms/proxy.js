@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col, CustomInput, Label, Input} from 'reactstrap';
+import {Col, CustomInput} from 'reactstrap';
 
 import {updateForm} from '../../app/store';
 import {
