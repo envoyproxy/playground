@@ -17,7 +17,9 @@ export class PlaygroundInput extends React.PureComponent {
     };
 
     render () {
-        const {errors, id, name, type='text', ...props} = this.props;
+        const {
+            errors,
+            id, name, type='text', ...props} = this.props;
         return (
             <>
               <Input
@@ -122,6 +124,7 @@ export class PlaygroundNameInput extends React.PureComponent {
         return (
 	    <PlaygroundInput
               name="name"
+              autoFocus
               placeholder={placeholder}
               errors={errors}
               value={value}

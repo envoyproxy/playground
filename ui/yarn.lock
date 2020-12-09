@@ -9708,6 +9708,11 @@ react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-keybind@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/react-keybind/-/react-keybind-0.8.1.tgz#2f957547ac1d7f26a2d839a1cdcd0f0c172a9ecb"
+  integrity sha512-/1T5xciPjGf+QRGLb7NKKTP8QLcYEeyCqCglFxUuKDcXDmVSyUtk53liM5fl4tFif6Y8NUlFvfOuyq5yt44aLw==
+
 react-konva@^17.0.0-0:
   version "17.0.0-0"
   resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-17.0.0-0.tgz#b98bb7942c8b1530c083e78e6710ae7650f0bd68"

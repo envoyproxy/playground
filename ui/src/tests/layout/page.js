@@ -5,7 +5,8 @@ import {Col, Row} from 'reactstrap';
 
 import {
     Content, Footer, Header,
-    Left, Page, Right, Layout} from '../../layout';
+    Left, Right, Layout} from '../../layout';
+import {BasePage} from '../../layout/page';
 import {
     AlertDisconnected,
     AlertNotImplemented} from '../../shared/alerts';
@@ -14,9 +15,22 @@ import ToastWidget, {FailToast} from "../../shared/toast";
 
 
 test('Page render', () => {
-    const context = {modals: {MODAL1: '', MODAL2: ''}, toast: {TOAST1: '', TOAST2: '', errors: 'NOT'}};
-    const _context = {modals: {...context.modals}, toast: {...context.toast}};
-    const page = shallow(<Page />, {context});
+    const context = {
+        api: {
+            proxy: {add: 'ADDPROXY'},
+            network: {add: 'ADDNETWORK'},
+            service: {add: 'ADDSERVICE'}},
+        modals: {MODAL1: '', MODAL2: ''},
+        toast: {TOAST1: '', TOAST2: '', errors: 'NOT'}};
+    const _context = {
+        modals: {...context.modals},
+        toast: {...context.toast}};
+    const shortcut = {registerShortcut: jest.fn()};
+    const page = shallow(<BasePage shortcut={shortcut} />, {context});
+    expect(shortcut.registerShortcut.mock.calls).toEqual(
+        [["ADDPROXY", ["ctrl+alt+p", "cmd+alt+p"], "Create proxy", "Create an Envoy proxy"],
+         ["ADDSERVICE", ["ctrl+alt+s", "cmd+alt+s"], "Create service", "Create a service"],
+         ["ADDNETWORK", ["ctrl+alt+n", "cmd+alt+n"], "Create network", "Create a network"]]);
     const layout = page.find(Layout);
     expect(layout.props()).toEqual({});
     const modal = page.find(ModalWidget);

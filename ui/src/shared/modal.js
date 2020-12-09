@@ -145,6 +145,12 @@ export class BaseModalWidget extends React.PureComponent {
         className: PropTypes.string,
     });
 
+    close = (e) => {
+        const {dispatch} = this.props;
+        dispatch(updateUI({modal: null}));
+        dispatch(clearForm());
+    }
+
     render () {
         const {modals} = this.context;
         const {className, dispatch, ui, form} = this.props;
@@ -157,6 +163,7 @@ export class BaseModalWidget extends React.PureComponent {
 		isOpen={isOpen}
                 size="xl"
                 toggle={this.close}
+                autoFocus={false}
                 className={className}>
                 {isOpen &&
                  <ModalParts

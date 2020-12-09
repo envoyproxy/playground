@@ -3,6 +3,8 @@ import {Provider} from 'react-redux';
 
 import {shallow} from "enzyme";
 
+import {ShortcutProvider} from 'react-keybind';
+
 import {
     PlaygroundApp, PlaygroundContext,
     store} from '../../app';
@@ -29,8 +31,9 @@ test('PlaygroundApp render', () => {
     const app = shallow(<DummyPlaygroundApp />);
     expect(app.text()).toBe('');
     app.setState({playground: 'PLAYGROUND'});
-    expect(app.text()).toBe('<Provider />');
-    const provider = app.find(Provider);
+    expect(app.text()).toBe('<h />');
+    const shortcuts = app.find(ShortcutProvider);
+    const provider = shortcuts.find(Provider);
     expect(provider.props().store).toEqual(store);
     const context = provider.find(PlaygroundContext.Provider);
     expect(context.props().value).toEqual('PLAYGROUND');
