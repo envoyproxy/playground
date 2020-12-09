@@ -60,10 +60,12 @@ export class BaseProxyForm extends React.PureComponent {
         const {name, errors} = evt;
         let {valid} = evt;
         const {configuration=''} = form;
+        let warning;
         if (!this.validateConfiguration(configuration)) {
             valid = false;
+            warning = "Don't forget to add Envoy configuration";
         }
-        await dispatch(updateForm({errors, valid, name}));
+        await dispatch(updateForm({errors, valid, name, warning}));
     }
 
     onConfigChange = async (configuration) => {
@@ -77,7 +79,12 @@ export class BaseProxyForm extends React.PureComponent {
         } else if (!errors.name) {
             valid = true;
         }
-        await dispatch(updateForm({errors, valid, configuration}));
+        await dispatch(
+            updateForm({
+                errors,
+                valid,
+                configuration,
+                warning: null}));
     }
 
     render () {

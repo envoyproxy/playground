@@ -44,7 +44,9 @@ export class PlaygroundAPIResources {
         const {dispatch, getState} = this.store;
         const state = getState();
         const {value: form} = state.form;
-        const {errors: _errors, env, logs, valid, validation, status, vars, ...data} = form;
+        const {
+            errors: _errors, env, logs,
+            valid, validation, status, vars, warning, ...data} = form;
         // this is wrong for networks
         data.env = env || vars;
         await dispatch(updateForm({status: 'initializing'}));
