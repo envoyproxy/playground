@@ -16,6 +16,7 @@ API_SIMPLE_METHODS = (
     ('network_add', 'networks.create'),
     ('network_delete', 'networks.delete'),
     ('network_edit', 'networks.edit'),
+    ('proxy_add', 'proxies.create'),
     ('proxy_delete', 'proxies.delete'),
     ('service_delete', 'services.delete'))
 
@@ -54,9 +55,8 @@ def test_api(patch_playground):
 
 def test_api_metadata():
     _api = DummyPlaygroundAPI()
-    assert _api._envoy_image == "envoyproxy/envoy-dev-playground:latest"
     assert _api.metadata == dict(
-        version=_api._envoy_image,
+        version='v0.2.1-alpha',
         max_network_connections=MAX_NETWORK_CONNECTIONS,
         min_name_length=MIN_NAME_LENGTH,
         max_name_length=MAX_NAME_LENGTH,
@@ -135,38 +135,6 @@ async def test_api_methods(patch_playground, method, command):
             assert (
                 list(m_attr.asdict.call_args)
                 == [(_request._validate.return_value,), {}])
-            assert (
-                list(_target.call_args)
-                == [(m_attr.asdict.return_value,), {}])
-            assert (
-                list(m_resp.call_args)
-                == [({'message': 'OK'},),
-                    {'dumps': json.dumps}])
-            assert response == m_resp.return_value
-
-
-@pytest.mark.asyncio
-async def test_api_proxy_add(patch_playground):
-    _api = DummyPlaygroundAPI()
-    _api.connector = MagicMock()
-    _api.connector.proxies.create = AsyncMock()
-    _target = _api.connector.proxies.create
-    _patch_resp = patch_playground('api.listener.web.json_response')
-    _patch_attr = patch_playground('api.listener.attr')
-    _request = DummyRequest()
-
-    with _patch_resp as m_resp:
-        with _patch_attr as m_attr:
-            response = await _api.proxy_add.__wrapped__(_api, _request)
-            assert (
-                list(_request._validate.call_args)
-                == [(_api,), {}])
-            assert (
-                list(m_attr.asdict.call_args)
-                == [(_request._validate.return_value,), {}])
-            assert (
-                list(m_attr.asdict.return_value.__setitem__.call_args)
-                == [('image', _api._envoy_image), {}])
             assert (
                 list(_target.call_args)
                 == [(m_attr.asdict.return_value,), {}])

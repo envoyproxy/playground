@@ -104,8 +104,7 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
-        kwargs = attr.asdict(request.data)
-        await self.connector.proxies.create(kwargs)
+        await self.connector.proxies.create(attr.asdict(request.data))
         return self.ok
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
