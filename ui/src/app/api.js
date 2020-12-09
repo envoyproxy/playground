@@ -82,76 +82,22 @@ export default class PlaygroundAPI {
     };
 
     handleProxy = async (data) => {
-        const {loadUI, store} = this.playground;
-        const {dispatch} = store;
-        const form = store.getState().form.value;
-        const {name: formName} = form;
-        const {id, name, port_mappings, image, status, logs} = data;
-        const proxies = {};
-        if (status === "volume_create") {
-            proxies[name] = {name};
-            await dispatch(updateProxies({proxies}));
-            loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "start") {
-            proxies[name] = {name, id, image};
-            if (port_mappings) {
-                proxies[name].port_mappings = port_mappings;
-            }
-            await dispatch(updateProxies({proxies}));
-            loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "exited") {
-            await dispatch(removeProxy(data.id));
-            await loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "destroy") {
-            await dispatch(removeProxy(data.id));
-            await loadUI();
-            if (formName && formName === name) {
-                await dispatch(updateForm({status}));
-            }
-        } else if (data.status === "die") {
-            await dispatch(removeProxy(data.id));
-            await loadUI();
-            if (formName && formName === data.name) {
-                await dispatch(updateForm({status, logs}));
-            }
-        }
-    };
+        const {name, port_mappings} = data;
+        const _updateProxies = (proxies) => {
+            proxies[name].port_mappings = port_mappings;
+            return updateProxies({proxies});
+        };
+        await this._handleContainer(data, _updateProxies, removeProxy);
+    }
 
     handleService = async (data) => {
-        const {loadUI, store} = this.playground;
-        const {dispatch} = store;
-        const form = store.getState().form.value;
-        const {service_type, name: formName} = form;
-        const {id, name, image, status, logs} = data;
-        let updated = false;
-        if (['volume_create', 'start'].indexOf(status) !== -1) {
-            const services = {};
-            services[name] = {id, name, image, service_type};
-            await dispatch(updateServices({services}));
-            updated = true;
-        } else if (['exited', 'destroy', 'die'].indexOf(status) !== -1) {
-            await dispatch(removeService(data.id));
-            updated = true;
-        }
-        if (updated) {
-            await loadUI();
-            if (formName && formName === name) {
-                const update = {status};
-                if (status === 'die') {
-                    update.logs = logs;
-                }
-                await dispatch(updateForm(update));
-            }
-        }
+        const {image, name, service_type} = data;
+        const _updateServices = (services) => {
+            services[name].service_type = service_type;
+            services[name].image = image;
+            return updateServices({services});
+        };
+        await this._handleContainer(data, _updateServices, removeService);
     }
 
     async post (path, payload) {
@@ -174,5 +120,36 @@ export default class PlaygroundAPI {
             },
             body: JSON.stringify(payload)
         };
+    };
+
+    _handleContainer = async (data, onUpdate, onRemove) => {
+        const {store} = this.playground;
+        const {dispatch} = store;
+        const {id, name, status, logs} = data;
+
+        if (['volume_create', 'start'].indexOf(status) !== -1) {
+            const update = {};
+            update[name] = {id, name};
+            await dispatch(onUpdate(update));
+            await this._update(name, status, logs);
+        } else if (['exited', 'destroy', 'die'].indexOf(status) !== -1) {
+            await dispatch(onRemove(data.id));
+            await this._update(name, status, logs);
+        }
+    }
+
+    _update = async (name, status, logs) => {
+        const {loadUI, store} = this.playground;
+        const {dispatch} = store;
+        const form = store.getState().form.value;
+        const {name: formName} = form;
+        await loadUI();
+        if (formName && formName === name) {
+            const update = {status};
+            if (status === 'die') {
+                update.logs = logs;
+            }
+            await dispatch(updateForm(update));
+        }
     };
 }
