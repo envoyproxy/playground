@@ -1,5 +1,8 @@
 
 import PlaygroundAPI from '../../app/api';
+import {updateUI} from '../../app/store';
+
+jest.mock('../../app/store');
 
 
 test('api constructor', () => {
@@ -44,4 +47,14 @@ test('api post', async () => {
     expect(api._getAddress.mock.calls).toEqual([['/PATH']]);
     expect(api._getPostPayload.mock.calls).toEqual([['DATA']]);
     global.fetch = _fetch;
+});
+
+
+test('api errors', async () => {
+    const playground = {store: {dispatch: jest.fn(async () => {})}};
+    updateUI.mockImplementation(() => 'UPDATEDUI');
+    const api = new PlaygroundAPI(playground, 'ADDRESS');
+    await api.errors({playtime_errors: 'OOPSIE'});
+    expect(playground.store.dispatch.mock.calls).toEqual([["UPDATEDUI"]]);
+    expect(updateUI.mock.calls).toEqual([[{"errors": "OOPSIE", "toast": "errors"}]]);
 });
