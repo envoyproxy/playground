@@ -9,12 +9,23 @@ import {
     PlaygroundTabs,
     PlaygroundFormTabs} from '../../shared';
 import {
-    BasePlaygroundTabs, PlaygroundTabContent,
+    mapStateToProps, BasePlaygroundTabs, PlaygroundTabContent,
     PlaygroundTabNavs} from '../../shared/tabs/base';
 import {AlertValidation} from '../../shared/alerts';
 import {updateUI} from '../../app/store';
 
 jest.mock('../../app/store');
+
+
+test('PlaygroundTabs is wrapped', () => {
+    expect(PlaygroundTabs.WrappedComponent).toEqual(BasePlaygroundTabs);
+});
+
+
+test('PlaygroundTabs mapStateToProps', () => {
+    const state = {ui: {value: 'VALUE'}};
+    expect(mapStateToProps(state)).toEqual({ui: 'VALUE'});
+});
 
 
 test('PlaygroundFormTabs render', () => {
