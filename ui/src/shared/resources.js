@@ -7,7 +7,6 @@ import Accordion, {AccordionItem} from './accordion';
 import {PlaygroundContext} from '../app/context';
 import {ActionAdd} from './actions';
 import {PlaygroundSection} from './section';
-import {URLMangler} from './utils';
 
 
 class ResourceInfoItem extends React.PureComponent {
@@ -96,6 +95,7 @@ class BaseResources extends React.Component {
     }
 
     handleItem = (k, v) => {
+        const {urls} = this.context;
         // this needs to move out of here...
         if (k === 'port_mappings' && v) {
             return (
@@ -120,7 +120,7 @@ class BaseResources extends React.Component {
             );
         } else if (k === 'image') {
             // todo: attach mangler to playground obj
-            let imageURL = new URLMangler().docker(v);
+            let imageURL = urls.docker(v);
             return (
                 <a href={imageURL}>
                     {v}

@@ -1,6 +1,7 @@
 
 import PlaygroundAPI from './api';
 import PlaygroundSocket from './socket';
+import {PlaygroundURLs} from './utils';
 import {
     updateMeta, loadNetworks,
     loadProxies, loadServices,
@@ -27,6 +28,7 @@ export default class Playground {
     init () {
         this.api = new PlaygroundAPI(this, this.apiAddress);
         this.socket = new PlaygroundSocket(this, this.socketAddress);
+        this.urls = new PlaygroundURLs();
         this.modals = {};
         this.toast = {};
     };

@@ -1,5 +1,6 @@
 
 import {Playground} from '../../app';
+import {PlaygroundURLs} from '../../app/utils';
 import PlaygroundAPI from '../../app/api';
 import PlaygroundSocket from '../../app/socket';
 import {
@@ -11,6 +12,7 @@ import {
 
 jest.mock('../../app/api');
 jest.mock('../../app/socket');
+jest.mock('../../app/utils/urls');
 
 let init;
 
@@ -55,8 +57,10 @@ test('playground init', () => {
     playground.init();
     expect(PlaygroundAPI.mock.calls).toEqual([[playground, 'API']]);
     expect(PlaygroundSocket.mock.calls).toEqual([[playground, 'SOCKET']]);
+    expect(PlaygroundURLs.mock.calls).toEqual([[]]);
     expect(playground.modals).toEqual({});
     expect(playground.toast).toEqual({});
+
 });
 
 
