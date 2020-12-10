@@ -7,14 +7,12 @@ import {connect} from 'react-redux';
 import {
     ActionClear,
     ActionLoad, ActionSave} from '../shared/actions';
-import {PlaygroundContext} from '../app/context';
 import EnvoyLogo from '../app/images/envoy.svg';
 
 
-class BaseHeader extends React.PureComponent {
-    static contextType = PlaygroundContext;
+export class BaseHeader extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
+        dispatch: PropTypes.func,
         version: PropTypes.string,
     });
 
@@ -35,11 +33,11 @@ class BaseHeader extends React.PureComponent {
     }
 }
 
-const mapStateToProps = function(state) {
+
+export const mapStateToProps = function(state) {
     return {
         version: state.meta.value.version
     };
-}
+};
 
-const Header = connect(mapStateToProps)(BaseHeader);
-export default Header;
+export default connect(mapStateToProps)(BaseHeader);
