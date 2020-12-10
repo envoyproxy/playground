@@ -2,8 +2,8 @@
 import React from 'react';
 import exact from 'prop-types-exact';
 
-import {PlaygroundRepository} from '../shared';
-import {PlaygroundPageNav} from '../shared/nav';
+import {
+    PlaygroundPageNav, PlaygroundRepository} from '../shared';
 
 
 export default class Footer extends React.PureComponent {
