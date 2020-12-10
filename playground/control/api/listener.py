@@ -36,7 +36,9 @@ class PlaygroundAPI(object):
     @cached_property
     def metadata(self):
         return dict(
+            title='Envoy playground',
             version='v0.2.3-alpha',
+            repository='https://github.com/envoyproxy/playground',
             max_network_connections=MAX_NETWORK_CONNECTIONS,
             min_name_length=MIN_NAME_LENGTH,
             max_name_length=MAX_NAME_LENGTH,

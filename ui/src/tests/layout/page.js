@@ -84,10 +84,8 @@ test('Layout render', () => {
     expect(div.props().className).toEqual('container-fluid');
     const rows = div.find(Row);
 
-    expect(rows.at(0).props().className).toEqual('p-0');
-    let col = rows.at(0).find(Col);
-    expect(col.props().className).toEqual('p-0 App-header bg-dark border-bottom border-dark');
-    const header = col.find(Header);
+    expect(rows.at(0).props().className).toEqual('p-0 App-header border-top border-light');
+    const header = rows.at(0).find(Header);
     expect(header.props()).toEqual({});
 
     expect(rows.at(1).props().className).toEqual('p-0');
@@ -102,9 +100,7 @@ test('Layout render', () => {
     const right = cols.at(2).find(Right);
     expect(right.props()).toEqual({});
 
-    expect(rows.at(2).props().className).toEqual('p-0');
-    col = rows.at(2).find(Col);
-    expect(col.props().className).toEqual('p-0 App-footer bg-dark text-light p-0 m-0 pr-3 border-top border-dark row small');
-    const footer = col.find(Footer);
+    expect(rows.at(2).props().className).toEqual('p-0 App-footer');
+    const footer = rows.at(2).find(Footer);
     expect(footer.props()).toEqual({});
 });

@@ -18,8 +18,8 @@ export class PlaygroundSection extends React.PureComponent {
     render () {
         const {children, title, icon} = this.props;
         return (
-	    <section className="control-pane">
-              <header className="pt-1 pb-1 bg-dark border-top border-bottom">
+	    <section className="control-pane border-light border-top">
+              <header className="pt-1 pb-1 bg-dark border-dark border-bottom">
                 <img
                   alt={title}
                   src={icon}

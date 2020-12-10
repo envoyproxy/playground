@@ -48,6 +48,7 @@ export class ActionImport extends React.PureComponent {
 
 export class ActionLoad extends React.PureComponent {
     static propTypes = {
+        dispatch: PropTypes.func.isRequired,
     };
 
     load = async () => {
@@ -66,7 +67,7 @@ export class ActionLoad extends React.PureComponent {
               className={classnames({
                   'ml-2': true,
                   'ml-3': true,
-                  'mb-0': true,
+                  'mb-1': true,
                   'float-right': true,
                   'mt-1': true,
                   'mr-0': true,
@@ -78,6 +79,7 @@ export class ActionLoad extends React.PureComponent {
 
 export class ActionSave extends React.PureComponent {
     static propTypes = {
+        dispatch: PropTypes.func.isRequired,
     };
 
     save = async () => {
@@ -96,7 +98,7 @@ export class ActionSave extends React.PureComponent {
               className={classnames({
                   'ml-2': true,
                   'ml-3': true,
-                  'mb-0': true,
+                  'mb-1': true,
                   'float-right': true,
                   'mt-1': true,
                   'mr-0': true,
@@ -143,6 +145,7 @@ export class ActionEdit extends React.PureComponent {
 
 export class ActionClear extends React.PureComponent {
     static propTypes = {
+        dispatch: PropTypes.func.isRequired,
     };
 
     clear = async () => {
@@ -162,14 +165,7 @@ export class ActionClear extends React.PureComponent {
               onClick={this.clear}
               color={color}
               href="#"
-              className={classnames({
-                  'ml-5': true,
-                  'ml-3': true,
-                  'mb-0': true,
-                  'float-right': true,
-                  'mt-1': true,
-                  'mr-5': true,
-              }, className)}
+              className={classnames({'float-right': true, 'mb-1': true, 'mt-1': true}, className)}
               name="clear">clear</Badge>);
     }
 }

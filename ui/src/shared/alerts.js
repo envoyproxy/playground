@@ -4,7 +4,7 @@ import exact from 'prop-types-exact';
 
 import {Alert, Button, Col, Row} from 'reactstrap';
 
-import {GithubSnippet} from './snippets';
+import {PlaygroundRepository} from '.';
 
 
 export class AlertErrors extends React.PureComponent {
@@ -49,7 +49,7 @@ export class AlertNotImplemented extends React.PureComponent {
                 Contributions welcome.
               </div>
               <div className="row p-3 m-1 mb-3 bg-light">
-                  <GithubSnippet />
+                  <PlaygroundRepository />
               </div>
             </Alert>);
     }

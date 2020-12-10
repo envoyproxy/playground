@@ -56,6 +56,8 @@ def test_api(patch_playground):
 def test_api_metadata():
     _api = DummyPlaygroundAPI()
     assert _api.metadata == dict(
+        repository='https://github.com/envoyproxy/playground',
+        title='Envoy playground',
         version='v0.2.3-alpha',
         max_network_connections=MAX_NETWORK_CONNECTIONS,
         min_name_length=MIN_NAME_LENGTH,
