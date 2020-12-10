@@ -80,30 +80,22 @@ async def test_api_clear():
 
 
 @pytest.mark.asyncio
-async def test_api_dump_resources(patch_playground):
+async def test_api_dump_resources():
     _api = DummyPlaygroundAPI()
     _api.connector = MagicMock()
     _api.connector.dump_resources = AsyncMock(return_value=MagicMock())
     type(_api).services = PropertyMock()
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _request = DummyRequest()
-
-    with _patch_resp as m_resp:
-        response = await _api.dump_resources.__wrapped__(_api, _request)
-        assert response == m_resp.return_value
-        _dumped = _api.connector.dump_resources.return_value
-        assert (
-            list(_api.connector.dump_resources.call_args)
-            == [(), {}])
-        assert (
-            list(_dumped.update.call_args)
-            == [({'meta': _api.metadata,
-                  'service_types': _api.services.types}, ), {}])
-        assert (
-            list(m_resp.call_args)
-            == [(_dumped,),
-                {'dumps': json.dumps}])
-        assert response == m_resp.return_value
+    response = await _api.dump_resources.__wrapped__(_api, _request)
+    _dumped = _api.connector.dump_resources.return_value
+    assert response == _dumped
+    assert (
+        list(_api.connector.dump_resources.call_args)
+        == [(), {}])
+    assert (
+        list(_dumped.update.call_args)
+        == [({'meta': _api.metadata,
+              'service_types': _api.services.types}, ), {}])
 
 
 @pytest.mark.parametrize("method,command", API_SIMPLE_METHODS)
