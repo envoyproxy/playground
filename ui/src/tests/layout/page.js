@@ -71,7 +71,7 @@ test('Layout render', () => {
     expect(cols.at(0).props().className).toEqual('p-0 App-left');
     const left = cols.at(0).find(Left);
     expect(left.props()).toEqual({});
-    expect(cols.at(1).props().className).toEqual('p-0');
+    expect(cols.at(1).props().className).toEqual('p-0 App-content pt-3 pl-1 pr-1 bg-light');
     const content = cols.at(1).find(Content);
     expect(content.props()).toEqual({});
     expect(cols.at(2).props().className).toEqual('p-0 App-right');
