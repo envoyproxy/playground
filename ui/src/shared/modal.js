@@ -82,8 +82,9 @@ export class ModalParts extends React.PureComponent {
     });
 
     close = (e) => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null, tabs: {}}));
+        const {dispatch, ui} = this.props;
+        const {modal, ...tabs} = ui.tabs;
+        dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }
 
@@ -156,8 +157,9 @@ export class BaseModalWidget extends React.PureComponent {
     });
 
     close = (e) => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null, tabs: {}}));
+        const {dispatch, ui} = this.props;
+        const {modal, ...tabs} = ui.tabs;
+        dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }
 
@@ -186,6 +188,7 @@ export class BaseModalWidget extends React.PureComponent {
                    status={status || ''}
                    dispatch={dispatch}
                    form={form}
+                   ui={ui}
                    {...modals[modal]} />
                 }
               </Modal>
@@ -215,14 +218,16 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         tabs: PropTypes.object.isRequired,
         icon: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
+        ui: PropTypes.object.isRequired,
         iconAlt: PropTypes.string,
         fail: PropTypes.array,
         failMessage: PropTypes.string,
     });
 
     closeModal = () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: null, tabs: {}}));
+        const {dispatch, ui} = this.props;
+        const {modal, ...tabs} = ui.tabs;
+        dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }
 
@@ -243,7 +248,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
     render () {
         const {
             dispatch, icon, iconAlt, fail=[], failMessage, form, messages,
-            success, tabs, type} = this.props;
+            success, tabs} = this.props;
         const {name, logs, status='', validation} = form;
         let color = 'info';
         if ((status || '').length > 0) {
@@ -273,7 +278,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         return (
             <PlaygroundFormTabs
               validation={validation}
-              name={type}
+              name='modal'
               tabs={tabs} />
         );
     }
@@ -283,6 +288,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
 const mapPlaygroundModalStateToProps = function(state, other) {
     return {
         form: state.form.value,
+        ui: state.ui.value,
     };
 };
 

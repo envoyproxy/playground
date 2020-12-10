@@ -33,7 +33,9 @@ export class Layout extends React.PureComponent {
                 <Col className="p-0 App-left" xs="3">
                   <Left />
                 </Col>
-                <Col className="p-0" xs="6"><Content /></Col>
+                <Col className="p-0 App-content pt-3 pl-1 pr-1 bg-light" xs="6">
+                  <Content />
+                </Col>
                 <Col className="p-0 App-right" xs="3">
                   <Right />
                 </Col>
