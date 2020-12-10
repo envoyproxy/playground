@@ -28,7 +28,7 @@ export class BasePlaygroundLogotype extends React.PureComponent {
                 src={EnvoyLogo}
                 width="28px"
                 className="ml-1 mr-2" />
-	      <span>{title} ({version})</span>
+              <span>{title} ({version})</span>
             </NavbarBrand>
         );
     }
