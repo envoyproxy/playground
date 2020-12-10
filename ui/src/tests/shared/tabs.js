@@ -134,7 +134,7 @@ each([{}, {active: 0}, {active: 1}, {active: 2}]).test('PlaygroundTabNavs render
         const link = child.find(NavLink);
         expect(link.props().href).toEqual('#');
         expect(link.props().children).toEqual('TAB' + i);
-        if (active.active === i || !active.active && i === 0) {
+        if (active.active === i || (!active.active && i === 0)) {
             expect(link.props().className).toEqual('ml-2 active');
         } else {
             expect(link.props().className).toEqual('ml-2');
