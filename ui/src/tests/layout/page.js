@@ -86,7 +86,7 @@ test('Layout render', () => {
 
     expect(rows.at(0).props().className).toEqual('p-0');
     let col = rows.at(0).find(Col);
-    expect(col.props().className).toEqual('p-0');
+    expect(col.props().className).toEqual('p-0 App-header bg-dark border-bottom border-dark');
     const header = col.find(Header);
     expect(header.props()).toEqual({});
 
@@ -104,7 +104,7 @@ test('Layout render', () => {
 
     expect(rows.at(2).props().className).toEqual('p-0');
     col = rows.at(2).find(Col);
-    expect(col.props().className).toEqual('p-0');
+    expect(col.props().className).toEqual('p-0 App-footer bg-dark text-light p-0 m-0 pr-3 border-top border-dark row small');
     const footer = col.find(Footer);
     expect(footer.props()).toEqual({});
 });
