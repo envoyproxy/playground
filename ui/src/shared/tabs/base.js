@@ -13,12 +13,13 @@ import {updateUI} from '../../app/store';
 
 export class PlaygroundTabNavs extends React.PureComponent {
     static propTypes = exact({
-        active: PropTypes.string,
+        active: PropTypes.number,
         tabs: PropTypes.array.isRequired,
+        toggle: PropTypes.func.isRequired,
     });
 
     render () {
-        const {active, tabs} = this.props;
+        const {active, tabs, toggle} = this.props;
         return (
               <Nav tabs>
                 {tabs.map((k, index) => {
@@ -27,7 +28,7 @@ export class PlaygroundTabNavs extends React.PureComponent {
                           <NavLink
                             href="#"
                             className={classnames({'ml-2': true, active: (active || 0)  === index})}
-                            onClick={() => { this.toggle(index); }}>
+                            onClick={() => {toggle(index);}}>
                             {k}
                           </NavLink>
                         </NavItem>);
@@ -40,7 +41,7 @@ export class PlaygroundTabNavs extends React.PureComponent {
 
 export class PlaygroundTabContent extends React.PureComponent {
     static propTypes = exact({
-        active: PropTypes.string,
+        active: PropTypes.number,
         tabs: PropTypes.array.isRequired,
     });
 
@@ -86,6 +87,7 @@ export class BasePlaygroundTabs extends React.PureComponent {
               <PlaygroundTabNavs
                 tabs={Object.keys(tabs)}
                 active={tab}
+                toggle={this.toggle}
               />
               <PlaygroundTabContent
                 tabs={Object.values(tabs)}
