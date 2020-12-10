@@ -2,42 +2,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
-import {connect} from 'react-redux';
 
 import {
-    ActionClear,
-    ActionLoad, ActionSave} from '../shared/actions';
-import EnvoyLogo from '../app/images/envoy.svg';
+    PlaygroundPageNav, PlaygroundLogotype,
+    PlaygroundClearWidget,
+    PlaygroundSaveLoadWidget} from '../shared';
 
 
-export class BaseHeader extends React.PureComponent {
-    static propTypes = exact({
-        dispatch: PropTypes.func,
-        version: PropTypes.string,
-    });
+export default class Header extends React.PureComponent {
+    static propTypes = exact({});
+
+    get navs () {
+        const {dispatch, title, version} = this.props;
+        return [
+            [8, <PlaygroundLogotype />],
+            [3, <PlaygroundSaveLoadWidget />],
+            [1, <PlaygroundClearWidget />]];
+    }
 
     render () {
-        const {version} = this.props;
         return (
-            <header>
-              <img
-                alt="Envoy logo"
-                src={EnvoyLogo}
-                width="28px"
-                className="ml-1 mr-2" />
-	      <span>Envoy playground ({version})</span>
-              <ActionClear />
-              <ActionLoad />
-              <ActionSave />
-            </header>);
+            <PlaygroundPageNav
+              tag="header"
+              navs={this.navs} />
+        );
     }
 }
-
-
-export const mapStateToProps = function(state) {
-    return {
-        version: state.meta.value.version
-    };
-};
-
-export default connect(mapStateToProps)(BaseHeader);

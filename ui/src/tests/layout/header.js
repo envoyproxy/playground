@@ -2,41 +2,33 @@
 import {shallow} from "enzyme";
 
 import {Header} from '../../layout';
-import {BaseHeader, mapStateToProps} from '../../layout/header';
 import {
-    ActionClear,
-    ActionLoad, ActionSave} from '../../shared/actions';
-
-
-test('Header is wrapped', () => {
-    expect(Header.WrappedComponent).toEqual(BaseHeader);
-});
-
-
-test('Header mapStateToProps', () => {
-    const version = {version: 'VERSION23'};
-    const meta = {value: {version}};
-    expect(mapStateToProps({meta})).toEqual({version});
-});
+    PlaygroundLogotype,
+    PlaygroundClearWidget,
+    PlaygroundSaveLoadWidget,
+    PlaygroundPageNav} from '../../shared';
 
 
 test('Header render', () => {
-    const header = shallow(<BaseHeader version='VERSION' />);
-    expect(header.text()).toEqual(
-        'Envoy playground (VERSION)<ActionClear /><ActionLoad /><ActionSave />');
-    const img = header.find('img');
-    expect(img.props()).toEqual(
-        {"alt": "Envoy logo",
-         "className": "ml-1 mr-2",
-         "src": "envoy.svg",
-         "width": "28px"});
-    const span = header.find('span');
-    expect(span.props()).toEqual(
-        {"children": ["Envoy playground (", "VERSION", ")"]});
-    const clear = header.find(ActionClear);
-    expect(clear.props()).toEqual({});
-    const load = header.find(ActionLoad);
-    expect(load.props()).toEqual({});
-    const save = header.find(ActionSave);
-    expect(save.props()).toEqual({});
+    const header = shallow(<Header />);
+    expect(header.text()).toEqual('<PlaygroundPageNav />');
+    const nav = header.find(PlaygroundPageNav);
+    expect(nav.props()).toEqual({
+        navs: header.instance().navs,
+        tag: 'header'});
+    expect(header.instance().navs.length).toEqual(3);
+    expect(header.instance().navs[0][0]).toEqual(8);
+    const logotype = header.instance().navs[0][1];
+    expect(logotype.type).toEqual(PlaygroundLogotype);
+    expect(logotype.props).toEqual({});
+
+    expect(header.instance().navs[1][0]).toEqual(3);
+    const saveload = header.instance().navs[1][1];
+    expect(saveload.type).toEqual(PlaygroundSaveLoadWidget);
+    expect(saveload.props).toEqual({});
+
+    expect(header.instance().navs[2][0]).toEqual(1);
+    const clear = header.instance().navs[2][1];
+    expect(clear.type).toEqual(PlaygroundClearWidget);
+    expect(clear.props).toEqual({});
 });

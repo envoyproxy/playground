@@ -1,20 +1,23 @@
 
 import {shallow} from "enzyme";
 
-import {Col} from 'reactstrap';
-
 import {Footer} from '../../layout';
-import {GithubSnippet} from '../../shared/snippets';
+import {
+    PlaygroundRepository,
+    PlaygroundPageNav} from '../../shared';
 
 
 test('Footer render', () => {
     const footer = shallow(<Footer />);
-    expect(footer.text()).toEqual('<Col /><Col />');
-    const col1 = footer.find(Col).first();
-    expect(col1.props().sm).toEqual(6);
-    expect(col1.props().children).toEqual();
-    const col2 = footer.find(Col).last();
-    expect(col2.props().sm).toEqual(6);
-    const snippet = col2.find(GithubSnippet);
-    expect(snippet.props()).toEqual({});
+    expect(footer.text()).toEqual('<PlaygroundPageNav />');
+    const nav = footer.find(PlaygroundPageNav);
+    expect(nav.props()).toEqual({
+        navs: footer.instance().navs,
+        tag: 'footer'});
+    expect(footer.instance().navs.length).toEqual(2);
+    expect(footer.instance().navs[0]).toEqual([9, '']);
+    expect(footer.instance().navs[1][0]).toEqual(3);
+    const repo = footer.instance().navs[1][1];
+    expect(repo.type).toEqual(PlaygroundRepository);
+    expect(repo.props).toEqual({});
 });

@@ -26,10 +26,8 @@ export class Layout extends React.PureComponent {
     render () {
         return  (
             <div className="container-fluid">
-              <Row className="p-0">
-                <Col className="p-0 App-header bg-dark border-bottom border-dark">
-                  <Header />
-                </Col>
+              <Row className="p-0 App-header">
+                <Header />
               </Row>
               <Row className="p-0">
                 <Col className="p-0 App-left" xs="3">
@@ -42,10 +40,8 @@ export class Layout extends React.PureComponent {
                   <Right />
                 </Col>
               </Row>
-              <Row className="p-0">
-                <Col className="p-0 App-footer bg-dark text-light p-0 m-0 pr-3 border-top border-dark row small">
-                  <Footer />
-                </Col>
+              <Row className="p-0 App-footer">
+                <Footer />
               </Row>
             </div>);
     }
