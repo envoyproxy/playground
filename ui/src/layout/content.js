@@ -9,8 +9,6 @@ import EdgesContent from '../edges';
 export default class Content extends React.PureComponent {
     static propTypes = exact({})
 
-    state = {tab: '1'}
-
     toggle = (tab) => {
         this.setState({tab});
     }
@@ -29,7 +27,6 @@ export default class Content extends React.PureComponent {
     }
 
     render () {
-        const {tab} = this.state;
         return (
             <PlaygroundTabs
               tabs={this.tabs}
