@@ -86,6 +86,7 @@ class PlaygroundDockerEvents(object):
                 "envoy.playground.temp.resource"))
 
     async def _handle_container(self, publisher, data):
+        data["name"] = data['attributes']["name"].split('__')[3]
         await publisher(data)
 
     async def _handle_image(self, publisher, data):
@@ -96,7 +97,6 @@ class PlaygroundDockerEvents(object):
         await publisher(data)
 
     async def _handle_network(self, publisher, data):
-        # todo: bail immediately if not playground network
         container = data.pop('container', None)
         target = None
         handlers = ["destroy", "create", "connect", "disconnect"]

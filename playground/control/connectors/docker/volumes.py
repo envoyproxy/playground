@@ -46,9 +46,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             name: str,
             mount: str,
             files: Union[dict, OrderedDict]):
-        # create volume
-        volume = await self.create(
-            container_type, name, mount)
+        volume = await self.create(container_type, name, mount)
 
         if files:
             # write files into the volume

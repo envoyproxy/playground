@@ -25,37 +25,40 @@ def api(original_fun: Callable = None,
         @wraps(fun)
         async def wrapped_fun(request: web.Request) -> web.Response:
             _request = PlaygroundRequest(request, attribs=attribs)
-            if attribs:
-                try:
-                    await _request.load_data()
-                except (TypeError, ValueError) as e:
-                    if len(e.args) > 1:
-                        errors = json.dumps(
-                            dict(errors={e.args[1].name: e.args[0]}))
-                    else:
-                        errors = json.dumps(
-                            dict(errors={'playground': e.args[0]}))
-                    return web.HTTPBadRequest(
-                        reason="Invalid request data",
-                        body=errors,
-                        content_type='application/json')
-
-                try:
-                    return await fun(_request)
-                except PlaygroundError as e:
+            if not attribs:
+                response = await fun(_request)
+                return web.json_response(
+                    (response
+                     if response is not None
+                     else dict(message="OK")),
+                    dumps=json.dumps)
+            try:
+                await _request.load_data()
+            except (TypeError, ValueError) as e:
+                if len(e.args) > 1:
                     errors = json.dumps(
                         dict(errors={e.args[1].name: e.args[0]}))
-                    return web.HTTPBadRequest(
-                        reason="Invalid request data",
-                        body=errors,
-                        content_type='application/json')
-
-            response = await fun(PlaygroundRequest(request))
-            return web.json_response(
-                (response
-                 if response is not None
-                 else dict(message="OK")),
-                dumps=json.dumps)
+                else:
+                    errors = json.dumps(
+                        dict(errors={'playground': e.args[0]}))
+                return web.HTTPBadRequest(
+                    reason="Invalid request data",
+                    body=errors,
+                    content_type='application/json')
+            try:
+                response = await fun(_request)
+                return web.json_response(
+                    (response
+                     if response is not None
+                     else dict(message="OK")),
+                    dumps=json.dumps)
+            except PlaygroundError as e:
+                errors = json.dumps(
+                    dict(errors={e.args[1].name: e.args[0]}))
+                return web.HTTPBadRequest(
+                    reason="Invalid request data",
+                    body=errors,
+                    content_type='application/json')
         return wrapped_fun
 
     if original_fun:
