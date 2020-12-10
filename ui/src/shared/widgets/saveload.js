@@ -5,9 +5,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {
-    ActionClear,
-    ActionLoad, ActionSave} from '../actions';
+import {ActionSave, ActionLoad} from '../actions';
 
 
 export class BasePlaygroundSaveLoadWidget extends React.PureComponent {
@@ -16,7 +14,7 @@ export class BasePlaygroundSaveLoadWidget extends React.PureComponent {
     });
 
     render () {
-        const {dispatch, title, version} = this.props;
+        const {dispatch} = this.props;
         return (
             <>
               <ActionLoad dispatch={dispatch} />

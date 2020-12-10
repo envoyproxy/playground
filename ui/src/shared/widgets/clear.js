@@ -5,9 +5,7 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {
-    ActionClear,
-    ActionLoad, ActionSave} from '../actions';
+import {ActionClear} from '../actions';
 
 
 export class BasePlaygroundClearWidget extends React.PureComponent {
@@ -16,11 +14,10 @@ export class BasePlaygroundClearWidget extends React.PureComponent {
     });
 
     render () {
-        const {dispatch, title, version} = this.props;
+        const {dispatch} = this.props;
         return (
             <>
-              <ActionLoad dispatch={dispatch} />
-              <ActionSave dispatch={dispatch} />
+              <ActionClear dispatch={dispatch} />
             </>
         );
     }
