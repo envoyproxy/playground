@@ -112,6 +112,12 @@ class PlaygroundAPI(object):
         for socket in self._sockets:
             await socket.send_json(event, dumps=json.dumps)
 
+    # todo: add publish decorator
+    async def publish_network(
+            self,
+            event: dict) -> None:
+        return await self.publish(event)
+
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
