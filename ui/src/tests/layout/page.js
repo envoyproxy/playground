@@ -1,8 +1,6 @@
 
 import {shallow} from "enzyme";
 
-import {withShortcut} from 'react-keybind';
-
 import {Col, Row} from 'reactstrap';
 
 import {
@@ -70,9 +68,6 @@ test('Page unmount', () => {
             service: {add: 'ADDSERVICE'}},
         modals: {MODAL1: '', MODAL2: ''},
         toast: {TOAST1: '', TOAST2: '', errors: 'NOT'}};
-    const _context = {
-        modals: {...context.modals},
-        toast: {...context.toast}};
     const shortcut = {registerShortcut: jest.fn(), unregisterShortcut: jest.fn()};
     const page = shallow(<BasePage shortcut={shortcut} />, {context});
     page.instance().componentWillUnmount();
