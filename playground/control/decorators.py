@@ -50,7 +50,12 @@ def api(original_fun: Callable = None,
                         body=errors,
                         content_type='application/json')
 
-            return await fun(PlaygroundRequest(request))
+            response = await fun(PlaygroundRequest(request))
+            return web.json_response(
+                (response
+                 if response is not None
+                 else dict(message="OK")),
+                dumps=json.dumps)
         return wrapped_fun
 
     if original_fun:

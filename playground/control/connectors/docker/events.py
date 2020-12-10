@@ -56,7 +56,6 @@ class PlaygroundDockerEvents(object):
         _handler = getattr(self, f"_handle_{event['Type']}", None)
         if not _handler:
             return
-
         data = {}
         for k, v in self.mapping[event['Type']].items():
             data[k] = event[v.split('/')[0]]
@@ -100,6 +99,24 @@ class PlaygroundDockerEvents(object):
         # todo: bail immediately if not playground network
         container = data.pop('container', None)
         target = None
+        handlers = ["destroy", "create", "connect", "disconnect"]
+        if data['action'] not in handlers:
+            return
+        if data['action'] == 'destroy':
+            if not data['name'].startswith('__playground_'):
+                return
+        else:
+            try:
+                network = await self.connector.get_network(data['id'])
+                info = await network.show()
+            except DockerError:
+                return
+            if 'envoy.playground.network' not in info['Labels']:
+                return
+            data['containers'] = [
+                container[:10]
+                for container
+                in info["Containers"].keys()]
         if container:
             try:
                 target = await self.connector.get_container(container)

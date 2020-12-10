@@ -70,7 +70,7 @@ export class PlaygroundAPIResources {
     }
 
     update = async (data) => {
-        const {name, status, ...update} = data;
+        const {name, status, type, ...update} = data;
         await this.call('edit', update);
     }
 

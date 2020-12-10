@@ -56,94 +56,29 @@ class PlaygroundEventHandler(object):
     async def handle_network(
             self,
             event: PlaygroundEvent) -> None:
-        handlers = ["destroy", "create", "connect", "disconnect"]
-        if event.data.action in handlers:
-            await getattr(
-                self,
-                'handle_network_%s' % event.data.action)(
-                    event)
+        await getattr(self, f'handle_network_{event.data.action}')(event)
 
     async def handle_network_connect(
             self,
             event: PlaygroundEvent) -> None:
-        nid = event.data.id
-        network = await self.connector.get_network(nid)
-        info = await network.show()
-        if "envoy.playground.network" in info["Labels"]:
-            name = info["Labels"]["envoy.playground.network"]
-            containers = [
-                container[:10]
-                for container
-                in info["Containers"].keys()]
-            _event = dict(
-                type="network",
-                action=event.data.action,
-                name=event.data.name,
-                networks={
-                    name: dict(
-                        name=name, id=nid[:10],
-                        containers=containers)})
-            if event.data.proxy:
-                _event['proxy'] = event.data.proxy
-            if event.data.service:
-                _event['service'] = event.data.service
-            await self.api.publish(_event)
+        return await self._handle_network_connection(event)
 
     async def handle_network_create(
             self,
             event: PlaygroundEvent) -> None:
-        name = event.data.name
-        nid = event.data.id
-        # todo: move this to connector
-        network = await self.connector.get_network(nid)
-        info = await network.show()
-        name = info["Labels"]["envoy.playground.network"]
-        if "envoy.playground.network" not in info["Labels"]:
-            return
-        await self.api.publish(
-            dict(type="network",
-                 action=event.data.action,
-                 name=event.data.name,
-                 networks={name: dict(name=name, id=nid[:10])}))
+        return await self._handle_network_connection(event)
 
     async def handle_network_destroy(
             self,
             event: PlaygroundEvent) -> None:
-        await self.api.publish(
-            dict(type="network",
-                 name=event.data.name,
-                 action=event.data.action,
-                 id=event.data.id[:10]))
+        await self._handle_network_publish(
+            event,
+            dict(id=event.data.id[:10]))
 
     async def handle_network_disconnect(
             self,
             event: PlaygroundEvent) -> None:
-        name = event.data.name
-        nid = event.data.id
-        try:
-            network = await self.connector.get_network(nid)
-            info = await network.show()
-        except DockerError:
-            return
-        if "envoy.playground.network" in info["Labels"]:
-            name = info["Labels"]["envoy.playground.network"]
-            containers = [
-                container[:10]
-                for container
-                in info["Containers"].keys()]
-            _event = dict(
-                type="network",
-                action=event.data.action,
-                name=event.data.name,
-                networks={
-                    name: dict(
-                        name=name, id=nid[:10],
-                        containers=containers)})
-            if event.data.proxy:
-                _event['proxy'] = event.data.proxy
-            if event.data.service:
-                _event['service'] = event.data.service
-            await self.api.publish(_event)
+        return await self._handle_network_connection(event)
 
     async def _handle_container(
             self,
@@ -236,6 +171,30 @@ class PlaygroundEventHandler(object):
             dict(type=resource,
                  name=event.data.attributes["name"].split('__')[2],
                  status='volume_create'))
+
+    async def _handle_network_publish(
+            self,
+            event: PlaygroundEvent,
+            data: dict) -> None:
+        _event = dict(
+            id=event.data.id[:10],
+            action=event.data.action,
+            name=event.data.name)
+        _event.update(data)
+        await self.api.publish_network(_event)
+
+    async def _handle_network_connection(self, event):
+        _event = dict(
+            networks={
+                event.data.name: dict(
+                    name=event.data.name,
+                    id=event.data.id[:10],
+                    containers=event.data.containers)})
+        if event.data.proxy:
+            _event['proxy'] = event.data.proxy
+        if event.data.service:
+            _event['service'] = event.data.service
+        await self._handle_network_publish(event, _event)
 
     def subscribe(self):
         self.connector.subscribe(self.handler, debug=self.debug)

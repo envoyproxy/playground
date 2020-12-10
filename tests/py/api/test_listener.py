@@ -1,8 +1,6 @@
 
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
-import rapidjson as json
-
 import pytest
 
 from playground.control import api, request
@@ -67,51 +65,35 @@ def test_api_metadata():
 
 
 @pytest.mark.asyncio
-async def test_api_clear(patch_playground):
+async def test_api_clear():
     _api = DummyPlaygroundAPI()
     _api.connector = MagicMock()
     _api.connector.clear = AsyncMock()
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _request = DummyRequest()
 
-    with _patch_resp as m_resp:
-        response = await _api.clear.__wrapped__(_api, _request)
-        assert response == m_resp.return_value
-        assert (
-            list(m_resp.call_args)
-            == [({'message': 'OK'},),
-                {'dumps': json.dumps}])
-        assert (
-            list(_api.connector.clear.call_args)
-            == [(), {}])
-        assert response == m_resp.return_value
+    await _api.clear.__wrapped__(_api, _request)
+    assert (
+        list(_api.connector.clear.call_args)
+        == [(), {}])
 
 
 @pytest.mark.asyncio
-async def test_api_dump_resources(patch_playground):
+async def test_api_dump_resources():
     _api = DummyPlaygroundAPI()
     _api.connector = MagicMock()
     _api.connector.dump_resources = AsyncMock(return_value=MagicMock())
     type(_api).services = PropertyMock()
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _request = DummyRequest()
-
-    with _patch_resp as m_resp:
-        response = await _api.dump_resources.__wrapped__(_api, _request)
-        assert response == m_resp.return_value
-        _dumped = _api.connector.dump_resources.return_value
-        assert (
-            list(_api.connector.dump_resources.call_args)
-            == [(), {}])
-        assert (
-            list(_dumped.update.call_args)
-            == [({'meta': _api.metadata,
-                  'service_types': _api.services.types}, ), {}])
-        assert (
-            list(m_resp.call_args)
-            == [(_dumped,),
-                {'dumps': json.dumps}])
-        assert response == m_resp.return_value
+    response = await _api.dump_resources.__wrapped__(_api, _request)
+    _dumped = _api.connector.dump_resources.return_value
+    assert response == _dumped
+    assert (
+        list(_api.connector.dump_resources.call_args)
+        == [(), {}])
+    assert (
+        list(_dumped.update.call_args)
+        == [({'meta': _api.metadata,
+              'service_types': _api.services.types}, ), {}])
 
 
 @pytest.mark.parametrize("method,command", API_SIMPLE_METHODS)
@@ -124,27 +106,20 @@ async def test_api_methods(patch_playground, method, command):
         _resource, command.split('.')[1],
         AsyncMock(return_value=MagicMock()))
     _target = getattr(_resource, command.split('.')[1])
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _patch_attr = patch_playground('api.listener.attr')
     _request = DummyRequest()
 
-    with _patch_resp as m_resp:
-        with _patch_attr as m_attr:
-            response = await getattr(_api, method).__wrapped__(_api, _request)
-            assert (
-                list(_request._validate.call_args)
-                == [(_api,), {}])
-            assert (
-                list(m_attr.asdict.call_args)
-                == [(_request._validate.return_value,), {}])
-            assert (
-                list(_target.call_args)
-                == [(m_attr.asdict.return_value,), {}])
-            assert (
-                list(m_resp.call_args)
-                == [({'message': 'OK'},),
-                    {'dumps': json.dumps}])
-            assert response == m_resp.return_value
+    with _patch_attr as m_attr:
+        await getattr(_api, method).__wrapped__(_api, _request)
+        assert (
+            list(_request._validate.call_args)
+            == [(_api,), {}])
+        assert (
+            list(m_attr.asdict.call_args)
+            == [(_request._validate.return_value,), {}])
+        assert (
+            list(_target.call_args)
+            == [(m_attr.asdict.return_value,), {}])
 
 
 @pytest.mark.asyncio
@@ -154,63 +129,56 @@ async def test_api_service_add(patch_playground):
     _api.connector.services.create = AsyncMock()
     _target = _api.connector.services.create
     type(_api).services = PropertyMock()
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _patch_attr = patch_playground('api.listener.attr')
     _request = DummyRequest()
 
-    with _patch_resp as m_resp:
-        with _patch_attr as m_attr:
-            response = await _api.service_add.__wrapped__(_api, _request)
-            assert (
-                list(_request._validate.call_args)
-                == [(_api,), {}])
-            assert (
-                list(m_attr.asdict.call_args)
-                == [(_request._validate.return_value,), {}])
-            assert (
-                list(_api.services.types.__getitem__.call_args)
-                == [(m_attr.asdict.return_value.__getitem__.return_value, ),
-                    {}])
-            assert (
-                list(m_attr.asdict.return_value.get.call_args)
-                == [('configuration',), {}])
+    with _patch_attr as m_attr:
+        await _api.service_add.__wrapped__(_api, _request)
+        assert (
+            list(_request._validate.call_args)
+            == [(_api,), {}])
+        assert (
+            list(m_attr.asdict.call_args)
+            == [(_request._validate.return_value,), {}])
+        assert (
+            list(_api.services.types.__getitem__.call_args)
+            == [(m_attr.asdict.return_value.__getitem__.return_value, ),
+                {}])
+        assert (
+            list(m_attr.asdict.return_value.get.call_args)
+            == [('configuration',), {}])
 
-            _service_config = _api.services.types.__getitem__.return_value
-            _service_types = _service_config.__getitem__
+        _service_config = _api.services.types.__getitem__.return_value
+        _service_types = _service_config.__getitem__
 
-            assert (
-                list(m_attr.asdict.return_value.__setitem__.call_args)
-                == [('config_path',
-                     _service_types.return_value.get.return_value), {}])
+        assert (
+            list(m_attr.asdict.return_value.__setitem__.call_args)
+            == [('config_path',
+                 _service_types.return_value.get.return_value), {}])
 
-            # todo test adding without config
-            assert (
-                list(_service_types.call_args)
-                == [('labels',), {}])
-            assert (
-                list(_service_types.return_value.get.call_args)
-                == [('envoy.playground.config.path',), {}])
-            assert (
-                list(m_attr.asdict.return_value.__setitem__.call_args)
-                == [('config_path',
-                     _service_types.return_value.get.return_value), {}])
-            assert (
-                [list(c)
-                 for c
-                 in list(
-                     m_attr.asdict.return_value.__setitem__.call_args_list)]
-                == [[('image',
-                     _service_config.get.return_value),
-                     {}],
-                    [('config_path',
-                      _service_types.return_value.get.return_value),
-                     {}]])
+        # todo test adding without config
+        assert (
+            list(_service_types.call_args)
+            == [('labels',), {}])
+        assert (
+            list(_service_types.return_value.get.call_args)
+            == [('envoy.playground.config.path',), {}])
+        assert (
+            list(m_attr.asdict.return_value.__setitem__.call_args)
+            == [('config_path',
+                 _service_types.return_value.get.return_value), {}])
+        assert (
+            [list(c)
+             for c
+             in list(
+                 m_attr.asdict.return_value.__setitem__.call_args_list)]
+            == [[('image',
+                  _service_config.get.return_value),
+                 {}],
+                [('config_path',
+                  _service_types.return_value.get.return_value),
+                 {}]])
 
-            assert (
-                list(_target.call_args)
-                == [(m_attr.asdict.return_value,), {}])
-            assert (
-                list(m_resp.call_args)
-                == [({'message': 'OK'},),
-                    {'dumps': json.dumps}])
-            assert response == m_resp.return_value
+        assert (
+            list(_target.call_args)
+            == [(m_attr.asdict.return_value,), {}])
