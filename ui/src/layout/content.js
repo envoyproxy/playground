@@ -10,11 +10,10 @@ export default class Content extends React.PureComponent {
     static propTypes = exact({})
 
     get tabs () {
-        let tabs = {
+        return {
             Cloud: <CloudContent />,
             Edges: <EdgesContent />,
         };
-        return tabs;
     }
 
     render () {
