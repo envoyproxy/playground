@@ -1,6 +1,6 @@
 
 
-export class URLMangler {
+export class PlaygroundURLs {
 
     docker = (image) => {
         let parts;

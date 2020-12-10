@@ -4,10 +4,11 @@ import exact from 'prop-types-exact';
 
 import ReactMarkdown from 'react-markdown';
 
-import {URLMangler} from '../shared/utils';
+import {PlaygroundContext} from '../app';
 
 
 export class ServiceReadme extends React.Component {
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         readme: PropTypes.string.isRequired,
         image: PropTypes.string.isRequired,
@@ -45,6 +46,7 @@ export class ServiceReadme extends React.Component {
     }
 
     render () {
+        const {urls} = this.context;
         const {content} = this.state;
         const {
             image, logo, title, description,
@@ -53,7 +55,7 @@ export class ServiceReadme extends React.Component {
             'http://localhost:8000/static',
             service_type,
             logo].join('/');
-        const imageURL = new URLMangler().docker(image);
+        const imageURL = urls.docker(image);
         return (
             <div className="readme m-2 mt-3 bg-light p-2 pt-3 pl-3">
               <img src={_logo} alt="service logo" className="float-right m-2" width="50px" />
