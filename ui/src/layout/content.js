@@ -9,18 +9,9 @@ import EdgesContent from '../edges';
 export default class Content extends React.PureComponent {
     static propTypes = exact({})
 
-    toggle = (tab) => {
-        this.setState({tab});
-    }
-
-    constructor(props) {
-        super(props);
-        this.parentRef = React.createRef();
-    }
-
     get tabs () {
         let tabs = {
-            Cloud: <CloudContent parentRef={this.parentRef} />,
+            Cloud: <CloudContent />,
             Edges: <EdgesContent />,
         };
         return tabs;

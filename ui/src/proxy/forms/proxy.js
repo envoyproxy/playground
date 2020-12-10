@@ -89,7 +89,7 @@ export class BaseProxyForm extends React.PureComponent {
 
     render () {
         const {dispatch, examples, form, meta, proxies} = this.props;
-        const {configuration, name='', errors={}, version} = form;
+        const {configuration, name='', errors={}} = form;
         const {min_name_length} = meta;
         let showConfig = true;
         if (name.length < min_name_length) {

@@ -28,7 +28,7 @@ class BaseNetworkForm extends React.PureComponent {
 
     render () {
         const {form, meta, networks} = this.props;
-        const {edit, errors={}, name} = form;
+        const {errors={}, name} = form;
         return (
             <PlaygroundForm
               messages={this.messages}>
