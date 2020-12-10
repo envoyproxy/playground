@@ -28,7 +28,7 @@ class BaseNetworkForm extends React.PureComponent {
 
     render () {
         const {form, meta, networks} = this.props;
-        const {edit, errors={}, name} = form;
+        const {errors={}, name} = form;
         return (
             <PlaygroundForm
               messages={this.messages}>
@@ -44,7 +44,6 @@ class BaseNetworkForm extends React.PureComponent {
                       placeholder="Enter network name"
                       errors={errors}
                       value={name}
-                      disabled={edit}
                       meta={meta}
                       taken={Object.keys(networks)}
                       onChange={this.onNameChange} />

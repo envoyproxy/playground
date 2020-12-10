@@ -5,6 +5,8 @@ import classnames from 'classnames';
 
 import {Badge} from 'reactstrap';
 
+import {logEvent, updateUI} from '../app/store';
+
 
 export class ActionExport extends React.PureComponent {
     static propTypes = {
@@ -46,38 +48,59 @@ export class ActionImport extends React.PureComponent {
 
 export class ActionLoad extends React.PureComponent {
     static propTypes = {
-        load: PropTypes.func.isRequired,
+    };
+
+    load = async () => {
+        const {dispatch} = this.props;
+        dispatch(updateUI({modal: 'not-implemented'}));
     };
 
     render () {
-        const {load, ...props} = this.props;
+        const {className, ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={load}
+              onClick={this.load}
               color="info"
               href="#"
-              className="ml-2 mb-0 float-right mt-1 mr-5"
+              className={classnames({
+                  'ml-2': true,
+                  'ml-3': true,
+                  'mb-0': true,
+                  'float-right': true,
+                  'mt-1': true,
+                  'mr-0': true,
+              }, className)}
               name="load">load</Badge>);
     }
 }
 
 
-
 export class ActionSave extends React.PureComponent {
     static propTypes = {
-        save: PropTypes.func.isRequired,
+    };
+
+    save = async () => {
+        const {dispatch} = this.props;
+        dispatch(updateUI({modal: 'not-implemented'}));
     };
 
     render () {
-        const {save, ...props} = this.props;
+        const {className, ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={save}
+              onClick={this.save}
               color="info"
               href="#"
-              className="ml-2 mb-0 float-right mt-1 mr-5"
+              className={classnames({
+                  'ml-2': true,
+                  'ml-3': true,
+                  'mb-0': true,
+                  'float-right': true,
+                  'mt-1': true,
+                  'mr-0': true,
+              }, className)}
               name="save">save</Badge>);
     }
 }
@@ -120,18 +143,33 @@ export class ActionEdit extends React.PureComponent {
 
 export class ActionClear extends React.PureComponent {
     static propTypes = {
-        clear: PropTypes.func.isRequired,
+    };
+
+    clear = async () => {
+        const {dispatch} = this.props;
+        await dispatch(logEvent({
+            status: 'clear',
+            name: 'all',
+            type: 'playground'}));
+        await this.context.api.get('/clear');
     };
 
     render () {
-        const {clear, className, ...props} = this.props;
+        const {className, color='secondary', ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={clear}
-              color="info"
+              onClick={this.clear}
+              color={color}
               href="#"
-              className={classnames({'ml-2': true}, className)}
+              className={classnames({
+                  'ml-5': true,
+                  'ml-3': true,
+                  'mb-0': true,
+                  'float-right': true,
+                  'mt-1': true,
+                  'mr-5': true,
+              }, className)}
               name="clear">clear</Badge>);
     }
 }
@@ -143,7 +181,7 @@ export class ActionRemove extends React.Component {
         name: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number,
-        ]).isRequired,
+        ]),
     };
 
     state = {clicked: false};

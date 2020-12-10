@@ -28,7 +28,7 @@ export class ProxyConfigForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         onChange: PropTypes.func.isRequired,
-        configuration: PropTypes.string.isRequired,
+        configuration: PropTypes.string,
         errors: PropTypes.object.isRequired,
         examples: PropTypes.object.isRequired,
     });

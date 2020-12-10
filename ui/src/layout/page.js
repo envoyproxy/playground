@@ -27,19 +27,23 @@ export class Layout extends React.PureComponent {
         return  (
             <div className="container-fluid">
               <Row className="p-0">
-                <Col className="p-0"><Header /></Col>
+                <Col className="p-0 App-header bg-dark border-bottom border-dark">
+                  <Header />
+                </Col>
               </Row>
               <Row className="p-0">
                 <Col className="p-0 App-left" xs="3">
                   <Left />
                 </Col>
-                <Col className="p-0" xs="6"><Content /></Col>
+                <Col className="p-0 App-content pt-3 pl-1 pr-1 bg-light" xs="6">
+                  <Content />
+                </Col>
                 <Col className="p-0 App-right" xs="3">
                   <Right />
                 </Col>
               </Row>
               <Row className="p-0">
-                <Col className="p-0">
+                <Col className="p-0 App-footer bg-dark text-light p-0 m-0 pr-3 border-top border-dark row small">
                   <Footer />
                 </Col>
               </Row>

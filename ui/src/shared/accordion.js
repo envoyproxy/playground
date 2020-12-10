@@ -13,11 +13,12 @@ export class AccordionItem extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.array.isRequired,
         title: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
         resource: PropTypes.object.isRequired,
         onEdit: PropTypes.func,
         onDelete: PropTypes.func,
         className: PropTypes.string,
+
+        id: PropTypes.string,
     });
 
     render() {

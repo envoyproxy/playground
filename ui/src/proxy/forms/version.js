@@ -11,6 +11,7 @@ import {updateForm} from '../../app/store';
 export class ProxyVersionField extends React.PureComponent {
     static propTypes = exact({
         form: PropTypes.object.isRequired,
+        dispatch: PropTypes.func.isRequired,
     });
 
     onChange = async (evt) => {

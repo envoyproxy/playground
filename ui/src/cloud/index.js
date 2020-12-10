@@ -162,7 +162,6 @@ export class BaseCloudContent extends React.PureComponent {
         services: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
         ui: PropTypes.object.isRequired,
-        parentRef: PropTypes.object.isRequired,
     });
 
     onMove = async (name, [x, y]) => {
@@ -173,9 +172,8 @@ export class BaseCloudContent extends React.PureComponent {
     }
 
     render () {
-        // todo: use parent size for sizing
+        // todo: use parent/sibling size for sizing
         // todo: get rid of fouc when loading not-empty
-        // const {parentRef} = this.props;
         const {
             service_types, ui} = this.props;
         const {connections=[], resources={}} = ui;

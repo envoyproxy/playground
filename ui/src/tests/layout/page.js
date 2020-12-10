@@ -4,7 +4,7 @@ import {shallow} from "enzyme";
 import {Col, Row} from 'reactstrap';
 
 import {
-    Content, Footer, Header,
+    Content, Footer, Header, Page,
     Left, Right, Layout} from '../../layout';
 import {BasePage} from '../../layout/page';
 import {
@@ -13,6 +13,12 @@ import {
 import ModalWidget from "../../shared/modal";
 import ToastWidget, {FailToast} from "../../shared/toast";
 
+
+
+test('Page is wrapped', () => {
+    const page = shallow(<Page />);
+    expect(page.props().children({shortcut: {}}).type).toEqual(BasePage);
+});
 
 test('Page render', () => {
     const context = {
@@ -54,6 +60,24 @@ test('Page render', () => {
 });
 
 
+test('Page unmount', () => {
+    const context = {
+        api: {
+            proxy: {add: 'ADDPROXY'},
+            network: {add: 'ADDNETWORK'},
+            service: {add: 'ADDSERVICE'}},
+        modals: {MODAL1: '', MODAL2: ''},
+        toast: {TOAST1: '', TOAST2: '', errors: 'NOT'}};
+    const shortcut = {registerShortcut: jest.fn(), unregisterShortcut: jest.fn()};
+    const page = shallow(<BasePage shortcut={shortcut} />, {context});
+    page.instance().componentWillUnmount();
+    expect(shortcut.unregisterShortcut.mock.calls).toEqual(
+        [["ADDPROXY", ["ctrl+alt+p", "cmd+alt+p"]],
+         ["ADDSERVICE", ["ctrl+alt+s", "cmd+alt+s"]],
+         ["ADDNETWORK", ["ctrl+alt+n", "cmd+alt+n"]]]);
+});
+
+
 test('Layout render', () => {
     const layout = shallow(<Layout />);
     const div = layout.find('div').first();
@@ -62,7 +86,7 @@ test('Layout render', () => {
 
     expect(rows.at(0).props().className).toEqual('p-0');
     let col = rows.at(0).find(Col);
-    expect(col.props().className).toEqual('p-0');
+    expect(col.props().className).toEqual('p-0 App-header bg-dark border-bottom border-dark');
     const header = col.find(Header);
     expect(header.props()).toEqual({});
 
@@ -71,7 +95,7 @@ test('Layout render', () => {
     expect(cols.at(0).props().className).toEqual('p-0 App-left');
     const left = cols.at(0).find(Left);
     expect(left.props()).toEqual({});
-    expect(cols.at(1).props().className).toEqual('p-0');
+    expect(cols.at(1).props().className).toEqual('p-0 App-content pt-3 pl-1 pr-1 bg-light');
     const content = cols.at(1).find(Content);
     expect(content.props()).toEqual({});
     expect(cols.at(2).props().className).toEqual('p-0 App-right');
@@ -80,7 +104,7 @@ test('Layout render', () => {
 
     expect(rows.at(2).props().className).toEqual('p-0');
     col = rows.at(2).find(Col);
-    expect(col.props().className).toEqual('p-0');
+    expect(col.props().className).toEqual('p-0 App-footer bg-dark text-light p-0 m-0 pr-3 border-top border-dark row small');
     const footer = col.find(Footer);
     expect(footer.props()).toEqual({});
 });
