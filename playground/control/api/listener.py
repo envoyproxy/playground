@@ -116,6 +116,7 @@ class PlaygroundAPI(object):
     async def publish_network(
             self,
             event: dict) -> None:
+        event['type'] = "network"
         await self.publish(event)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
