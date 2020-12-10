@@ -1,10 +1,12 @@
 
 import {shallow} from "enzyme";
 
+import {withShortcut} from 'react-keybind';
+
 import {Col, Row} from 'reactstrap';
 
 import {
-    Content, Footer, Header,
+    Content, Footer, Header, Page,
     Left, Right, Layout} from '../../layout';
 import {BasePage} from '../../layout/page';
 import {
@@ -13,6 +15,12 @@ import {
 import ModalWidget from "../../shared/modal";
 import ToastWidget, {FailToast} from "../../shared/toast";
 
+
+
+test('Page is wrapped', () => {
+    const page = shallow(<Page />);
+    expect(page.props().children({shortcut: {}}).type).toEqual(BasePage);
+});
 
 test('Page render', () => {
     const context = {
@@ -51,6 +59,27 @@ test('Page render', () => {
     expect(page.instance().widgets.toast.errors.title()).toEqual('Errors!');
     expect(page.instance().widgets.toast['socket-disconnected'].toast).toEqual(AlertDisconnected);
     expect(page.instance().widgets.toast['socket-disconnected'].title()).toEqual('Socket disconnected!');
+});
+
+
+test('Page unmount', () => {
+    const context = {
+        api: {
+            proxy: {add: 'ADDPROXY'},
+            network: {add: 'ADDNETWORK'},
+            service: {add: 'ADDSERVICE'}},
+        modals: {MODAL1: '', MODAL2: ''},
+        toast: {TOAST1: '', TOAST2: '', errors: 'NOT'}};
+    const _context = {
+        modals: {...context.modals},
+        toast: {...context.toast}};
+    const shortcut = {registerShortcut: jest.fn(), unregisterShortcut: jest.fn()};
+    const page = shallow(<BasePage shortcut={shortcut} />, {context});
+    page.instance().componentWillUnmount();
+    expect(shortcut.unregisterShortcut.mock.calls).toEqual(
+        [["ADDPROXY", ["ctrl+alt+p", "cmd+alt+p"]],
+         ["ADDSERVICE", ["ctrl+alt+s", "cmd+alt+s"]],
+         ["ADDNETWORK", ["ctrl+alt+n", "cmd+alt+n"]]]);
 });
 
 
