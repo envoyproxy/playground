@@ -105,7 +105,7 @@ class PlaygroundEventHandler(object):
             action=event.data.action,
             name=event.data.name,
             networks={
-                name: dict(
+                event.data.name: dict(
                     name=event.data.name,
                     id=event.data.id[:10],
                     containers=event.data.containers)})

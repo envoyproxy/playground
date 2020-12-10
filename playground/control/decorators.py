@@ -51,12 +51,11 @@ def api(original_fun: Callable = None,
                         content_type='application/json')
 
             response = await fun(PlaygroundRequest(request))
-            return (
-                response
-                if response is not None
-                else web.json_response(
-                        dict(message="OK"),
-                        dumps=json.dumps))
+            return web.json_response(
+                (response
+                 if response is not None
+                 else dict(message="OK")),
+                dumps=json.dumps)
         return wrapped_fun
 
     if original_fun:

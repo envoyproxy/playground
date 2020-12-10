@@ -106,8 +106,11 @@ class PlaygroundDockerEvents(object):
             if not data['name'].startswith('__playground_'):
                 return
         else:
-            network = await self.connector.get_network(data['id'])
-            info = await network.show()
+            try:
+                network = await self.connector.get_network(data['id'])
+                info = await network.show()
+            except DockerError:
+                return
             if 'envoy.playground.network' not in info['Labels']:
                 return
             data['containers'] = [

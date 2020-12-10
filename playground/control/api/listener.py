@@ -46,16 +46,16 @@ class PlaygroundAPI(object):
             max_config_length=MAX_CONFIG_LENGTH)
 
     @method_decorator(api)
-    async def clear(self, request: PlaygroundRequest) -> web.Response:
+    async def clear(self, request: PlaygroundRequest) -> None:
         await self.connector.clear()
 
     @method_decorator(api)
-    async def dump_resources(self, request: PlaygroundRequest) -> web.Response:
+    async def dump_resources(self, request: PlaygroundRequest) -> dict:
         response = await self.connector.dump_resources()
         response.update(
             dict(meta=self.metadata,
                  service_types=self.services.types))
-        return web.json_response(response, dumps=json.dumps)
+        return response
 
     async def events(self, request: web.Request) -> None:
         ws = web.WebSocketResponse()
@@ -74,34 +74,34 @@ class PlaygroundAPI(object):
     async def listen(self, app: web.Application) -> None:
         self.handler.subscribe()
 
-    def subscribe(self, ws: web.WebSocketResponse):
+    def subscribe(self, ws: web.WebSocketResponse) -> None:
         self._sockets.append(ws)
 
-    def unsubscribe(self, ws: web.WebSocketResponse):
+    def unsubscribe(self, ws: web.WebSocketResponse) -> None:
         self._sockets.remove(ws)
 
     @method_decorator(api(attribs=NetworkAddAttribs))
-    async def network_add(self, request: PlaygroundRequest) -> web.Response:
+    async def network_add(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.networks.create(attr.asdict(request.data))
 
     @method_decorator(api(attribs=NetworkDeleteAttribs))
-    async def network_delete(self, request: PlaygroundRequest) -> web.Response:
+    async def network_delete(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.networks.delete(attr.asdict(request.data))
 
     @method_decorator(api(attribs=NetworkEditAttribs))
-    async def network_edit(self, request: PlaygroundRequest) -> web.Response:
+    async def network_edit(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.networks.edit(attr.asdict(request.data))
 
     @method_decorator(api(attribs=ProxyAddAttribs))
-    async def proxy_add(self, request: PlaygroundRequest) -> web.Response:
+    async def proxy_add(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.proxies.create(attr.asdict(request.data))
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
-    async def proxy_delete(self, request: PlaygroundRequest) -> web.Response:
+    async def proxy_delete(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.proxies.delete(attr.asdict(request.data))
 
@@ -116,10 +116,10 @@ class PlaygroundAPI(object):
     async def publish_network(
             self,
             event: dict) -> None:
-        return await self.publish(event)
+        await self.publish(event)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
-    async def service_add(self, request: PlaygroundRequest) -> web.Response:
+    async def service_add(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         command = attr.asdict(request.data)
         service_config = self.services.types[command['service_type']]
@@ -130,6 +130,6 @@ class PlaygroundAPI(object):
         await self.connector.services.create(command)
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
-    async def service_delete(self, request: PlaygroundRequest) -> web.Response:
+    async def service_delete(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
         await self.connector.services.delete(attr.asdict(request.data))
