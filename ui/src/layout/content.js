@@ -1,10 +1,6 @@
 import React from 'react';
 import exact from 'prop-types-exact';
 
-import classnames from 'classnames';
-
-import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
-
 import {PlaygroundTabs} from '../shared/tabs';
 import CloudContent from '../cloud';
 import EdgesContent from '../edges';
