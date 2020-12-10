@@ -45,14 +45,9 @@ class PlaygroundAPI(object):
             min_config_length=MIN_CONFIG_LENGTH,
             max_config_length=MAX_CONFIG_LENGTH)
 
-    @cached_property
-    def ok(self):
-        return web.json_response(dict(message="OK"), dumps=json.dumps)
-
     @method_decorator(api)
     async def clear(self, request: PlaygroundRequest) -> web.Response:
         await self.connector.clear()
-        return self.ok
 
     @method_decorator(api)
     async def dump_resources(self, request: PlaygroundRequest) -> web.Response:
@@ -89,31 +84,26 @@ class PlaygroundAPI(object):
     async def network_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.networks.create(attr.asdict(request.data))
-        return self.ok
 
     @method_decorator(api(attribs=NetworkDeleteAttribs))
     async def network_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.networks.delete(attr.asdict(request.data))
-        return self.ok
 
     @method_decorator(api(attribs=NetworkEditAttribs))
     async def network_edit(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.networks.edit(attr.asdict(request.data))
-        return self.ok
 
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.proxies.create(attr.asdict(request.data))
-        return self.ok
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.proxies.delete(attr.asdict(request.data))
-        return self.ok
 
     async def publish(
             self,
@@ -132,10 +122,8 @@ class PlaygroundAPI(object):
             command['config_path'] = service_config['labels'].get(
                 'envoy.playground.config.path')
         await self.connector.services.create(command)
-        return self.ok
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def service_delete(self, request: PlaygroundRequest) -> web.Response:
         await request.validate(self)
         await self.connector.services.delete(attr.asdict(request.data))
-        return self.ok
