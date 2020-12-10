@@ -1,8 +1,6 @@
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from playground.control import api, event
 
 
@@ -20,36 +18,33 @@ class DummyEvent(event.PlaygroundEvent):
 
 def test_api_handler(patch_playground):
     _dummy_api = DummyPlaygroundAPI()
-    _handler = api.PlaygroundEventHandler(_dummy_api)
-    assert _handler.api == _dummy_api
-    assert _handler.connector == _dummy_api.connector
-    assert _handler.handler == dict(
-        errors=_handler.handle_errors,
-        image=_handler.handle_image,
-        service=_handler.handle_service,
-        proxy=_handler.handle_proxy,
-        network=_handler.handle_network)
-    assert _handler.debug == []
 
+    _patch_proxy = patch_playground(
+        'api.handler.PlaygroundProxyEventHandler')
+    _patch_service = patch_playground(
+        'api.handler.PlaygroundServiceEventHandler')
+    _patch_network = patch_playground(
+        'api.handler.PlaygroundNetworkEventHandler')
 
-HANDLER_CONTAINER_METHODS = (
-    'proxy',
-    'service')
-
-
-@pytest.mark.parametrize("arg", HANDLER_CONTAINER_METHODS)
-@pytest.mark.asyncio
-async def test_api_handler_proxy(patch_playground, arg):
-    target = '_handle_container'
-    method = f'handle_{arg}'
-
-    _dummy_api = DummyPlaygroundAPI()
-    _handler = api.PlaygroundEventHandler(_dummy_api)
-    _handler_patch = patch_playground(
-        f'api.handler.PlaygroundEventHandler.{target}')
-    _event = DummyEvent()
-    with _handler_patch as m_handler:
-        await getattr(_handler, method).__wrapped__(_handler, _event)
-        assert (
-            list(m_handler.call_args)
-            == [(arg, _event), {}])
+    with _patch_proxy as m_proxy:
+        with _patch_service as m_service:
+            with _patch_network as m_network:
+                _handler = api.PlaygroundEventHandler(_dummy_api)
+                assert _handler.api == _dummy_api
+                assert _handler.connector == _dummy_api.connector
+                assert (
+                    list(m_proxy.call_args)
+                    == [(_handler, ), {}])
+                assert (
+                    list(m_network.call_args)
+                    == [(_handler, ), {}])
+                assert (
+                    list(m_service.call_args)
+                    == [(_handler, ), {}])
+                assert _handler.handler == dict(
+                    errors=_handler.handle_errors,
+                    image=_handler.handle_image,
+                    service=_handler.service.handle,
+                    proxy=_handler.proxy.handle,
+                    network=_handler.network.handle)
+                assert _handler.debug == []
