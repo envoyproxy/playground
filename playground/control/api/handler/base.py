@@ -21,6 +21,9 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
             event: PlaygroundEvent) -> None:
         await self._handle(event)
 
+    async def publish(self, data):
+        raise NotImplementedError
+
     async def _handle(
             self,
             event: PlaygroundEvent) -> None:
@@ -47,7 +50,8 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
         try:
             # todo: think of a way to not try to fetch logs when container
             #   has been killed intentionally
-            container = await self.handler.connector.get_container(event.data.id)
+            container = await self.handler.connector.get_container(
+                event.data.id)
             logs = await container.log(stdout=True, stderr=True)
             await container.delete(force=True, v=True)
         except DockerError:
@@ -64,7 +68,8 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
         if 'envoy.playground.proxy' in event.data.attributes:
             # todo: move this outta here
             ports = container['HostConfig']['PortBindings'] or {}
-            to_publish['image'] = self.handler.connector.proxies._get_image_name(
+            proxies = self.handler.connector.proxies
+            to_publish['image'] = proxies._get_image_name(
                 event.data.attributes['image'])
             ports = container['HostConfig']['PortBindings'] or {}
             for container_port, mappings in ports.items():

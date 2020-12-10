@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from aiodocker.exceptions import DockerError
-
 from playground.control.api.handler.network import (
     PlaygroundNetworkEventHandler)
 from playground.control.api.handler.proxy import (

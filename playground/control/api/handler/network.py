@@ -5,6 +5,7 @@ from playground.control.attribs import NetworkEventAttribs
 from playground.control.decorators import handler, method_decorator
 from playground.control.event import PlaygroundEvent
 
+
 class PlaygroundNetworkEventHandler(BasePlaygroundEventHandler):
 
     @method_decorator(handler(attribs=NetworkEventAttribs))
