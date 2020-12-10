@@ -1,8 +1,6 @@
 
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
-import rapidjson as json
-
 import pytest
 
 from playground.control import api, request
