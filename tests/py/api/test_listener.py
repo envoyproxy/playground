@@ -120,7 +120,7 @@ async def test_api_methods(patch_playground, method, command):
     _request = DummyRequest()
 
     with _patch_attr as m_attr:
-        response = await getattr(_api, method).__wrapped__(_api, _request)
+        await getattr(_api, method).__wrapped__(_api, _request)
         assert (
             list(_request._validate.call_args)
             == [(_api,), {}])
@@ -139,7 +139,6 @@ async def test_api_service_add(patch_playground):
     _api.connector.services.create = AsyncMock()
     _target = _api.connector.services.create
     type(_api).services = PropertyMock()
-    _patch_resp = patch_playground('api.listener.web.json_response')
     _patch_attr = patch_playground('api.listener.attr')
     _request = DummyRequest()
 
