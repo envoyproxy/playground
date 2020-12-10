@@ -22,6 +22,7 @@ export default class Header extends React.PureComponent {
         return (
             <PlaygroundPageNav
               tag="header"
+              className="border-bottom border-dark"
               navs={this.navs} />
         );
     }

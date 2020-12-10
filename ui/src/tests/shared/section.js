@@ -15,10 +15,10 @@ test('PlaygroundSection render', () => {
         </PlaygroundSection>);
     expect(section.text()).toEqual('TITLEFOOBAR');
     const _section = section.find('section');
-    expect(_section.props().className).toEqual('control-pane');
+    expect(_section.props().className).toEqual('control-pane border-light border-top');
     const header = _section.find('header');
     expect(header.props().className).toEqual(
-        'pt-1 pb-1 bg-dark border-top border-bottom');
+        'pt-1 pb-1 bg-dark border-dark border-bottom');
     const img = header.props().children[0];
     expect(img.props).toEqual(
         {"alt": "TITLE",

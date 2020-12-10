@@ -15,6 +15,7 @@ test('Header render', () => {
     const nav = header.find(PlaygroundPageNav);
     expect(nav.props()).toEqual({
         navs: header.instance().navs,
+        className: "border-bottom border-dark",
         tag: 'header'});
     expect(header.instance().navs.length).toEqual(3);
     expect(header.instance().navs[0][0]).toEqual(8);

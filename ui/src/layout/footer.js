@@ -11,14 +11,15 @@ export default class Footer extends React.PureComponent {
 
     get navs () {
         return [
-            [9, ''],
-            [3, <PlaygroundRepository />]];
+            [7, ''],
+            [5, <PlaygroundRepository />]];
     }
 
     render () {
         return (
             <PlaygroundPageNav
               tag="footer"
+              className="border-top text-right"
               navs={this.navs} />
         );
     }

@@ -26,7 +26,7 @@ export class Layout extends React.PureComponent {
     render () {
         return  (
             <div className="container-fluid">
-              <Row className="p-0 App-header">
+              <Row className="p-0 App-header border-top border-light">
                 <Header />
               </Row>
               <Row className="p-0">

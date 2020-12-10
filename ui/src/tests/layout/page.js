@@ -84,7 +84,7 @@ test('Layout render', () => {
     expect(div.props().className).toEqual('container-fluid');
     const rows = div.find(Row);
 
-    expect(rows.at(0).props().className).toEqual('p-0 App-header');
+    expect(rows.at(0).props().className).toEqual('p-0 App-header border-top border-light');
     const header = rows.at(0).find(Header);
     expect(header.props()).toEqual({});
 
