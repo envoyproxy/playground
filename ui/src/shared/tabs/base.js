@@ -9,7 +9,6 @@ import classnames from 'classnames';
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 
 import {updateUI} from '../../app/store';
-import {AlertValidation} from '../alerts';
 
 
 export class PlaygroundTabNavs extends React.PureComponent {
