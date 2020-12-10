@@ -19,6 +19,7 @@ export class BaseNetworkConnectionsForm extends React.PureComponent {
         form: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
         type: PropTypes.string.isRequired,
+        messages: PropTypes.array.isRequired,
     });
 
     onChange = async (evt) => {

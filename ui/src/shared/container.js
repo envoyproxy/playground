@@ -15,6 +15,7 @@ export class ContainerStarting extends React.PureComponent {
         icon: PropTypes.string.isRequired,
         iconAlt: PropTypes.string.isRequired,
         message: PropTypes.object.isRequired,
+        progress: PropTypes.number,
     });
 
     render () {

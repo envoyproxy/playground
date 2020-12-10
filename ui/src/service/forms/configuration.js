@@ -60,6 +60,7 @@ export class ServiceConfigurationForm extends React.PureComponent {
     render () {
         const {form} = this.props;
         const {configuration='', errors} = form;
+        const {configuration: configErrors=[]} =  errors;
         return (
             <PlaygroundEditor
               title="Configuration"
@@ -68,7 +69,7 @@ export class ServiceConfigurationForm extends React.PureComponent {
               clearConfig={this.clearConfig}
               onChange={this.onConfigChange}
               onHighlight={this.onHighlight}
-              errors={errors}
+              errors={configErrors}
             />
         );
     }

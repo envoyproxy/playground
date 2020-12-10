@@ -43,7 +43,9 @@ export class PlaygroundFieldListItem extends React.PureComponent {
     static propTypes = exact({
         item: PropTypes.array.isRequired,
         headers: PropTypes.array.isRequired,
-        name: PropTypes.string.isRequired,
+        name: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number]).isRequired,
         onDelete: PropTypes.func,
     });
 

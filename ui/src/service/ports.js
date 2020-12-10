@@ -12,7 +12,9 @@ import {PlaygroundFieldList} from '../shared/forms/fields/list';
 export class ServicePortsFieldList extends React.PureComponent {
     static propTypes = exact({
         labels: PropTypes.object.isRequired,
-        ports: PropTypes.array.isRequired,
+        ports: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number]).isRequired,
     });
 
     get headers () {

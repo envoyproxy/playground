@@ -12,7 +12,6 @@ export class PlaygroundInput extends React.PureComponent {
         onChange: PropTypes.func.isRequired,
         type: PropTypes.string,
         id: PropTypes.string,
-        disabled: PropTypes.bool,
         errors: PropTypes.object,
     };
 

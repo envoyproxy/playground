@@ -65,6 +65,7 @@ export class ModalParts extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        ui: PropTypes.object.isRequired,
         modal: PropTypes.elementType.isRequired,
         action: PropTypes.string.isRequired,
         title: PropTypes.func.isRequired,
@@ -83,7 +84,7 @@ export class ModalParts extends React.PureComponent {
 
     close = (e) => {
         const {dispatch, ui} = this.props;
-        const {modal, ...tabs} = ui.tabs;
+        const {modal, ...tabs} = ui.tabs || {};
         dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }
@@ -158,7 +159,7 @@ export class BaseModalWidget extends React.PureComponent {
 
     close = (e) => {
         const {dispatch, ui} = this.props;
-        const {modal, ...tabs} = ui.tabs;
+        const {modal, ...tabs} = ui.tabs || {};
         dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }
@@ -213,20 +214,21 @@ export class BasePlaygroundFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
-        success: PropTypes.object.isRequired,
-        messages: PropTypes.array.isRequired,
+        success: PropTypes.string.isRequired,
+        messages: PropTypes.object.isRequired,
         tabs: PropTypes.object.isRequired,
-        icon: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
         ui: PropTypes.object.isRequired,
         iconAlt: PropTypes.string,
         fail: PropTypes.array,
         failMessage: PropTypes.string,
+
+        icon: PropTypes.string,
+        type: PropTypes.string,
     });
 
     closeModal = () => {
         const {dispatch, ui} = this.props;
-        const {modal, ...tabs} = ui.tabs;
+        const {modal, ...tabs} = ui.tabs || {};
         dispatch(updateUI({modal: null, tabs}));
         dispatch(clearForm());
     }

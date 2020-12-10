@@ -17,6 +17,7 @@ export class BasePlaygroundTabs extends React.PureComponent {
         tabs: PropTypes.object.isRequired,
         ui: PropTypes.object.isRequired,
         name: PropTypes.string.isRequired,
+        dispatch: PropTypes.func.isRequired,
     });
 
     toggle = (tab) => {

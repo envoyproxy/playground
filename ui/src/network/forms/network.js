@@ -44,7 +44,6 @@ class BaseNetworkForm extends React.PureComponent {
                       placeholder="Enter network name"
                       errors={errors}
                       value={name}
-                      disabled={edit}
                       meta={meta}
                       taken={Object.keys(networks)}
                       onChange={this.onNameChange} />

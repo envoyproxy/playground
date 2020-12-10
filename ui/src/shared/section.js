@@ -9,7 +9,9 @@ export class PlaygroundSection extends React.PureComponent {
         children: PropTypes.oneOfType([
             PropTypes.array,
             PropTypes.object]).isRequired,
-        title: PropTypes.string.isRequired,
+        title: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.string]).isRequired,
         icon: PropTypes.string.isRequired,
     });
 

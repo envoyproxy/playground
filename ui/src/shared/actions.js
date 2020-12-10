@@ -143,7 +143,7 @@ export class ActionRemove extends React.Component {
         name: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number,
-        ]).isRequired,
+        ]),
     };
 
     state = {clicked: false};

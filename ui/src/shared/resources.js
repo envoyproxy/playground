@@ -17,7 +17,7 @@ class ResourceInfoItem extends React.PureComponent {
             PropTypes.string,
             PropTypes.object,
             PropTypes.array,
-        ]).isRequired,
+        ]),
         even: PropTypes.bool.isRequired,
         handleItem: PropTypes.func.isRequired,
     })
