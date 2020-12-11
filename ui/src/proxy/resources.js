@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import EnvoyLogo from '../app/images/envoy.svg';
-import {connect} from '../app';
+import {connect} from '../app/store';
 import APIResources from '../shared/resources';
 import {ProxyFormModal} from './modals';
 

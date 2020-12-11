@@ -2,8 +2,6 @@
 import React from 'react';
 import exact from 'prop-types-exact';
 
-import {connect as _connect} from 'react-redux';
-
 import {Provider} from 'react-redux';
 
 import {ShortcutProvider} from 'react-keybind';
@@ -20,15 +18,6 @@ import store from "./store";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/prism.css';
 import './css/app.css';
-
-export const connect = (mapStateToProps, mapDispatchToProps) => (ReactComponent) => {
-    const connected = _connect(
-        mapStateToProps,
-        mapDispatchToProps)(ReactComponent);
-    connected._stateMapper = mapStateToProps;
-    connected._dispatchMapper = mapDispatchToProps;
-    return connected;
-};
 
 export class PlaygroundApp extends React.Component {
     static propTypes = exact({});
