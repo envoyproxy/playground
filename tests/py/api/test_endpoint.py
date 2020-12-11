@@ -206,7 +206,8 @@ async def test_api_publish_methods(patch_playground, resource):
         new_callable=AsyncMock)
 
     with _patch_publish as m_publish:
-        await _api.publish_network.__wrapped__(_api, event)
+        target = getattr(_api, f'publish_{resource}')
+        await target.__wrapped__(_api, event)
         assert (
             list(m_publish.call_args)
-            == [('network', event._data), {}])
+            == [(resource, event._data), {}])
