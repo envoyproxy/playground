@@ -1,6 +1,8 @@
 
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
+import rapidjson as json  # type: ignore
+
 import pytest
 
 from playground.control import api, event, request
@@ -208,3 +210,39 @@ async def test_api_publish_methods(patch_playground, resource):
         assert (
             list(m_publish.call_args)
             == [(resource, event._data), {}])
+
+
+@pytest.mark.asyncio
+async def test_api_dunder_publish(patch_playground):
+    _api = DummyPlaygroundAPI()
+    data = ValidatingAttribs('asdf')
+
+    _patch_publish = patch_playground(
+        'api.endpoint.PlaygroundAPI.publish',
+        new_callable=AsyncMock)
+    _patch_attr = patch_playground(
+        'api.endpoint.attr')
+
+    with _patch_publish as m_publish:
+        with _patch_attr as m_attr:
+            await _api._publish('TYPE', data)
+            assert (
+                list(m_publish.call_args)
+                == [(m_attr.asdict.return_value, ), {}])
+            assert (
+                list(m_attr.asdict.call_args)
+                == [(data, ), {}])
+
+
+@pytest.mark.asyncio
+async def test_api_publish(patch_playground):
+    _api = DummyPlaygroundAPI()
+    event = dict(THIS='did', HAPPEN='honest')
+    _api._sockets = [AsyncMock(), AsyncMock(), AsyncMock()]
+    await _api.publish(event)
+
+    for socket in _api._sockets:
+        assert (
+            list(socket.send_json.call_args)
+            == [({'THIS': 'did', 'HAPPEN': 'honest'},),
+                {'dumps': json.dumps}])
