@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from aiodocker import DockerError
-
 from playground.control.event import PlaygroundEvent
 
 
