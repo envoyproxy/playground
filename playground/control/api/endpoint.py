@@ -74,7 +74,7 @@ class PlaygroundAPI(object):
             self.unsubscribe(ws)
 
     async def listen(self, app: web.Application) -> None:
-        self.handler.subscribe()
+        self.handler.subscribe(self.connector)
 
     def subscribe(self, ws: web.WebSocketResponse) -> None:
         self._sockets.append(ws)

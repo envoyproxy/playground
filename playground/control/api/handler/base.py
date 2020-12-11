@@ -5,8 +5,9 @@ from playground.control.event import PlaygroundEvent
 
 class BasePlaygroundEventHandler(object):
 
-    def __init__(self, handler):
-        self.handler = handler
+    # api: PlaygroundAPI
+    def __init__(self, api):
+        self.api = api
 
 
 class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):

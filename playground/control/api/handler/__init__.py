@@ -15,10 +15,9 @@ class PlaygroundEventHandler(object):
 
     def __init__(self, api):
         self.api = api
-        self.connector = api.connector
-        self.network = PlaygroundNetworkEventHandler(self)
-        self.proxy = PlaygroundProxyEventHandler(self)
-        self.service = PlaygroundServiceEventHandler(self)
+        self.network = PlaygroundNetworkEventHandler(api)
+        self.proxy = PlaygroundProxyEventHandler(api)
+        self.service = PlaygroundServiceEventHandler(api)
         self.handler = dict(
             errors=self.handle_errors,
             image=self.handle_image,
@@ -44,5 +43,5 @@ class PlaygroundEventHandler(object):
                      image=event.data.image,
                      status=event.data.action))
 
-    def subscribe(self):
-        self.connector.subscribe(self.handler, debug=self.debug)
+    def subscribe(self, connector):
+        connector.subscribe(self.handler, debug=self.debug)
