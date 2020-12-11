@@ -27,6 +27,7 @@ __all__ = (
     'NetworkTransmitAttribs',
     'ProxyAddAttribs',
     'ProxyCreateCommandAttribs',
+    'ProxyTransmitAttribs',
     'ServiceAddAttribs',
     'ServiceCreateCommandAttribs',
     'ServiceTransmitAttribs',
