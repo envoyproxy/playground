@@ -3,7 +3,8 @@ from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
 import pytest
 
-from playground.control import api, request
+from playground.control import api, event, request
+from playground.control.attribs import ValidatingAttribs
 from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
@@ -26,6 +27,15 @@ class DummyPlaygroundAPI(api.PlaygroundAPI):
 
 
 class DummyRequest(request.PlaygroundRequest):
+
+    def __init__(self):
+        self._validate = MagicMock()
+
+    async def validate(self, _api):
+        self._valid_data = self._validate(_api)
+
+
+class DummyEvent(event.PlaygroundEvent):
 
     def __init__(self):
         self._validate = MagicMock()
@@ -182,3 +192,21 @@ async def test_api_service_add(patch_playground):
         assert (
             list(_target.call_args)
             == [(m_attr.asdict.return_value,), {}])
+
+
+@pytest.mark.parametrize("resource", ['network', 'service', 'proxy'])
+@pytest.mark.asyncio
+async def test_api_publish_methods(patch_playground, resource):
+    _api = DummyPlaygroundAPI()
+    event = DummyEvent()
+    event._data = ValidatingAttribs('asdf')
+
+    _patch_publish = patch_playground(
+        'api.endpoint.PlaygroundAPI._publish',
+        new_callable=AsyncMock)
+
+    with _patch_publish as m_publish:
+        await _api.publish_network.__wrapped__(_api, event)
+        assert (
+            list(m_publish.call_args)
+            == [('network', event._data), {}])
