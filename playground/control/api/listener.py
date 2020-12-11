@@ -98,7 +98,8 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
-        await self.connector.proxies.create(attr.asdict(request.data))
+        _data = attr.asdict(request.data)
+        await self.connector.proxies.create(_data)
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> None:
@@ -115,9 +116,23 @@ class PlaygroundAPI(object):
     # todo: add publish decorator
     async def publish_network(
             self,
-            event: dict) -> None:
-        event['type'] = "network"
-        await self.publish(event)
+            data: dict) -> None:
+        data['type'] = "network"
+        await self.publish(data)
+
+    # todo: add publish decorator
+    async def publish_proxy(
+            self,
+            data: dict) -> None:
+        data['type'] = "proxy"
+        await self.publish(data)
+
+    # todo: add publish decorator
+    async def publish_service(
+            self,
+            data: dict) -> None:
+        data['type'] = "service"
+        await self.publish(data)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> None:
