@@ -12,13 +12,15 @@ from aiohttp import web
 from playground.control.attribs import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
     ProxyAddAttribs, ContainerDeleteAttribs,
-    ServiceAddAttribs)
+    ServiceAddAttribs, ServiceTransmitAttribs,
+    ProxyTransmitAttribs, NetworkTransmitAttribs)
 from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
     MAX_NETWORK_CONNECTIONS)
 from playground.control.connectors.docker.client import PlaygroundDockerClient
-from playground.control.decorators import api, method_decorator
+from playground.control.decorators import api, transmit, method_decorator
+from playground.control.event import PlaygroundEvent
 from playground.control.request import PlaygroundRequest
 from playground.control.api.handler import PlaygroundEventHandler
 from playground.control.services import PlaygroundServiceDiscovery
@@ -113,26 +115,29 @@ class PlaygroundAPI(object):
         for socket in self._sockets:
             await socket.send_json(event, dumps=json.dumps)
 
-    # todo: add publish decorator
+    @method_decorator(transmit(attribs=NetworkTransmitAttribs))
     async def publish_network(
             self,
-            data: dict) -> None:
-        data['type'] = "network"
-        await self.publish(data)
+            event: PlaygroundEvent) -> None:
+        _data = attr.asdict(event.data)
+        _data['type'] = "network"
+        await self.publish(_data)
 
-    # todo: add publish decorator
+    @method_decorator(transmit(attribs=ProxyTransmitAttribs))
     async def publish_proxy(
             self,
-            data: dict) -> None:
-        data['type'] = "proxy"
-        await self.publish(data)
+            event: PlaygroundEvent) -> None:
+        _data = attr.asdict(event.data)
+        _data['type'] = "proxy"
+        await self.publish(_data)
 
-    # todo: add publish decorator
+    @method_decorator(transmit(attribs=ServiceTransmitAttribs))
     async def publish_service(
             self,
-            data: dict) -> None:
-        data['type'] = "service"
-        await self.publish(data)
+            event: PlaygroundEvent) -> None:
+        _data = attr.asdict(event.data)
+        _data['type'] = "service"
+        await self.publish(_data)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> None:
