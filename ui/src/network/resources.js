@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import APIResources from '../shared/resources';
 import CloudLogo from '../app/images/cloud.svg';
-import {connect} from '../app/store';
+import {connect} from '../app';
+import APIResources from '../shared/resources';
 import {NetworkFormModal} from './modals';
 
 

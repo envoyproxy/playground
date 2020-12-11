@@ -1,6 +1,5 @@
 
 import {combineReducers} from 'redux';
-import {connect as _connect} from 'react-redux';
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 import {staticAddress} from '../app/constants';
@@ -502,15 +501,3 @@ const store = configureStore({
 });
 
 export default store;
-
-
-const connect = (mapStateToProps, mapDispatchToProps) => (ReactComponent) => {
-    const connected = _connect(
-        mapStateToProps,
-        mapDispatchToProps)(ReactComponent);
-    connected._stateMapper = mapStateToProps;
-    connected._dispatchMapper = mapDispatchToProps;
-    return connected;
-};
-
-export {connect};

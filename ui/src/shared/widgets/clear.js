@@ -1,19 +1,14 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
-
-import {connect} from 'react-redux';
 
 import {ActionClear} from '../actions';
 import {PlaygroundContext} from '../../app';
 
 
-export class BasePlaygroundClearWidget extends React.PureComponent {
+export default class PlaygroundClearWidget extends React.PureComponent {
     static contextType = PlaygroundContext;
-    static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
-    });
+    static propTypes = exact({});
 
     render () {
         const {api} = this.context;
@@ -25,10 +20,3 @@ export class BasePlaygroundClearWidget extends React.PureComponent {
         );
     }
 }
-
-
-export const mapStateToProps = function(state) {
-    return {};
-};
-
-export default connect(mapStateToProps)(BasePlaygroundClearWidget);
