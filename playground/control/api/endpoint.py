@@ -100,8 +100,7 @@ class PlaygroundAPI(object):
     @method_decorator(api(attribs=ProxyAddAttribs))
     async def proxy_add(self, request: PlaygroundRequest) -> None:
         await request.validate(self)
-        _data = attr.asdict(request.data)
-        await self.connector.proxies.create(_data)
+        await self.connector.proxies.create(attr.asdict(request.data))
 
     @method_decorator(api(attribs=ContainerDeleteAttribs))
     async def proxy_delete(self, request: PlaygroundRequest) -> None:
@@ -115,29 +114,28 @@ class PlaygroundAPI(object):
         for socket in self._sockets:
             await socket.send_json(event, dumps=json.dumps)
 
+    async def _publish(self, kind, data):
+        _data = attr.asdict(data)
+        _data['type'] = kind
+        await self.publish(_data)
+
     @method_decorator(transmit(attribs=NetworkTransmitAttribs))
     async def publish_network(
             self,
             event: PlaygroundEvent) -> None:
-        _data = attr.asdict(event.data)
-        _data['type'] = "network"
-        await self.publish(_data)
+        return await self._publish('network', event.data)
 
     @method_decorator(transmit(attribs=ProxyTransmitAttribs))
     async def publish_proxy(
             self,
             event: PlaygroundEvent) -> None:
-        _data = attr.asdict(event.data)
-        _data['type'] = "proxy"
-        await self.publish(_data)
+        return await self._publish('proxy', event.data)
 
     @method_decorator(transmit(attribs=ServiceTransmitAttribs))
     async def publish_service(
             self,
             event: PlaygroundEvent) -> None:
-        _data = attr.asdict(event.data)
-        _data['type'] = "service"
-        await self.publish(_data)
+        return await self._publish('service', event.data)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> None:
