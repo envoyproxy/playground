@@ -17,7 +17,7 @@ Open the playground.
     :align: right
     :class: screenshot
 
-Click to create a proxy (or ``ctrl``+``alt``+``p``)
+Click to create a proxy (or ``ctrl+alt+p``)
 
 ..  figure:: ../_static/screenshots/proxy-create-name.png
     :figwidth: 400px
