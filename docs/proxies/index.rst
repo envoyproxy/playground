@@ -4,31 +4,44 @@ Envoy proxies
 
 Envoy proxies provide the only way into your playground cloud network.
 
+Open the playground
+-------------------
 
 ..  figure:: ../_static/screenshots/home.png
     :figwidth: 400px
     :align: right
     :class: screenshot
 
-Open the playground.
+Open the playground, and click on the green ``+`` next to "Proxies".
+
+This should open the proxy create dialogue.
+
+.. tip::
+
+   You can use ``ctrl+alt+p`` to open the create new proxy dialogue.
+
+
+Enter the proxy name
+--------------------
 
 ..  figure:: ../_static/screenshots/proxy-create.png
     :figwidth: 400px
     :align: right
     :class: screenshot
 
-Click to create a proxy
+Give the proxy a name.
 
-.. tip::
+It should be not too long and not too short, 4 or 5 characters is probably best.
 
-   You can use ``ctrl+alt+p`` to create a new proxy.
+The name should only include the characters a-z, 0-9, ``_``,``-``, and ``.``.
 
 ..  figure:: ../_static/screenshots/proxy-create-name.png
     :figwidth: 400px
     :align: right
     :class: screenshot
 
-Enter a proxy name.
+Add an Envoy configuration
+--------------------------
 
 Once you have added the name, you will be able to configure the proxy.
 
