@@ -3,7 +3,7 @@
 from .base import (
     AttribsWithName, ValidatingAttribs, ContainerDeleteAttribs)
 from .event import (
-    ContainerEventAttribs,
+    ContainerEventAttribs, ProxyEventAttribs, ServiceEventAttribs,
     ImageEventAttribs,
     NetworkEventAttribs, NetworkTransmitAttribs,
     ServiceTransmitAttribs, ProxyTransmitAttribs)
@@ -27,8 +27,10 @@ __all__ = (
     'NetworkTransmitAttribs',
     'ProxyAddAttribs',
     'ProxyCreateCommandAttribs',
+    'ProxyEventAttribs',
     'ProxyTransmitAttribs',
     'ServiceAddAttribs',
     'ServiceCreateCommandAttribs',
+    'ServiceEventAttribs',
     'ServiceTransmitAttribs',
     'ValidatingAttribs')

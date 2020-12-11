@@ -87,6 +87,29 @@ class PlaygroundDockerEvents(object):
 
     async def _handle_container(self, publisher, data):
         data["name"] = data['attributes']["name"].split('__')[3]
+
+        if data['action'] != 'start':
+            await publisher(data)
+            return
+
+        container = await self.connector.get_container(data['id'])
+        port_mappings = []
+        if 'envoy.playground.proxy' in data['attributes']:
+            ports = container['HostConfig']['PortBindings'] or {}
+            data['image'] = self.connector.proxies._get_image_name(
+                data['attributes']['image'])
+            ports = container['HostConfig']['PortBindings'] or {}
+            for container_port, mappings in ports.items():
+                for mapping in mappings:
+                    if mapping['HostPort']:
+                        port_mappings.append(
+                            dict(mapping_from=mapping['HostPort'],
+                                 mapping_to=container_port.split('/')[0]))
+        elif 'envoy.playground.service' in data['attributes']:
+            data['service_type'] = container[
+                'Config']['Labels']['envoy.playground.service.type']
+        if port_mappings:
+            data["port_mappings"] = port_mappings
         await publisher(data)
 
     async def _handle_image(self, publisher, data):
