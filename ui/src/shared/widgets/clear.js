@@ -6,23 +6,25 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import {ActionClear} from '../actions';
+import {PlaygroundContext} from '../../app';
 
 
 export class BasePlaygroundClearWidget extends React.PureComponent {
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
     });
 
     render () {
-        const {dispatch} = this.props;
+        const {api} = this.context;
         return (
             <>
-              <ActionClear dispatch={dispatch} />
+              <ActionClear
+                action={api.clear} />
             </>
         );
     }
 }
-
 
 
 export const mapStateToProps = function(state) {

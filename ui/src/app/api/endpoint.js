@@ -1,5 +1,5 @@
 
-import {updateUI} from "../../app/store";
+import {logEvent, updateUI} from "../../app/store";
 
 import {
     PlaygroundAPIImages, PlaygroundAPINetworks,
@@ -16,6 +16,16 @@ export default class PlaygroundAPI {
         this.service = new PlaygroundAPIServices(this);
         this.proxy = new PlaygroundAPIProxies(this);
     }
+
+    clear = async (data) => {
+        const {store} = this.playground;
+        const {dispatch} = store;
+        await dispatch(logEvent({
+            status: 'clear',
+            name: 'all',
+            type: 'playground'}));
+        await this.get('/clear');
+    };
 
     errors = async (data) => {
         const {store} = this.playground;
