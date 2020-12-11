@@ -22,7 +22,8 @@ class DummyEvent(event.PlaygroundEvent):
 
 @attr.s(kw_only=True)
 class DummyData(object):
-    action = attr.ib(type=str)
+    action = attr.ib(type=str, default='')
+    id = attr.ib(type=str, default='')
 
 
 def test_api_handler(patch_playground):
@@ -88,6 +89,42 @@ async def test_api_network_handler_handle(patch_playground):
         assert (
             list(m_getattr.return_value.call_args)
             == [(event, ), {}])
+
+
+@pytest.mark.parametrize('action', ['connect', 'create', 'disconnect'])
+@pytest.mark.asyncio
+async def test_api_network_handler_connections(patch_playground, action):
+    _dummy_api = DummyPlaygroundAPI()
+    handler = api.handler.PlaygroundNetworkEventHandler(_dummy_api)
+    event = DummyEvent()
+    event._data = DummyData(id='X' * 20)
+    _patch_connect = patch_playground(
+        'api.handler.network.PlaygroundNetworkEventHandler._connection',
+        new_callable=AsyncMock)
+
+    with _patch_connect as m_connect:
+        target = getattr(handler, action)
+        await target(event)
+        assert (
+            list(m_connect.call_args)
+            == [(event, ), {}])
+
+
+@pytest.mark.asyncio
+async def test_api_network_handler_destroy(patch_playground):
+    _dummy_api = DummyPlaygroundAPI()
+    handler = api.handler.PlaygroundNetworkEventHandler(_dummy_api)
+    event = DummyEvent()
+    event._data = DummyData(id='X' * 20)
+    _patch_publish = patch_playground(
+        'api.handler.network.PlaygroundNetworkEventHandler._publish',
+        new_callable=AsyncMock)
+
+    with _patch_publish as m_publish:
+        await handler.destroy(event)
+        assert (
+            list(m_publish.call_args)
+            == [(event, {'id': 'XXXXXXXXXX'}), {}])
 
 
 @pytest.mark.parametrize(
