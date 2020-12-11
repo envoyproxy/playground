@@ -38,10 +38,7 @@ class DummyRequest(request.PlaygroundRequest):
 class DummyEvent(event.PlaygroundEvent):
 
     def __init__(self):
-        self._validate = MagicMock()
-
-    async def validate(self, _api):
-        self._valid_data = self._validate(_api)
+        pass
 
 
 def test_api(patch_playground):
