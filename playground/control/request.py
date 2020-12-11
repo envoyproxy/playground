@@ -26,7 +26,7 @@ class PlaygroundRequest(object):
             if self._attribs
             else None)
 
-    # api: api.listener.PlaygroundAPI
+    # api: api.endpoint.PlaygroundAPI
     async def validate(self, api) -> None:
         if self._data:
             await self._data.validate(api)
