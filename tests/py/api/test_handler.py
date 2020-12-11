@@ -1,7 +1,7 @@
 
 from unittest.mock import MagicMock
 
-from playground.control import api, event
+from playground.control import api
 
 
 class DummyPlaygroundAPI(api.PlaygroundAPI):
