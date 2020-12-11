@@ -52,10 +52,11 @@ services:
     build:
       context: ..
       dockerfile: composition/Dockerfile-in-docker
+    working_dir: /code
     volumes:
-    - ../bin/integration-tests.sh:/usr/local/bin/integration-tests.sh:shared
+    - ../bin/integration:/code/bin
     - ../.cache/integration/docker:/var/lib/docker
-    - ../tests/integration:/tests
+    - ../tests/integration:/code/tests
     - ../tmp/docker:/tmp/docker
 
   integration-start:
