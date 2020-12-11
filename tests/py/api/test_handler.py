@@ -1,5 +1,5 @@
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -192,14 +192,14 @@ async def test_api_network_connection_args(patch_playground):
         await handler._connection(event)
         assert (
             list(m_publish.call_args)
-             == [(event,
-                  {'networks': {
-                      'NAME': {
-                          'name': 'NAME',
-                          'id': 'XXXXXXXXXX',
-                          'containers': ['CONTAINER1', 'CONTAINER2']}},
-                   'proxy': 'PROXY1',
-                   'service': 'SERVICE1'}), {}])
+            == [(event,
+                 {'networks': {
+                     'NAME': {
+                         'name': 'NAME',
+                         'id': 'XXXXXXXXXX',
+                         'containers': ['CONTAINER1', 'CONTAINER2']}},
+                  'proxy': 'PROXY1',
+                  'service': 'SERVICE1'}), {}])
 
 
 @pytest.mark.parametrize(
