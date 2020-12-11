@@ -28,3 +28,8 @@ table.docutils div.line-block {
 .rst-content .sidebar {
   clear: right;
 }
+
+
+.screenshot {
+    clear: both;
+}
