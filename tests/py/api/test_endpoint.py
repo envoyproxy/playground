@@ -35,8 +35,8 @@ class DummyRequest(request.PlaygroundRequest):
 
 
 def test_api(patch_playground):
-    _patch_docker = patch_playground('api.listener.PlaygroundDockerClient')
-    _patch_handler = patch_playground('api.listener.PlaygroundEventHandler')
+    _patch_docker = patch_playground('api.endpoint.PlaygroundDockerClient')
+    _patch_handler = patch_playground('api.endpoint.PlaygroundEventHandler')
 
     with _patch_docker as m_docker:
         with _patch_handler as m_handler:
@@ -106,7 +106,7 @@ async def test_api_methods(patch_playground, method, command):
         _resource, command.split('.')[1],
         AsyncMock(return_value=MagicMock()))
     _target = getattr(_resource, command.split('.')[1])
-    _patch_attr = patch_playground('api.listener.attr')
+    _patch_attr = patch_playground('api.endpoint.attr')
     _request = DummyRequest()
 
     with _patch_attr as m_attr:
@@ -129,7 +129,7 @@ async def test_api_service_add(patch_playground):
     _api.connector.services.create = AsyncMock()
     _target = _api.connector.services.create
     type(_api).services = PropertyMock()
-    _patch_attr = patch_playground('api.listener.attr')
+    _patch_attr = patch_playground('api.endpoint.attr')
     _request = DummyRequest()
 
     with _patch_attr as m_attr:

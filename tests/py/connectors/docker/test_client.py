@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from playground.control.connectors.docker import client
-from playground.control.api.listener import PlaygroundAPI
+from playground.control.api.endpoint import PlaygroundAPI
 
 
 class DummyPlaygroundClient(client.PlaygroundDockerClient):
