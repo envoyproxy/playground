@@ -191,7 +191,14 @@ export class PlaygroundAPIServices extends PlaygroundAPIContainers {
     apiType = 'service'
 
     handle = async (data) => {
-        const {image, name, service_type} = data;
+        let {image, name, service_type} = data;
+        if (!service_type) {
+            const {getState} = this.store;
+            const {value: form} = getState().form;
+            const {value: service_types} = getState().service_type;
+            service_type = form.service_type;
+            image = service_types[service_type].image;
+        }
         const _updateServices = (services) => {
             services[name].service_type = service_type;
             services[name].image = image;
