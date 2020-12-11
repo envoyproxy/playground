@@ -138,6 +138,41 @@ def handler(
     return _handler
 
 
+def transmit(
+        original_fun: Callable = None,
+        attribs: Optional[Type[ValidatingAttribs]] = None) -> Callable:
+
+    def _publish(fun: Callable) -> Callable:
+
+        @wraps(fun)
+        async def wrapped_fun(kwargs: dict = {}) -> None:
+            event = PlaygroundEvent(
+                kwargs,
+                attribs=attribs)
+            if attribs:
+                # todo: improve error handling
+                try:
+                    await event.load_data()
+                except (TypeError, ValueError) as e:
+                    if len(e.args) > 1:
+                        errors = json.dumps(
+                            dict(errors={e.args[1].name: e.args[0]}))
+                    else:
+                        errors = json.dumps(
+                            dict(errors={'playground': e.args[0]}))
+                    raise PlaygroundValidationError(errors)
+            return await (
+                fun(event)
+                if kwargs
+                else fun())
+        return wrapped_fun
+
+    if original_fun:
+        return _publish(original_fun)
+
+    return _publish
+
+
 # Method decoration taken from the django project
 def _update_method_wrapper(_wrapper, decorator):
     # _multi_decorate()'s bound_method isn't available in this scope. Cheat by

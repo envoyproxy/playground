@@ -5,7 +5,8 @@ from .base import (
 from .event import (
     ContainerEventAttribs,
     ImageEventAttribs,
-    NetworkEventAttribs)
+    NetworkEventAttribs, NetworkTransmitAttribs,
+    ServiceTransmitAttribs, ProxyTransmitAttribs)
 from .network import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs)
 from .proxy import (
@@ -23,8 +24,11 @@ __all__ = (
     'NetworkDeleteAttribs',
     'NetworkEditAttribs',
     'NetworkEventAttribs',
+    'NetworkTransmitAttribs',
     'ProxyAddAttribs',
     'ProxyCreateCommandAttribs',
+    'ProxyTransmitAttribs',
     'ServiceAddAttribs',
     'ServiceCreateCommandAttribs',
+    'ServiceTransmitAttribs',
     'ValidatingAttribs')
