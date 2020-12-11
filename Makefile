@@ -74,8 +74,9 @@ test:
 integration-test:
 	mkdir -p tmp/docker
 	docker save envoy-playground | gzip > tmp/docker/playground.tar.gz
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose stop integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration integration-tests.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 dev-integration: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
