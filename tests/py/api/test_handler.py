@@ -6,7 +6,6 @@ import pytest
 import attr
 
 from playground.control import api, event
-from playground.control.attribs import ValidatingAttribs
 
 
 class DummyPlaygroundAPI(api.PlaygroundAPI):
