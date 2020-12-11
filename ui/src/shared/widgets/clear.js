@@ -1,6 +1,5 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {ActionClear} from '../actions';
@@ -14,10 +13,8 @@ export default class PlaygroundClearWidget extends React.PureComponent {
     render () {
         const {api} = this.context;
         return (
-            <>
-              <ActionClear
+            <ActionClear
                 action={api.clear} />
-            </>
         );
     }
 }
