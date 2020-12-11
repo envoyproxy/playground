@@ -5,8 +5,30 @@ Envoy proxies
 Envoy proxies provide the only way into your playground cloud network.
 
 
-.. image:: ../_static/screenshots/home.png
+..  figure:: ../_static/screenshots/home.png
+    :figwidth: 200px
+    :align: right
+    :class: screenshot
 
-.. image:: ../_static/screenshots/proxy-create.png
+Open the playground.
 
-.. image:: ../_static/screenshots/proxy-create-name.png
+
+..  figure:: ../_static/screenshots/proxy-create.png
+    :figwidth: 200px
+    :align: right
+    :class: screenshot
+
+Click to create a proxy (or ``ctrl``+``alt``+``p``)
+
+..  figure:: ../_static/screenshots/proxy-create-name.png
+    :figwidth: 200px
+    :align: right
+    :class: screenshot
+
+Enter a proxy name.
+
+Once you have added the name, you will be able to configure the proxy.
+
+At a mimimum you will need to provide an Envoy configuration.
+
+A number of examples have been provided to work with the pre-installed services.
