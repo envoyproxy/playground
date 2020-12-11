@@ -197,7 +197,9 @@ export class PlaygroundAPIServices extends PlaygroundAPIContainers {
             const {value: form} = getState().form;
             const {value: service_types} = getState().service_type;
             service_type = form.service_type;
-            image = service_types[service_type].image;
+            if (service_type) {
+                image = service_types[service_type].image;
+            }
         }
         const _updateServices = (services) => {
             services[name].service_type = service_type;
