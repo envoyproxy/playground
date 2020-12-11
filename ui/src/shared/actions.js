@@ -5,7 +5,7 @@ import classnames from 'classnames';
 
 import {Badge} from 'reactstrap';
 
-import {logEvent, updateUI} from '../app/store';
+import {updateUI} from '../app/store';
 
 
 export class ActionExport extends React.PureComponent {
@@ -145,24 +145,15 @@ export class ActionEdit extends React.PureComponent {
 
 export class ActionClear extends React.PureComponent {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired,
-    };
-
-    clear = async () => {
-        const {dispatch} = this.props;
-        await dispatch(logEvent({
-            status: 'clear',
-            name: 'all',
-            type: 'playground'}));
-        await this.context.api.get('/clear');
+        action: PropTypes.func.isRequired
     };
 
     render () {
-        const {className, color='secondary', ...props} = this.props;
+        const {action, className, color='secondary', ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={this.clear}
+              onClick={action}
               color={color}
               href="#"
               className={classnames({'float-right': true, 'mb-1': true, 'mt-1': true}, className)}

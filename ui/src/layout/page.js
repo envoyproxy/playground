@@ -22,6 +22,7 @@ export {Header, Left, Right, Content, Footer};
 
 
 export class Layout extends React.PureComponent {
+    static propTypes = exact({});
 
     render () {
         return  (
@@ -50,10 +51,6 @@ export class Layout extends React.PureComponent {
 
 export class BasePage extends React.PureComponent {
     static contextType = PlaygroundContext;
-    static contextTypes = {
-        api:  PropTypes.object.isRequired,
-        modals: PropTypes.object.isRequired,
-        toast: PropTypes.object.isRequired};
     static propTypes = exact({
         shortcut: PropTypes.object.isRequired,
     });

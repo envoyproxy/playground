@@ -1,4 +1,6 @@
 
+import PropTypes from 'prop-types';
+
 import {shallow} from "enzyme";
 
 import {Col, Row} from 'reactstrap';
@@ -13,6 +15,11 @@ import {
 import ModalWidget from "../../shared/modal";
 import ToastWidget, {FailToast} from "../../shared/toast";
 
+
+BasePage.contextTypes = {
+    api:  PropTypes.object.isRequired,
+    modals: PropTypes.object.isRequired,
+    toast: PropTypes.object.isRequired};
 
 
 test('Page is wrapped', () => {

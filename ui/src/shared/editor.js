@@ -99,7 +99,7 @@ export class PlaygroundEditor extends React.Component {
                 <Col sm={2} className="align-text-bottom">
                   <ActionCopy copy={this.copyConfig} />
                   {clearConfig &&
-                   <ActionClear clear={clearConfig} />
+                   <ActionClear action={clearConfig} />
                   }
                 </Col>
               </Row>

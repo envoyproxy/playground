@@ -1,6 +1,6 @@
 
 import PlaygroundAPI from '../../app/api';
-import {updateUI} from '../../app/store';
+import {logEvent, updateUI} from '../../app/store';
 
 jest.mock('../../app/store');
 
@@ -57,4 +57,19 @@ test('api errors', async () => {
     await api.errors({playtime_errors: 'OOPSIE'});
     expect(playground.store.dispatch.mock.calls).toEqual([["UPDATEDUI"]]);
     expect(updateUI.mock.calls).toEqual([[{"errors": "OOPSIE", "toast": "errors"}]]);
+});
+
+
+test('api clear', async () => {
+    const playground = {store: {dispatch: jest.fn(async () => {})}};
+    logEvent.mockImplementation(() => 'LOGGED');
+    const api = new PlaygroundAPI(playground, 'ADDRESS');
+    api.get = jest.fn(async () => {});
+    await api.clear();
+    expect(playground.store.dispatch.mock.calls).toEqual([["LOGGED"]]);
+    expect(api.get.mock.calls).toEqual([["/clear"]]);
+    expect(logEvent.mock.calls).toEqual([[{
+        "name": "all",
+        "type": "playground",
+        "status": "clear"}]]);
 });

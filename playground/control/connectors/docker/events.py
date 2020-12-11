@@ -68,8 +68,8 @@ class PlaygroundDockerEvents(object):
                     break
         event_type = (
             self._get_container_type(data)
-            if event['Type'] == 'container'
-            else event['Type'])
+            if event_type == 'container'
+            else event_type)
         if event_type:
             await _handler(self.publisher[event_type], data)
 
@@ -86,7 +86,10 @@ class PlaygroundDockerEvents(object):
                 "envoy.playground.temp.resource"))
 
     async def _handle_container(self, publisher, data):
-        data["name"] = data['attributes']["name"].split('__')[3]
+        data["name"] = (
+            data['attributes']['name'].split('__')[2]
+            if 'envoy.playground.temp.mount' in data['attributes']
+            else data['attributes']["name"].split('__')[3])
 
         if data['action'] not in ['start', 'die']:
             await publisher(data)
@@ -113,6 +116,7 @@ class PlaygroundDockerEvents(object):
             return
 
         port_mappings = []
+
         if 'envoy.playground.proxy' in data['attributes']:
             ports = container['HostConfig']['PortBindings'] or {}
             data['image'] = self.connector.proxies._get_image_name(

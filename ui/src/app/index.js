@@ -19,7 +19,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/prism.css';
 import './css/app.css';
 
-
 export class PlaygroundApp extends React.Component {
     static propTypes = exact({});
 

@@ -49,12 +49,12 @@ export class BaseNetworkConnectionsForm extends React.PureComponent {
     };
 
     render () {
-        const  {form, networks, type} = this.props;
+        const  {form, messages, networks, type} = this.props;
         const {edit, name} = form;
         const connections = this.props[type];
         return (
             <PlaygroundForm
-              messages={this.messages}>
+              messages={messages}>
               <PlaygroundFormGroup check>
                 {Object.entries(connections).map(([k, v], i) => {
                     let checked  = (form[type] || []).indexOf(k) !== -1;
