@@ -1,18 +1,33 @@
 
 import os
+import time
 
 
 def test_title(selenium):
     selenium.get("http://localhost:8000")
     assert "Envoy" in selenium.title
+    time.sleep(1)
+    selenium.get_screenshot_as_file('/tmp/tests/home.png')
 
 
 def test_open_proxy_modal(selenium):
     selenium.get("http://localhost:8000")
+
+    # open the proxy modal
     selenium.find_elements_by_name('Proxies')[0].click()
+    name_input = selenium.find_elements_by_id('name')[0]
     assert (
-        selenium.find_elements_by_id(
-            'name')[0].get_attribute('placeholder')
+        name_input.get_attribute('placeholder')
         == 'Enter proxy name')
-    selenium.get_screenshot_as_file('foo.png')
-    assert os.path.exists('foo.png')
+    time.sleep(1)
+    selenium.get_screenshot_as_file('/tmp/tests/proxy-create.png')
+
+    # enter name of proxy
+    name_input.send_keys('proxy0')
+    time.sleep(1)
+    selenium.get_screenshot_as_file('/tmp/tests/proxy-create-name.png')
+
+    # select an example configuration
+    name_input.send_keys('proxy0')
+    time.sleep(1)
+    selenium.get_screenshot_as_file('/tmp/tests/proxy-create-name.png')
