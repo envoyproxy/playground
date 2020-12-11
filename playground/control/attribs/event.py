@@ -12,6 +12,19 @@ class ContainerEventAttribs(ValidatingAttribs):
     status = attr.ib(type=str)
     action = attr.ib(type=str)
     attributes = attr.ib(type=dict)
+    logs = attr.ib(type=list, default=[])
+
+
+@attr.s(kw_only=True)
+class ProxyEventAttribs(ContainerEventAttribs):
+    logs = attr.ib(type=list, default=[])
+    port_mappings = attr.ib(type=list, default=[])
+    image = attr.ib(type=str, default='')
+
+
+@attr.s(kw_only=True)
+class ServiceEventAttribs(ContainerEventAttribs):
+    service_type = attr.ib(type=str, default='')
 
 
 @attr.s(kw_only=True)
