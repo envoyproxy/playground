@@ -10,12 +10,6 @@ class DummyPlaygroundAPI(api.PlaygroundAPI):
         self.connector = MagicMock()
 
 
-class DummyEvent(event.PlaygroundEvent):
-
-    def __init__(self):
-        pass
-
-
 def test_api_handler(patch_playground):
     _dummy_api = DummyPlaygroundAPI()
 
