@@ -1,9 +1,12 @@
 
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
+import rapidjson as json  # type: ignore
+
 import pytest
 
-from playground.control import api, request
+from playground.control import api, event, request
+from playground.control.attribs import ValidatingAttribs
 from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
@@ -32,6 +35,12 @@ class DummyRequest(request.PlaygroundRequest):
 
     async def validate(self, _api):
         self._valid_data = self._validate(_api)
+
+
+class DummyEvent(event.PlaygroundEvent):
+
+    def __init__(self):
+        pass
 
 
 def test_api(patch_playground):
@@ -182,3 +191,58 @@ async def test_api_service_add(patch_playground):
         assert (
             list(_target.call_args)
             == [(m_attr.asdict.return_value,), {}])
+
+
+@pytest.mark.parametrize("resource", ['network', 'service', 'proxy'])
+@pytest.mark.asyncio
+async def test_api_publish_methods(patch_playground, resource):
+    _api = DummyPlaygroundAPI()
+    event = DummyEvent()
+    event._data = ValidatingAttribs('asdf')
+
+    _patch_publish = patch_playground(
+        'api.endpoint.PlaygroundAPI._publish',
+        new_callable=AsyncMock)
+
+    with _patch_publish as m_publish:
+        target = getattr(_api, f'publish_{resource}')
+        await target.__wrapped__(_api, event)
+        assert (
+            list(m_publish.call_args)
+            == [(resource, event._data), {}])
+
+
+@pytest.mark.asyncio
+async def test_api_dunder_publish(patch_playground):
+    _api = DummyPlaygroundAPI()
+    data = ValidatingAttribs('asdf')
+
+    _patch_publish = patch_playground(
+        'api.endpoint.PlaygroundAPI.publish',
+        new_callable=AsyncMock)
+    _patch_attr = patch_playground(
+        'api.endpoint.attr')
+
+    with _patch_publish as m_publish:
+        with _patch_attr as m_attr:
+            await _api._publish('TYPE', data)
+            assert (
+                list(m_publish.call_args)
+                == [(m_attr.asdict.return_value, ), {}])
+            assert (
+                list(m_attr.asdict.call_args)
+                == [(data, ), {}])
+
+
+@pytest.mark.asyncio
+async def test_api_publish(patch_playground):
+    _api = DummyPlaygroundAPI()
+    event = dict(THIS='did', HAPPEN='honest')
+    _api._sockets = [AsyncMock(), AsyncMock(), AsyncMock()]
+    await _api.publish(event)
+
+    for socket in _api._sockets:
+        assert (
+            list(socket.send_json.call_args)
+            == [({'THIS': 'did', 'HAPPEN': 'honest'},),
+                {'dumps': json.dumps}])

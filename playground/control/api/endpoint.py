@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import cached_property
-from typing import Union
+from typing import Type, Union
 
 import attr
 
@@ -13,7 +13,7 @@ from playground.control.attribs import (
     NetworkAddAttribs, NetworkDeleteAttribs, NetworkEditAttribs,
     ProxyAddAttribs, ContainerDeleteAttribs,
     ServiceAddAttribs, ServiceTransmitAttribs,
-    ProxyTransmitAttribs, NetworkTransmitAttribs)
+    ProxyTransmitAttribs, NetworkTransmitAttribs, ValidatingAttribs)
 from playground.control.constants import (
     MIN_NAME_LENGTH, MAX_NAME_LENGTH,
     MIN_CONFIG_LENGTH, MAX_CONFIG_LENGTH,
@@ -74,7 +74,7 @@ class PlaygroundAPI(object):
             self.unsubscribe(ws)
 
     async def listen(self, app: web.Application) -> None:
-        self.handler.subscribe()
+        self.handler.subscribe(self.connector)
 
     def subscribe(self, ws: web.WebSocketResponse) -> None:
         self._sockets.append(ws)
@@ -109,12 +109,15 @@ class PlaygroundAPI(object):
 
     async def publish(
             self,
-            event: dict) -> None:
+            data: dict) -> None:
         # print("PUBLISH", self._sockets, event)
         for socket in self._sockets:
-            await socket.send_json(event, dumps=json.dumps)
+            await socket.send_json(data, dumps=json.dumps)
 
-    async def _publish(self, kind, data):
+    async def _publish(
+            self,
+            kind: str,
+            data: Type[ValidatingAttribs]) -> None:
         _data = attr.asdict(data)
         _data['type'] = kind
         await self.publish(_data)
@@ -123,19 +126,19 @@ class PlaygroundAPI(object):
     async def publish_network(
             self,
             event: PlaygroundEvent) -> None:
-        return await self._publish('network', event.data)
+        await self._publish('network', event.data)
 
     @method_decorator(transmit(attribs=ProxyTransmitAttribs))
     async def publish_proxy(
             self,
             event: PlaygroundEvent) -> None:
-        return await self._publish('proxy', event.data)
+        await self._publish('proxy', event.data)
 
     @method_decorator(transmit(attribs=ServiceTransmitAttribs))
     async def publish_service(
             self,
             event: PlaygroundEvent) -> None:
-        return await self._publish('service', event.data)
+        await self._publish('service', event.data)
 
     @method_decorator(api(attribs=ServiceAddAttribs))
     async def service_add(self, request: PlaygroundRequest) -> None:

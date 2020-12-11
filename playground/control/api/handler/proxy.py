@@ -17,7 +17,7 @@ class PlaygroundProxyEventHandler(PlaygroundContainerEventHandler):
     async def publish(
             self,
             data: dict = None) -> None:
-        await self.handler.api.publish_proxy(data)
+        await self.api.publish_proxy(data)
 
     async def start(
             self,

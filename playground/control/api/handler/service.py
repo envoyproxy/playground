@@ -17,7 +17,7 @@ class PlaygroundServiceEventHandler(PlaygroundContainerEventHandler):
     async def publish(
             self,
             data: dict = None) -> None:
-        await self.handler.api.publish_service(data)
+        await self.api.publish_service(data)
 
     async def start(
             self,

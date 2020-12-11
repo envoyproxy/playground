@@ -12,7 +12,7 @@ class PlaygroundNetworkEventHandler(BasePlaygroundEventHandler):
     async def handle(
             self,
             event: PlaygroundEvent) -> None:
-        await getattr(self, f'{event.data.action}')(event)
+        await getattr(self, event.data.action)(event)
 
     async def connect(
             self,
@@ -45,7 +45,7 @@ class PlaygroundNetworkEventHandler(BasePlaygroundEventHandler):
             action=event.data.action,
             name=event.data.name)
         _event.update(data)
-        await self.handler.api.publish_network(_event)
+        await self.api.publish_network(_event)
 
     async def _connection(self, event):
         _event = dict(
