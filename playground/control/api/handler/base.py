@@ -39,17 +39,9 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
     async def die(
             self,
             event: PlaygroundEvent) -> None:
-        try:
-            # todo: think of a way to not try to fetch logs when container
-            #   has been killed intentionally
-            container = await self.handler.connector.get_container(
-                event.data.id)
-            logs = await container.log(stdout=True, stderr=True)
-            await container.delete(force=True, v=True)
-        except DockerError:
-            # most likely been killed
-            logs = []
-        await self._publish(event, dict(logs=logs))
+        (await self._publish(event, dict(logs=event.data.logs))
+         if event.data.logs
+         else await self._publish(event))
 
     async def volume(
             self,

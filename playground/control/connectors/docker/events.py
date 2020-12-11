@@ -88,11 +88,30 @@ class PlaygroundDockerEvents(object):
     async def _handle_container(self, publisher, data):
         data["name"] = data['attributes']["name"].split('__')[3]
 
-        if data['action'] != 'start':
+        if data['action'] not in ['start', 'die']:
             await publisher(data)
             return
 
-        container = await self.connector.get_container(data['id'])
+        # todo: think of a way to not try to fetch logs when container
+        #   has been killed intentionally
+
+        try:
+            container = await self.connector.get_container(data['id'])
+        except DockerError:
+            # warn ?
+            await publisher(data)
+            return
+
+        if data['action'] == 'die':
+            try:
+                data['logs'] = await container.log(stdout=True, stderr=True)
+                await container.delete(force=True, v=True)
+            except DockerError:
+                # warn ?
+                pass
+            await publisher(data)
+            return
+
         port_mappings = []
         if 'envoy.playground.proxy' in data['attributes']:
             ports = container['HostConfig']['PortBindings'] or {}
