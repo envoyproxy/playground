@@ -178,11 +178,19 @@ Create and start the proxy
     :figwidth: 40%
     :align: right
 
-BOOM!
+Once you are happy with the configuration that you have set, click the "Create proxy" button.
+
+If you are running this for the first time, or you have chosen to pull a new container image this can take some time.
+
+After downloading the requested Envoy image, the playground wraps it in an image with hot-restart capability.
 
 
 Connect your proxy to other proxies or services
 -----------------------------------------------
+
+Once your proxy has been created you should see it added to the proxy list on the left-hand side of the screen.
+
+You will probably now want to create some services and networks to make use of the proxy.
 
 ..  figure:: ../_static/screenshots/proxy.create.started.png
     :figclass: screenshot with-shadow
