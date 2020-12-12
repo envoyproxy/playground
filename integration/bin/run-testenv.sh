@@ -4,7 +4,7 @@ if [[ -z "$CI" ]]; then
     tty=("-ti")
 fi
 
-echo "Starting selenium client test environment"
+echo "Starting selenium client/test environment"
 docker run --rm \
        --net host \
        "${tty[@]}" \

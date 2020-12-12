@@ -4,11 +4,6 @@ import time
 import pytest
 
 
-def test_title(selenium):
-    selenium.get("http://localhost:8000")
-    assert "Envoy" in selenium.title
-
-
 @pytest.mark.screenshots
 def test_open_proxy_modal(playground):
     playground.snap('proxy.create.open')

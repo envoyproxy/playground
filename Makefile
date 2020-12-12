@@ -93,7 +93,7 @@ screenshots: integration-clean build-image
 	rm -rf tmp/artifacts
 	mkdir -p tmp/artifacts
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/create-screenshots.sh"
 	rm -f docs/screenshots/*
 	cp -a tmp/artifacts/*png docs/screenshots/
 
