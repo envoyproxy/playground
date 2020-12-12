@@ -42,8 +42,6 @@ table.docutils div.line-block {
 
 
 
-
-
  /* Style the Image Used to Trigger the Modal */
 .screenshot {
   border-radius: 5px;
@@ -100,7 +98,7 @@ table.docutils div.line-block {
 }
 
 /* The Close Button */
-.close {
+.modal-close {
   position: absolute;
   top: 15px;
   right: 35px;
@@ -110,8 +108,8 @@ table.docutils div.line-block {
   transition: 0.3s;
 }
 
-.close:hover,
-.close:focus {
+.modal-close:hover,
+.modal-close:focus {
   color: #bbb;
   text-decoration: none;
   cursor: pointer;
