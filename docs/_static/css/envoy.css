@@ -57,7 +57,7 @@ table.docutils div.line-block {
   display: none;
   position: fixed;
   z-index: 1000;
-  padding-top: 100px;
+  padding-top: 5vh;
   left: 0;
   top: 0;
   width: 100%;
@@ -73,6 +73,7 @@ table.docutils div.line-block {
   display: block;
   width: 80%;
   max-width: 70vw;
+  max-width: 90vh;
 }
 
 /* Caption of Modal Image (Image Text) - Same Width as the Image */
