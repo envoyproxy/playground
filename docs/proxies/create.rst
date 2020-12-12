@@ -11,13 +11,13 @@ from outside of the playground.
 
 .. rst-class::  clearfix
 
-Open the playground
--------------------
+Open the create proxy dialogue
+------------------------------
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
     :figwidth: 40%
-    :scale: 100
+    :scale: 40%
     :align: right
     :class: with-shadow
 
@@ -25,14 +25,16 @@ Open the playground, and click on the green ``+`` next to "Proxies".
 
 This should open the proxy create dialogue.
 
+.. rst-class::  inline-tip
+
 .. tip::
 
    You can use ``ctrl+alt+p`` to open the create new proxy dialogue.
 
 .. rst-class::  clearfix
 
-Enter the proxy name
---------------------
+Enter the proxy name and optionally select a version
+----------------------------------------------------
 
 ..  figure:: ../_static/screenshots/proxy-create.png
     :figclass: screenshot
@@ -45,6 +47,13 @@ Give the proxy a name.
 It should be not too long and not too short, 4 or 5 characters is probably best.
 
 The name should only include the characters a-z, 0-9, ``_``, ``-``, and ``.``.
+
+You can also select which version of Envoy to use.
+
+The default is to use the ``envoyproxy/envoy-dev:latest`` container image.
+
+You can ensure you are using the most recently published image by selecting the
+"Pull image" checkbox.
 
 .. rst-class::  clearfix
 
@@ -74,3 +83,6 @@ Upload certificates for your proxy (optional)
 
 Upload binaries for your proxy (optional)
 -----------------------------------------
+
+Create the proxy
+----------------
