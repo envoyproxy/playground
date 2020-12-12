@@ -20,7 +20,7 @@ Example configurations have been provided, or you can add your own.
 Open the create proxy dialogue
 ------------------------------
 
-..  figure:: ../_static/screenshots/home.png
+..  figure:: ../_static/screenshots/proxy.create.open.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
