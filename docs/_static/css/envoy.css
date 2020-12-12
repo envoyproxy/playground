@@ -29,7 +29,9 @@ table.docutils div.line-block {
   clear: right;
 }
 
-.section.clear-both {
-    clear: both;
-    background: red;
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
 }
