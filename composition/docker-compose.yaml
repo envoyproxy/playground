@@ -54,9 +54,10 @@ services:
       dockerfile: composition/Dockerfile-in-docker
     working_dir: /code
     volumes:
-    - ../bin/integration:/code/bin
     - ../.cache/integration/docker:/var/lib/docker
-    - ../tests/integration:/code/tests
+    - ../integration/tests:/code/tests
+    - ../integration/pytest.ini:/code/pytest.ini
+    - ../integration/bin:/code/bin
     - ../tmp/docker:/code/docker
     - ../tmp/artifacts:/code/artifacts
 
