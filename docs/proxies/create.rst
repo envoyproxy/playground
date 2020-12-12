@@ -16,8 +16,9 @@ Open the playground
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
-    :figwidth: 400px
+    :figscale: 40
     :align: right
+    :class: with-shadow
 
 Open the playground, and click on the green ``+`` next to "Proxies".
 
@@ -36,6 +37,7 @@ Enter the proxy name
     :figclass: screenshot
     :figwidth: 400px
     :align: right
+    :class: with-shadow
 
 Give the proxy a name.
 
