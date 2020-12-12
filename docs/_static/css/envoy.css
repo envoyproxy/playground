@@ -36,7 +36,8 @@ table.docutils div.line-block {
   display: table;
 }
 
-.inline-tip {
+.inline-tip,
+.inline-warning {
     clear: none !important;
     display: inline-block !important;
 }

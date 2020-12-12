@@ -143,6 +143,8 @@ If your configuration requires the use of ``TLS`` certificates you can upload th
 Once the proxy container is created, the uploaded certificates will be available in the ``/certs`` folder
 inside the container.
 
+.. rst-class::  inline-warning
+
 .. warning::
 
    The certificates are stored in Docker volumes on your host system.
