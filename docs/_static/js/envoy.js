@@ -7,8 +7,7 @@
                     '<div class="modal" id="playground-modal"><span class="close">&times;</span><img class="modal-content" id="img01"></div>');
             }
             $('#playground-modal').css('display', 'block');
-            console.log(this);
-            $('#img01').attr('src', this.src);
+            $('#img01').attr('src', this.find('img').attr('src'));
         });
     });
 })(jQuery);
