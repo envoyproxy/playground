@@ -86,7 +86,7 @@ dev-integration: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$PLAYGROUND_VERSION' /bin/bash"'
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$(cat VERSION)' /bin/bash"'
 
 screenshots: integration-clean build-image
 	mkdir tmp/ -p
