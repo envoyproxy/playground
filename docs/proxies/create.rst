@@ -15,10 +15,9 @@ Open the create proxy dialogue
 ------------------------------
 
 ..  figure:: ../_static/screenshots/home.png
-    :figclass: screenshot
-    :scale: 40%
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
     :align: right
-    :class: with-shadow
 
 Open the playground, and click on the green ``+`` next to "Proxies".
 
