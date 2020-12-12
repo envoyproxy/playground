@@ -27,6 +27,7 @@ site:
 	rm -rf build/site
 	mkdir -p build
 	cp -a docs tmp
+	cp -a VERSION tmp/docs
 	pwd
 	ls bin
 	./bin/generate-docs.py tmp/docs services/services.yaml

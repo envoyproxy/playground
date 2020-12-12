@@ -11,7 +11,7 @@ def setup(app):
     pass
 
 
-with open('../VERSION') as f:
+with open('VERSION') as f:
     print(f"VERSION: {f.read()}")
 
 
