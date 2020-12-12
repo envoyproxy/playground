@@ -70,3 +70,4 @@ class ProxyTransmitAttribs(ValidatingAttribs):
     status = attr.ib(type=str)
     image = attr.ib(type=str, default='')
     logs = attr.ib(type=list, default=[])
+    port_mappings = attr.ib(type=list, default=[])

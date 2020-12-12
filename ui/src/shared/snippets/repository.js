@@ -12,7 +12,8 @@ import GithubLogo from '../../app/images/github.svg';
 
 export class BasePlaygroundRepository extends React.PureComponent {
     static propTypes = exact({
-        repository: PropTypes.string.required,
+        repository: PropTypes.string.isRequired,
+        dispatch: PropTypes.func,
     });
 
     render () {

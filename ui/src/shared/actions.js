@@ -5,8 +5,6 @@ import classnames from 'classnames';
 
 import {Badge} from 'reactstrap';
 
-import {updateUI} from '../app/store';
-
 
 export class ActionExport extends React.PureComponent {
     static propTypes = {
@@ -47,21 +45,13 @@ export class ActionImport extends React.PureComponent {
 }
 
 export class ActionLoad extends React.PureComponent {
-    static propTypes = {
-        dispatch: PropTypes.func.isRequired,
-    };
-
-    load = async () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: 'not-implemented'}));
-    };
 
     render () {
-        const {className, ...props} = this.props;
+        const {action, className, ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={this.load}
+              onClick={action}
               color="info"
               href="#"
               className={classnames({
@@ -78,21 +68,13 @@ export class ActionLoad extends React.PureComponent {
 
 
 export class ActionSave extends React.PureComponent {
-    static propTypes = {
-        dispatch: PropTypes.func.isRequired,
-    };
-
-    save = async () => {
-        const {dispatch} = this.props;
-        dispatch(updateUI({modal: 'not-implemented'}));
-    };
 
     render () {
-        const {className, ...props} = this.props;
+        const {action, className, ...props} = this.props;
         return (
             <Badge
               {...props}
-              onClick={this.save}
+              onClick={action}
               color="info"
               href="#"
               className={classnames({

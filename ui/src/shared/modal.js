@@ -251,7 +251,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         const {
             dispatch, icon, iconAlt, fail=[], failMessage, form, messages,
             success, tabs} = this.props;
-        const {name, logs, status='', validation} = form;
+        const {name, logs=[], status='', validation} = form;
         let color = 'info';
         if ((status || '').length > 0) {
             if (status === success) {
