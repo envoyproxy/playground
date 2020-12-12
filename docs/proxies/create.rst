@@ -78,29 +78,69 @@ At a mimimum you will need to provide an Envoy configuration.
 
 A number of examples have been provided to work with the pre-installed services.
 
+You can also add your own, or edit any of the examples to suit your needs.
 
 .. _proxy_create_port_mappings:
 
 Add port mappings (optional)
 ----------------------------
 
+If you wish the proxy to be addressable from outside of the playground (eg. to localhost),
+you need to provide a port mapping.
+
+The first port shown is the "external" port or the port which will be exposed on the host system.
+
+The second port is the "internal" port, or the port upon which Envoy listens.
+
+The external port should be unique across all proxies.
+
+You can also set a type hint, for the port.
+
+This is used to create links if it is an ``HTTP`` or ``HTTPS`` port, and for informational purposes.
+
+The default is "Generic TCP".
+
 .. _proxy_create_log_level:
 
 Set the log level (optional)
 ----------------------------
+
+You can set the log level for your proxy.
+
+This is particularly useful if you are trying to debug a problematic proxy connection or want to learn more
+about how Envoy works.
+
+The logs are available from the Docker container, the ``id`` of which will be shown once the proxy is created.
 
 .. _proxy_create_certificates:
 
 Upload certificates for your proxy (optional)
 ---------------------------------------------
 
+If your configuration requires the use of ``TLS`` certificates you can upload them here.
+
+Once the proxy container is created, the uploaded certificates will be available in the ``/certs`` folder
+inside the container.
+
+.. warning::
+
+   The certificates are stored in Docker volumes on your host system.
+
+   If the certificates are sensitive or need to be kept secure, you may wish to generate self-signed certificates
+   for use in the playground.
+
 .. _proxy_create_binaries:
 
 Upload binaries for your proxy (optional)
 -----------------------------------------
 
+You can upload any binary or other library files that your Envoy configuration requires.
+
+Once the container is created, the files will be available in the ``/binary`` folder inside the container.
 
 .. _proxy_create_start:
 
 Create and start the proxy
 --------------------------
+
+BOOM!
