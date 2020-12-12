@@ -20,16 +20,14 @@ docs:
 
 site:
 	echo "Building site..."
-	pip install -U pip setuptools
-	pip install .[docs]
 	mkdir tmp/ -p
 	rm -rf tmp/docs
 	rm -rf build/site
 	mkdir -p build
 	cp -a docs tmp
 	cp -a VERSION tmp/docs
-	pwd
-	ls bin
+	pip install -U pip setuptools
+	pip install -e .[docs]
 	./bin/generate-docs.py tmp/docs services/services.yaml
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
 	npm install -g yarn
