@@ -40,7 +40,7 @@ def test_open_proxy_modal(selenium):
     # set logging
     selenium.find_element_by_link_text('Logging').click()
     time.sleep(.3)
-    select = selenium.find_element_by_css_selector('.tab-pane.active form select#example')
+    select = selenium.find_element_by_css_selector('.tab-pane.active form select')
     select.find_element_by_css_selector('[value="trace"]').click()
     time.sleep(.3)
     selenium.get_screenshot_as_file('/tmp/tests/proxy.create.logging.png')
