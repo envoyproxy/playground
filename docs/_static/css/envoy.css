@@ -29,7 +29,7 @@ table.docutils div.line-block {
   clear: right;
 }
 
-section.clear-both {
+.section.clear-both {
     clear: both;
     background: red;
 }
