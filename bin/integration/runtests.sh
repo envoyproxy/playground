@@ -1,10 +1,11 @@
 #!/bin/bash -E
 
-echo "Run integration tests..."
-
-echo "Load or pull playground image"
+echo ">>> Create integration test environment"
+echo
 
 ./bin/start-playground.sh
 ./bin/start-selenium.sh
 ./bin/run-testenv.sh pytest --driver Remote --capability browserName firefox -v /tests/
-echo "Done"
+
+echo
+echo ">>> Done"
