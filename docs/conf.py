@@ -1,39 +1,39 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-import os
 from sphinx.directives.code import CodeBlock
 import sphinx_rtd_theme
-import sys
 
 
-# https://stackoverflow.com/questions/44761197/how-to-use-substitution-definitions-with-code-blocks
+# https://stackoverflow.com/questions/44761197/
+#  ... how-to-use-substitution-definitions-with-code-blocks
 class SubstitutionCodeBlock(CodeBlock):
-  """
-  Similar to CodeBlock but replaces placeholders with variables. See "substitutions" below.
-  """
-
-  def run(self):
     """
-    Replace placeholders with given variables.
+    Similar to CodeBlock but replaces placeholders with variables.
+    See "substitutions" below.
     """
-    app = self.state.document.settings.env.app
-    new_content = []
-    existing_content = self.content
-    for item in existing_content:
-      for pair in app.config.substitutions:
-        original, replacement = pair
-        item = item.replace(original, replacement)
-      new_content.append(item)
 
-    self.content = new_content
-    return list(CodeBlock.run(self))
+    def run(self):
+        """
+        Replace placeholders with given variables.
+        """
+        app = self.state.document.settings.env.app
+        new_content = []
+        existing_content = self.content
+        for item in existing_content:
+            for pair in app.config.substitutions:
+                original, replacement = pair
+                item = item.replace(original, replacement)
+            new_content.append(item)
+
+        self.content = new_content
+        return list(CodeBlock.run(self))
 
 
 def setup(app):
-  app.add_config_value('release_level', '', 'env')
-  app.add_config_value('substitutions', [], 'html')
-  app.add_directive('substitution-code-block', SubstitutionCodeBlock)
+    app.add_config_value('release_level', '', 'env')
+    app.add_config_value('substitutions', [], 'html')
+    app.add_directive('substitution-code-block', SubstitutionCodeBlock)
 
 
 with open('../VERSION') as f:
@@ -41,15 +41,16 @@ with open('../VERSION') as f:
 
 extensions = [
     'm2r2',
-    'sphinxcontrib.httpdomain', 'sphinx.ext.extlinks', 'sphinx.ext.ifconfig', 'sphinx_tabs.tabs',
+    'sphinxcontrib.httpdomain', 'sphinx.ext.extlinks',
+    'sphinx.ext.ifconfig', 'sphinx_tabs.tabs',
     'sphinx_copybutton', 'sphinxext.rediraffe']
 copybutton_prompt_text = r"\$ |PS>"
 copybutton_prompt_is_regexp = True
 source_suffix = {
     '.rst': 'restructuredtext'}
 master_doc = 'index'
-project = u'Envoy playground'
-copyright = u'2020-{}, Envoy playground project authors'.format(datetime.now().year)
+project = 'Envoy playground'
+copyright = f'2020-{datetime.now().year}, Envoy playground project authors'
 author = u'Envoy playground project authors'
 exclude_patterns = [
     '_include',
