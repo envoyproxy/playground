@@ -16,7 +16,6 @@ Open the create proxy dialogue
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
-    :figwidth: 40%
     :scale: 40%
     :align: right
     :class: with-shadow
