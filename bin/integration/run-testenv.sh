@@ -8,8 +8,8 @@ echo "Running selenium tests"
 docker run --rm \
        --net host \
        "${tty[@]}" \
-       -v /code/tmp:/tmp/tests \
        -v /code/bin/entrypoint.sh:/entrypoint.sh \
        -v /code/tests:/tests \
+       -v /code/artifacts:/artifacts \
        --entrypoint /entrypoint.sh \
        python:3.8-slim "$@"
