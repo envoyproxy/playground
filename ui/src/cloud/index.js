@@ -106,7 +106,7 @@ export class CloudEmpty extends React.PureComponent {
                 <Text
                   width={400}
                   align="center"
-                  text="There are no proxies, services, or networks configured for this playground"
+                  text="The cloud is not a vessel to be filled but a fire to be kindled"
                   fill="#71ac63"
                   padding={15}
                   fontSize={22} />
