@@ -72,7 +72,7 @@ table.docutils div.line-block {
   margin: auto;
   display: block;
   width: 80%;
-  max-width: 70vh;
+  max-width: 70vw;
 }
 
 /* Caption of Modal Image (Image Text) - Same Width as the Image */
