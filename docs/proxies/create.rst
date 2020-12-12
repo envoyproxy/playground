@@ -184,7 +184,7 @@ BOOM!
 Connect your proxy to other proxies or services
 -----------------------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.created.png
+..  figure:: ../_static/screenshots/proxy.create.started.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
