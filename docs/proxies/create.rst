@@ -16,7 +16,7 @@ Open the playground
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
-    :figscale: 40
+    :scale: 40
     :align: right
     :class: with-shadow
 
