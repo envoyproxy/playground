@@ -2,8 +2,6 @@
 
 SHELL := /bin/bash
 
-PLAYGROUND_VERSION :=$$(file < VERSION)
-
 .PHONY: coverage docs site build
 
 version:
