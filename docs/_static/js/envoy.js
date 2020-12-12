@@ -2,7 +2,8 @@
 (function($) {
     $(document).ready(function() {
         $(".screenshot").click(function () {
-            $(this.$).appendTo('body').modal();
+            console.log('OPENING MODAL');
+            $("BOOM").appendTo('body').modal();
         });
     });
 })(jQuery);
