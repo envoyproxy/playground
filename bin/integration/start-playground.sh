@@ -7,9 +7,9 @@ echo "Load or pull playground image"
 
 if [[ -e /tmp/docker/playground.tar.gz ]]; then
     docker load < /tmp/docker/playground.tar.gz
-else
-    docker pull phlax/envoy-playground:0.2.4-alpha
-    docker tag phlax/envoy-playground:0.2.4-alpha envoy-playground
+elif [[ -n "$PLAYGROUND_VERSION" ]]; then
+    docker pull "phlax/envoy-playground:${PLAYGROUND_VERSION}-alpha"
+    docker tag "phlax/envoy-playground:${PLAYGROUND_VERSION}-alpha envoy-playground"
 fi
 
 docker images

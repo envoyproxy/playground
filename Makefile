@@ -82,11 +82,11 @@ integration-test: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
-dev-integration: clean
+dev-integration: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/run-testenv.sh /bin/bash
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$PLAYGROUND_VERSION' /bin/bash"'
 
 screenshots: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
