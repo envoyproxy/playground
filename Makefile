@@ -2,9 +2,10 @@
 
 SHELL := /bin/bash
 
-export PLAYGROUND_VERSION=0.2.4-alpha
-
 .PHONY: coverage docs site build
+
+version:
+	echo $$(cat VERSION)
 
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") 2> /dev/null || :
@@ -17,15 +18,14 @@ docs:
 
 site:
 	echo "Building site..."
-	pip install -U pip setuptools
-	pip install .[docs]
 	mkdir tmp/ -p
 	rm -rf tmp/docs
 	rm -rf build/site
 	mkdir -p build
 	cp -a docs tmp
-	pwd
-	ls bin
+	cp -a VERSION tmp/
+	pip install -U pip setuptools
+	pip install -e .[docs]
 	./bin/generate-docs.py tmp/docs services/services.yaml
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
 	npm install -g yarn
@@ -41,13 +41,13 @@ run: clean
 		envoy-playground
 
 run-published: clean
-	docker pull phlax/envoy-playground:$$PLAYGROUND_VERSION
+	docker pull phlax/envoy-playground:$$(cat VERSION)
 	docker run -d \
 		--name envoy-playground \
 		--privileged \
 		-p 8000:8080 \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		phlax/envoy-playground:$$PLAYGROUND_VERSION
+		phlax/envoy-playground:$$(cat VERSION)
 
 shell:
 	docker run -it --rm \
@@ -59,8 +59,8 @@ build:
 	docker build -t envoy-playground .
 
 publish:
-	docker tag envoy-playground phlax/envoy-playground:$$PLAYGROUND_VERSION
-	docker push phlax/envoy-playground:$$PLAYGROUND_VERSION
+	docker tag envoy-playground phlax/envoy-playground:$$(cat VERSION)
+	docker push phlax/envoy-playground:$$(cat VERSION)
 
 coverage:
 	bash <(curl -s https://codecov.io/bash)
@@ -80,15 +80,15 @@ integration-test: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
-dev-integration: clean
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
-
-screenshots: integration-clean
+dev-integration: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/run-testenv.sh /bin/bash
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$PLAYGROUND_VERSION' /bin/bash"'
+
+screenshots: integration-clean
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 dev-control: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control

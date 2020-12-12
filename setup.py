@@ -7,6 +7,10 @@
 from setuptools import setup
 
 
+with open('VERSION') as f:
+    version = f.read().strip()
+
+
 install_requires = [
     "aiodocker",
     "aiohttp",
@@ -40,7 +44,7 @@ extras_require['docs'] = [
 # TODO: Fix classifiers
 setup(
     name='playground.control',
-    version='0.2.4',
+    version=version,
     description='playground.control',
     long_description="playground.control",
     url='https://github.com/envoyproxy/playground',
