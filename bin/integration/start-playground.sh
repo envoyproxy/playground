@@ -8,8 +8,8 @@ echo "Load or pull playground image"
 if [[ -e /tmp/docker/playground.tar.gz ]]; then
     docker load < /tmp/docker/playground.tar.gz
 else
-    docker pull phlax/envoy-playground:0.2.3-alpha
-    docker tag phlax/envoy-playground:0.2.3-alpha envoy-playground
+    docker pull phlax/envoy-playground:0.2.4-alpha
+    docker tag phlax/envoy-playground:0.2.4-alpha envoy-playground
 fi
 
 docker images

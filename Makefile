@@ -2,7 +2,7 @@
 
 SHELL := /bin/bash
 
-export PLAYGROUND_VERSION=0.2.3-alpha
+export PLAYGROUND_VERSION=0.2.4-alpha
 
 .PHONY: coverage docs site build
 
@@ -84,9 +84,11 @@ dev-integration: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
 
-screenshots: clean
+screenshots: integration-clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/run-testenv.sh /bin/bash
 
 dev-control: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control

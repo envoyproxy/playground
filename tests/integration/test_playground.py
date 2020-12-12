@@ -62,5 +62,5 @@ def test_open_proxy_modal(selenium):
     selenium.get_screenshot_as_file('/tmp/tests/proxy.create.starting.png')
 
     # wait for started
-    time.sleep(30)
+    time.sleep(60)
     selenium.get_screenshot_as_file('/tmp/tests/proxy.create.started.png')
