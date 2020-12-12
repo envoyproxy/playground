@@ -16,7 +16,7 @@ Open the playground
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
-    :scale: 40
+    :scale: 40%
     :align: right
     :class: with-shadow
 
@@ -60,3 +60,16 @@ Once you have added the name, you will be able to configure the proxy.
 At a mimimum you will need to provide an Envoy configuration.
 
 A number of examples have been provided to work with the pre-installed services.
+
+
+Add port mappings (optional)
+----------------------------
+
+Set the log level (optional)
+----------------------------
+
+Upload certificates for your proxy (optional)
+---------------------------------------------
+
+Upload binaries for your proxy (optional)
+-----------------------------------------
