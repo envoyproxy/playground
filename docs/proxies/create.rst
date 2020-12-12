@@ -4,12 +4,13 @@ Create an Envoy proxy
 
 Envoy proxies provide the only way into your playground cloud network.
 
-.. rst-class::  clear-both
 
 ..  figure:: ../_static/screenshots/home.png
     :figclass: screenshot
     :figwidth: 400px
     :align: right
+
+.. rst-class::  clear-both
 
 Open the playground
 -------------------
@@ -22,12 +23,12 @@ This should open the proxy create dialogue.
 
    You can use ``ctrl+alt+p`` to open the create new proxy dialogue.
 
-.. rst-class::  clear-both
-
 ..  figure:: ../_static/screenshots/proxy-create.png
     :figclass: screenshot
     :figwidth: 400px
     :align: right
+
+.. rst-class::  clear-both
 
 Enter the proxy name
 --------------------
@@ -38,13 +39,12 @@ It should be not too long and not too short, 4 or 5 characters is probably best.
 
 The name should only include the characters a-z, 0-9, ``_``,``-``, and ``.``.
 
-.. rst-class::  clear-both
-
 ..  figure:: ../_static/screenshots/proxy-create-name.png
     :figclass: screenshot
     :figwidth: 400px
     :align: right
 
+.. rst-class::  clear-both
 
 Add an Envoy configuration
 --------------------------
