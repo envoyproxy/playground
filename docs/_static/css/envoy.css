@@ -71,7 +71,6 @@ table.docutils div.line-block {
 .modal-content {
   margin: auto;
   display: block;
-  width: 80%;
   max-width: 70vw;
   max-height: 90vh;
 }

@@ -47,7 +47,7 @@ Enter the proxy name and optionally select a version
     :figwidth: 40%
     :align: right
 
-Give the proxy a name.
+Give the proxy a unique name.
 
 It should be not too long and not too short, 4 or 5 characters is probably best.
 
