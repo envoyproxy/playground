@@ -6,6 +6,7 @@ import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
 import {ActionSave, ActionLoad} from '../actions';
+import {updateUI} from '../../app/store';
 
 
 export class BasePlaygroundSaveLoadWidget extends React.PureComponent {
@@ -13,12 +14,21 @@ export class BasePlaygroundSaveLoadWidget extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
     });
 
-    render () {
+    save = async () => {
         const {dispatch} = this.props;
+        dispatch(updateUI({modal: 'not-implemented'}));
+    };
+
+    load = async () => {
+        const {dispatch} = this.props;
+        dispatch(updateUI({modal: 'not-implemented'}));
+    };
+
+    render () {
         return (
             <>
-              <ActionLoad dispatch={dispatch} />
-              <ActionSave dispatch={dispatch} />
+              <ActionLoad action={this.load} />
+              <ActionSave action={this.save} />
             </>
         );
     }
