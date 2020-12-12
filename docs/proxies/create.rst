@@ -35,10 +35,9 @@ Enter the proxy name and optionally select a version
 ----------------------------------------------------
 
 ..  figure:: ../_static/screenshots/proxy-create.png
-    :figclass: screenshot
-    :figwidth: 400px
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
     :align: right
-    :class: with-shadow
 
 Give the proxy a name.
 
@@ -59,8 +58,8 @@ Add an Envoy configuration
 --------------------------
 
 ..  figure:: ../_static/screenshots/proxy-create-name.png
-    :figclass: screenshot
-    :figwidth: 400px
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
     :align: right
 
 Once you have added the name, you will be able to configure the proxy.
