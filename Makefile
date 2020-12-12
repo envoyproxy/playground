@@ -71,16 +71,24 @@ exec:
 test:
 	./bin/runtests.sh
 
-integration-test:
+integration-clean:
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose stop integration
+
+integration-test: integration-clean
 	mkdir -p tmp/docker
 	docker save envoy-playground | gzip > tmp/docker/playground.tar.gz
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose stop integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 dev-integration: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
+
+screenshots: integration-clean
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/run-testenv.sh /bin/bash
 
 dev-control: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control

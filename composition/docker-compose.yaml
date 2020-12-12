@@ -57,7 +57,7 @@ services:
     - ../bin/integration:/code/bin
     - ../.cache/integration/docker:/var/lib/docker
     - ../tests/integration:/code/tests
-    - ../tmp/docker:/tmp/docker
+    - ../tmp/docker:/code/tmp
 
   integration-start:
     image: busybox
