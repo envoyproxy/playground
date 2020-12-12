@@ -42,7 +42,7 @@ This should open the proxy create dialogue.
 Enter the proxy name and optionally select a version
 ----------------------------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.png
+..  figure:: ../_static/screenshots/proxy.create.name.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -67,7 +67,7 @@ You can ensure you are using the most recently published image by selecting the
 Add an Envoy configuration
 --------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.name.png
+..  figure:: ../_static/screenshots/proxy.create.configuration.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
