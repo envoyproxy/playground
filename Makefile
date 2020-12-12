@@ -84,13 +84,13 @@ integration-test: integration-clean
 
 dev-integration: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration bash
-
-screenshots: integration-clean
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/run-testenv.sh /bin/bash
+
+screenshots: integration-clean
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
+	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 dev-control: clean
 	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose build control

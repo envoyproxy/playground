@@ -25,9 +25,9 @@ You can run the playground directly with Docker.
    It requires these permissions in order to start and stop proxy and service containers, and attach their networks.
 
 
-.. code-block:: console
+.. substitution-code-block:: console
 
    $ docker run -d --rm \
 		--privileged \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		   phlax/envoy-playground:0.2.4-alpha
+		   phlax/envoy-playground:|playground_version|-alpha

@@ -7,13 +7,37 @@ import sphinx_rtd_theme
 import sys
 
 
+# https://stackoverflow.com/questions/44761197/how-to-use-substitution-definitions-with-code-blocks
+class SubstitutionCodeBlock(CodeBlock):
+  """
+  Similar to CodeBlock but replaces placeholders with variables. See "substitutions" below.
+  """
+
+  def run(self):
+    """
+    Replace placeholders with given variables.
+    """
+    app = self.state.document.settings.env.app
+    new_content = []
+    existing_content = self.content
+    for item in existing_content:
+      for pair in app.config.substitutions:
+        original, replacement = pair
+        item = item.replace(original, replacement)
+      new_content.append(item)
+
+    self.content = new_content
+    return list(CodeBlock.run(self))
+
+
 def setup(app):
-    pass
+  app.add_config_value('release_level', '', 'env')
+  app.add_config_value('substitutions', [], 'html')
+  app.add_directive('substitution-code-block', SubstitutionCodeBlock)
 
 
 with open('VERSION') as f:
-    print(f"VERSION: {f.read()}")
-
+    substitutions = [('|playground_version|', f.read().strip())]
 
 extensions = [
     'm2r2',
