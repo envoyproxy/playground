@@ -82,6 +82,8 @@ You can also add your own, or edit any of the examples to suit your needs.
 
 .. _proxy_create_port_mappings:
 
+.. rst-class::  clearfix
+
 Add port mappings (optional)
 ----------------------------
 
@@ -107,6 +109,8 @@ The default is "Generic TCP".
 
 .. _proxy_create_log_level:
 
+.. rst-class::  clearfix
+
 Set the log level (optional)
 ----------------------------
 
@@ -124,8 +128,15 @@ The logs are available from the Docker container, the ``id`` of which will be sh
 
 .. _proxy_create_certificates:
 
+.. rst-class::  clearfix
+
 Upload certificates for your proxy (optional)
 ---------------------------------------------
+
+..  figure:: ../_static/screenshots/proxy.create.certificates.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
 
 If your configuration requires the use of ``TLS`` certificates you can upload them here.
 
@@ -141,8 +152,15 @@ inside the container.
 
 .. _proxy_create_binaries:
 
+.. rst-class::  clearfix
+
 Upload binaries for your proxy (optional)
 -----------------------------------------
+
+..  figure:: ../_static/screenshots/proxy.create.binaries.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
 
 You can upload any binary or other library files that your Envoy configuration requires.
 
@@ -150,7 +168,25 @@ Once the container is created, the files will be available in the ``/binary`` fo
 
 .. _proxy_create_start:
 
+.. rst-class::  clearfix
+
 Create and start the proxy
 --------------------------
+
+..  figure:: ../_static/screenshots/proxy.create.starting.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
+BOOM!
+
+
+Connect your proxy to other proxies or services
+-----------------------------------------------
+
+..  figure:: ../_static/screenshots/proxy.create.created.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
 
 BOOM!
