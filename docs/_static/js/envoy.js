@@ -2,7 +2,7 @@
 (function($) {
     $(document).ready(function() {
         $(".screenshot").click(function () {
-            alert('clicked!');
+            $(this.$).appendTo('body').modal();
         });
     });
 })(jQuery);
