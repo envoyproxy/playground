@@ -38,8 +38,6 @@ html_logo = '_static/img/envoy.svg'
 html_favicon = 'favicon.ico'
 html_static_path = ['_static']
 html_style = 'css/envoy.css'
-html_js_files = [
-    'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js',
-    'js/envoy.js']
+html_js_files = ['js/envoy.js']
 htmlhelp_basename = 'envoydoc'
 rediraffe_redirects = "redirects.txt"

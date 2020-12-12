@@ -13,7 +13,7 @@ Example configurations have been provided, or you can add your own.
    Don't forget to :ref:`add port mappings <proxy_create_port_mappings>` if you wish
    your proxy to be available from outside of the playground.
 
-.. _proxy_create_dialogue::
+.. _proxy_create_dialogue:
 
 .. rst-class::  clearfix
 
