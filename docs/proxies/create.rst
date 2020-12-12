@@ -20,7 +20,7 @@ Example configurations have been provided, or you can add your own.
 Open the create proxy dialogue
 ------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.open.png
+..  figure:: ../screenshots/proxy.create.open.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -42,7 +42,7 @@ This should open the proxy create dialogue.
 Enter the proxy name and optionally select a version
 ----------------------------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.name.png
+..  figure:: ../screenshots/proxy.create.name.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -67,7 +67,7 @@ You can ensure you are using the most recently published image by selecting the
 Add an Envoy configuration
 --------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.configuration.png
+..  figure:: ../screenshots/proxy.create.configuration.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -87,7 +87,7 @@ You can also add your own, or edit any of the examples to suit your needs.
 Add port mappings (optional)
 ----------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.ports.png
+..  figure:: ../screenshots/proxy.create.ports.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -114,7 +114,7 @@ The default is "Generic TCP".
 Set the log level (optional)
 ----------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.logging.png
+..  figure:: ../screenshots/proxy.create.logging.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -133,7 +133,7 @@ The logs are available from the Docker container, the ``id`` of which will be sh
 Upload certificates for your proxy (optional)
 ---------------------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.certificates.png
+..  figure:: ../screenshots/proxy.create.certificates.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -159,7 +159,7 @@ inside the container.
 Upload binaries for your proxy (optional)
 -----------------------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.binaries.png
+..  figure:: ../screenshots/proxy.create.binaries.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -175,7 +175,7 @@ Once the container is created, the files will be available in the ``/binary`` fo
 Create and start the proxy
 --------------------------
 
-..  figure:: ../_static/screenshots/proxy.create.starting.png
+..  figure:: ../screenshots/proxy.create.starting.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -190,13 +190,11 @@ After downloading the requested Envoy image, the playground wraps it in an image
 Connect your proxy to other proxies or services
 -----------------------------------------------
 
-Once your proxy has been created you should see it added to the proxy list on the left-hand side of the screen.
-
-You will probably now want to create some services and networks to make use of the proxy.
-
-..  figure:: ../_static/screenshots/proxy.create.started.png
+..  figure:: ../screenshots/proxy.create.started.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
 
-BOOM!
+Once your proxy has been created you should see it added to the proxy list on the left-hand side of the screen.
+
+You will probably now want to create some services and networks to make use of the proxy.
