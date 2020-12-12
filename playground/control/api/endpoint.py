@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pkg_resources
 from functools import cached_property
 from typing import Type, Union
 
@@ -27,7 +28,6 @@ from playground.control.services import PlaygroundServiceDiscovery
 
 
 class PlaygroundAPI(object):
-    _envoy_image = "envoyproxy/envoy-dev-playground:latest"
 
     def __init__(self, services: Union[tuple, None] = None):
         self._sockets: list = []
@@ -39,7 +39,7 @@ class PlaygroundAPI(object):
     def metadata(self):
         return dict(
             title='Envoy playground',
-            version='v0.2.4-alpha',
+            version=pkg_resources.require("playground.control")[0].version,
             repository='https://github.com/envoyproxy/playground',
             max_network_connections=MAX_NETWORK_CONNECTIONS,
             min_name_length=MIN_NAME_LENGTH,

@@ -11,6 +11,10 @@ def setup(app):
     pass
 
 
+with open('../VERSION') as f:
+    print(f"VERSION: {f.read()}")
+
+
 extensions = [
     'm2r2',
     'sphinxcontrib.httpdomain', 'sphinx.ext.extlinks', 'sphinx.ext.ifconfig', 'sphinx_tabs.tabs',

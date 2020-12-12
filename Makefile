@@ -2,9 +2,12 @@
 
 SHELL := /bin/bash
 
-export PLAYGROUND_VERSION=0.2.4-alpha
+PLAYGROUND_VERSION :=$$(file < VERSION)
 
 .PHONY: coverage docs site build
+
+version:
+	echo $$(cat VERSION)
 
 clean:
 	docker rm -f $$(docker ps -a -q -f "name=envoy-playground") 2> /dev/null || :
@@ -41,13 +44,13 @@ run: clean
 		envoy-playground
 
 run-published: clean
-	docker pull phlax/envoy-playground:$$PLAYGROUND_VERSION
+	docker pull phlax/envoy-playground:$$(cat VERSION)
 	docker run -d \
 		--name envoy-playground \
 		--privileged \
 		-p 8000:8080 \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		phlax/envoy-playground:$$PLAYGROUND_VERSION
+		phlax/envoy-playground:$$(cat VERSION)
 
 shell:
 	docker run -it --rm \
@@ -59,8 +62,8 @@ build:
 	docker build -t envoy-playground .
 
 publish:
-	docker tag envoy-playground phlax/envoy-playground:$$PLAYGROUND_VERSION
-	docker push phlax/envoy-playground:$$PLAYGROUND_VERSION
+	docker tag envoy-playground phlax/envoy-playground:$$(cat VERSION)
+	docker push phlax/envoy-playground:$$(cat VERSION)
 
 coverage:
 	bash <(curl -s https://codecov.io/bash)

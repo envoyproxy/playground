@@ -1,4 +1,5 @@
 
+import pkg_resources
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
 import rapidjson as json  # type: ignore
@@ -65,7 +66,7 @@ def test_api_metadata():
     assert _api.metadata == dict(
         repository='https://github.com/envoyproxy/playground',
         title='Envoy playground',
-        version='v0.2.4-alpha',
+        version=pkg_resources.require("playground.control")[0].version,
         max_network_connections=MAX_NETWORK_CONNECTIONS,
         min_name_length=MIN_NAME_LENGTH,
         max_name_length=MAX_NAME_LENGTH,
