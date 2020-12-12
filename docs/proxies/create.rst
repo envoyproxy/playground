@@ -1,4 +1,6 @@
 
+.. proxy_create::
+
 Create an Envoy proxy
 =====================
 
@@ -6,8 +8,12 @@ Its easy to create an Envoy proxy in the playground.
 
 Example configurations have been provided, or you can add your own.
 
-Don't forget to add port mappings if you wish your proxy to be available
-from outside of the playground.
+.. tip::
+
+   Don't forget to :ref:`add port mappings <proxy_create_port_mappings>` if you wish
+   your proxy to be available from outside of the playground.
+
+.. proxy_create_dialogue::
 
 .. rst-class::  clearfix
 
@@ -28,6 +34,8 @@ This should open the proxy create dialogue.
 .. tip::
 
    You can use ``ctrl+alt+p`` to open the create new proxy dialogue.
+
+.. proxy_create_name::
 
 .. rst-class::  clearfix
 
@@ -52,6 +60,8 @@ The default is to use the ``envoyproxy/envoy-dev:latest`` container image.
 You can ensure you are using the most recently published image by selecting the
 "Pull image" checkbox.
 
+.. proxy_create_configuration::
+
 .. rst-class::  clearfix
 
 Add an Envoy configuration
@@ -69,17 +79,28 @@ At a mimimum you will need to provide an Envoy configuration.
 A number of examples have been provided to work with the pre-installed services.
 
 
+.. proxy_create_port_mappings::
+
 Add port mappings (optional)
 ----------------------------
+
+.. proxy_create_log_level::
 
 Set the log level (optional)
 ----------------------------
 
+.. proxy_create_certificates::
+
 Upload certificates for your proxy (optional)
 ---------------------------------------------
+
+.. proxy_create_binaries::
 
 Upload binaries for your proxy (optional)
 -----------------------------------------
 
-Create the proxy
-----------------
+
+.. proxy_create_start::
+
+Create and start the proxy
+--------------------------
