@@ -38,5 +38,6 @@ html_logo = '_static/img/envoy.svg'
 html_favicon = 'favicon.ico'
 html_static_path = ['_static']
 html_style = 'css/envoy.css'
+html_js_files = ['js/envoy.js']
 htmlhelp_basename = 'envoydoc'
 rediraffe_redirects = "redirects.txt"
