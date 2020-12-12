@@ -110,6 +110,11 @@ The default is "Generic TCP".
 Set the log level (optional)
 ----------------------------
 
+..  figure:: ../_static/screenshots/proxy.create.logging.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
 You can set the log level for your proxy.
 
 This is particularly useful if you are trying to debug a problematic proxy connection or want to learn more
