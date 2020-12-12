@@ -40,6 +40,7 @@ table.docutils div.line-block {
 .inline-warning {
     clear: none !important;
     display: inline-block !important;
+    max-width: 50%;
 }
 
 
