@@ -32,7 +32,6 @@ def pytest_addoption(parser):
         help="Activate nice mode.")
 
 
-
 def str2bool(v):
     if isinstance(v, bool):
        return v
