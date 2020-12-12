@@ -12,6 +12,8 @@ def test_open_proxy_modal(selenium):
 
     time.sleep(1)
 
+    selenium.get_screenshot_as_file('/tmp/tests/proxy.create.open.png')
+
     # open the proxy modal
     selenium.find_elements_by_name('Proxies')[0].click()
     name_input = selenium.find_elements_by_id('name')[0]
