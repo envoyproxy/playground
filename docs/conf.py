@@ -36,7 +36,7 @@ def setup(app):
   app.add_directive('substitution-code-block', SubstitutionCodeBlock)
 
 
-with open('VERSION') as f:
+with open('../VERSION') as f:
     substitutions = [('|playground_version|', f.read().strip())]
 
 extensions = [

@@ -25,7 +25,7 @@ site:
 	rm -rf build/site
 	mkdir -p build
 	cp -a docs tmp
-	cp -a VERSION tmp/docs
+	cp -a VERSION tmp/
 	pip install -U pip setuptools
 	pip install -e .[docs]
 	./bin/generate-docs.py tmp/docs services/services.yaml
