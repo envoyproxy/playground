@@ -40,7 +40,7 @@ export class PlaygroundSiteLogotype extends React.PureComponent {
               to="/">
               <img
                 alt="Envoy"
-                src={EnvoyLogo}
+                src={EnvoyInverseLogo}
                 width="28px"
                 className="ml-1 mr-2" />
               <span>{title}</span>
