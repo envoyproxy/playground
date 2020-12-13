@@ -2,7 +2,7 @@
 import React from 'react';
 
 import EnvoyLogo from '../app/images/logo.svg';
-import GithubLogo from '../../app/images/github.svg';
+import GithubLogo from '../app/images/github.svg';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
