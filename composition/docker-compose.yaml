@@ -46,3 +46,4 @@ services:
     - 8082:3000
     volumes:
     - ../site:/app
+    - ../.cache/coverage:/app/coverage
