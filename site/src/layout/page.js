@@ -99,7 +99,7 @@ export default class PlaygroundPage extends React.PureComponent {
                   navs={this.navs} />
               </header>
               <main className="App-main">
-                <img src={EnvoyLogo} className="App-logo" alt="logo" />
+                <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
               </main>
             </div>);
     }
