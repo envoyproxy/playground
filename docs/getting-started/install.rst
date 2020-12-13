@@ -43,7 +43,6 @@ You can run the playground directly with Docker.
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		   phlax/envoy-playground:|playground_version|-alpha
 
-
 .. warning::
 
    The playground container must be run in privileged mode and with access to the Docker socket.
@@ -82,22 +81,25 @@ Access to the playground port ``8000`` is also required.
 		-p 10000-10020:10000-10020 \
 		-p 8000:8000 \
 		docker:20-dind-rootless
-   ...
+   f57daff5d0e16f20b48e90e41538bca0a31e88dc4a46c7b5782781d985fd472d
 
    $ docker ps
-   ...
+   CONTAINER ID  IMAGE                    COMMAND                 CREATED         STATUS         PORTS
+   f57daff5d0e1  docker:20-dind-rootless  "dockerd-entrypoint.…"  19 seconds ago  Up 16 seconds  0.0.0.0:8000->8000/tcp, 2375-2376/tcp, 0.0.0.0:10000-10020->10000-10020/tcp  in-docker
 
 Wait a few seconds for the Docker process to start inside the container, and
 then start the playground.
 
 .. substitution-code-block:: console
 
-   $ docker exec in-docker sh -c "\
+   $ docker exec in-docker sh -c '\
 	     docker run -d --rm \
 		--privileged \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		   phlax/envoy-playground:|playground_version|-alpha"
-   ...
+		--host=unix:///run/user/1000/docker.sock \
+		-p 8000:8080 \
+		-v /run/user/1000/docker.sock:/var/run/docker.sock \
+		   phlax/envoy-playground:|playground_version|-alpha'
+   f01684843c27385eddb9f89d703d0c16137e4480a6377deb0a753e34d730c0e1
 
 You should now be able to access the playground UI on http://localhost:8000
 
@@ -106,14 +108,12 @@ To stop the playground, and all containers
 .. code-block:: console
 
    $ docker stop in-docker
-   ...
-
+   in-docker
 
 .. note::
 
    Unlike when running the playground `with` Docker all containers are stopped
    when the ``docker-in-docker`` container is stopped.
-
 
 .. tip::
 
@@ -128,9 +128,9 @@ To stop the playground, and all containers
 		   --rm -d \
 		   --privileged \
 		   -p /tmp/docker-images:/var/lib/docker \
-		   -p 10000-10010:10000-10010 \
+		   -p 10000-10020:10000-10020 \
 		   -p 8000:8000 \
 		   docker:20-dind-rootless
-      ...
+      9d817ed1047d3b092347aca180333987ef22dde4b384106f78ff929beb0b45ed
 
    This will make loading proxies and services faster on subsequent use of the playground.
