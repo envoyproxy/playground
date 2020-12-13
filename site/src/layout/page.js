@@ -96,10 +96,10 @@ export default class PlaygroundPage extends React.PureComponent {
 
     get navs () {
         return [
-            [3, <PlaygroundSiteLogotype title="Envoy proxy Playground" />],
-            [3, <PlaygroundSiteRepository repository="https://github.com/envoyproxy/playground" />],
-            [3, <PlaygroundSiteDocs />],
-            [3, '']];
+            [4, <PlaygroundSiteLogotype title="Envoy proxy Playground" />],
+            [1, <PlaygroundSiteRepository repository="https://github.com/envoyproxy/playground" />],
+            [2, <PlaygroundSiteDocs />],
+            [5, '']];
     }
 
     render () {
