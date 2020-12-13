@@ -45,5 +45,24 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "coverageReporters": [
+      "lcov",
+      "text"
+    ],
+    "coveragePathIgnorePatterns": [
+      "node_modules"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/*.eslintrc.js",
+      "!**/coverage/**",
+      "!**/dist/**",
+      "!**/node_modules/**"
+    ],
+    "testMatch": [
+      "**/tests/**/*.js?(x)"
+    ]
   }
 }
