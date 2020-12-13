@@ -1,0 +1,22 @@
+version: "2.3"
+services:
+
+  integration:
+    privileged: true
+    build:
+      context: ..
+      dockerfile: composition/Dockerfile
+    working_dir: /code
+    volumes:
+    - ../../.cache/integration/docker:/var/lib/docker
+    - ../tests:/code/tests
+    - ../pytest.ini:/code/pytest.ini
+    - ../bin:/code/bin
+    - ../../tmp/docker:/code/docker
+    - ../../tmp/artifacts:/code/artifacts
+
+  integration-start:
+    image: busybox
+    depends_on:
+      integration:
+        condition: service_healthy
