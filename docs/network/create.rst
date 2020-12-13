@@ -11,7 +11,7 @@ Networks allow proxies and services to connect with each other.
 .. rst-class::  clearfix
 
 Open the create network dialogue
-================================
+--------------------------------
 
 ..  figure:: ../screenshots/network.create.open.png
     :figclass: screenshot with-shadow
@@ -33,7 +33,7 @@ This should open the network create dialogue.
 .. rst-class::  clearfix
 
 Enter a network name
-====================
+--------------------
 
 ..  figure:: ../screenshots/network.create.name.png
     :figclass: screenshot with-shadow
@@ -51,7 +51,7 @@ The name should only include the characters a-z, 0-9, ``_``, ``-``, and ``.``.
 .. rst-class::  clearfix
 
 Create and start the network
-============================
+----------------------------
 
 ..  figure:: ../screenshots/network.create.starting.png
     :figclass: screenshot with-shadow
@@ -62,7 +62,7 @@ To create the network click the "Create network" button.
 
 
 Connect the network to other networks or proxies
-================================================
+------------------------------------------------
 
 ..  figure:: ../screenshots/network.create.started.png
     :figclass: screenshot with-shadow
