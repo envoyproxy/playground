@@ -72,28 +72,28 @@ test:
 	./bin/runtests.sh
 
 integration-clean:
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose stop integration
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose stop integration
 
 build-image: build
 	mkdir -p tmp/docker
 	docker save envoy-playground | gzip > tmp/docker/playground.tar.gz
 
 integration-test: integration-clean build-image
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose up --build -d integration-start
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 dev-integration: integration-clean
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$(cat VERSION)' /bin/bash"'
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose up --build -d integration
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration sh -c './bin/run-testenv.sh /bin/sh -c "PLAYGROUND_VERSION='$$(cat VERSION)' /bin/bash"'
 
 screenshots: integration-clean build-image
 	mkdir tmp/ -p
 	rm -rf tmp/artifacts
 	mkdir -p tmp/artifacts
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose up --build -d integration-start
-	COMPOSE_FILE=./composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/create-screenshots.sh"
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose up --build -d integration-start
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/create-screenshots.sh"
 	rm -f docs/screenshots/*
 	cp -a tmp/artifacts/*png docs/screenshots/
 
