@@ -37,18 +37,17 @@ class ServiceDocsCreator(object):
         service_type = self.service_types[service]
         service_type['service_type'] = service
         if service_type['labels'].get('envoy.playground.example.description'):
+            path = os.path.join("_include",  service, "example.description")
             fpath = os.path.join(
                 self.docpath,
                 'service',
                 'services',
-                "_include",
-                service,
-                "example.description")
+                path)
             with open(fpath, "w") as f:
                 f.write(
                     service_type['labels'][
                         'envoy.playground.example.description'].strip())
-            service_type['example_description'] = fpath
+            service_type['example_description'] = path
         return service_type
 
     def create_service_rst(self):

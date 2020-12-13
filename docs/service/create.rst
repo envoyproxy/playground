@@ -4,14 +4,9 @@
 Create a service
 ================
 
-Its easy to create an Envoy service in the playground.
+Adding services to the playground allows you to test your Envoy
+configurations and network setups with different upstream providers.
 
-Example configurations have been provided, or you can add your own.
-
-.. tip::
-
-   Don't forget to :ref:`add port mappings <service_create_port_mappings>` if you wish
-   your service to be available from outside of the playground.
 
 .. _service_create_dialogue:
 
@@ -53,12 +48,6 @@ It should be not too long and not too short, 4 or 5 characters is probably best.
 
 The name should only include the characters a-z, 0-9, ``_``, ``-``, and ``.``.
 
-You can also select which version of Envoy to use.
-
-The default is to use the ``envoyservice/envoy-dev:latest`` container image.
-
-You can ensure you are using the most recently published image by selecting the
-"Pull image" checkbox.
 
 .. _service_create_start:
 
