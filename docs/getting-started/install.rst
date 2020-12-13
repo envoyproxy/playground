@@ -17,6 +17,11 @@ Instead it creates a container running Docker in rootless mode, and then starts 
 While this method still requires ``--privileged`` mode, it at least provides a measure of isolation between the playground
 and the host system.
 
+.. warning::
+
+   Exposing the playground to the internet could create an open proxy and allow unknown users to run playground
+   databases and services.
+
 Requirements
 ------------
 
@@ -40,9 +45,6 @@ You can run the playground directly with Docker.
 
 
 .. warning::
-
-   Exposing the playground to the internet could create an open proxy and allow unknown users to run playground
-   databases and services.
 
    The playground container must be run in privileged mode and with access to the Docker socket.
 
