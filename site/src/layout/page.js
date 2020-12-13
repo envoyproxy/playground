@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import EnvoyLogo from '../app/images/logo.svg';
+import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import GithubLogo from '../app/images/github.svg';
 
 import PropTypes from 'prop-types';
