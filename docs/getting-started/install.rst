@@ -124,14 +124,14 @@ To stop the playground, and all containers
    You can cache the Docker images used by the ``docker-in-docker`` container by mounting a directory to
    the ``/var/lib/docker`` mount point inside the container.
 
-   For example, you could start it with:
+   For example, to cache the images to the ``/tmp/docker-runtime`` directory on the host you could start it with:
 
    .. code-block:: console
 
       $ docker run --name in-docker \
 		   --rm -d \
 		   --privileged \
-		   -p /tmp/docker-images:/var/lib/docker \
+		   -v /tmp/docker-runtime:/var/lib/docker \
 		   -p 10000-10020:10000-10020 \
 		   -p 8000:8000 \
 		   docker:20-dind-rootless
