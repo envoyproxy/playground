@@ -13,7 +13,6 @@ import {Nav, Navbar, NavbarBrand, NavItem, NavLink} from 'reactstrap';
 export class PlaygroundSiteRepository extends React.PureComponent {
     static propTypes = exact({
         repository: PropTypes.string.isRequired,
-        dispatch: PropTypes.func,
     });
 
     render () {
@@ -22,7 +21,20 @@ export class PlaygroundSiteRepository extends React.PureComponent {
             <>
               <NavLink href={repository} className="m-0 p-0">
                 <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
-                {repository}
+                code
+              </NavLink>
+            </>
+        );
+    }
+}
+
+
+export class PlaygroundSiteDocs extends React.PureComponent {
+    render () {
+        return (
+            <>
+              <NavLink href="/docs" className="m-0 p-0">
+                docs
               </NavLink>
             </>
         );
@@ -86,7 +98,8 @@ export default class PlaygroundPage extends React.PureComponent {
         return [
             [3, <PlaygroundSiteLogotype title="Envoy proxy Playground" />],
             [3, <PlaygroundSiteRepository repository="https://github.com/envoyproxy/playground" />],
-            [6, '']];
+            [3, <PlaygroundSiteDocs />],
+            [3, '']];
     }
 
     render () {
