@@ -72,14 +72,14 @@ Here you can find information about which ports are exposed by default with the 
 Some images may allow you to change which ports are exposed, either by manipulating
 the environment variables for the service, or by changing its configuration.
 
-.. _service_create_ports:
+.. _service_create_readme:
 
 .. rst-class::  clearfix
 
 Check the README for the service
 --------------------------------
 
-..  figure:: ../screenshots/service.create.ports.png
+..  figure:: ../screenshots/service.create.readme.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
