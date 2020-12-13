@@ -19,7 +19,7 @@ Open the create service dialogue
     :figwidth: 40%
     :align: right
 
-Open the playground, and click on the green ``+`` next to "Proxies".
+Open the playground, and click on the green ``+`` next to "Services".
 
 This should open the service create dialogue.
 
@@ -33,8 +33,8 @@ This should open the service create dialogue.
 
 .. rst-class::  clearfix
 
-Enter the service name and select a version
--------------------------------------------
+Enter the service name and select a service type
+------------------------------------------------
 
 ..  figure:: ../screenshots/service.create.name.png
     :figclass: screenshot with-shadow
