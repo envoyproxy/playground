@@ -1,6 +1,6 @@
 
-Install Envoy Playground
-========================
+Install Envoy proxy Playground
+==============================
 
 There are two methods of running the playground described here.
 
