@@ -5,7 +5,7 @@ Install Envoy Playground
 There are two methods of running the playground described here.
 
 The first is the easiest way, but as the playground requires the ability to build and run Docker containers and networks,
-it requires both to be run in ``--privileged`` mode and access to the host ``/var/run/docker.sock``.
+it requires both to be run in ``--privileged`` mode and have access to the host ``/var/run/docker.sock``.
 
 Running any container with ``--privileged`` mode allows the process inside the container to escalate privileges to root
 on the host. Having access to the docker socket makes this trivial.
@@ -56,29 +56,37 @@ The second method of running the playground is to run it inside a Docker contain
 
 Although slightly more complex, this way can be more secure.
 
-The first thing we need is to start a ``docker-in-docker`` container in daemon mode.
+The ``docker-in-docker`` rootless image requires the kernel
+``unprivileged_userns_clone`` to be set to ``1``.
 
-We need to provide access to a range or ports inside this container so we can still
-access any edge ports exposed by proxies in the playground.
-
-We also need to provide access to the playground port ``8000``
+You can achieve this for a running session with:
 
 .. code-block:: console
 
-   $ docker run --name in-docker --rm -d \
-		-p 10000-30000:10000-30000 \
+   $ echo 1 | sudo tee /proc/sys/kernel/unprivileged_userns_clone
+
+Next, start a ``docker-in-docker`` rootless container in daemon mode.
+
+Any ports exposed by proxies inside the container that you want to access need to be
+mapped. It is better not to map a large range of ports in this way.
+
+Access to the playground port ``8000`` is also required.
+
+.. code-block:: console
+
+   $ docker run --name in-docker \
+		--rm -d \
+		--privileged \
+		-p 10000-10020:10000-10020 \
 		-p 8000:8000 \
-		docker
+		docker:20-dind-rootless
    ...
-
-You will need to wait a few seconds for the container to become healthy
-
-.. code-block:: console
 
    $ docker ps
    ...
 
-Once the Docker container is healthy, we can tell it to start the playground.
+Wait a few seconds for the Docker process to start inside the container, and
+then start the playground.
 
 .. substitution-code-block:: console
 
@@ -114,11 +122,13 @@ To stop the playground, and all containers
 
    .. code-block:: console
 
-      $ docker run --name in-docker --rm -d \
+      $ docker run --name in-docker \
+		   --rm -d \
+		   --privileged \
 		   -p /tmp/docker-images:/var/lib/docker \
-		   -p 10000-30000:10000-30000 \
+		   -p 10000-10010:10000-10010 \
 		   -p 8000:8000 \
-		   docker
+		   docker:20-dind-rootless
       ...
 
    This will make loading proxies and services faster on subsequent use of the playground.
