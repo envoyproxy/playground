@@ -27,7 +27,7 @@ This should open the service create dialogue.
 
 .. tip::
 
-   You can use ``ctrl+alt+p`` to open the create new service dialogue.
+   You can use ``ctrl+alt+s`` to open the create new service dialogue.
 
 .. _service_create_name:
 
