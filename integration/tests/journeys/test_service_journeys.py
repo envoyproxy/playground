@@ -24,7 +24,7 @@ def test_journey_service_create(playground):
     select = playground.web.find_element_by_css_selector(
         '.tab-pane.active form select#service_type')
     select.find_element_by_css_selector(
-        '[value="HTTP/S echo"]').click()
+        '[value="http-echo"]').click()
     playground.snap('service.create.configuration', .3)
 
     # add an environment var
