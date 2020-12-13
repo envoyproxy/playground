@@ -10,4 +10,4 @@ The playground comes configured with many different "upstream" services that you
     :maxdepth: 2
 
     create
-    services
+    services/index
