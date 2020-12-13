@@ -7,7 +7,6 @@ Create a service
 Adding services to the playground allows you to test your Envoy
 configurations and network setups with different upstream providers.
 
-
 .. _service_create_dialogue:
 
 .. rst-class::  clearfix
@@ -48,6 +47,47 @@ It should be not too long and not too short, 4 or 5 characters is probably best.
 
 The name should only include the characters a-z, 0-9, ``_``, ``-``, and ``.``.
 
+.. _service_create_ports:
+
+.. rst-class::  clearfix
+
+View the ports exposed by the service
+-------------------------------------
+
+..  figure:: ../screenshots/service.create.ports.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
+All services in the playground will expose at least one `TCP`/ `IP`
+port.
+
+Any services or proxies connected to a network upon which the service is
+also connected, can connect to the service.
+
+They can do this using the service's name and by connecting to any ports that are exposed.
+
+Here you can find information about which ports are exposed by default with the service.
+
+Some images may allow you to change which ports are exposed, either by manipulating
+the environment variables for the service, or by changing its configuration.
+
+.. _service_create_ports:
+
+.. rst-class::  clearfix
+
+Check the README for the service
+--------------------------------
+
+..  figure:: ../screenshots/service.create.ports.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
+Each service comes with a README with basic information about the service and the
+container image it users.
+
+The README should also outline how the service can be used within the playground.
 
 .. _service_create_start:
 
@@ -68,14 +108,14 @@ If you are running this for the first time, or you have chosen to pull a new con
 After downloading the requested Envoy image, the playground wraps it in an image with hot-restart capability.
 
 
-Connect your service to other services or proxies
--------------------------------------------------
+Connect the service to other services or proxies
+------------------------------------------------
 
 ..  figure:: ../screenshots/service.create.started.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
 
-Once your service has been created you should see it added to the service list on the left-hand side of the screen.
+Once the service has been created you should see it added to the service list on the right-hand side of the screen.
 
-You will probably now want to create some services and networks to make use of the service.
+You will probably now want to create some proxies and networks to make use of the service.

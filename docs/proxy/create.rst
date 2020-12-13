@@ -11,7 +11,7 @@ Example configurations have been provided, or you can add your own.
 .. tip::
 
    Don't forget to :ref:`add port mappings <proxy_create_port_mappings>` if you wish
-   your proxy to be available from outside of the playground.
+   the proxy to be available from outside of the playground.
 
 .. _proxy_create_dialogue:
 
@@ -119,7 +119,7 @@ Set the log level (optional)
     :figwidth: 40%
     :align: right
 
-You can set the log level for your proxy.
+You can set the log level for the proxy.
 
 This is particularly useful if you are trying to debug a problematic proxy connection or want to learn more
 about how Envoy works.
@@ -130,8 +130,8 @@ The logs are available from the Docker container, the ``id`` of which will be sh
 
 .. rst-class::  clearfix
 
-Upload certificates for your proxy (optional)
----------------------------------------------
+Upload certificates for the proxy (optional)
+--------------------------------------------
 
 ..  figure:: ../screenshots/proxy.create.certificates.png
     :figclass: screenshot with-shadow
@@ -156,8 +156,8 @@ inside the container.
 
 .. rst-class::  clearfix
 
-Upload binaries for your proxy (optional)
------------------------------------------
+Upload binaries for the proxy (optional)
+----------------------------------------
 
 ..  figure:: ../screenshots/proxy.create.binaries.png
     :figclass: screenshot with-shadow
@@ -187,14 +187,14 @@ If you are running this for the first time, or you have chosen to pull a new con
 After downloading the requested Envoy image, the playground wraps it in an image with hot-restart capability.
 
 
-Connect your proxy to other proxies or services
------------------------------------------------
+Connect the proxy to other proxies or services
+----------------------------------------------
 
 ..  figure:: ../screenshots/proxy.create.started.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
 
-Once your proxy has been created you should see it added to the proxy list on the left-hand side of the screen.
+Once the proxy has been created you should see it added to the proxy list on the left-hand side of the screen.
 
 You will probably now want to create some services and networks to make use of the proxy.
