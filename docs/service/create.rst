@@ -1,8 +1,8 @@
 
 .. _service_create:
 
-Create an Envoy service
-=====================
+Create a service
+================
 
 Its easy to create an Envoy service in the playground.
 
@@ -18,7 +18,7 @@ Example configurations have been provided, or you can add your own.
 .. rst-class::  clearfix
 
 Open the create service dialogue
-------------------------------
+--------------------------------
 
 ..  figure:: ../screenshots/service.create.open.png
     :figclass: screenshot with-shadow
@@ -65,7 +65,7 @@ You can ensure you are using the most recently published image by selecting the
 .. rst-class::  clearfix
 
 Create and start the service
---------------------------
+----------------------------
 
 ..  figure:: ../screenshots/service.create.starting.png
     :figclass: screenshot with-shadow
