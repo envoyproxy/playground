@@ -69,7 +69,11 @@ You can achieve this for a running session with:
 Next, start a ``docker-in-docker`` rootless container in daemon mode.
 
 Any ports exposed by proxies inside the container that you want to access need to be
-mapped. It is better not to map a large range of ports in this way.
+mapped.
+
+.. tip::
+
+   It is better not to map a large range of ports in this way.
 
 Access to the playground port ``8000`` is also required.
 
