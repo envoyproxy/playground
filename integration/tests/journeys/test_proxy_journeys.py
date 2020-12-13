@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.screenshots
-def test_open_proxy_modal(playground):
+def test_journey_proxy_create(playground):
     playground.snap('proxy.create.open')
 
     # open the proxy modal

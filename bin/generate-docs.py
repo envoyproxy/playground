@@ -27,28 +27,33 @@ class ServiceDocsCreator(object):
         return parsed["services"]
 
     def copy_service_dirs(self):
-        os.mkdir(f'{self.docpath}/services/_include')
+        os.mkdir(f'{self.docpath}/service/services/_include')
         for service in self.service_types:
             src = f'services/{service}'
-            dst = f'{self.docpath}/services/_include/{service}'
+            dst = f'{self.docpath}/service/services/_include/{service}'
             shutil.copytree(src, dst)
 
     def _get_service_vars(self, service):
         service_type = self.service_types[service]
         service_type['service_type'] = service
         if service_type['labels'].get('envoy.playground.example.description'):
-            fpath = os.path.join("_include",  service, "example.description")
-            with open(os.path.join(self.docpath, 'services', fpath), "w") as f:
+            path = os.path.join("_include",  service, "example.description")
+            fpath = os.path.join(
+                self.docpath,
+                'service',
+                'services',
+                path)
+            with open(fpath, "w") as f:
                 f.write(
                     service_type['labels'][
                         'envoy.playground.example.description'].strip())
-            service_type['example_description'] = fpath
+            service_type['example_description'] = path
         return service_type
 
     def create_service_rst(self):
         template = jinja_env.get_template('service.rst.template')
         for service in self.service_types:
-            rst = f'{self.docpath}/services/{service}.rst'
+            rst = f'{self.docpath}/service/services/{service}.rst'
             print(f'creating rst file: {rst}')
             with open(rst, 'w') as f:
                 f.write(
@@ -56,7 +61,7 @@ class ServiceDocsCreator(object):
                         self._get_service_vars(service)))
 
     def create_toc(self):
-        rst = f'{self.docpath}/services/index.rst'
+        rst = f'{self.docpath}/service/services/index.rst'
         with open(rst) as f:
             toc = f.read()
         toc = f"{toc}\n\n.. toctree::\n    :maxdepth: 3\n\n"
