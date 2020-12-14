@@ -6,8 +6,8 @@ if [[ -e /code/docker/playground.tar.gz ]]; then
     docker load < /code/docker/playground.tar.gz
 elif [[ -n "$PLAYGROUND_VERSION" ]]; then
     echo ">>> Pulling playground: ${PLAYGROUND_VERSION}"
-    docker pull "phlax/envoy-playground:${PLAYGROUND_VERSION}-alpha"
-    docker tag "phlax/envoy-playground:${PLAYGROUND_VERSION}-alpha envoy-playground"
+    docker pull "phlax/envoy-playground:${PLAYGROUND_VERSION}"
+    docker tag "phlax/envoy-playground:${PLAYGROUND_VERSION} envoy-playground"
 else
     echo "ERROR: Need either an image or a version to pull, can't continue, exiting, bye" >&2
     exit 1
