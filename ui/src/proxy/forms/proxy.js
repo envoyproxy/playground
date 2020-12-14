@@ -26,6 +26,10 @@ export class BaseProxyForm extends React.PureComponent {
         examples: PropTypes.object.isRequired,
     });
 
+    get configWarning () {
+        return "Don't forget to add Envoy configuration";
+    }
+
     get messages () {
         return [
             "Enter a unique proxy name, and add configuration below.",
@@ -63,7 +67,7 @@ export class BaseProxyForm extends React.PureComponent {
         let warning;
         if (!this.validateConfiguration(configuration)) {
             valid = false;
-            warning = "Don't forget to add Envoy configuration";
+            warning = this.configWarning;
         }
         await dispatch(updateForm({errors, valid, name, warning}));
     }
@@ -74,8 +78,10 @@ export class BaseProxyForm extends React.PureComponent {
         const {errors: _errors={}} = form;
         let {valid} = form;
         const errors = {..._errors};
+        let warning;
         if (!this.validateConfiguration(configuration, errors)) {
             valid = false;
+            warning = this.configWarning;
         } else if (!errors.name) {
             valid = true;
         }
@@ -84,7 +90,7 @@ export class BaseProxyForm extends React.PureComponent {
                 errors,
                 valid,
                 configuration,
-                warning: null}));
+                warning}));
     }
 
     render () {
@@ -135,6 +141,7 @@ export class BaseProxyForm extends React.PureComponent {
                 {showConfig &&
                  <ProxyConfigForm
                    configuration={configuration}
+                   configWarning={this.configWarning}
                    errors={errors}
                    examples={examples}
                    dispatch={dispatch}

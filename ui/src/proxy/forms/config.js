@@ -39,7 +39,7 @@ export class ProxyConfigForm extends React.PureComponent {
     }
 
     onExampleSelect = async (evt) => {
-        const {dispatch, errors: _errors, examples} = this.props;
+        const {configWarning, dispatch, errors: _errors, examples} = this.props;
         const {envoy} = examples;
         const errors = {..._errors};
         // todo: implement overwrite button
@@ -48,9 +48,9 @@ export class ProxyConfigForm extends React.PureComponent {
             const response = await fetch(envoy[evt.target.value].path);
             const text = await response.text();
             delete errors.configuration;
-            await dispatch(updateForm({configuration: text, valid: true, errors}));
+            await dispatch(updateForm({configuration: text, valid: true, errors, warning: undefined}));
         } else {
-            await dispatch(updateForm({configuration: code, valid: false}));
+            await dispatch(updateForm({configuration: code, valid: false, warning: configWarning}));
         }
     }
 
