@@ -9,13 +9,57 @@ import {AlertStartFailed} from '../shared/alerts';
 import {PlaygroundFailLogs} from '../shared/logs';
 
 
+export class PlaygroundProgressive extends React.Component {
+
+    state = {value: 0};
+
+    componentDidMount () {
+        const {value=[0]} = this.props;
+        this.setState({value: value[0]});
+        this.timer = setTimeout(this.progress, 200);
+    }
+
+    progress = () => {
+        const {value: propValue} = this.props;
+        this.setState(state => {
+            const {value} = state;
+            return {value: value + ((propValue[1] - value) / 2)};
+        });
+        this.timer = setTimeout(this.progress, 200);
+    };
+
+    componentWillUnmount () {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+    }
+
+    componentDidUpdate (prevProps) {
+        const {value} = this.props;
+        if (prevProps.value !== value) {
+            this.setState({value: value[0]});
+        }
+    }
+
+    render () {
+        const {value} = this.state;
+        const {value: nothing, ...props} = this.props;
+        return (
+            <Progress
+              {...props}
+              value={value} />
+        );
+    }
+
+};
+
 export class ContainerStarting extends React.PureComponent {
     static propTypes = exact({
         color: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired,
         iconAlt: PropTypes.string.isRequired,
         message: PropTypes.object.isRequired,
-        progress: PropTypes.number,
+        progress: PropTypes.array,
     });
 
     render () {
@@ -36,7 +80,7 @@ export class ContainerStarting extends React.PureComponent {
               </Row>
               <Row className="m-2 pt-3 pb-3 pl-2 pr-2">
                 <Col>
-                  <Progress
+                  <PlaygroundProgressive
                     striped
                     color={color}
                     value={progress} />
