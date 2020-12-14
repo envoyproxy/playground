@@ -16,7 +16,6 @@ export class PlaygroundProgressive extends React.Component {
     componentDidMount () {
         const {value=[0]} = this.props;
         this.setState({value: value[0]});
-        console.log('MOUNT', value[0]);
         this.timer = setTimeout(this.progress, 200);
     }
 
@@ -38,7 +37,6 @@ export class PlaygroundProgressive extends React.Component {
     componentDidUpdate (prevProps) {
         const {value} = this.props;
         if (prevProps.value !== value) {
-            console.log('UPDATE', value[0]);
             this.setState({value: value[0]});
         }
     }
