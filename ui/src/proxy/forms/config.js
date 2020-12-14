@@ -31,6 +31,7 @@ export class ProxyConfigForm extends React.PureComponent {
         configuration: PropTypes.string,
         errors: PropTypes.object.isRequired,
         examples: PropTypes.object.isRequired,
+        configWarning: PropTypes.string,
     });
 
     clearConfig = () => {
