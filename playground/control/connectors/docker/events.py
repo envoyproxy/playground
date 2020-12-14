@@ -93,6 +93,9 @@ class PlaygroundDockerEvents(object):
                 "envoy.playground.temp.resource"))
 
     async def _handle_container(self, publisher, data):
+        if '__' not in data['attributes']['name']:
+            # not sure if this breaks updating...
+            return
         data["name"] = (
             data['attributes']['name'].split('__')[2]
             if 'envoy.playground.temp.mount' in data['attributes']
@@ -102,9 +105,6 @@ class PlaygroundDockerEvents(object):
             await publisher(data)
             return
 
-        # todo: think of a way to not try to fetch logs when container
-        #   has been killed intentionally
-
         try:
             container = await self.connector.get_container(data['id'])
         except DockerError as e:
@@ -112,14 +112,30 @@ class PlaygroundDockerEvents(object):
             await publisher(data)
             return
 
-        if data['action'] == 'die':
+        is_volume_container = (
+            'envoy.playground.temp.resource'
+            in container['Config']['Labels'])
+        logs_needed = (
+            data['action'] == 'die'
+            and not is_volume_container
+            and container['State']['ExitCode'] == 1)
+        if logs_needed:
+            try:
+                data['logs'] = await container.log(stdout=True, stderr=True)
+            except DockerError as e:
+                logger.warn(
+                    f'Failed fetching logs: {data["name"]} {data["id"]} {e}')
             try:
                 data['logs'] = await container.log(stdout=True, stderr=True)
                 await container.delete(force=True, v=True)
+                volumes = [
+                    v['Name']
+                    for v
+                    in container.__dict__['_container']['Mounts']]
+                await self.connector.volumes.delete(volumes)
             except DockerError as e:
                 logger.warn(
                     f'Failed deleting image: {data["name"]} {data["id"]} {e}')
-                pass
             await publisher(data)
             return
 

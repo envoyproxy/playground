@@ -50,11 +50,12 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         logger.debug(
             f'Checking for image ({image_tag})')
         try:
-            return bool(
+            images = await self.docker.images.list(filter=image_tag)
+            return bool([
                 _result
                 for _result
-                in await self.docker.images.list(filter=image_tag)
-                if image_tag in _result['RepoTags'])
+                in images
+                if image_tag in _result['RepoTags']])
         except aiodocker.DockerError as e:
             logger.error(
                 f'Failed checking for image ({image_tag}): {e}')
