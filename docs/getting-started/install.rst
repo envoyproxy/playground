@@ -41,7 +41,7 @@ You can run the playground directly with Docker.
    $ docker run -d --rm \
 		--privileged \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		   phlax/envoy-playground:|playground_version|-alpha
+		   phlax/envoy-playground:|playground_version|
 
 .. warning::
 
@@ -102,7 +102,7 @@ then start the playground.
 		--host=unix:///run/user/1000/docker.sock \
 		-p 8000:8080 \
 		-v /run/user/1000/docker.sock:/var/run/docker.sock \
-		   phlax/envoy-playground:|playground_version|-alpha'
+		   phlax/envoy-playground:|playground_version|'
    f01684843c27385eddb9f89d703d0c16137e4480a6377deb0a753e34d730c0e1
 
 You should now be able to access the playground UI on http://localhost:8000

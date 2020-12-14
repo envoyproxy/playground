@@ -16,7 +16,7 @@ import {PlaygroundEditor} from '../../shared/editor';
 
 
 export class ServiceConfigurationForm extends React.PureComponent {
-    static contexType = PlaygroundContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -41,6 +41,7 @@ export class ServiceConfigurationForm extends React.PureComponent {
         }
         const configDefault  = service_types[service_type]['labels']['envoy.playground.config.default'];
         if (configDefault) {
+            console.log(configDefault);
             const content = await api.get(
                 ['/static', service_type, configDefault].join('/'),
                 'text');

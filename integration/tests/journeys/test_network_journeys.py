@@ -11,7 +11,8 @@ def test_journey_network_create(playground):
     # open the proxy modal
     playground.web.find_elements_by_name('Networks')[0].click()
     time.sleep(1)
-    name_input = playground.web.find_elements_by_id('name')[0]
+    name_input = playground.web.find_elements_by_id(
+        'envoy.playground.name')[0]
     assert (
         name_input.get_attribute('placeholder')
         == 'Enter network name')

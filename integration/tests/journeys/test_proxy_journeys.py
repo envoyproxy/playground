@@ -11,7 +11,8 @@ def test_journey_proxy_create(playground):
     # open the proxy modal
     playground.web.find_elements_by_name('Proxies')[0].click()
     time.sleep(1)
-    name_input = playground.web.find_elements_by_id('name')[0]
+    name_input = playground.web.find_elements_by_id(
+        'envoy.playground.name')[0]
     assert (
         name_input.get_attribute('placeholder')
         == 'Enter proxy name')
