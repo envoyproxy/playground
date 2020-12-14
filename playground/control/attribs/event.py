@@ -20,6 +20,7 @@ class ProxyEventAttribs(ContainerEventAttribs):
     logs = attr.ib(type=list, default=[])
     port_mappings = attr.ib(type=list, default=[])
     image = attr.ib(type=str, default='')
+    build_from = attr.ib(type=str, default='')
 
 
 @attr.s(kw_only=True)
@@ -71,3 +72,4 @@ class ProxyTransmitAttribs(ValidatingAttribs):
     image = attr.ib(type=str, default='')
     logs = attr.ib(type=list, default=[])
     port_mappings = attr.ib(type=list, default=[])
+    build_from = attr.ib(type=str, default='')

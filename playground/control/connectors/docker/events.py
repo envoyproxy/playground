@@ -92,7 +92,7 @@ class PlaygroundDockerEvents(object):
             or data['attributes'].get(
                 "envoy.playground.temp.resource"))
 
-    async def _handle_volume_container(self, publisher, data):
+    async def _handle_volume_container(self, data):
         if data['action'] not in ['start']:
             return
         _data = {}
@@ -102,11 +102,13 @@ class PlaygroundDockerEvents(object):
             'envoy.playground.temp.name', '')
         _data['attributes'] = {}
         _data['id'] = '23'
+        publisher = self.publisher[
+            data['attributes']['envoy.playground.temp.resource']]
         await publisher(_data)
 
     async def _handle_container(self, publisher, data):
         if '__' not in data['attributes']['name']:
-            await self._handle_volume_container(publisher, data)
+            await self._handle_volume_container(data)
             return
         data["name"] = (
             data['attributes']['name'].split('__')[2]
@@ -221,14 +223,27 @@ class PlaygroundDockerEvents(object):
 
     async def publish(self, event_type, *args, **kwargs):
         if event_type == 'image_pull':
-            image_tag = args[0]
-            await self.publisher['image'](
+            image_tag = args[1]
+            publisher = (
+                'proxy'
+                if args[1].startswith('envoyproxy/envoy')
+                else 'service')
+            await self.publisher[publisher](
                 dict(action='pull_start',
+                     status='pull_start',
+                     name=args[0],
+                     id='23',
+                     attributes={},
                      image=image_tag))
         elif event_type == 'image_build':
-            image_tag = args[0]
-            await self.publisher['image'](
+            image_tag = args[1]
+            await self.publisher['proxy'](
                 dict(action='build_start',
+                     id='23',
+                     name=args[0],
+                     attributes={},
+                     status='build_start',
+                     build_from=args[2],
                      image=image_tag))
 
     def subscribe(

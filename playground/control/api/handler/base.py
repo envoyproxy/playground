@@ -19,7 +19,7 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
             self,
             event: PlaygroundEvent) -> None:
         handlers = [
-            "destroy", "start",
+            "destroy", "start", "build_start", "pull_start",
             "die", "volume_create"]
         if event.data.action not in handlers:
             return

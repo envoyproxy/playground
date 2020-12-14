@@ -42,8 +42,17 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             command.data.pull_latest
             or not await self.connector.images.exists(envoy_image))
         if should_pull:
+            await self.connector.events.publish(
+                'image_pull',
+                command.data.name,
+                base_image)
             errors = await self.connector.images.pull(base_image)
             if not errors:
+                await self.connector.events.publish(
+                    'image_build',
+                    command.data.name,
+                    base_image,
+                    envoy_image)
                 errors = await self.connector.images.build(
                     base_image, envoy_image)
             if errors:

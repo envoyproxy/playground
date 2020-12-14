@@ -43,7 +43,7 @@ export default class PlaygroundSocket {
         const data = JSON.parse(event.data);
         const {dispatch} = this.store;
         const {playtime_errors, type} = data;
-        // console.log("INCOMING", data);
+        console.log("INCOMING", data);
         await dispatch(logEvent(data));
         if (playtime_errors) {
             await this.api.errors(data);

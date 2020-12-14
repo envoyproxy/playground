@@ -26,10 +26,10 @@ export class ProxyFormModal extends React.PureComponent {
         return {
             default: [10,  <span>Creating Envoy proxy ({name})...</span>],
             pull_start: [20,  <span>Pulling container image for Envoy proxy ({name})...</span>],
-            build_start: [30,  <span>Building container image for Envoy proxy ({name})...</span>],
-            success: [100,  <span>Envoy proxy has started ({name})!</span>],
-            volume_create: [40,  <span>Creating volumes for Envoy proxy ({name})...</span>],
-            start: [90,  <span>Starting Envoy proxy container ({name})...</span>]};
+            build_start: [50,  <span>Building container image for Envoy proxy ({name})...</span>],
+            volume_create: [80,  <span>Creating volumes for Envoy proxy ({name})...</span>],
+            start: [90,  <span>Starting Envoy proxy container ({name})...</span>],
+            success: [100,  <span>Envoy proxy has started ({name})!</span>]};
     }
 
     get tabs () {

@@ -90,35 +90,6 @@ export class PlaygroundAPIResources {
 }
 
 
-export class PlaygroundAPIImages extends PlaygroundAPIResources {
-    apiType = 'image'
-
-    handle = async (data) => {
-        const {dispatch} = this.store;
-        const state = this.store.getState();
-        const form = state.form.value;
-        const service_types = state.service_type.value;
-        if (Object.keys(form).length === 0) {
-            return;
-        }
-        const {service_type} = form;
-        if (service_type) {
-            const serviceConfig = service_types[service_type];
-            const {image} = serviceConfig;
-            const {status} = data;
-            if (image === data.image) {
-                await(dispatch(updateForm({status})));
-            }
-        } else {
-            const {image, status} = data;
-            if (image === "envoyproxy/envoy-dev-playground:latest") {
-                await(dispatch(updateForm({status})));
-            }
-        }
-    }
-}
-
-
 export class PlaygroundAPINetworks extends PlaygroundAPIResources {
     apiType = 'network'
 
@@ -174,15 +145,26 @@ export class PlaygroundAPIContainers extends PlaygroundAPIResources {
         const {dispatch} = this.store;
         const {id, name, status, logs} = data;
         let _dispatch;
-        if (['volume_create', 'start'].indexOf(status) !== -1) {
+        if (['build_start', 'volume_create', 'pull_start', 'start'].indexOf(status) !== -1) {
             const update = {};
-            update[name] = {id, name};
-            _dispatch = onUpdate(update);
+            if (['build_start', 'pull_start'].indexOf(status) !== -1) {
+                const form = this.store.getState().form.value;
+                const {name: formName} = form;
+                if (formName) {
+                    console.log('UPDATE FORM');
+                    await this._updateContainerForm(formName, status);
+                }
+            } else {
+                update[name] = {id, name};
+                _dispatch = onUpdate(update);
+            }
         } else if (['exited', 'destroy', 'die'].indexOf(status) !== -1) {
             _dispatch = onRemove(data.id);
         }
-        await dispatch(_dispatch);
-        await this._updateContainerForm(name, status, logs);
+        if (_dispatch) {
+            await dispatch(_dispatch);
+            await this._updateContainerForm(name, status, logs);
+        }
     }
 }
 

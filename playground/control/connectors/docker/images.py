@@ -20,8 +20,6 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
             image_tag: str) -> Union[list, None]:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        await self.connector.events.publish(
-            'image_build', image_tag)
         logger.info(
             f'Building image: {image_tag} from {build_from}')
         try:
@@ -63,7 +61,6 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
     async def pull(self, image_tag: str) -> None:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        await self.connector.events.publish('image_pull', image_tag)
         logger.info(f'Pulling image {image_tag}')
         try:
             await self.docker.images.pull(image_tag)
