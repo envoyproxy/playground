@@ -223,15 +223,11 @@ class PlaygroundDockerEvents(object):
 
     async def publish(self, event_type, *args, **kwargs):
         if event_type == 'image_pull':
-            image_tag = args[1]
-            publisher = (
-                'proxy'
-                if args[1].startswith('envoyproxy/envoy')
-                else 'service')
-            await self.publisher[publisher](
+            image_tag = args[2]
+            await self.publisher[args[0]](
                 dict(action='pull_start',
                      status='pull_start',
-                     name=args[0],
+                     name=args[1],
                      id='23',
                      attributes={},
                      image=image_tag))

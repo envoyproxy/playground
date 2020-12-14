@@ -35,10 +35,3 @@ class PlaygroundProxyEventHandler(PlaygroundContainerEventHandler):
             build_from=event.data.build_from,
             image=event.data.image)
         await self._publish(event, _data)
-
-    async def pull_start(
-            self,
-            event: PlaygroundEvent) -> None:
-        _data = dict(
-            image=event.data.image)
-        await self._publish(event, _data)

@@ -15,6 +15,13 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
     async def publish(self, data):
         raise NotImplementedError
 
+    async def pull_start(
+            self,
+            event: PlaygroundEvent) -> None:
+        _data = dict(
+            image=event.data.image)
+        await self._publish(event, _data)
+
     async def _handle(
             self,
             event: PlaygroundEvent) -> None:

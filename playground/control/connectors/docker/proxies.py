@@ -44,6 +44,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
         if should_pull:
             await self.connector.events.publish(
                 'image_pull',
+                'proxy',
                 command.data.name,
                 base_image)
             errors = await self.connector.images.pull(base_image)

@@ -13,13 +13,13 @@ class ContainerEventAttribs(ValidatingAttribs):
     action = attr.ib(type=str)
     attributes = attr.ib(type=dict)
     logs = attr.ib(type=list, default=[])
+    image = attr.ib(type=str, default='')
 
 
 @attr.s(kw_only=True)
 class ProxyEventAttribs(ContainerEventAttribs):
     logs = attr.ib(type=list, default=[])
     port_mappings = attr.ib(type=list, default=[])
-    image = attr.ib(type=str, default='')
     build_from = attr.ib(type=str, default='')
 
 
