@@ -122,7 +122,7 @@ export class PlaygroundNameInput extends React.PureComponent {
         const {errors, placeholder, value=''} = this.props;
         return (
 	    <PlaygroundInput
-              name="name"
+              name="envoy.playground.name"
               autoFocus
               placeholder={placeholder}
               errors={errors}
