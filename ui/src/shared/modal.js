@@ -171,7 +171,7 @@ export class BaseModalWidget extends React.PureComponent {
         const {status, validation} = form;
         let {warning} = form;
         const isOpen = Boolean(modal);
-        if (!tabs[modal] || tabs[modal] === 0) {
+        if (!tabs.modal || tabs.modal === 0) {
             warning = '';
         }
         return (
