@@ -46,14 +46,21 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         # this is not v efficient, im wondering if there is a way to search.
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        return bool(await self.docker.images.list(filter=image_tag))
+        result = [
+            _result
+            for _result
+            in await self.docker.images.list(filter=image_tag)
+            if image_tag in _result['RepoTags']]
+        logger.warn(f'Checked for image {image_tag}: {result}')
+        return bool(result)
 
     async def pull(self, image_tag: str) -> None:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
         await self.connector.events.publish('image_pull', image_tag)
         try:
+            logger.warn(f'Pulling image {image_tag}')
             await self.docker.images.pull(image_tag)
         except aiodocker.DockerError as e:
-            logger.warn(f'Failed pulling image: {image} {e}')
+            logger.warn(f'Failed pulling image: {image_tag} {e}')
             return e

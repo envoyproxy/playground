@@ -119,7 +119,7 @@ class PlaygroundDockerEvents(object):
                 await container.delete(force=True, v=True)
             except DockerError as e:
                 logger.warn(
-                    f'Failed deleting image: {data["name"]} {data["id"]} {e}',
+                    f'Failed deleting image: {data["name"]} {data["id"]} {e}')
                 pass
             await publisher(data)
             return
@@ -177,7 +177,8 @@ class PlaygroundDockerEvents(object):
             try:
                 target = await self.connector.get_container(container)
             except DockerError as e:
-                logger.warn(f'Failed finding container for network: {container} {e}')
+                logger.warn(
+                    f'Failed finding container for network: {container} {e}')
                 return
         if target:
             if target['Name'].startswith('/envoy__playground__proxy__'):
