@@ -5,6 +5,7 @@ import exact from 'prop-types-exact';
 
 import {highlight, languages} from 'prismjs/components/prism-core';
 
+import {PlaygroundContext} from '../../app';
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 
@@ -15,6 +16,7 @@ import {PlaygroundEditor} from '../../shared/editor';
 
 
 export class ServiceConfigurationForm extends React.PureComponent {
+    static contexType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -31,6 +33,7 @@ export class ServiceConfigurationForm extends React.PureComponent {
     }
 
     async componentDidMount () {
+        const {api} = this.context;
         const {dispatch, form, service_types} = this.props;
         const {configuration, service_type} = form;
         if (configuration) {
@@ -38,8 +41,9 @@ export class ServiceConfigurationForm extends React.PureComponent {
         }
         const configDefault  = service_types[service_type]['labels']['envoy.playground.config.default'];
         if (configDefault) {
-            const response = await fetch('http://localhost:8000/static/' + service_type + '/' + configDefault);
-            const content = await response.text();
+            const content = await api.get(
+                ['/static', service_type, configDefault].join('/'),
+                'text');
             await dispatch(updateForm({configuration: content}));
         }
     }

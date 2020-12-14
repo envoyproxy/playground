@@ -12,10 +12,10 @@ test('api constructor', () => {
     expect(api.address).toEqual('ADDRESS');
 });
 
-test('api _getAddress', () => {
+test('api address', () => {
     const playground = {PG: true};
     const api = new PlaygroundAPI(playground, 'ADDRESS');
-    expect(api._getAddress('/PATH')).toEqual('ADDRESS/PATH');
+    expect(api.address('/PATH')).toEqual('ADDRESS/PATH');
 });
 
 test('api get', async () => {
@@ -38,13 +38,13 @@ test('api post', async () => {
     global.fetch = jest.fn(async () => response);
     const playground = {PG: true};
     const api = new PlaygroundAPI(playground, 'ADDRESS');
-    api._getAddress = jest.fn(() => 'FQADDRESS');
+    api.address = jest.fn(() => 'FQADDRESS');
     api._getPostPayload = jest.fn(() => 'POSTDATA');
     const result = await api.post('/PATH', 'DATA');
     expect(result).toEqual('JSON');
     expect(global.fetch.mock.calls).toEqual([['FQADDRESS', 'POSTDATA']]);
     expect(response.json.mock.calls).toEqual([[]]);
-    expect(api._getAddress.mock.calls).toEqual([['/PATH']]);
+    expect(api.address.mock.calls).toEqual([['/PATH']]);
     expect(api._getPostPayload.mock.calls).toEqual([['DATA']]);
     global.fetch = _fetch;
 });
