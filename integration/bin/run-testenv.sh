@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 
 if [[ -z "$CI" ]]; then
     tty=("-ti")

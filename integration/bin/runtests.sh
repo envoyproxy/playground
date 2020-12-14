@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 
 echo ">>> Create integration test environment"
 echo
