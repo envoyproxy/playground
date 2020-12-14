@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import logging
 from collections import OrderedDict
 
 from playground.control.attribs import ProxyCreateCommandAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
+
+
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundDockerProxies(PlaygroundDockerResources):
@@ -17,7 +21,8 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
     async def create(
             self,
             command: PlaygroundCommand) -> None:
-        # todo: add logging and error handling
+        logger.debug(
+            f'Creating proxy: {command.data.name}')
         use_dev = (
             not command.data.version
             or command.data.version.startswith('envoy-dev'))

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from typing import Union
 
 from aiodocker.containers import DockerContainers
@@ -10,6 +11,9 @@ from playground.control.attribs import ContainerDeleteAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.decorators import cmd, method_decorator
 from playground.control.exceptions import PlaytimeError
+
+
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundDockerContext(object):
@@ -33,6 +37,8 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         try:
             container = await self.docker.containers.get(uuid)
         except DockerError:
+            logger.error(
+                f'Failed getting container {uuid}')
             return
         return (
             container
@@ -43,9 +49,12 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
     async def delete(
             self,
             command: PlaygroundCommand) -> None:
+        logger.debug(
+            f'Deleting {self.name}: {command.data.id}')
         container = await self.get(command.data.id)
         if not container:
-            # raise error/warning ?
+            logger.warning(
+                f'Unable to find container to delete: {command.data.id}')
             return
         await self._delete_container(container)
 
@@ -56,9 +65,10 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             await container.delete(v=True, force=True)
             return True
         except DockerError as e:
+            logger.warning(
+                f'Failed deleting {container}: {e}')
             if e.args[0] == 409:
                 raise PlaytimeError(e.args[1]['message'])
-            # todo: log warning ?
             return False
 
     def _get_image_name(self, playground_image):
@@ -83,7 +93,8 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         try:
             docker_resources = await resources.list()
         except DockerError:
-            # todo: raise playtime error ?
+            logger.error(
+                f'Failed listing containers: {name}')
             return []
         for resource in docker_resources:
             if label not in resource["Labels"]:
@@ -103,6 +114,8 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
         try:
             await self._delete_container(container)
         except PlaytimeError as e:
+            logger.error(
+                f'Failed removing container {e}')
             await self.connector.emit_error(e.args[0])
             return
         if volumes:
@@ -120,16 +133,18 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             try:
                 async with volume_delete:
                     pass
-            except DockerError:
-                # todo: raise playtime error ?
-                pass
+            except DockerError as e:
+                logger.error(
+                    f'Failed removing volume {volume_name} {e}')
 
     async def _start_container(self, config, name):
+        logger.debug(
+            f'Starting {self.name}: {name}')
         try:
             container = await self.docker.containers.create_or_replace(
                 config=config,
                 name=f"envoy__playground__{self.name}__{name}")
             await container.start()
-        except DockerError:
-            # todo: raise playtime error ?
-            pass
+        except DockerError as e:
+            logger.error(
+                f'Failed starting container {name} {config} {e}')

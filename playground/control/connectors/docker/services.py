@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import logging
 import os
 from collections import OrderedDict
 
@@ -8,6 +9,9 @@ from playground.control.attribs import ServiceCreateCommandAttribs
 from playground.control.command import PlaygroundCommand
 from playground.control.connectors.docker.base import PlaygroundDockerResources
 from playground.control.decorators import cmd, method_decorator
+
+
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundDockerServices(PlaygroundDockerResources):
@@ -18,6 +22,8 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
     async def create(
             self,
             command: PlaygroundCommand) -> None:
+        logger.debug(
+            f'Creating service: {command.data.name}')
         if not command.data.image:
             # todo: add build logic
             return
