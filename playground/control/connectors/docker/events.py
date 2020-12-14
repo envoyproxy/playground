@@ -8,7 +8,7 @@ from typing import AsyncGenerator
 from aiodocker import DockerError
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundDockerEvents(object):
@@ -108,7 +108,6 @@ class PlaygroundDockerEvents(object):
         try:
             container = await self.connector.get_container(data['id'])
         except DockerError as e:
-            # warn ?
             logger.warn(f'Failed finding image: {data["id"]} {e}')
             await publisher(data)
             return

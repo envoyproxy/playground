@@ -10,7 +10,7 @@ from aiodocker import DockerError
 from playground.control.connectors.docker.base import PlaygroundDockerContext
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundDockerVolumes(PlaygroundDockerContext):
@@ -23,11 +23,17 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             mount: str) -> None:
         config = await self._get_config(
             container_type, name, mount)
+        info = {
+            k.split(".").pop(): v
+            for k, v
+            in config["Labels"].items()}
+        logger.debug(
+            f'Creating volume: '
+            f'{info}')
         try:
-            logger.warn(f'Creating volume: {config}')
             return await self.docker.volumes.create(config)
         except DockerError as e:
-            logger.warn(f'Error creating volume: {config} {e}')
+            logger.error(f'Error creating volume: {info} {e}')
 
     async def write(
             self,
@@ -43,12 +49,21 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(
                 container_type, volume, v, mount, k)
-            container = await self.docker.containers.create_or_replace(
-                config=config,
-                name=volume)
-            await container.start()
-            await container.wait()
-            await container.delete()
+            info = {
+                k.split(".").pop(): v
+                for k, v
+                in config["Labels"].items()}
+            logger.debug(f'Writing volume: {info}')
+            try:
+                container = await self.docker.containers.create_or_replace(
+                    config=config,
+                    name=volume)
+                await container.start()
+                await container.wait()
+                await container.delete()
+            except DockerError as e:
+                logger.error(
+                    f'Error writing  to volume {info} {e}')
 
     async def populate(
             self,
@@ -58,7 +73,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             files: Union[dict, OrderedDict]):
         volume = await self.create(container_type, name, mount)
 
-        if files:
+        if volume and files:
             # write files into the volume
             await self.write(volume.name, mount, container_type, files)
         return volume
