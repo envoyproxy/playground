@@ -92,9 +92,21 @@ class PlaygroundDockerEvents(object):
             or data['attributes'].get(
                 "envoy.playground.temp.resource"))
 
+    async def _handle_volume_container(self, publisher, data):
+        if data['action'] not in ['start']:
+            return
+        _data = {}
+        _data['action'] = 'volume_create'
+        _data['status'] = 'volume_create'
+        _data['name'] = data['attributes'].get(
+            'envoy.playground.temp.name', '')
+        _data['attributes'] = {}
+        _data['id'] = '23'
+        await publisher(_data)
+
     async def _handle_container(self, publisher, data):
         if '__' not in data['attributes']['name']:
-            # not sure if this breaks updating...
+            await self._handle_volume_container(publisher, data)
             return
         data["name"] = (
             data['attributes']['name'].split('__')[2]

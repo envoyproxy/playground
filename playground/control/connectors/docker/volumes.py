@@ -45,6 +45,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
     async def write(
             self,
+            name: str,
             volume: str,
             mount: str,
             container_type: str,
@@ -56,7 +57,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
         for k, v in files.items():
             mount = os.path.join(os.path.sep, mount)
             config = self._get_mount_config(
-                container_type, volume, v, mount, k)
+                name, container_type, volume, v, mount, k)
             info = {
                 k.split(".").pop(): v
                 for k, v
@@ -82,6 +83,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
         volume = await self.create(container_type, name, mount)
         if volume and files:
             await self.write(
+                name,
                 volume.name,
                 mount,
                 container_type,
@@ -105,15 +107,16 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
     def _get_mount_config(
             self,
+            name,
             container_type: str,
-            name: str,
+            volume: str,
             content: str,
             mount: str,
             target: str) -> dict:
         target = os.path.join(mount, target)
         return {
             'Image': self._mount_image,
-            'Name': name,
+            'Name': volume,
             "Cmd": [
                 'sh', '-c',
                 f'echo \"$MOUNT_CONTENT\" | base64 -d > {target}'],
@@ -128,11 +131,12 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             'HostConfig': {
                 'AutoRemove': False,
                 "Binds": [
-                    f"{name}:{mount}"
+                    f"{volume}:{mount}"
                 ],
             },
             "Labels": {
                 "envoy.playground.temp.resource": container_type,
                 "envoy.playground.temp.mount": mount,
                 "envoy.playground.temp.target": target,
+                "envoy.playground.temp.name": name,
             }}

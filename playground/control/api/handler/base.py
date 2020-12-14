@@ -18,7 +18,9 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
     async def _handle(
             self,
             event: PlaygroundEvent) -> None:
-        handlers = ["destroy", "start", "die"]
+        handlers = [
+            "destroy", "start",
+            "die", "volume_create"]
         if event.data.action not in handlers:
             return
         is_volume_container = (
@@ -47,6 +49,11 @@ class PlaygroundContainerEventHandler(BasePlaygroundEventHandler):
             event: PlaygroundEvent) -> None:
         if event.data.status != 'start':
             return
+        await self._publish(event, dict(status='volume_create'))
+
+    async def volume_create(
+            self,
+            event: PlaygroundEvent) -> None:
         await self._publish(event, dict(status='volume_create'))
 
     async def _publish(

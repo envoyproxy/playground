@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import pkg_resources
 from functools import cached_property
 from typing import Type, Union
@@ -25,6 +26,9 @@ from playground.control.event import PlaygroundEvent
 from playground.control.request import PlaygroundRequest
 from playground.control.api.handler import PlaygroundEventHandler
 from playground.control.services import PlaygroundServiceDiscovery
+
+
+logger = logging.getLogger(__name__)
 
 
 class PlaygroundAPI(object):
@@ -110,7 +114,7 @@ class PlaygroundAPI(object):
     async def publish(
             self,
             data: dict) -> None:
-        # print("PUBLISH", data);
+        logger.debug(f'Publish {data}')
         for socket in self._sockets:
             await socket.send_json(data, dumps=json.dumps)
 
