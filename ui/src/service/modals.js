@@ -25,11 +25,11 @@ export class BaseServiceFormModal extends React.PureComponent {
         const {form} = this.props;
         const {name} = form;
         return {
-            default: [10, <span>Creating service ({name})...</span>],
-            pull_start: [50, <span>Pulling service image ({name})...</span>],
-            volume_create: [80, <span>Creating volumes for service ({name})...</span>],
-            start: [90, <span>Starting service container ({name})...</span>],
-            success: [100, <span>Service has started ({name})!</span>]};
+            default: [[10, 40], <span>Creating service ({name})...</span>],
+            pull_start: [[40, 70], <span>Pulling service image ({name})...</span>],
+            volume_create: [[70, 90], <span>Creating volumes for service ({name})...</span>],
+            start: [[90, 100], <span>Starting service container ({name})...</span>],
+            success: [[100, 100], <span>Service has started ({name})!</span>]};
     }
 
     get tabs () {
