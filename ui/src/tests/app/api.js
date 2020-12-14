@@ -9,7 +9,7 @@ test('api constructor', () => {
     const playground = {PG: true};
     const api = new PlaygroundAPI(playground, 'ADDRESS');
     expect(api.playground).toEqual(playground);
-    expect(api.address).toEqual('ADDRESS');
+    expect(api._address).toEqual('ADDRESS');
 });
 
 test('api address', () => {

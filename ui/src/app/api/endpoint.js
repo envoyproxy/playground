@@ -9,7 +9,7 @@ import {
 export default class PlaygroundAPI {
 
     constructor (playground, address) {
-        this.address = address;
+        this._address = address;
         this.playground = playground;
         this.network = new PlaygroundAPINetworks(this);
         this.service = new PlaygroundAPIServices(this);
@@ -47,7 +47,7 @@ export default class PlaygroundAPI {
     }
 
     address = (path) => {
-        return this.address + path;
+        return this._address + path;
     };
 
     _getPostPayload = (payload) => {
