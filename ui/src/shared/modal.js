@@ -253,7 +253,6 @@ export class BasePlaygroundFormModal extends React.PureComponent {
             success, tabs} = this.props;
         const {name, logs=[], status='', validation} = form;
         let color = 'info';
-        console.log('STATUS', status);
         if ((status || '').length > 0) {
             if (status === success) {
                 color = 'success';

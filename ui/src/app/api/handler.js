@@ -151,7 +151,6 @@ export class PlaygroundAPIContainers extends PlaygroundAPIResources {
                 const form = this.store.getState().form.value;
                 const {name: formName} = form;
                 if (formName) {
-                    console.log('UPDATE FORM');
                     await this._updateContainerForm(formName, status);
                 }
             } else {
