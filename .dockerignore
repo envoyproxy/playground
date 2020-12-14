@@ -1,6 +1,10 @@
-
-/ui/node_modules
-/site/node_modules
-*~
-.cache
-.git
+*
+!playground
+!setup.py
+!context
+!VERSION
+!services
+!ui
+!hot-restarter.py
+!start_envoy.sh
+ui/node_modules

@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 from collections import OrderedDict
 from typing import Union
 
+from aiodocker import DockerError
+
 from playground.control.connectors.docker.base import PlaygroundDockerContext
+
+
+logger = logging.getLogger(__file__)
 
 
 class PlaygroundDockerVolumes(PlaygroundDockerContext):
@@ -17,7 +23,11 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             mount: str) -> None:
         config = await self._get_config(
             container_type, name, mount)
-        return await self.docker.volumes.create(config)
+        try:
+            logger.warn(f'Creating volume: {config}')
+            return await self.docker.volumes.create(config)
+        except DockerError as e:
+            logger.warn(f'Error creating volume: {config} {e}')
 
     async def write(
             self,
