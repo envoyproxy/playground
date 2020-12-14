@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import logging
 from functools import cached_property
 from typing import AsyncGenerator
 
 from aiodocker import DockerError
+
+
+logger = logging.getLogger(__file__)
 
 
 class PlaygroundDockerEvents(object):
@@ -100,8 +104,9 @@ class PlaygroundDockerEvents(object):
 
         try:
             container = await self.connector.get_container(data['id'])
-        except DockerError:
+        except DockerError as e:
             # warn ?
+            logger.warn(f'Failed finding image: {data["id"]} {e}')
             await publisher(data)
             return
 
@@ -109,8 +114,9 @@ class PlaygroundDockerEvents(object):
             try:
                 data['logs'] = await container.log(stdout=True, stderr=True)
                 await container.delete(force=True, v=True)
-            except DockerError:
-                # warn ?
+            except DockerError as e:
+                logger.warn(
+                    f'Failed deleting image: {data["name"]} {data["id"]} {e}',
                 pass
             await publisher(data)
             return
@@ -155,7 +161,8 @@ class PlaygroundDockerEvents(object):
             try:
                 network = await self.connector.get_network(data['id'])
                 info = await network.show()
-            except DockerError:
+            except DockerError as e:
+                logger.warn(f'Failed finding network: {data["id"]} {e}')
                 return
             if 'envoy.playground.network' not in info['Labels']:
                 return
@@ -166,7 +173,8 @@ class PlaygroundDockerEvents(object):
         if container:
             try:
                 target = await self.connector.get_container(container)
-            except DockerError:
+            except DockerError as e:
+                logger.warn(f'Failed finding container for network: {container} {e}')
                 return
         if target:
             if target['Name'].startswith('/envoy__playground__proxy__'):

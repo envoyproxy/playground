@@ -7,6 +7,8 @@ services:
       context: ..
       dockerfile: composition/Dockerfile
     working_dir: /code
+    ports:
+      - 8000:8000
     volumes:
     - ../../.cache/integration/docker:/var/lib/docker
     - ../tests:/code/tests

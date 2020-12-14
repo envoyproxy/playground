@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from typing import Union
 
 import aiodocker
 
 from playground.control.connectors.docker.base import PlaygroundDockerContext
 from playground.control.utils import mktar_from_docker_context
+
+
+logger = logging.getLogger(__file__)
 
 
 class PlaygroundDockerImages(PlaygroundDockerContext):
@@ -27,11 +31,15 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 tag=image_tag)
             tar_obj.close()
         except aiodocker.DockerError as e:
+            logger.warn(
+                f'Failed building image: {image_tag} {e}')
             # todo: improve on this
             return e.args
         try:
             await self.docker.images.inspect(name=image_tag)
         except aiodocker.DockerError:
+            logger.warn(
+                f'Failed building image (inspect): {image_tag} {result}')
             return result
 
     async def exists(self, image_tag: str) -> bool:
@@ -47,4 +55,5 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         try:
             await self.docker.images.pull(image_tag)
         except aiodocker.DockerError as e:
+            logger.warn(f'Failed pulling image: {image} {e}')
             return e
