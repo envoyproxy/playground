@@ -20,17 +20,12 @@ export class ServiceReadme extends React.Component {
 
     state = {content: ''}
 
-    getReadmeURL = () => {
-        const {readme, service_type} = this.props;
-        return [
-            'http://localhost:8000/static',
-            service_type,
-            readme].join('/');
-    }
-
     updateReadme = async () => {
-        const response = await fetch(this.getReadmeURL());
-        const content = await response.text();
+        const {readme, service_type} = this.props;
+        const {api} = this.context;
+        const content = await api.get(
+            ['/static', service_type, readme].join('/'),
+            'text');
         this.setState({content});
     };
 
@@ -46,15 +41,15 @@ export class ServiceReadme extends React.Component {
     }
 
     render () {
-        const {urls} = this.context;
+        const {api, urls} = this.context;
         const {content} = this.state;
         const {
             image, logo, title, description,
             service_type} = this.props;
-        const _logo = [
-            'http://localhost:8000/static',
-            service_type,
-            logo].join('/');
+        const _logo = api.address(
+            ['/static',
+             service_type,
+             logo].join('/'));
         const imageURL = urls.docker(image);
         return (
             <div className="readme m-2 mt-3 bg-light p-2 pt-3 pl-3">

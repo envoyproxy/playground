@@ -9,7 +9,7 @@ import {
 export default class PlaygroundAPI {
 
     constructor (playground, address) {
-        this.address = address;
+        this._address = address;
         this.playground = playground;
         this.network = new PlaygroundAPINetworks(this);
         this.service = new PlaygroundAPIServices(this);
@@ -34,20 +34,20 @@ export default class PlaygroundAPI {
             errors: data.playtime_errors}));
     }
 
-    async get (path) {
-        const response = await fetch(this._getAddress(path));
-        return await response.json();
+    async get (path, type) {
+        const response = await fetch(this.address(path));
+        return await response[type || 'json']();
     }
 
     async post (path, payload) {
         const response = await fetch(
-            this._getAddress(path),
+            this.address(path),
             this._getPostPayload(payload));
         return await response.json();
     }
 
-    _getAddress = (path) => {
-        return this.address + path;
+    address = (path) => {
+        return this._address + path;
     };
 
     _getPostPayload = (payload) => {
