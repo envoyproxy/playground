@@ -5,6 +5,7 @@ import os
 from collections import OrderedDict
 from typing import Union
 
+import aiodocker
 from aiodocker import DockerError
 
 from playground.control.connectors.docker.base import PlaygroundDockerContext
@@ -34,6 +35,13 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             return await self.docker.volumes.create(config)
         except DockerError as e:
             logger.error(f'Error creating volume: {info} {e}')
+
+    async def delete(
+            self,
+            names: list):
+        for name in names:
+            await aiodocker.volumes.DockerVolume(
+                self.docker, name).delete()
 
     async def write(
             self,
@@ -72,10 +80,12 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             mount: str,
             files: Union[dict, OrderedDict]):
         volume = await self.create(container_type, name, mount)
-
         if volume and files:
-            # write files into the volume
-            await self.write(volume.name, mount, container_type, files)
+            await self.write(
+                volume.name,
+                mount,
+                container_type,
+                files)
         return volume
 
     async def _get_config(
@@ -83,13 +93,12 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             container_type: str,
             name: str,
             mount: str) -> dict:
-        volume_name = f"envoy_playground__{container_type}__{name}__{mount}"
         return {
-            "Name": volume_name,
             "Labels": {
                 "envoy.playground.volume": name,
                 "envoy.playground.volume.type": container_type,
-                "envoy.playground.volume.mount": mount
+                "envoy.playground.volume.mount": mount,
+                "envoy.playground.volume.name": name,
             },
             "Driver": "local"
         }

@@ -63,6 +63,11 @@ class PlaygroundDockerResources(PlaygroundDockerContext):
             await container.stop()
             await container.wait()
             await container.delete(v=True, force=True)
+            volumes = [
+                v['Name']
+                for v
+                in container.__dict__['_container']['Mounts']]
+            await self.connector.volumes.delete(volumes)
             return True
         except DockerError as e:
             logger.warning(
