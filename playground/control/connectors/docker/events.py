@@ -62,7 +62,10 @@ class PlaygroundDockerEvents(object):
             return
         data = {}
         for k, v in self.mapping[event['Type']].items():
-            data[k] = event[v.split('/')[0]]
+            item = event.get(v.split('/')[0])
+            if not item:
+                break
+            data[k] = item
             for item in v.split('/')[1:]:
                 v = data[k].get(item)
                 if v:
