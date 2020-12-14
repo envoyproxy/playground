@@ -2,7 +2,7 @@
 import PlaygroundAPI from './endpoint';
 
 export {
-    PlaygroundAPIImages, PlaygroundAPINetworks,
+    PlaygroundAPINetworks,
     PlaygroundAPIServices, PlaygroundAPIProxies} from './handler';
 
 export default PlaygroundAPI;

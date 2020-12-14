@@ -2,7 +2,7 @@
 import {logEvent, updateUI} from "../../app/store";
 
 import {
-    PlaygroundAPIImages, PlaygroundAPINetworks,
+    PlaygroundAPINetworks,
     PlaygroundAPIServices, PlaygroundAPIProxies} from './handler';
 
 
@@ -11,7 +11,6 @@ export default class PlaygroundAPI {
     constructor (playground, address) {
         this.address = address;
         this.playground = playground;
-        this.image = new PlaygroundAPIImages(this);
         this.network = new PlaygroundAPINetworks(this);
         this.service = new PlaygroundAPIServices(this);
         this.proxy = new PlaygroundAPIProxies(this);

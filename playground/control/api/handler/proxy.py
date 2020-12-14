@@ -27,3 +27,11 @@ class PlaygroundProxyEventHandler(PlaygroundContainerEventHandler):
         if event.data.port_mappings:
             _data['port_mappings'] = event.data.port_mappings
         await self._publish(event, _data)
+
+    async def build_start(
+            self,
+            event: PlaygroundEvent) -> None:
+        _data = dict(
+            build_from=event.data.build_from,
+            image=event.data.image)
+        await self._publish(event, _data)

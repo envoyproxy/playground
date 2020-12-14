@@ -42,8 +42,18 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             command.data.pull_latest
             or not await self.connector.images.exists(envoy_image))
         if should_pull:
+            await self.connector.events.publish(
+                'image_pull',
+                'proxy',
+                command.data.name,
+                base_image)
             errors = await self.connector.images.pull(base_image)
             if not errors:
+                await self.connector.events.publish(
+                    'image_build',
+                    command.data.name,
+                    base_image,
+                    envoy_image)
                 errors = await self.connector.images.build(
                     base_image, envoy_image)
             if errors:
@@ -55,14 +65,15 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             [m['mapping_from'], m['mapping_to']]
             for m
             in command.data.port_mappings]
-        # todo: add error handling
+
+        config = self._get_proxy_config(
+            envoy_image,
+            command.data.name,
+            command.data.logging,
+            await self._get_mounts(command.data),
+            _mappings)
         await self._start_container(
-            self._get_proxy_config(
-                envoy_image,
-                command.data.name,
-                command.data.logging,
-                await self._get_mounts(command.data),
-                _mappings),
+            config,
             command.data.name)
 
     async def _get_mounts(

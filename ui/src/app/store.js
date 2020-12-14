@@ -405,6 +405,7 @@ const logProxy = (log, status) => {
         start: 'started',
         build_start: 'building proxy image',
         image_pull: 'pulling image',
+        pull_start: 'pulling image',
         volume_create: 'creating volumes',
         die: 'stopping',
         destroy: 'removed'};
@@ -415,6 +416,7 @@ const logService = (log, status) => {
     const messages = {
         start: 'started',
         image_pull: 'pulling image',
+        pull_start: 'pulling image',
         volume_create: 'creating volumes',
         remove: 'removing',
         create: 'creating',
@@ -445,7 +447,7 @@ const eventSlice = createSlice({
                 logService(log, status);
             } else if (type === 'proxy') {
                 logProxy(log, status);
-          } else if (type === 'playground') {
+            } else if (type === 'playground') {
                 logPlayground(log, status);
             }
             state.value = [...state.value, log.join('')];

@@ -29,6 +29,11 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             return
         exists = await self.connector.images.exists(command.data.image)
         if not exists:
+            await self.connector.events.publish(
+                'image_pull',
+                'service',
+                command.data.name,
+                command.data.image)
             await self.connector.images.pull(command.data.image)
         _environment = [
             "%s=%s" % (k, v)
