@@ -29,8 +29,8 @@ export class BaseNetworkFormModal extends React.PureComponent {
         const {form} = this.props;
         const {name} = form;
         return {
-            initializing: [30,  <span>Creating network ({name})...</span>],
-            create: [100,  <span>Network created ({name})...</span>]};
+            initializing: [[30, 90],  <span>Creating network ({name})...</span>],
+            create: [[90, 100],  <span>Network created ({name})...</span>]};
     }
 
     get tabs () {
