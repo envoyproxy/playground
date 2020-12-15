@@ -8,6 +8,7 @@ import {
 test('PlaygroundSection render', () => {
     const section = shallow(
         <PlaygroundSection
+          name="SECTION"
           title="TITLE"
           icon="ICON">
           <p>FOO</p>
@@ -15,7 +16,7 @@ test('PlaygroundSection render', () => {
         </PlaygroundSection>);
     expect(section.text()).toEqual('TITLEFOOBAR');
     const _section = section.find('section');
-    expect(_section.props().className).toEqual('control-pane border-light border-top');
+    expect(_section.props().className).toEqual('control-pane border-light border-top section-SECTION');
     const header = _section.find('header');
     expect(header.props().className).toEqual(
         'pt-1 pb-1 bg-dark border-dark border-bottom');

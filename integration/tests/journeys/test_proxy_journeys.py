@@ -10,54 +10,95 @@ async def test_journey_proxy_create(playground):
     await playground.snap('proxy.create.open')
 
     # open the proxy modal
-    playground.web.find_elements_by_name('Proxies')[0].click()
+    add_proxy_button = await playground.query('*[name="Proxies"]')
+    assert not await add_proxy_button.click()
     await asyncio.sleep(1)
-    name_input = playground.web.find_elements_by_id(
-        'envoy.playground.name')[0]
+
+    # find the name input
+    name_input = await playground.query(
+        'input[id="envoy.playground.name"]')
     assert (
-        name_input.get_attribute('placeholder')
+        await name_input.command('GET', '/attribute/placeholder')
         == 'Enter proxy name')
 
     # add first 2 keys of name
-    name_input.send_keys('pr')
+    await playground.enter(name_input, 'pr')
+    await asyncio.sleep(1)
     await playground.snap('proxy.create.name')
 
     # add rest of name and open configuration
-    name_input.send_keys('oxy0')
-    select = playground.web.find_element_by_css_selector(
-        '.tab-pane.active form select#example')
-    select.find_element_by_css_selector(
-        '[value="Service: Python (asyncio)"]').click()
-    await playground.snap('proxy.create.configuration', .3)
+    await playground.enter(name_input, 'oxy0')
+
+    select = await playground.query(
+        '.tab-pane.active form select'
+        '#example option[value="Service: HTTP/S echo"]')
+    assert not await select.click()
+    await asyncio.sleep(.3)
+    await playground.snap('proxy.create.configuration')
 
     # add a port
-    playground.web.find_element_by_link_text('Ports').click()
+    ports_tab = await playground.query(
+        '.modal-body .nav-tabs a:contains("Ports")')
+    assert (
+        await ports_tab.text()
+        == 'Ports')
+    assert not await ports_tab.click()
     await asyncio.sleep(.3)
-    playground.web.find_element_by_css_selector(
-        '.tab-pane.active form button').click()
+    port_button = await playground.query('.tab-pane.active form button')
+    assert not await port_button.click()
     await playground.snap('proxy.create.ports', .3)
 
     # set logging
-    playground.web.find_element_by_link_text('Logging').click()
+    log_tab = await playground.query(
+        '.modal-body .nav-tabs a:contains("Logging")')
+    assert (
+        await log_tab.text()
+        == 'Logging')
+    assert not await log_tab.click()
     await asyncio.sleep(.3)
-    select = playground.web.find_element_by_css_selector(
-        '.tab-pane.active form select')
-    select.find_element_by_css_selector('[value="trace"]').click()
-    await playground.snap('proxy.create.logging', .3)
+    select = await playground.query(
+        '.tab-pane.active form select [value="trace"]')
+    assert not await select.click()
+    await asyncio.sleep(.3)
+    await playground.snap('proxy.create.logging')
 
     # open certs tab
-    playground.web.find_element_by_link_text('Certificates').click()
-    await playground.snap('proxy.create.certificates', .3)
+    certs_tab = await playground.query(
+        '.modal-body .nav-tabs a:contains("Certificates")')
+    assert (
+        await certs_tab.text()
+        == 'Certificates')
+    assert not await certs_tab.click()
+    await asyncio.sleep(.3)
+    await playground.snap('proxy.create.certificates')
 
     # open binaries tab
-    playground.web.find_element_by_link_text('Binaries').click()
-    await playground.snap('proxy.create.binaries', .3)
+    binary_tab = await playground.query(
+        '.modal-body .nav-tabs a:contains("Binaries")')
+    assert (
+        await binary_tab.text()
+        == 'Binaries')
+    assert not await binary_tab.click()
+    await asyncio.sleep(.3)
+    await playground.snap('proxy.create.binaries')
 
-    # click to start
-    playground.web.find_element_by_css_selector(
-        '.modal-footer .btn.btn-primary').click()
-
+    # submit the form
+    submit = await playground.query('.modal-footer .btn.btn-primary')
+    assert not await submit.click()
+    await asyncio.sleep(1)
     await playground.snap('proxy.create.starting', .3)
 
     # wait for started
-    await playground.snap('proxy.create.started', 60)
+    await asyncio.sleep(60)
+
+    link = await playground.query(
+        '.App-left .accordion-item .card-header .col-sm-8')
+    assert (
+        await link.text()
+        == 'proxy0')
+    await playground.snap('proxy.create.started')
+    assert [
+        container
+        for container
+        in await playground.docker.containers.list()
+        if container['Labels'].get('envoy.playground.proxy') == 'proxy0']

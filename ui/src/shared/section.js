@@ -12,13 +12,15 @@ export class PlaygroundSection extends React.PureComponent {
         title: PropTypes.oneOfType([
             PropTypes.object,
             PropTypes.string]).isRequired,
+        name: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired,
     });
 
     render () {
-        const {children, title, icon} = this.props;
+        const {name, children, title, icon} = this.props;
+        const className = "control-pane border-light border-top section-" + name;
         return (
-	    <section className="control-pane border-light border-top">
+	    <section className={className}>
               <header className="pt-1 pb-1 bg-dark border-dark border-bottom">
                 <img
                   alt={title}

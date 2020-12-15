@@ -1,9 +1,7 @@
 
-import time
+import asyncio
 
 import pytest
-
-# import aiodocker
 
 
 @pytest.mark.screenshots
@@ -11,24 +9,35 @@ import pytest
 async def test_journey_network_create(playground):
     await playground.snap('network.create.open')
 
-    # open the proxy modal
-    playground.web.find_elements_by_name('Networks')[0].click()
-    time.sleep(1)
-    name_input = playground.web.find_elements_by_id(
-        'envoy.playground.name')[0]
+    # open the network modal
+    add_network_button = await playground.query('*[name="Networks"]')
+    await add_network_button.click()
+    await asyncio.sleep(1)
+
+    # find the name input
+    name_input = await playground.query('input[id="envoy.playground.name"]')
     assert (
-        name_input.get_attribute('placeholder')
+        await name_input.command('GET', '/attribute/placeholder')
         == 'Enter network name')
 
-    # add network name
-    name_input.send_keys('net0')
+    # input the network name
+    await playground.enter(name_input, 'net0')
+    await asyncio.sleep(1)
     await playground.snap('network.create.name')
 
-    # click to start
-    playground.web.find_element_by_css_selector(
-        '.modal-footer .btn.btn-primary').click()
+    # submit the form
+    submit = await playground.query('.modal-footer .btn.btn-primary')
+    await submit.click()
+    await asyncio.sleep(1)
 
-    await playground.snap('network.create.starting', .3)
-
-    # wait for started
-    await playground.snap('network.create.started', 60)
+    await playground.snap('network.create.starting')
+    await playground.snap('network.create.started', 5)
+    link = await playground.query(
+        '.App-left .accordion-item .card-header .col-sm-8')
+    assert (
+        await link.text()
+        == 'net0')
+    assert [
+        n
+        for n in await playground.docker.networks.list()
+        if n['Labels'].get('envoy.playground.network') == 'net0']

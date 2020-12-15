@@ -20,6 +20,7 @@ export class BaseEventLogging extends React.PureComponent {
         return (
             <PlaygroundSection
               title='Events'
+              name="events"
               icon={EventsLogo}>
               <PlaygroundLazyLog
                 searchEnabled

@@ -1,9 +1,19 @@
 
 import argparse
 import asyncio
+import base64
+import functools
 import os
+
 import pytest
-import time
+
+import pyquery
+
+import aiodocker
+
+import aiohttp
+
+from aioselenium import Remote
 
 
 class Playground(object):
@@ -13,15 +23,51 @@ class Playground(object):
         self.web = selenium
         self.screenshots = screenshots
 
+    @functools.cached_property
+    def docker(self):
+        return aiodocker.Docker()
+
+    async def clear(self):
+        containers = [
+            container
+            for container
+            in await self.docker.containers.list()
+            if ('envoy.playground.proxy' in container['Labels']
+                or 'envoy.playground.service' in container['Labels'])]
+        for container in containers:
+            await container.delete(force=True, v=True)
+        networks = [
+            n['Id']
+            for n in await self.docker.networks.list()
+            if 'envoy.playground.network' in n['Labels']]
+        for network in networks:
+            await aiodocker.networks.DockerNetwork(
+                self.docker, network).delete()
+
+    async def enter(self, element, text):
+        await element.command(
+            'POST',
+            '/value',
+            json=dict(value=list(text)))
+
+    async def query(self, q):
+        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        return await self.web.find_element_by_xpath(xpath)
+
+    async def query_all(self, q):
+        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        return await self.web.find_elements_by_xpath(xpath)
+
     async def snap(self, name, wait=0):
         if not self.screenshots:
             return
         await asyncio.sleep(wait)
         name = f'{name}.png'
-        self.web.get_screenshot_as_file(
-            os.path.join(
-                self._artifact_dir,
-                name))
+        path = os.path.join(
+            self._artifact_dir,
+            name)
+        with open(path, 'wb') as f:
+            f.write(base64.b64decode(await self.web.screenshot()))
 
 
 def pytest_addoption(parser):
@@ -35,7 +81,7 @@ def pytest_addoption(parser):
 
 def str2bool(v):
     if isinstance(v, bool):
-       return v
+        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
@@ -56,10 +102,22 @@ def pytest_runtest_setup(item):
 
 
 @pytest.fixture
-def playground(pytestconfig, selenium):
-    _playground = Playground(
-        selenium,
-        screenshots=pytestconfig.getoption('screenshots'))
-    _playground.web.get("http://localhost:8000")
-    time.sleep(.3)
-    return _playground
+async def playground(pytestconfig):
+    capabilities = {"browserName": "firefox"}
+
+    async with aiohttp.ClientSession() as session:
+        remote = await Remote.create(
+            'http://localhost:4444',
+            capabilities,
+            session)
+        async with remote as driver:
+            await driver.set_window_size(1920, 1080)
+            playground = Playground(
+                driver,
+                screenshots=pytestconfig.getoption('screenshots'))
+            await playground.clear()
+            await driver.get("http://localhost:8000")
+            await asyncio.sleep(.3)
+            yield playground
+            await playground.clear()
+            await playground.docker.close()

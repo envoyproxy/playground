@@ -49,6 +49,7 @@ class BaseResources extends React.Component {
             PropTypes.func,
         ]).isRequired,
         title: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
         resources: PropTypes.object.isRequired,
         addModal: PropTypes.object.isRequired,
         editable: PropTypes.bool,
@@ -150,7 +151,7 @@ class BaseResources extends React.Component {
 
 
     render () {
-        const {editable, logo, resources, title} = this.props;
+        const {api, editable, logo, resources, title} = this.props;
         const {removing} = this.state;
         let headerLogo = logo;
         if (logo instanceof Function) {
@@ -158,6 +159,7 @@ class BaseResources extends React.Component {
         }
         return (
             <PlaygroundSection
+              name={api}
               title={this.renderTitle(title)}
               icon={headerLogo}>
                 <Accordion
