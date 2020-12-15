@@ -150,10 +150,10 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dd>
                           <ul>
                             <li>
-                              Website
+                              Web
                             </li>
                             <li>
-                              <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Repository
+                              Code
                             </li>
                             <li>
                               Docs
