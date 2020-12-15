@@ -220,8 +220,8 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dt>Redis</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
-                            <ListGroupItem tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Vestibulum at eros</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Vestibulum at eros</ListGroupItem>
                           </ListGroup>
                         </dd>
                       </dl>
