@@ -5,6 +5,7 @@ import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import GithubLogo from '../app/images/github.svg';
 import LinkIcon from '../app/images/link.svg';
+import ServiceIcon from '../app/images/service.svg';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -200,7 +201,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2 pt-4">
-                        <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
+                        <img src={ServiceIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground services
                       </header>
                       <dl className="p-4">
