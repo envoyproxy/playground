@@ -3,6 +3,11 @@ import React from 'react';
 
 import Yaml from 'js-yaml';
 
+import TimeAgo from 'javascript-time-ago';
+
+// English.
+import en from 'javascript-time-ago/locale/en';
+
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import DockerIcon from '../app/images/docker.svg';
@@ -20,6 +25,10 @@ import {
     Button, Col, Collapse, ListGroup, ListGroupItem,
     Nav, Navbar, NavbarBrand, NavItem, NavLink,
     Row} from 'reactstrap';
+
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo('en');
 
 
 export class PlaygroundSiteRepository extends React.PureComponent {
@@ -43,16 +52,39 @@ export class PlaygroundSiteRepository extends React.PureComponent {
 
 export class PlaygroundSiteRepoEvent extends React.PureComponent {
 
+
+
     render () {
         const {event} = this.props;
-        const {actor, payload} = event;
+        const {actor, created_at, payload, type} = event;
         const {avatar_url, login} = actor;
-        const {action} = payload;
+        const {action, number} = payload;
+        console.log(event);
+        // const parsed = parseGithubEvent(event);
+        let verb = action;
+        let object = '';
+
+        if (type === "PushEvent") {
+            verb = 'pushed';
+        }
+
+        if (type === "PullRequestEvent") {
+            object = `PR #${number}`;
+        }
+
+        if (type === "IssueCommentEvent" && action === 'created') {
+            const {comment} = payload;
+            const {url} = comment;
+            console.log(comment);
+            verb = <a href={url}>commented</a>;
+        }
+
         return  (
             <ul>
               <li>
                 <img src={avatar_url} width="22px" className="ml-1 mr-2" alt="Playground" />
-                {login} {action} something...
+                {login} {verb} {object}
+                {' '}{timeAgo.format(new Date(created_at))}
               </li>
             </ul>
         );
@@ -127,7 +159,6 @@ export class PlaygroundSiteRepoInfo extends React.Component {
     state = {issues: 0, events: [], showAll: false}
 
     async componentDidMount () {
-
         const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
         const content = await response.json();
         const {events_url, open_issues_count: issues} = content;
@@ -150,7 +181,7 @@ export class PlaygroundSiteRepoInfo extends React.Component {
             _events.length = 5;
         }
         return (
-            <div  className="p-2 pt-4">
+            <div  className="p-2 pt-4 small">
               <dl className="p-2">
                 <dt>Repository</dt>
                 <dd>
