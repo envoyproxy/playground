@@ -235,7 +235,10 @@ export default class PlaygroundPage extends React.PureComponent {
                         Playground services
                       </header>
                       <dl className="p-2 pt-4">
-                        <dt>Redis</dt>
+                        <dt>
+                          <img src={RedisLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
+                          Redis
+                        </dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
                             <ListGroupItem className="bg-dark" tag="a" href="#">
