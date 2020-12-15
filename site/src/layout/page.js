@@ -44,7 +44,7 @@ export class PlaygroundSiteRepoInfo extends React.Component {
         repository: PropTypes.string.isRequired,
     });
 
-    state = {issues: 0}
+    state = {issues: 0, events: []}
 
     async componentDidMount () {
         const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
