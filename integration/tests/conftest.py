@@ -4,20 +4,16 @@ import asyncio
 import base64
 import functools
 import os
+
 import pytest
-import time
 
 import pyquery
 
 import aiodocker
 
-
-import asyncio
-import time
-
 import aiohttp
 
-from aioselenium import Remote, Keys
+from aioselenium import Remote
 
 
 class Playground(object):
@@ -49,9 +45,9 @@ class Playground(object):
                 self.docker, network).delete()
 
     async def enter(self, element, text):
-        response = await element.command(
+        await element.command(
             'POST',
-            f'/value',
+            '/value',
             json=dict(value=list(text)))
 
     async def query(self, q):
@@ -82,7 +78,7 @@ def pytest_addoption(parser):
 
 def str2bool(v):
     if isinstance(v, bool):
-       return v
+        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):

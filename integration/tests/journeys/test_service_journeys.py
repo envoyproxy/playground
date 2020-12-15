@@ -17,7 +17,7 @@ async def test_journey_service_create(playground):
     # find the name input
     name_input = await playground.query('input[id="envoy.playground.name"]')
     assert (
-        await name_input.command('GET', f'/attribute/placeholder')
+        await name_input.command('GET', '/attribute/placeholder')
         == 'Enter service name')
 
     # enter service name
@@ -31,7 +31,6 @@ async def test_journey_service_create(playground):
     await select.click()
     await asyncio.sleep(.3)
     await playground.snap('service.create.configuration')
-
 
     # add an environment var
     env_tab = await playground.query(

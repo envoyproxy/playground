@@ -18,7 +18,7 @@ async def test_journey_proxy_create(playground):
     name_input = await playground.query(
         'input[id="envoy.playground.name"]')
     assert (
-        await name_input.command('GET', f'/attribute/placeholder')
+        await name_input.command('GET', '/attribute/placeholder')
         == 'Enter proxy name')
 
     # add first 2 keys of name
@@ -70,7 +70,6 @@ async def test_journey_proxy_create(playground):
     await binary_tab.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.binaries')
-
 
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
