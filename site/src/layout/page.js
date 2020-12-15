@@ -117,14 +117,14 @@ export default class PlaygroundPage extends React.PureComponent {
               <main className="App-main container-fluid">
 		<Row>
 		  <Col>
-                    <section className="mt-2">
+                    <section className="mt-3">
                       <header className="bg-dark p-2">
                         Playground
                       </header>
                     </section>
 		  </Col>
 		  <Col>
-                    <section className="mt-2">
+                    <section className="mt-3">
                       <header className="bg-dark p-2">
                         Useful links
                       </header>
@@ -160,7 +160,7 @@ export default class PlaygroundPage extends React.PureComponent {
 	        </Row>
 		<Row>
 		  <Col>
-                    <section className="mt-2">
+                    <section className="mt-3">
                       <header className="bg-dark p-2">
                         <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
                         Code
@@ -168,7 +168,7 @@ export default class PlaygroundPage extends React.PureComponent {
                     </section>
 		  </Col>
 		  <Col>
-                    <section className="mt-2">
+                    <section className="mt-3">
                       <header className="bg-dark p-2">
                         Playground services
                       </header>
