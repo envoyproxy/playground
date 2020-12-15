@@ -128,17 +128,11 @@ export default class PlaygroundPage extends React.PureComponent {
                           <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
                         </div>
                         <div className="col pt-5">
-                          <ul>
-                            <li>
-                              Learn/test Envoy config
-                            </li>
-                            <li>
-                              Test Envoy with upstream services
-                            </li>
-                            <li>
-                              Model network/proxy architectures
-                            </li>
-                          </ul>
+                          <ListGroup className="bg-dark">
+                            <ListGroupItem className="bg-dark" tag="span" href="#">Learn/test Envoy config</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="span" href="#">Test Envoy with upstream services</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="span" href="#">Model network/proxy architectures</ListGroupItem>
+                          </ListGroup>
                         </div>
                       </div>
                     </section>
@@ -150,34 +144,22 @@ export default class PlaygroundPage extends React.PureComponent {
                       </header>
                       <dl className="p-2">
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
-                        <dd>
-                          <ul>
-                            <li>
-                              Install
-                            </li>
-                            <li>
-                              Learn
-                            </li>
-                            <li>
-                              Contribute
-                            </li>
-                          </ul>
+                        <dd className="p-2">
+                          <ListGroup className="bg-dark">
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Install</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Learn</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Contribute</ListGroupItem>
+                          </ListGroup>
                         </dd>
                         <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
-                        <dd>
-                          <ul>
-                            <li>
-                              Web
-                            </li>
-                            <li>
-                              Code
-                            </li>
-                            <li>
-                              Docs
-                            </li>
-                          </ul>
+                        <dd className="p-2">
+                          <ListGroup className="bg-dark">
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Web</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Code</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">Docs</ListGroupItem>
+                          </ListGroup>
                         </dd>
-                      </dl>
+                     </dl>
                     </section>
 		  </Col>
 	        </Row>
@@ -220,8 +202,8 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dt>Redis</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
-                            <ListGroupItem className="bg-dark" tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
-                            <ListGroupItem className="bg-dark" tag="a" href="#">Vestibulum at eros</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">redis:latest</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">redis.io</ListGroupItem>
                           </ListGroup>
                         </dd>
                       </dl>
