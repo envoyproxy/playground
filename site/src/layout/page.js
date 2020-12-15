@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Col, Collapse, ListGroup, ListGroupItem,
+    Button, Col, Collapse, ListGroup, ListGroupItem,
     Nav, Navbar, NavbarBrand, NavItem, NavLink,
     Row} from 'reactstrap';
 
@@ -124,7 +124,7 @@ export class PlaygroundSiteRepoInfo extends React.Component {
         repository: PropTypes.string.isRequired,
     });
 
-    state = {issues: 0, events: []}
+    state = {issues: 0, events: [], showAll: false}
 
     async componentDidMount () {
         const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
@@ -137,9 +137,17 @@ export class PlaygroundSiteRepoInfo extends React.Component {
             issues});
     }
 
+    showMore = () => {
+        this.setState({showAll: true});
+    }
+
     render () {
-        const {issues, events} = this.state;
+        const {showAll, issues, events} = this.state;
         const {repository} = this.props;
+        const _events = [...events];
+        if (!showAll) {
+            _events.length = 5;
+        }
         return (
             <div  className="p-2 pt-4">
               <dl className="p-2">
@@ -152,10 +160,13 @@ export class PlaygroundSiteRepoInfo extends React.Component {
                 </dd>
                 <dt>Recent activity</dt>
                 <dd>
-                  {events.map((event, i) => {
+                  {_events.map((event, i) => {
                       return (
                           <PlaygroundSiteRepoEvent event={event} />);
                   })}
+                  {!showAll &&
+                   <Button onClick={this.showMore}>Show more...</Button>
+                  }
                 </dd>
               </dl>
             </div>
