@@ -200,11 +200,11 @@ export default class PlaygroundPage extends React.PureComponent {
 
 		  <Col>
                     <section className="mt-3">
-                      <header className="bg-dark p-2 pt-4">
+                      <header className="bg-dark p-2">
                         <img src={ServiceIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground services
                       </header>
-                      <dl className="p-4">
+                      <dl className="p-2 pt-4">
                         <dt>Redis</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
