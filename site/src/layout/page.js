@@ -1,8 +1,6 @@
 
 import React from 'react';
 
-import Yaml from 'js-yaml';
-
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import DockerIcon from '../app/images/docker.svg';
@@ -11,7 +9,7 @@ import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
 import PlaygroundScreenshot from '../app/images/playground.png';
 
-import ServiceConfig from 'js-yaml-loader!../services/services.yaml';
+import services from 'js-yaml-loader!../services/services.yaml';
 import RedisLogo from '../services/redis/redis.svg';
 
 import PropTypes from 'prop-types';
@@ -89,7 +87,6 @@ export class PlaygroundSiteServices extends React.Component {
     state = {services: []};
 
     componentDidMount () {
-        const services = Yaml.safeLoad(ServiceConfig);
         console.log('MOUNTED', services);
     }
 
