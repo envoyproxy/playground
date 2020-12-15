@@ -44,9 +44,14 @@ export class PlaygroundProgressive extends React.Component {
     render () {
         const {value} = this.state;
         const {value: nothing, ...props} = this.props;
+        let color = 'info';
+        if (value === 100) {
+            color = 'success';
+        }
         return (
             <Progress
               {...props}
+              color={color}
               value={value} />
         );
     }
@@ -82,7 +87,6 @@ export class ContainerStarting extends React.PureComponent {
                 <Col>
                   <PlaygroundProgressive
                     striped
-                    color={color}
                     value={progress} />
                 </Col>
               </Row>
