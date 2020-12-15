@@ -217,12 +217,9 @@ export default class PlaygroundPage extends React.PureComponent {
                         Playground services
                       </header>
                       <dl className="p-2">
-                        <dt>service 1</dt>
-                        <dd>
-                          <ListGroup>
-			    <ListGroupItem disabled tag="a" href="#">Cras justo odio</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Dapibus ac facilisis in</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Morbi leo risus</ListGroupItem>
+                        <dt>Redis</dt>
+                        <dd className="p-2">
+                          <ListGroup className="bg-dark">
                             <ListGroupItem tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
                             <ListGroupItem tag="a" href="#">Vestibulum at eros</ListGroupItem>
                           </ListGroup>
