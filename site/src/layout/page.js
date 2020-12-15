@@ -116,25 +116,34 @@ export default class PlaygroundPage extends React.PureComponent {
               <main className="App-main container-fluid">
 		<Row>
 		  <Col>
-                    <section className="bg-dark mt-5">
-                      <header>WELCOME INFORMATION</header>
+                    <section className="mt-5">
+                      <header className="bg-dark">
+                        WELCOME INFORMATION
+                      </header>
                     </section>
 		  </Col>
 		  <Col>
-                    <section className="bg-dark mt-5">
-                      <header>DOC LINKS</header>
+                    <section className="mt-5">
+                      <header className="bg-dark">
+                        Docs
+                      </header>
                     </section>
 		  </Col>
 	        </Row>
 		<Row>
 		  <Col>
-                    <section className="bg-dark mt-5">
-                      <header>CODE</header>
+                    <section className="mt-5">
+                      <header className="bg-dark">
+                        <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
+                        Code
+                      </header>
                     </section>
 		  </Col>
 		  <Col>
-                    <section className="bg-dark mt-5">
-                      <header>SERVICES</header>
+                    <section className="mt-5">
+                      <header className="bg-dark">
+                        Playground services
+                      </header>
                     </section>
 		  </Col>
 	        </Row>
