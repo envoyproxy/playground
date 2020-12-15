@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Col, Nav, Navbar, NavbarBrand, NavItem, NavLink,
+    Col, ListGroup, ListGroupItem,
+    Nav, Navbar, NavbarBrand, NavItem, NavLink,
     Row} from 'reactstrap';
 
 
@@ -126,17 +127,16 @@ export default class PlaygroundPage extends React.PureComponent {
                         <div className="reflection-box col">
                           <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
                         </div>
-                        <div className="col">
-                          Features
+                        <div className="col pt-5">
                           <ul>
                             <li>
-                              Learn/test Envoy config
+                              <a href="#">Learn/test Envoy config</a>
                             </li>
                             <li>
-                              Test Envoy with upstream services
+                              <a href="#">Test Envoy with upstream services</a>
                             </li>
                             <li>
-                              Plan network/proxy architectures
+                              <a href="#">Plan network/proxy architectures</a>
                             </li>
                           </ul>
                         </div>
@@ -219,11 +219,13 @@ export default class PlaygroundPage extends React.PureComponent {
                       <dl className="p-2">
                         <dt>service 1</dt>
                         <dd>
-                          <ul>
-                            <li>
-                              info...
-                            </li>
-                          </ul>
+                          <ListGroup>
+			    <ListGroupItem disabled tag="a" href="#">Cras justo odio</ListGroupItem>
+                            <ListGroupItem tag="a" href="#">Dapibus ac facilisis in</ListGroupItem>
+                            <ListGroupItem tag="a" href="#">Morbi leo risus</ListGroupItem>
+                            <ListGroupItem tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
+                            <ListGroupItem tag="a" href="#">Vestibulum at eros</ListGroupItem>
+                          </ListGroup>
                         </dd>
                       </dl>
                     </section>
