@@ -3,6 +3,7 @@ import React from 'react';
 
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
+import DockerIcon from '../app/images/docker.svg';
 import GithubLogo from '../app/images/github.svg';
 import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
@@ -233,7 +234,10 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dt>Redis</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
-                            <ListGroupItem className="bg-dark" tag="a" href="#">redis:latest</ListGroupItem>
+                            <ListGroupItem className="bg-dark" tag="a" href="#">
+                              <img src={DockerIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
+                              redis:latest
+                            </ListGroupItem>
                             <ListGroupItem className="bg-dark" tag="a" href="#">redis.io</ListGroupItem>
                           </ListGroup>
                         </dd>
