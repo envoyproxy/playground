@@ -13,6 +13,11 @@ else
     exit 1
 fi
 
+echo ">>> Clearing Docker"
+docker system prune -f
+docker volume prune -f
+docker image prune -f
+echo
 
 echo ">>> Current Docker images"
 docker images
