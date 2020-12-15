@@ -5,7 +5,7 @@ import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import GithubLogo from '../app/images/github.svg';
 import LinkIcon from '../app/images/link.svg';
-import ServiceIcon from '../app/images/service.svg';
+import ServiceIcon from '../app/images/service.png';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
