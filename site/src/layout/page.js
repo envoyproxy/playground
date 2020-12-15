@@ -4,6 +4,7 @@ import React from 'react';
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import GithubLogo from '../app/images/github.svg';
+import LinkIcon from '../app/images/link.svg';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -120,7 +121,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
-                        <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Github" />
+                        <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground
                       </header>
                       <div className="p-4 row">
@@ -140,10 +141,11 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
+                        <img src={LinkIcon} width="22px" className="ml-1 mr-2" alt="Links" />
                         Useful links
                       </header>
                       <dl className="p-4">
-                        <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
+                        <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Playground" /> Playground</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
                             <ListGroupItem className="bg-dark" tag="a" href="#">Install</ListGroupItem>
@@ -151,7 +153,7 @@ export default class PlaygroundPage extends React.PureComponent {
                             <ListGroupItem className="bg-dark" tag="a" href="#">Contribute</ListGroupItem>
                           </ListGroup>
                         </dd>
-                        <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
+                        <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Envoy" /> Envoy proxy</dt>
                         <dd className="p-4">
                           <ListGroup className="bg-dark">
                             <ListGroupItem className="bg-dark" tag="a" href="#">Web</ListGroupItem>
