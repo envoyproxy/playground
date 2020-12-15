@@ -49,12 +49,12 @@ export class PlaygroundSiteRepoInfo extends React.Component {
     async componentDidMount () {
         const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
         const content = await response.json();
-        const {events_url, open_issues_count} = content;
+        const {events_url, open_issues_count: issues} = content;
         const eventsResponse = await fetch(events_url);
         const events = await eventsResponse.json();
         this.setState({
             events,
-            issues: content.open_issues_count});
+            issues});
     }
 
     render () {
