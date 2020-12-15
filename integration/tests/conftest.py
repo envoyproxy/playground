@@ -1,6 +1,7 @@
 
 import argparse
 import asyncio
+import base64
 import functools
 import os
 import pytest
@@ -31,6 +32,14 @@ class Playground(object):
         return aiodocker.Docker()
 
     async def clear(self):
+        containers = [
+            container
+            for container
+            in await self.docker.containers.list()
+            if ('envoy.playground.proxy' in container['Labels']
+                or 'envoy.playground.service' in container['Labels'])]
+        for container in containers:
+            await container.delete(force=True, v=True)
         networks = [
             n['Id']
             for n in await self.docker.networks.list()
@@ -55,12 +64,11 @@ class Playground(object):
             return
         await asyncio.sleep(wait)
         name = f'{name}.png'
-        response = await self.web.screenshot()
         path = os.path.join(
             self._artifact_dir,
             name)
-        with open(path, 'w') as f:
-            f.write(response)
+        with open(path, 'wb') as f:
+            f.write(base64.b64decode(await self.web.screenshot()))
 
 
 def pytest_addoption(parser):
@@ -99,7 +107,10 @@ async def playground(pytestconfig):
     capabilities = {"browserName": "firefox"}
 
     async with aiohttp.ClientSession() as session:
-        remote = await Remote.create('http://localhost:4444', capabilities, session)
+        remote = await Remote.create(
+            'http://localhost:4444',
+            capabilities,
+            session)
         async with remote as driver:
             await driver.set_window_size(1920, 1080)
             playground = Playground(
@@ -109,3 +120,5 @@ async def playground(pytestconfig):
             await driver.get("http://localhost:8000")
             await asyncio.sleep(.3)
             yield playground
+            await playground.clear()
+            await playground.docker.close()

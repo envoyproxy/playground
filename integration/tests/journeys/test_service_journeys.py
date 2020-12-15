@@ -69,3 +69,8 @@ async def test_journey_service_create(playground):
 
     # wait for started
     await playground.snap('service.create.started', 60)
+    assert [
+        container
+        for container
+        in await playground.docker.containers.list()
+        if container['Labels'].get('envoy.playground.service') == 'echo0']

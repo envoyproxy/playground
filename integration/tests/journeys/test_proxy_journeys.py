@@ -15,7 +15,8 @@ async def test_journey_proxy_create(playground):
     await asyncio.sleep(1)
 
     # find the name input
-    name_input = await playground.query('input[id="envoy.playground.name"]')
+    name_input = await playground.query(
+        'input[id="envoy.playground.name"]')
     assert (
         await name_input.command('GET', f'/attribute/placeholder')
         == 'Enter proxy name')
@@ -29,7 +30,9 @@ async def test_journey_proxy_create(playground):
     await playground.enter(name_input, 'oxy0')
 
     select = await playground.query(
-        '.tab-pane.active form select#example [value="Proxy: Python (asyncio)"]')
+        '.tab-pane.active form select'
+        '#example option[value="Service: HTTP/S echo"]')
+
     await select.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.configuration')
@@ -76,4 +79,10 @@ async def test_journey_proxy_create(playground):
     await playground.snap('proxy.create.starting', .3)
 
     # wait for started
+    await asyncio.sleep(1)
     await playground.snap('proxy.create.started', 60)
+    assert [
+        container
+        for container
+        in await playground.docker.containers.list()
+        if container['Labels'].get('envoy.playground.proxy') == 'proxy0']
