@@ -1,5 +1,6 @@
 
 import argparse
+import asyncio
 import os
 import pytest
 import time
@@ -16,6 +17,16 @@ class Playground(object):
         if not self.screenshots:
             return
         time.sleep(wait)
+        name = f'{name}.png'
+        self.web.get_screenshot_as_file(
+            os.path.join(
+                self._artifact_dir,
+                name))
+
+    async def snap2(self, name, wait=0):
+        if not self.screenshots:
+            return
+        await asyncio.sleep(wait)
         name = f'{name}.png'
         self.web.get_screenshot_as_file(
             os.path.join(
