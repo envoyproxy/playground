@@ -122,7 +122,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         Playground
                       </header>
                       <div className="reflection-box">
-                        <div className="reflection" styles={{backgroundUrl: EnvoyLogo}}/>
+                        <div className="reflection" style={{backgroundUrl: EnvoyLogo}}/>
                       </div>
                     </section>
 		  </Col>
