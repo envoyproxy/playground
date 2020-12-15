@@ -39,6 +39,26 @@ export class PlaygroundSiteRepository extends React.PureComponent {
 }
 
 
+export class PlaygroundSiteRepoEvent extends React.Component {
+
+    render () {
+        const {event} = this.props;
+        const {actor, payload} = event;
+        const {avatar_url, login} = actor;
+        const {action} = payload;
+        console.log(event);
+        return  (
+            <ul>
+              <li>
+                <img src={avatar_url} width="22px" className="ml-1 mr-2" alt="Playground" />
+                {login} {action} something...
+              </li>
+            </ul>
+        );
+    }
+}
+
+
 export class PlaygroundSiteRepoInfo extends React.Component {
     static propTypes = exact({
         repository: PropTypes.string.isRequired,
@@ -77,17 +97,8 @@ export class PlaygroundSiteRepoInfo extends React.Component {
                 <dt>Recent activity</dt>
                 <dd>
                   {events.map((event, i) => {
-                      const {actor, payload} = event;
-                      const {avatar_url, login} = actor;
-                      const {action} = payload;
-                      return  (
-                          <ul>
-                            <li>
-                              <img src={avatar_url} width="22px" className="ml-1 mr-2" alt="Playground" />
-                              {login} {action} something...
-                            </li>
-                          </ul>
-                      );
+                      return (
+                          <PlaygroundSiteRepoEvent event={event} />);
                   })}
                 </dd>
               </dl>
