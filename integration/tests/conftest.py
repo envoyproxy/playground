@@ -1,9 +1,22 @@
 
 import argparse
 import asyncio
+import functools
 import os
 import pytest
 import time
+
+import pyquery
+
+import aiodocker
+
+
+import asyncio
+import time
+
+import aiohttp
+
+from aioselenium import Remote, Keys
 
 
 class Playground(object):
@@ -13,15 +26,41 @@ class Playground(object):
         self.web = selenium
         self.screenshots = screenshots
 
+    @functools.cached_property
+    def docker(self):
+        return aiodocker.Docker()
+
+    async def clear(self):
+        networks = [
+            n['Id']
+            for n in await self.docker.networks.list()
+            if 'envoy.playground.network' in n['Labels']]
+        for network in networks:
+            await aiodocker.networks.DockerNetwork(
+                self.docker, network).delete()
+
+    async def enter(self, element, text):
+        response = await element.command(
+            'POST',
+            f'/value',
+            json=dict(value=list(text)))
+
+    async def query(self, q):
+        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        print(xpath)
+        return await self.web.find_element_by_xpath(xpath)
+
     async def snap(self, name, wait=0):
         if not self.screenshots:
             return
         await asyncio.sleep(wait)
         name = f'{name}.png'
-        self.web.get_screenshot_as_file(
-            os.path.join(
-                self._artifact_dir,
-                name))
+        response = await self.web.screenshot()
+        path = os.path.join(
+            self._artifact_dir,
+            name)
+        with open(path, 'w') as f:
+            f.write(response)
 
 
 def pytest_addoption(parser):
@@ -56,10 +95,17 @@ def pytest_runtest_setup(item):
 
 
 @pytest.fixture
-def playground(pytestconfig, selenium):
-    _playground = Playground(
-        selenium,
-        screenshots=pytestconfig.getoption('screenshots'))
-    _playground.web.get("http://localhost:8000")
-    time.sleep(.3)
-    return _playground
+async def playground(pytestconfig):
+    capabilities = {"browserName": "firefox"}
+
+    async with aiohttp.ClientSession() as session:
+        remote = await Remote.create('http://localhost:4444', capabilities, session)
+        async with remote as driver:
+            await driver.set_window_size(1920, 1080)
+            playground = Playground(
+                driver,
+                screenshots=pytestconfig.getoption('screenshots'))
+            await playground.clear()
+            await driver.get("http://localhost:8000")
+            await asyncio.sleep(.3)
+            yield playground
