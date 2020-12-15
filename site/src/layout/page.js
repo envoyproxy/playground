@@ -129,20 +129,6 @@ export default class PlaygroundPage extends React.PureComponent {
                         Useful links
                       </header>
                       <dl>
-                        <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
-                        <ul>
-                          <li>
-                            Website
-                          </li>
-                          <li>
-                            <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Repository
-                          </li>
-                          <li>
-                            Docs
-                          </li>
-                        </ul>
-                      </dl>
-                      <dl>
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
                         <dd>
                           <ul>
@@ -150,7 +136,24 @@ export default class PlaygroundPage extends React.PureComponent {
                               Install
                             </li>
                             <li>
+                              Learn
+                            </li>
+                            <li>
+                              Contribute
+                            </li>
+                          </ul>
+                        </dd>
+                        <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
+                        <dd>
+                          <ul>
+                            <li>
+                              Website
+                            </li>
+                            <li>
                               <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Repository
+                            </li>
+                            <li>
+                              Docs
                             </li>
                           </ul>
                         </dd>
