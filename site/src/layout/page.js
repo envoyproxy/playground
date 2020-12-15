@@ -11,7 +11,7 @@ import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
 import PlaygroundScreenshot from '../app/images/playground.png';
 
-import ServiceConfig from '../services/services.yaml';
+import ServiceConfig from 'js-yaml-loader!../services/services.yaml';
 import RedisLogo from '../services/redis/redis.svg';
 
 import PropTypes from 'prop-types';

@@ -2,21 +2,22 @@
   "name": "site",
   "version": "0.1.0",
   "private": true,
-    "dependencies": {
+  "dependencies": {
     "@reduxjs/toolkit": "^1.4.0",
     "bootstrap": "^4.5.3",
     "js-yaml": "^3.14.0",
+    "js-yaml-loader": "^1.2.2",
     "prop-types-exact": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-      "react-scripts": "4.0.1",
-    "reactstrap": "^8.7.1",
-      "web-vitals": "^0.2.4",
     "react-markdown": "^5.0.3",
     "react-redux": "^7.2.2",
+    "react-scripts": "4.0.1",
+    "reactstrap": "^8.7.1",
+    "web-vitals": "^0.2.4",
     "yarn": "^1.22.10"
   },
-"devDependencies": {
+  "devDependencies": {
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.3.0"
@@ -25,7 +26,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-      "eject": "react-scripts eject",
+    "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint --max-warnings 0 src"
   },
   "eslintConfig": {
