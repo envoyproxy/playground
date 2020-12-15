@@ -63,19 +63,22 @@ export class PlaygroundSiteRepoEvent extends React.PureComponent {
 export class PlaygroundSiteService extends React.PureComponent {
 
     render () {
+        const {name, data} = this.props;
+        const  {image, labels} = data;
+        const logo = `/services/{name}/{labels['envoy.playground.logo']}`;
         return  (
             <>
               <dt>
-                <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
-                Redis
+                <img src={logo} width="22px" className="ml-1 mr-2" alt={name} />
+                {labels['envoy.playground.service']}
               </dt>
               <dd className="p-2">
+                {labels['envoy.playground.description']}
                 <ListGroup className="bg-dark">
                   <ListGroupItem className="bg-dark" tag="a" href="#">
                     <img src={DockerIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
-                    redis:latest
+                    {image}
                   </ListGroupItem>
-                  <ListGroupItem className="bg-dark" tag="a" href="#">redis.io</ListGroupItem>
                 </ListGroup>
               </dd>
             </>
@@ -85,19 +88,23 @@ export class PlaygroundSiteService extends React.PureComponent {
 
 
 export class PlaygroundSiteServices extends React.Component {
-    state = {services: []};
+    state = {services: {}};
 
     async componentDidMount () {
         const response = await fetch(ServiceConfig);
         const content = await response.text();
-        const services = Yaml.safeLoad(content);
-        console.log('MOUNTED', services);
+        const {services} = Yaml.safeLoad(content);
+        this.setState({services});
     }
 
     render () {
+        const {services} = this.state;
         return  (
             <dl className="p-2 pt-4">
-              <PlaygroundSiteService  />
+            {Object.entries(services).map(([k, v], i) => {
+                return (
+                    <PlaygroundSiteService key={i} name={k} data={v}  />);
+            })}
             </dl>
         );
     }
