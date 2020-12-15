@@ -122,8 +122,10 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Playground
                       </header>
-                      <div className="reflection-box p-2 row">
-                        <div className="reflection col" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
+                      <div className="p-2 row">
+                        <div className="reflection-box col">
+                          <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
+                        </div>
                         <div className="col">
                           Features
                           <ul>
