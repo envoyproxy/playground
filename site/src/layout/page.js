@@ -60,7 +60,6 @@ export class PlaygroundSiteRepoInfo extends React.Component {
     render () {
         const {issues, events} = this.state;
         const {repository} = this.props;
-        console.log(events);
         return (
             <div  className="p-2 pt-4">
               <dl className="p-2">
@@ -77,11 +76,19 @@ export class PlaygroundSiteRepoInfo extends React.Component {
                 </dd>
                 <dt>Recent activity</dt>
                 <dd>
-                  <ul>
-                    <li>
-                      PR opened...
-                    </li>
-                  </ul>
+                  {events.map((event, i) => {
+                      const {actor, payload} = event;
+                      const {avatar_url, login} = actor;
+                      const {action} = payload;
+                      return  (
+                          <ul>
+                            <li>
+                              <img src={avatar_url} width="22px" className="ml-1 mr-2" alt="Playground" />
+                              {login} {action} something...
+                            </li>
+                          </ul>
+                      );
+                  })}
                 </dd>
               </dl>
             </div>
