@@ -128,7 +128,13 @@ export default class PlaygroundPage extends React.PureComponent {
                           Features
                           <ul>
                             <li>
-                              info...
+                              Learn/test Envoy config
+                            </li>
+                            <li>
+                              Test Envoy with upstream services
+                            </li>
+                            <li>
+                              Plan network/proxy architectures
                             </li>
                           </ul>
                         </div>
