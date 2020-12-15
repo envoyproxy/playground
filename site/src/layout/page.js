@@ -36,6 +36,49 @@ export class PlaygroundSiteRepository extends React.PureComponent {
 }
 
 
+export class PlaygroundSiteRepoInfo extends React.Component {
+    static propTypes = exact({
+        repository: PropTypes.string.isRequired,
+    });
+
+    async componentDidMount () {
+        const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
+        const content = await response.json();
+        this.setState({issues: content.open_issues_count});
+    }
+
+    render () {
+        const {issues} = this.state;
+        const {repository} = this.props;
+        return (
+            <div  className="p-2 pt-4">
+              <dl className="p-2">
+                <dt>Repository</dt>
+                <dd>
+                  https://github.com/envoyproxy/playground
+                </dd>
+                <dd>
+                  issues: {issues}
+                </dd>
+                <dt>Current release</dt>
+                <dd>
+                  ...release...
+                </dd>
+                <dt>Recent activity</dt>
+                <dd>
+                  <ul>
+                    <li>
+                      PR opened...
+                    </li>
+                  </ul>
+                </dd>
+              </dl>
+            </div>
+        );
+    }
+}
+
+
 export class PlaygroundSiteDocs extends React.PureComponent {
     render () {
         return (
@@ -176,26 +219,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Code
                       </header>
-                      <div  className="p-2 pt-4">
-                        <dl className="p-2">
-                          <dt>Repository</dt>
-                          <dd>
-                            https://github.com/envoyproxy/playground
-                          </dd>
-                          <dt>Current release</dt>
-                          <dd>
-                            ...release...
-                          </dd>
-                          <dt>Recent activity</dt>
-                          <dd>
-                            <ul>
-                              <li>
-                                PR opened...
-                              </li>
-                            </ul>
-                          </dd>
-                        </dl>
-                      </div>
+                      <PlaygroundSiteRepoInfo />
                     </section>
 		  </Col>
 
