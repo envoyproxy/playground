@@ -116,18 +116,26 @@ export default class PlaygroundPage extends React.PureComponent {
               <main className="App-main">
 		<Row>
 		  <Col>
-                    WELCOME INFORMATION
+                    <section>
+                      <header>WELCOME INFORMATION</header>
+                    </section>
 		  </Col>
 		  <Col>
-                    DOC LINKS
+                    <section>
+                      <header>DOC LINKS</header>
+                    </section>
 		  </Col>
 	        </Row>
 		<Row>
 		  <Col>
-                    CODE REPO
+                    <section>
+                      <header>CODE</header>
+                    </section>
 		  </Col>
 		  <Col>
-                    SERVICES
+                    <section>
+                      <header>SERVICES</header>
+                    </section>
 		  </Col>
 	        </Row>
               </main>
