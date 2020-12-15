@@ -31,7 +31,12 @@ async def test_journey_network_create(playground):
     await asyncio.sleep(1)
 
     await playground.snap('network.create.starting')
-    await playground.snap('network.create.started', 60)
+    await playground.snap('network.create.started', 5)
+    link = await playground.query(
+        '.App-left .accordion-item .card-header .col-sm-8')
+    assert (
+        await link.text()
+        == 'net0')
     assert [
         n
         for n in await playground.docker.networks.list()

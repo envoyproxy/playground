@@ -78,8 +78,14 @@ async def test_journey_proxy_create(playground):
     await playground.snap('proxy.create.starting', .3)
 
     # wait for started
-    await asyncio.sleep(1)
-    await playground.snap('proxy.create.started', 60)
+    await asyncio.sleep(60)
+
+    link = await playground.query(
+        '.App-left .accordion-item .card-header .col-sm-8')
+    assert (
+        await link.text()
+        == 'proxy0')
+    await playground.snap('proxy.create.started')
     assert [
         container
         for container

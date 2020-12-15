@@ -67,7 +67,14 @@ async def test_journey_service_create(playground):
     await playground.snap('service.create.starting', .3)
 
     # wait for started
-    await playground.snap('service.create.started', 60)
+    await asyncio.sleep(60)
+
+    link = await playground.query(
+        '.App-right .accordion-item .card-header .col-sm-8')
+    assert (
+        await link.text()
+        == 'echo0')
+    await playground.snap('service.create.started')
     assert [
         container
         for container
