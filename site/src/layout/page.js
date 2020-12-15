@@ -125,7 +125,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-2">
                       <header className="bg-dark p-2">
-                        Docs
+                        Useful links
                       </header>
                     </section>
 		  </Col>
