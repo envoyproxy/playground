@@ -58,8 +58,9 @@ export class PlaygroundSiteRepoInfo extends React.Component {
     }
 
     render () {
-        const {issues} = this.state;
+        const {issues, events} = this.state;
         const {repository} = this.props;
+        console.log(events);
         return (
             <div  className="p-2 pt-4">
               <dl className="p-2">
