@@ -47,5 +47,5 @@ services:
     volumes:
     - ../site:/app
     - ../services:/app/public/services
-    - ../services.yaml:/app/src/services.yaml
+    - ../services/services.yaml:/app/src/services.yaml
     - ../.cache/coverage/site:/app/coverage
