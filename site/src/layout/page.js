@@ -187,11 +187,20 @@ export default class PlaygroundPage extends React.PureComponent {
                         Code
                       </header>
                       <div  className="p-2">
-                        <ul>
-                          <li>
-                            info...
-                          </li>
-                        </ul>
+                        <dl className="p-2">
+                          <dt>Repository</dt>
+                          <dd>
+                            https://github.com/envoyproxy/playground
+                          </dd>
+                          <dt>Recent activity</dt>
+                          <dd>
+                            <ul>
+                              <li>
+                                PR opened...
+                              </li>
+                            </ul>
+                          </dd>
+                        </dl>
                       </div>
                     </section>
 		  </Col>
