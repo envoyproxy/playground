@@ -221,6 +221,7 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         iconAlt: PropTypes.string,
         fail: PropTypes.array,
         failMessage: PropTypes.string,
+        successTimeout: PropTypes.number,
 
         icon: PropTypes.string,
         type: PropTypes.string,
@@ -233,11 +234,12 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         dispatch(clearForm());
     }
 
-    updateStatus = () => {
-        const {form, success} = this.props;
+    updateStatus = async () => {
+        const {dispatch, form, success, successTimeout=2000} = this.props;
         const {status} = form;
         if (status === success) {
-            this.timer = setTimeout(this.closeModal, 1000);
+            await dispatch(updateForm({status: 'success'}));
+            this.timer = setTimeout(this.closeModal, successTimeout);
         }
     }
 

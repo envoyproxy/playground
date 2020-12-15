@@ -29,8 +29,8 @@ export class BaseNetworkFormModal extends React.PureComponent {
         const {form} = this.props;
         const {name} = form;
         return {
-            initializing: [[30, 90],  <span>Creating network ({name})...</span>],
-            create: [[90, 100],  <span>Network created ({name})...</span>]};
+            default: [[30, 100],  <span>Creating network ({name})...</span>],
+            success: [[100, 100],  <span>Network created ({name})...</span>]};
     }
 
     get tabs () {
@@ -70,6 +70,7 @@ export class BaseNetworkFormModal extends React.PureComponent {
               icon={CloudLogo}
               messages={this.activityMessages}
               success='create'
+              successTimeout={1000}
               tabs={this.tabs} />
         );
     }
