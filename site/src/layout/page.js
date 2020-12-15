@@ -121,19 +121,19 @@ export default class PlaygroundPage extends React.PureComponent {
                     </section>
 		  </Col>
 		  <Col>
-                    <section>
+                    <section className="bg-light">
                       <header>DOC LINKS</header>
                     </section>
 		  </Col>
 	        </Row>
 		<Row>
 		  <Col>
-                    <section>
+                    <section className="bg-light">
                       <header>CODE</header>
                     </section>
 		  </Col>
 		  <Col>
-                    <section>
+                    <section className="bg-light">
                       <header>SERVICES</header>
                     </section>
 		  </Col>
