@@ -7,7 +7,9 @@ import GithubLogo from '../app/images/github.svg';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
-import {Nav, Navbar, NavbarBrand, NavItem, NavLink} from 'reactstrap';
+import {
+    Col, Nav, Navbar, NavbarBrand, NavItem, NavLink,
+    Row} from 'reactstrap';
 
 
 export class PlaygroundSiteRepository extends React.PureComponent {
@@ -112,7 +114,14 @@ export default class PlaygroundPage extends React.PureComponent {
                   navs={this.navs} />
               </header>
               <main className="App-main">
-                <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
+		<Row>
+		  <Col>
+                    <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
+		  </Col>
+		  <Col>
+                    <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
+		  </Col>
+	        </Row>
               </main>
             </div>);
     }
