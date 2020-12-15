@@ -56,7 +56,7 @@ export class PlaygroundSiteRepoInfo extends React.Component {
               <dl className="p-2">
                 <dt>Repository</dt>
                 <dd>
-                  https://github.com/envoyproxy/playground
+                  {repository}
                 </dd>
                 <dd>
                   issues: {issues}
