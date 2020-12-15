@@ -1,5 +1,5 @@
 #!/bin/bash -E
 
-pip install selenium pytest-selenium
+pip install selenium pytest-asyncio pytest-selenium aiodocker aiohttp
 
 exec "$@"

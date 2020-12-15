@@ -1,5 +1,6 @@
 
 import argparse
+import asyncio
 import os
 import pytest
 import time
@@ -12,10 +13,10 @@ class Playground(object):
         self.web = selenium
         self.screenshots = screenshots
 
-    def snap(self, name, wait=0):
+    async def snap(self, name, wait=0):
         if not self.screenshots:
             return
-        time.sleep(wait)
+        await asyncio.sleep(wait)
         name = f'{name}.png'
         self.web.get_screenshot_as_file(
             os.path.join(
