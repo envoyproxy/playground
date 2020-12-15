@@ -20,11 +20,8 @@
   min-height: calc(100vh - 1.5em);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  text-align: center;
 }
 
 .App-link {
@@ -38,4 +35,49 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.reflection-box {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-reflection,
+.reflection {
+    width: 400px;
+    height: 265px;
+    position: relative;
+    background-position: bottom;
+    background-size: cover;
+    box-shadow: 0px 50px 70px rgba(0,0,0,0.3),
+		0px 10px 10px rgba(0,0,0,0.0);
+}
+.reflection::after {
+    content:"";
+    background-image: inherit;
+    width:inherit;
+    height:10%;
+    position: absolute;
+    bottom:-11%;
+    transform: scaleY(-1);
+    background-position: bottom;
+    background-size: cover;
+    opacity: 0.3;
+}
+
+.reflection::before {
+    content:"";
+    width:inherit;
+    height: 12%;
+    position: absolute;
+    bottom: -12%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5),rgba(255,255,255,0));
+    z-index: 1;
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
 }

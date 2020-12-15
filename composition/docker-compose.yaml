@@ -46,4 +46,6 @@ services:
     - 8082:3000
     volumes:
     - ../site:/app
+    - ../services:/app/public/services
+    - ../services/services.yaml:/app/src/services.yaml
     - ../.cache/coverage/site:/app/coverage
