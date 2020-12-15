@@ -36,3 +36,43 @@
     transform: rotate(360deg);
   }
 }
+
+
+.reflection-box {
+    width:100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reflection {
+    width: 500px;
+    height:333px;
+    position: relative;
+    background-position: bottom;
+    background-size: cover;
+    box-shadow: 0px 50px 70px rgba(0,0,0,0.3),
+		0px 10px 10px rgba(0,0,0,0.1);
+}
+.reflection::after {
+    content:"";
+    background-image: inherit;
+    width:inherit;
+    height:40%;
+    position: absolute;
+    bottom:-41%;
+    transform: scaleY(-1);
+    background-position: bottom;
+    background-size: cover;
+    opacity: 0.5;
+}
+.reflection::before {
+    content:"";
+    width:inherit;
+    height: 42%;
+    position: absolute;
+    bottom: -42%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3),white);
+    z-index: 1;
+}
