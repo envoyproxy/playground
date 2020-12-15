@@ -132,10 +132,13 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
                         <ul>
                           <li>
-                            Envoy website
+                            Website
                           </li>
                           <li>
-                            Envoy repository
+                            <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Repository
+                          </li>
+                          <li>
+                            Docs
                           </li>
                         </ul>
                       </dl>
@@ -143,7 +146,12 @@ export default class PlaygroundPage extends React.PureComponent {
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
                         <dd>
                           <ul>
-                            Install the playground.
+                            <li>
+                              Install
+                            </li>
+                            <li>
+                              <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Repository
+                            </li>
                           </ul>
                         </dd>
                       </dl>
