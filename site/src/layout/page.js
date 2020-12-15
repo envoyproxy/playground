@@ -116,10 +116,18 @@ export default class PlaygroundPage extends React.PureComponent {
               <main className="App-main">
 		<Row>
 		  <Col>
-                    <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
+                    WELCOME INFORMATION
 		  </Col>
 		  <Col>
-                    <img src={EnvoyInverseLogo} className="App-logo" alt="logo" />
+                    DOC LINKS
+		  </Col>
+	        </Row>
+		<Row>
+		  <Col>
+                    CODE REPO
+		  </Col>
+		  <Col>
+                    SERVICES
 		  </Col>
 	        </Row>
               </main>
