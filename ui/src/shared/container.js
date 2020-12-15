@@ -48,7 +48,6 @@ export class PlaygroundProgressive extends React.Component {
         if (value === 100) {
             color = 'success';
         }
-        console.log('PROG', value);
         return (
             <Progress
               {...props}
