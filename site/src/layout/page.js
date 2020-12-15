@@ -6,6 +6,7 @@ import EnvoyLogo from '../app/images/logo.svg';
 import GithubLogo from '../app/images/github.svg';
 import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
+import PlaygroundScreenshot from '../app/images/playground.png';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -127,7 +128,7 @@ export default class PlaygroundPage extends React.PureComponent {
                       </header>
                       <div className="p-2 pt-4 row">
                         <div className="reflection-box col">
-                          <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
+                          <div className="reflection" style={{backgroundImage: `url(${PlaygroundScreenshot})`}}/>
                         </div>
                         <div className="col pt-5">
                           <ListGroup className="bg-dark">
