@@ -130,13 +130,13 @@ export default class PlaygroundPage extends React.PureComponent {
                         <div className="col pt-5">
                           <ul>
                             <li>
-                              <a href="#">Learn/test Envoy config</a>
+                              Learn/test Envoy config
                             </li>
                             <li>
-                              <a href="#">Test Envoy with upstream services</a>
+                              Test Envoy with upstream services
                             </li>
                             <li>
-                              <a href="#">Plan network/proxy architectures</a>
+                              Model network/proxy architectures
                             </li>
                           </ul>
                         </div>
