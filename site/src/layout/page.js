@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
 import {
-    Col, ListGroup, ListGroupItem,
+    Col, Collapse, ListGroup, ListGroupItem,
     Nav, Navbar, NavbarBrand, NavItem, NavLink,
     Row} from 'reactstrap';
 
@@ -60,19 +60,27 @@ export class PlaygroundSiteRepoEvent extends React.PureComponent {
 }
 
 
-export class PlaygroundSiteService extends React.PureComponent {
+export class PlaygroundSiteService extends React.Component {
+
+    state = {open: false};
+
+    onClick = () => {
+        const {open} = this.state;
+        this.setState({open: !open});
+    }
 
     render () {
+        const {open} = this.state;
         const {name, data} = this.props;
         const  {image, labels} = data;
-        const logo = `/services/{name}/{labels['envoy.playground.logo']}`;
+        const logo = `/services/${name}/${labels['envoy.playground.logo']}`;
         return  (
             <>
-              <dt>
+              <dt className="bg-dark p-2" onClick={this.onClick}>
                 <img src={logo} width="22px" className="ml-1 mr-2" alt={name} />
                 {labels['envoy.playground.service']}
               </dt>
-              <dd className="p-2">
+              <Collapse className="p-2" tag='dd' isOpen={open}>
                 {labels['envoy.playground.description']}
                 <ListGroup className="bg-dark">
                   <ListGroupItem className="bg-dark" tag="a" href="#">
@@ -80,7 +88,7 @@ export class PlaygroundSiteService extends React.PureComponent {
                     {image}
                   </ListGroupItem>
                 </ListGroup>
-              </dd>
+              </Collapse>
             </>
         );
     }
@@ -100,11 +108,11 @@ export class PlaygroundSiteServices extends React.Component {
     render () {
         const {services} = this.state;
         return  (
-            <dl className="p-2 pt-4">
-            {Object.entries(services).map(([k, v], i) => {
-                return (
-                    <PlaygroundSiteService key={i} name={k} data={v}  />);
-            })}
+            <dl className="p-2 pt-4 small">
+              {Object.entries(services).map(([k, v], i) => {
+                  return (
+                      <PlaygroundSiteService key={i} name={k} data={v}  />);
+              })}
             </dl>
         );
     }
@@ -141,10 +149,6 @@ export class PlaygroundSiteRepoInfo extends React.Component {
                 </dd>
                 <dd>
                   issues: {issues}
-                </dd>
-                <dt>Current release</dt>
-                <dd>
-                  ...release...
                 </dd>
                 <dt>Recent activity</dt>
                 <dd>
@@ -251,11 +255,13 @@ export default class PlaygroundPage extends React.PureComponent {
                         Playground
                       </header>
                       <div className="p-2 pt-4 row">
-                        <div className="reflection-box col">
-                          <div className="reflection" style={{backgroundImage: `url(${PlaygroundScreenshot})`}}/>
+                        <div className="reflection-box">
+                          <div className="no-reflection" style={{backgroundImage: `url(${PlaygroundScreenshot})`}}/>
                         </div>
+                      </div>
+                      <div className="p-2 pt-0 row">
                         <div className="col pt-5">
-                          <ListGroup className="bg-dark">
+                          <ListGroup className="bg-dark small text-center" horizontal>
                             <ListGroupItem className="bg-dark" tag="span" href="#">Learn/test Envoy config</ListGroupItem>
                             <ListGroupItem className="bg-dark" tag="span" href="#">Test Envoy with upstream services</ListGroupItem>
                             <ListGroupItem className="bg-dark" tag="span" href="#">Model network/proxy architectures</ListGroupItem>
@@ -271,7 +277,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={LinkIcon} width="22px" className="ml-1 mr-2 rotate-90" alt="Links" />
                         Useful links
                       </header>
-                      <dl className="p-2 pt-4">
+                      <dl className="p-2 pt-4 small">
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Playground" /> Playground</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">

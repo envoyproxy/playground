@@ -40,38 +40,41 @@
 
 .reflection-box {
     display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
+.no-reflection,
 .reflection {
-    width: 200px;
-    height:200px;
+    width: 400px;
+    height: 265px;
     position: relative;
     background-position: bottom;
-    background-repeat: no-repeat;
-    background-size: 200px;
+    background-size: cover;
     box-shadow: 0px 50px 70px rgba(0,0,0,0.3),
-		0px 10px 10px rgba(0,0,0,0.1);
+		0px 10px 10px rgba(0,0,0,0.0);
 }
 .reflection::after {
     content:"";
     background-image: inherit;
     width:inherit;
-    height:40%;
+    height:10%;
     position: absolute;
-    bottom:-41%;
+    bottom:-11%;
     transform: scaleY(-1);
     background-position: bottom;
     background-size: cover;
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .reflection::before {
     content:"";
     width:inherit;
-    height: 42%;
+    height: 12%;
     position: absolute;
-    bottom: -42%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.3),white);
+    bottom: -12%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5),rgba(255,255,255,0));
     z-index: 1;
 }
 
