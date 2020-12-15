@@ -54,6 +54,10 @@ class Playground(object):
         xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
         return await self.web.find_element_by_xpath(xpath)
 
+    async def query_all(self, q):
+        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        return await self.web.find_elements_by_xpath(xpath)
+
     async def snap(self, name, wait=0):
         if not self.screenshots:
             return

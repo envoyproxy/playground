@@ -11,7 +11,7 @@ async def test_journey_proxy_create(playground):
 
     # open the proxy modal
     add_proxy_button = await playground.query('*[name="Proxies"]')
-    await add_proxy_button.click()
+    assert not await add_proxy_button.click()
     await asyncio.sleep(1)
 
     # find the name input
@@ -32,48 +32,59 @@ async def test_journey_proxy_create(playground):
     select = await playground.query(
         '.tab-pane.active form select'
         '#example option[value="Service: HTTP/S echo"]')
-
-    await select.click()
+    assert not await select.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.configuration')
 
     # add a port
-    env_tab = await playground.query(
-        '.modal-body .nav-tabs .nav-item a[text="Ports"]')
-    await env_tab.click()
+    ports_tab = await playground.query(
+        '.modal-body .nav-tabs a:contains("Ports")')
+    assert (
+        await ports_tab.text()
+        == 'Ports')
+    assert not await ports_tab.click()
     await asyncio.sleep(.3)
     port_button = await playground.query('.tab-pane.active form button')
-    await port_button.click()
+    assert not await port_button.click()
     await playground.snap('proxy.create.ports', .3)
 
     # set logging
     log_tab = await playground.query(
-        '.modal-body .nav-tabs .nav-item a[text="Logging"]')
-    await log_tab.click()
+        '.modal-body .nav-tabs a:contains("Logging")')
+    assert (
+        await log_tab.text()
+        == 'Logging')
+    assert not await log_tab.click()
     await asyncio.sleep(.3)
     select = await playground.query(
         '.tab-pane.active form select [value="trace"]')
-    await select.click()
+    assert not await select.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.logging')
 
     # open certs tab
     certs_tab = await playground.query(
-        '.modal-body .nav-tabs .nav-item a[text="Certificates"]')
-    await certs_tab.click()
+        '.modal-body .nav-tabs a:contains("Certificates")')
+    assert (
+        await certs_tab.text()
+        == 'Certificates')
+    assert not await certs_tab.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.certificates')
 
     # open binaries tab
     binary_tab = await playground.query(
-        '.modal-body .nav-tabs .nav-item a[text="Binaries"]')
-    await binary_tab.click()
+        '.modal-body .nav-tabs a:contains("Binaries")')
+    assert (
+        await binary_tab.text()
+        == 'Binaries')
+    assert not await binary_tab.click()
     await asyncio.sleep(.3)
     await playground.snap('proxy.create.binaries')
 
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
-    await submit.click()
+    assert not await submit.click()
     await asyncio.sleep(1)
     await playground.snap('proxy.create.starting', .3)
 
