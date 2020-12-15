@@ -11,8 +11,7 @@ import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
 import PlaygroundScreenshot from '../app/images/playground.png';
 
-import ServiceConfig from 'js-yaml-loader!../services/services.yaml';
-import RedisLogo from '../services/redis/redis.svg';
+import ServiceConfig from '../services.yaml';
 
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -67,7 +66,7 @@ export class PlaygroundSiteService extends React.PureComponent {
         return  (
             <>
               <dt>
-                <img src={RedisLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
+                <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
                 Redis
               </dt>
               <dd className="p-2">
