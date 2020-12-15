@@ -163,7 +163,8 @@ export class PlaygroundSiteRepoInfo extends React.Component {
                 <dd>
                   {_events.map((event, i) => {
                       return (
-                          <PlaygroundSiteRepoEvent event={event} />);
+                          <PlaygroundSiteRepoEvent
+                            event={event} />);
                   })}
                   {!showAll &&
                    <Button onClick={this.showMore}>Show more...</Button>
@@ -241,10 +242,12 @@ export class PlaygroundPageNav extends React.PureComponent {
 
 export default class PlaygroundPage extends React.PureComponent {
 
+    repository = "https://github.com/envoyproxy/playground";
+
     get navs () {
         return [
             [3, <PlaygroundSiteLogotype title="Envoy proxy Playground" />],
-            [1, <PlaygroundSiteRepository repository="https://github.com/envoyproxy/playground" />],
+            [1, <PlaygroundSiteRepository repository={this.repository} />],
             [2, <PlaygroundSiteDocs />],
             [6, '']];
     }
@@ -318,7 +321,8 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Code
                       </header>
-                      <PlaygroundSiteRepoInfo />
+                      <PlaygroundSiteRepoInfo
+                        repository={this.repository} />
                     </section>
 		  </Col>
 
