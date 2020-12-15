@@ -119,10 +119,19 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
+                        <img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" />
                         Playground
                       </header>
-                      <div className="reflection-box p-2">
-                        <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
+                      <div className="reflection-box p-2 row">
+                        <div className="reflection col" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
+                        <div className="col">
+                          Features
+                          <ul>
+                            <li>
+                              info...
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </section>
 		  </Col>
@@ -183,6 +192,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
+                        <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
                         Playground services
                       </header>
                       <dl className="p-2">
