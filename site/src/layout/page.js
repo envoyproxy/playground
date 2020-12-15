@@ -2,6 +2,7 @@
 import React from 'react';
 
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
+import EnvoyLogo from '../app/images/logo.svg';
 import GithubLogo from '../app/images/github.svg';
 
 import PropTypes from 'prop-types';
@@ -118,7 +119,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-2">
                       <header className="bg-dark p-2">
-                        WELCOME INFORMATION
+                        Playground
                       </header>
                     </section>
 		  </Col>
@@ -127,6 +128,25 @@ export default class PlaygroundPage extends React.PureComponent {
                       <header className="bg-dark p-2">
                         Useful links
                       </header>
+                      <dl>
+                        <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Envoy proxy</dt>
+                        <ul>
+                          <li>
+                            Envoy website
+                          </li>
+                          <li>
+                            Envoy repository
+                          </li>
+                        </ul>
+                      </dl>
+                      <dl>
+                        <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
+                        <dd>
+                          <ul>
+                            Install the playground.
+                          </ul>
+                        </dd>
+                      </dl>
                     </section>
 		  </Col>
 	        </Row>
