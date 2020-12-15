@@ -127,6 +127,7 @@ export class PlaygroundSiteRepoInfo extends React.Component {
     state = {issues: 0, events: [], showAll: false}
 
     async componentDidMount () {
+
         const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
         const content = await response.json();
         const {events_url, open_issues_count: issues} = content;
@@ -327,7 +328,8 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={ServiceIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground services
                       </header>
-                      <PlaygroundSiteServices />
+                      <PlaygroundSiteServices
+                        repository="https://github.com/envoyproxy/playground" />
                     </section>
 		  </Col>
 	        </Row>
