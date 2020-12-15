@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_service_create(playground):
-    await playground.snap2('service.create.open')
+    await playground.snap('service.create.open')
 
     # open the proxy modal
     playground.web.find_elements_by_name('Services')[0].click()
@@ -20,14 +20,14 @@ async def test_journey_service_create(playground):
 
     # add first 2 keys of name
     name_input.send_keys('echo')
-    await playground.snap2('service.create.name')
+    await playground.snap('service.create.name')
 
     # select a service type
     select = playground.web.find_element_by_css_selector(
         '.tab-pane.active form select#service_type')
     select.find_element_by_css_selector(
         '[value="http-echo"]').click()
-    await playground.snap2('service.create.configuration', .3)
+    await playground.snap('service.create.configuration', .3)
 
     # add an environment var
     playground.web.find_element_by_link_text('Environment').click()
@@ -40,23 +40,23 @@ async def test_journey_service_create(playground):
 
     playground.web.find_element_by_css_selector(
         '.tab-pane.active form button').click()
-    await playground.snap2('service.create.env', .3)
+    await playground.snap('service.create.env', .3)
 
     # view ports
     playground.web.find_element_by_link_text('Ports').click()
     await asyncio.sleep(.3)
-    await playground.snap2('service.create.ports', .3)
+    await playground.snap('service.create.ports', .3)
 
     # view readme
     playground.web.find_element_by_link_text('README').click()
     await asyncio.sleep(.3)
-    await playground.snap2('service.create.readme', .3)
+    await playground.snap('service.create.readme', .3)
 
     # click to start
     playground.web.find_element_by_css_selector(
         '.modal-footer .btn.btn-primary').click()
 
-    await playground.snap2('service.create.starting', .3)
+    await playground.snap('service.create.starting', .3)
 
     # wait for started
-    await playground.snap2('service.create.started', 60)
+    await playground.snap('service.create.started', 60)

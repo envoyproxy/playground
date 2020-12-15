@@ -13,17 +13,7 @@ class Playground(object):
         self.web = selenium
         self.screenshots = screenshots
 
-    def snap(self, name, wait=0):
-        if not self.screenshots:
-            return
-        time.sleep(wait)
-        name = f'{name}.png'
-        self.web.get_screenshot_as_file(
-            os.path.join(
-                self._artifact_dir,
-                name))
-
-    async def snap2(self, name, wait=0):
+    async def snap(self, name, wait=0):
         if not self.screenshots:
             return
         await asyncio.sleep(wait)
