@@ -121,7 +121,7 @@ export default class PlaygroundPage extends React.PureComponent {
                       <header className="bg-dark p-2">
                         Playground
                       </header>
-                      <div className="reflection-box">
+                      <div className="reflection-box p-2">
                         <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
                       </div>
                     </section>
@@ -131,7 +131,7 @@ export default class PlaygroundPage extends React.PureComponent {
                       <header className="bg-dark p-2">
                         Useful links
                       </header>
-                      <dl>
+                      <dl className="p-2">
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" /> Playground</dt>
                         <dd>
                           <ul>
@@ -171,6 +171,11 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
                         Code
                       </header>
+                      <ul className="p-2">
+                        <li>
+                          info...
+                        </li>
+                      </ul>
                     </section>
 		  </Col>
 		  <Col>
@@ -178,6 +183,16 @@ export default class PlaygroundPage extends React.PureComponent {
                       <header className="bg-dark p-2">
                         Playground services
                       </header>
+                      <dl className="p-2">
+                        <dt>service 1</dt>
+                        <dd>
+                          <ul>
+                            <li>
+                              info...
+                            </li>
+                          </ul>
+                        </dd>
+                      </dl>
                     </section>
 		  </Col>
 	        </Row>
