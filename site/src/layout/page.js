@@ -124,7 +124,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground
                       </header>
-                      <div className="p-4 row">
+                      <div className="p-2 pt-4 row">
                         <div className="reflection-box col">
                           <div className="reflection" style={{backgroundImage: `url(${EnvoyLogo})`}}/>
                         </div>
@@ -138,13 +138,14 @@ export default class PlaygroundPage extends React.PureComponent {
                       </div>
                     </section>
 		  </Col>
+
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
                         <img src={LinkIcon} width="22px" className="ml-1 mr-2" alt="Links" />
                         Useful links
                       </header>
-                      <dl className="p-4">
+                      <dl className="p-2 pt-4">
                         <dt><img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Playground" /> Playground</dt>
                         <dd className="p-2">
                           <ListGroup className="bg-dark">
@@ -154,7 +155,7 @@ export default class PlaygroundPage extends React.PureComponent {
                           </ListGroup>
                         </dd>
                         <dt><img src={EnvoyLogo} width="18px" className="ml-1 mr-2" alt="Envoy" /> Envoy proxy</dt>
-                        <dd className="p-4">
+                        <dd className="p-2">
                           <ListGroup className="bg-dark">
                             <ListGroupItem className="bg-dark" tag="a" href="#">Web</ListGroupItem>
                             <ListGroupItem className="bg-dark" tag="a" href="#">Code</ListGroupItem>
@@ -165,6 +166,7 @@ export default class PlaygroundPage extends React.PureComponent {
                     </section>
 		  </Col>
 	        </Row>
+
 		<Row>
 		  <Col>
                     <section className="mt-3">
@@ -172,7 +174,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Code
                       </header>
-                      <div  className="p-2">
+                      <div  className="p-2 pt-4">
                         <dl className="p-2">
                           <dt>Repository</dt>
                           <dd>
@@ -194,9 +196,10 @@ export default class PlaygroundPage extends React.PureComponent {
                       </div>
                     </section>
 		  </Col>
+
 		  <Col>
                     <section className="mt-3">
-                      <header className="bg-dark p-2">
+                      <header className="bg-dark p-2 pt-4">
                         <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Playground services
                       </header>
