@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import Yaml from 'js-yaml';
+
 import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
 import EnvoyLogo from '../app/images/logo.svg';
 import DockerIcon from '../app/images/docker.svg';
@@ -9,6 +11,7 @@ import LinkIcon from '../app/images/link.svg';
 import ServiceIcon from '../app/images/service.png';
 import PlaygroundScreenshot from '../app/images/playground.png';
 
+import ServiceConfig from '../services/services.yaml';
 import RedisLogo from '../services/redis/redis.svg';
 
 import PropTypes from 'prop-types';
@@ -39,14 +42,13 @@ export class PlaygroundSiteRepository extends React.PureComponent {
 }
 
 
-export class PlaygroundSiteRepoEvent extends React.Component {
+export class PlaygroundSiteRepoEvent extends React.PureComponent {
 
     render () {
         const {event} = this.props;
         const {actor, payload} = event;
         const {avatar_url, login} = actor;
         const {action} = payload;
-        console.log(event);
         return  (
             <ul>
               <li>
@@ -54,6 +56,48 @@ export class PlaygroundSiteRepoEvent extends React.Component {
                 {login} {action} something...
               </li>
             </ul>
+        );
+    }
+}
+
+
+export class PlaygroundSiteService extends React.PureComponent {
+
+    render () {
+        return  (
+            <>
+              <dt>
+                <img src={RedisLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
+                Redis
+              </dt>
+              <dd className="p-2">
+                <ListGroup className="bg-dark">
+                  <ListGroupItem className="bg-dark" tag="a" href="#">
+                    <img src={DockerIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
+                    redis:latest
+                  </ListGroupItem>
+                  <ListGroupItem className="bg-dark" tag="a" href="#">redis.io</ListGroupItem>
+                </ListGroup>
+              </dd>
+            </>
+        );
+    }
+}
+
+
+export class PlaygroundSiteServices extends React.Component {
+    state = {services: []};
+
+    componentDidMount () {
+        const services = Yaml.safeLoad(ServiceConfig);
+        console.log('MOUNTED', services);
+    }
+
+    render () {
+        return  (
+            <dl className="p-2 pt-4">
+              <PlaygroundSiteService  />
+            </dl>
         );
     }
 }
@@ -258,21 +302,7 @@ export default class PlaygroundPage extends React.PureComponent {
                         <img src={ServiceIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
                         Playground services
                       </header>
-                      <dl className="p-2 pt-4">
-                        <dt>
-                          <img src={RedisLogo} width="22px" className="ml-1 mr-2" alt="Redis" />
-                          Redis
-                        </dt>
-                        <dd className="p-2">
-                          <ListGroup className="bg-dark">
-                            <ListGroupItem className="bg-dark" tag="a" href="#">
-                              <img src={DockerIcon} width="22px" className="ml-1 mr-2" alt="Playground" />
-                              redis:latest
-                            </ListGroupItem>
-                            <ListGroupItem className="bg-dark" tag="a" href="#">redis.io</ListGroupItem>
-                          </ListGroup>
-                        </dd>
-                      </dl>
+                      <PlaygroundSiteServices />
                     </section>
 		  </Col>
 	        </Row>
