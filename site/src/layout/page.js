@@ -119,7 +119,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
-                        <img src={EnvoyInverseLogo} width="18px" className="ml-1 mr-2" alt="Github" />
+                        <img src={EnvoyInverseLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Playground
                       </header>
                       <div className="reflection-box p-2 row">
@@ -183,7 +183,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
-                        <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
+                        <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Code
                       </header>
                       <div  className="p-2">
@@ -191,6 +191,10 @@ export default class PlaygroundPage extends React.PureComponent {
                           <dt>Repository</dt>
                           <dd>
                             https://github.com/envoyproxy/playground
+                          </dd>
+                          <dt>Current release</dt>
+                          <dd>
+                            ...release...
                           </dd>
                           <dt>Recent activity</dt>
                           <dd>
@@ -207,7 +211,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
-                        <img src={GithubLogo} width="18px" className="ml-1 mr-2" alt="Github" />
+                        <img src={GithubLogo} width="22px" className="ml-1 mr-2" alt="Github" />
                         Playground services
                       </header>
                       <dl className="p-2">
