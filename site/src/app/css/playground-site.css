@@ -73,3 +73,8 @@
     background: linear-gradient(to bottom, rgba(255,255,255,0.3),white);
     z-index: 1;
 }
+
+
+.rotate-90 {
+    transform: rotate(90deg);
+}

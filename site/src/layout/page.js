@@ -143,7 +143,7 @@ export default class PlaygroundPage extends React.PureComponent {
 		  <Col>
                     <section className="mt-3">
                       <header className="bg-dark p-2">
-                        <img src={LinkIcon} width="22px" className="ml-1 mr-2" alt="Links" />
+                        <img src={LinkIcon} width="22px" className="ml-1 mr-2 rotate-90" alt="Links" />
                         Useful links
                       </header>
                       <dl className="p-2 pt-4">
