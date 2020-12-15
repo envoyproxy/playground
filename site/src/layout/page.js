@@ -113,7 +113,7 @@ export default class PlaygroundPage extends React.PureComponent {
                   className="border-bottom border-dark"
                   navs={this.navs} />
               </header>
-              <main className="App-main">
+              <main className="App-main container-fluid">
 		<Row>
 		  <Col>
                     <section>
