@@ -29,7 +29,9 @@ site:
 	./bin/generate-docs.py tmp/docs services/services.yaml
 	sphinx-build -W --keep-going -b dirhtml tmp/docs build/site/docs
 	npm install -g yarn
+	cp -a services site/src
 	cd site && yarn install && yarn build
+	rm -rf site/src/services
 	cp -a site/build/* build/site
 
 run: clean
