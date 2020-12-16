@@ -28,6 +28,7 @@ export class PlaygroundApp extends React.Component {
         const playground = new Playground(store, apiAddress, socketAddress);
         await playground.load();
         this.setState({playground});
+        window.playground = playground;
     }
 
     render () {
