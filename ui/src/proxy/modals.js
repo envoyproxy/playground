@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {PlaygroundFormModal} from '../shared/modal';
 import {
     ProxyBinariesForm, ProxyLoggingForm,
@@ -12,10 +14,9 @@ import {
 import EnvoyLogo from '../app/images/envoy.svg';
 
 
-export class ProxyFormModal extends React.PureComponent {
+export class BaseProxyFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
-        status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
     });
@@ -30,6 +31,12 @@ export class ProxyFormModal extends React.PureComponent {
             volume_create: [[80, 90],  <span>Creating volumes for Envoy proxy ({name})...</span>],
             start: [[90, 100],  <span>Starting Envoy proxy container ({name})...</span>],
             success: [[100, 100],  <span>Envoy proxy has started ({name})!</span>]};
+    }
+
+    get failMessage () {
+        const {form} = this.props;
+        const {name=''} = form;
+        return `Failed starting Envoy proxy (${name}). See logs for errors.`;
     }
 
     get tabs () {
@@ -64,17 +71,24 @@ export class ProxyFormModal extends React.PureComponent {
     }
 
     render () {
-        const {form} = this.props;
-        const {name=''} = form;
         return (
             <PlaygroundFormModal
-              type="proxy"
               icon={EnvoyLogo}
               messages={this.activityMessages}
-              failMessage={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+              failMessage={this.failMessage}
               success='start'
               fail={['exited', 'destroy', 'die']}
               tabs={this.tabs} />
         );
     }
 }
+
+
+const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+
+export default connect(mapStateToProps)(BaseProxyFormModal);

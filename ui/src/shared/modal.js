@@ -221,7 +221,6 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         successTimeout: PropTypes.number,
 
         icon: PropTypes.string,
-        type: PropTypes.string,
     });
 
     closeModal = () => {
