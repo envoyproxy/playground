@@ -6,7 +6,7 @@ import {shallow} from "enzyme";
 import ProxyResources, {
     BaseProxyResources,
     mapStateToProps} from '../../proxy/resources';
-import {ProxyFormModal} from '../../proxy/modals';
+import ProxyFormModal from '../../proxy/modals';
 import APIResources from '../../shared/resources';
 
 

@@ -101,7 +101,7 @@ export class ModalParts extends React.PureComponent {
         const {
             actionWarning, modal: Content,
             onSubmit, onUpdate, form, editAction, editClose,
-            dispatch, action, title, status, icon} = this.props;
+            action, title, icon} = this.props;
         let disabled = false;
         const {name, errors={}, edit=false, valid, validation} = form;
         if (!valid || validation || Object.keys(errors).length > 0) {
@@ -128,10 +128,7 @@ export class ModalParts extends React.PureComponent {
               <ModalBody>
                 {Content &&
                  <Content
-                   form={form}
-                   dispatch={dispatch}
-                   onUpdate={onUpdate}
-                   status={status} />
+                   onUpdate={onUpdate} />
                 }
               </ModalBody>
               <PlaygroundModalFooter
@@ -224,7 +221,6 @@ export class BasePlaygroundFormModal extends React.PureComponent {
         successTimeout: PropTypes.number,
 
         icon: PropTypes.string,
-        type: PropTypes.string,
     });
 
     closeModal = () => {

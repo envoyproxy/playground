@@ -14,19 +14,24 @@ import {ServiceReadme} from './readme';
 
 export class BaseServiceFormModal extends React.PureComponent {
     static propTypes = exact({
-        status: PropTypes.string.isRequired,
         form: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
         onUpdate: PropTypes.func.isRequired,
         dispatch: PropTypes.func.isRequired,
     });
 
+    get failMessage () {
+        const {form} = this.props;
+        const {name, service_type} = form;
+        return `Failed starting ${service_type} service (${name}). See logs for errors.`;
+    }
+
     get activityMessages () {
         const {form} = this.props;
         const {name} = form;
         return {
             default: [[10, 30], <span>Creating service ({name})...</span>],
-            pull_start: [[30, 50], <span>Pulling service image ({name})...</span>],
+            pull_start: [[30, 50], <span>Pulling container image for service ({name})...</span>],
             volume_create: [[50, 70], <span>Creating volumes for service ({name})...</span>],
             start: [[70, 100], <span>Starting service container ({name})...</span>],
             success: [[100, 100], <span>Service has started ({name})!</span>]};
@@ -86,12 +91,12 @@ export class BaseServiceFormModal extends React.PureComponent {
 
     render () {
         const {form, service_types} = this.props;
-        const {name, service_type} = form;
+        const {service_type} = form;
         return (
             <PlaygroundFormModal
               icon={(service_types[service_type] || {}).icon}
               messages={this.activityMessages}
-              failMessage={"Failed starting Envoy proxy (" + name  + "). See logs for errors."}
+              failMessage={this.failMessage}
               success='start'
               fail={['exited', 'destroy', 'die']}
               tabs={this.tabs} />
@@ -107,5 +112,4 @@ const mapModalStateToProps = function(state, other) {
     };
 };
 
-const ServiceFormModal = connect(mapModalStateToProps)(BaseServiceFormModal);
-export {ServiceFormModal};
+export default connect(mapModalStateToProps)(BaseServiceFormModal);

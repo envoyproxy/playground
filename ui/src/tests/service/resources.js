@@ -7,7 +7,7 @@ import ServiceLogo from '../../app/images/service.png';
 import ServiceResources, {
     BaseServiceResources,
     mapStateToProps} from '../../service/resources';
-import {ServiceFormModal} from '../../service/modals';
+import ServiceFormModal from '../../service/modals';
 import APIResources from '../../shared/resources';
 
 

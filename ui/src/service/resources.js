@@ -6,7 +6,7 @@ import exact from 'prop-types-exact';
 import ServiceLogo from '../app/images/service.png';
 import {connect} from '../app/store';
 import APIResources from '../shared/resources';
-import {ServiceFormModal} from './modals';
+import ServiceFormModal from './modals';
 
 
 export class BaseServiceResources extends React.PureComponent {

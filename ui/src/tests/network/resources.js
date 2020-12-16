@@ -6,7 +6,7 @@ import {shallow} from "enzyme";
 import NetworkResources, {
     BaseNetworkResources,
     mapStateToProps} from '../../network/resources';
-import {NetworkFormModal} from '../../network/modals';
+import NetworkFormModal from '../../network/modals';
 import APIResources from '../../shared/resources';
 
 
