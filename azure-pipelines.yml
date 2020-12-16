@@ -22,3 +22,5 @@ stages:
           displayName: 'Build the production Docker image'
         - script: make integration-test
           displayName: 'Run integration tests against the built image'
+        - script: make screenshots-test
+          displayName: 'Recreate screenshots and ensure nothing has changed'

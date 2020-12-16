@@ -7,6 +7,7 @@ import {
     loadProxies, loadServices,
     updateServiceTypes, updateCloud, updateEdges, updateExamples,
 } from "./store";
+import {CloudItem} from './cloud';
 
 
 export default class Playground {
@@ -36,6 +37,21 @@ export default class Playground {
     get updaters () {
         return this._updaters;
     }
+
+    cloud = async (path) => {
+        const {value: ui} = this.store.getState().ui;
+        const {resources} = ui;
+        if (path.split(':')[0] === 'service') {
+            for (const resource of Object.keys(resources)) {
+                if (resource.split(':')[2] === path.split(':')[1]) {
+                    return new CloudItem(this.store, resource, resources[resource]);
+                }
+            }
+        } else if (resources[path]) {
+            return new CloudItem(this.store, path, resources[path]);
+        }
+        return undefined;
+    };
 
     load = async () => {
         await this.loadData(await this.api.get("/resources"));

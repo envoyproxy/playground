@@ -85,11 +85,13 @@ async def test_journey_proxy_create(playground):
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
     assert not await submit.click()
-    await asyncio.sleep(1)
+    await asyncio.sleep(.1)
     await playground.snap('proxy.create.starting', .3)
+    await asyncio.sleep(1)
 
     # wait for started
     await asyncio.sleep(60)
+    await playground.move('proxy:proxy0', 230, 230)
 
     link = await playground.query(
         '.App-left .accordion-item .card-header .col-sm-8')

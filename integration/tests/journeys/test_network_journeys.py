@@ -28,10 +28,11 @@ async def test_journey_network_create(playground):
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
     await submit.click()
-    await asyncio.sleep(1)
-
+    await asyncio.sleep(.1)
+    await playground.move('network:net0', 230, 230)
     await playground.snap('network.create.starting')
-    await playground.snap('network.create.started', 5)
+    await asyncio.sleep(1)
+    await playground.snap('network.create.started')
     link = await playground.query(
         '.App-left .accordion-item .card-header .col-sm-8')
     assert (
