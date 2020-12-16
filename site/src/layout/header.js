@@ -1,9 +1,6 @@
 
 import React from 'react';
 
-import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
-import GithubLogo from '../app/images/github.svg';
-
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
@@ -11,8 +8,15 @@ import {
     Collapse, Nav, Navbar, NavbarBrand, NavItem, NavLink,
     NavbarToggler} from 'reactstrap';
 
+import {PlaygroundSiteContext} from "../app/context";
+import EnvoyInverseLogo from '../app/images/logo-inverse.svg';
+import GithubLogo from '../app/images/github.svg';
+
 
 export class PlaygroundSiteLogotype extends React.PureComponent {
+    static propTypes = exact({
+        title: PropTypes.string.isRequired,
+    });
 
     render () {
         const {title} = this.props;
@@ -33,6 +37,8 @@ export class PlaygroundSiteLogotype extends React.PureComponent {
 
 
 export class PlaygroundSiteDocs extends React.PureComponent {
+    static propTypes = exact({});
+
     render () {
         return (
             <>
@@ -89,12 +95,11 @@ export class PlaygroundPageNav extends React.Component {
 
 
 export class PlaygroundSiteRepository extends React.PureComponent {
-    static propTypes = exact({
-        repository: PropTypes.string.isRequired,
-    });
+    static contextType = PlaygroundSiteContext;
+    static propTypes = exact({});
 
     render () {
-        const {repository} = this.props;
+        const {repository} = this.context;
         return (
             <>
               <NavLink href={repository}>
@@ -108,12 +113,11 @@ export class PlaygroundSiteRepository extends React.PureComponent {
 
 
 export default class PlaygroundSiteHeader extends React.PureComponent {
-
-    repository = "https://github.com/envoyproxy/playground";
+    static propTypes = exact({});
 
     get navs () {
         return [
-            <PlaygroundSiteRepository repository={this.repository} />,
+            <PlaygroundSiteRepository />,
             <PlaygroundSiteDocs />];
     }
 
