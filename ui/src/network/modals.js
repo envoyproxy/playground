@@ -12,7 +12,6 @@ import CloudLogo from '../app/images/cloud.svg';
 export class BaseNetworkFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
-        status: PropTypes.string.isRequired,
         onUpdate: PropTypes.func.isRequired,
         proxies: PropTypes.object.isRequired,
         services: PropTypes.object.isRequired,
@@ -77,7 +76,7 @@ export class BaseNetworkFormModal extends React.PureComponent {
 }
 
 
-const mapModalStateToProps = function(state, other) {
+const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
         proxies: state.proxy.value,
@@ -86,5 +85,4 @@ const mapModalStateToProps = function(state, other) {
 };
 
 
-const NetworkFormModal = connect(mapModalStateToProps)(BaseNetworkFormModal);
-export {NetworkFormModal};
+export default connect(mapStateToProps)(BaseNetworkFormModal);

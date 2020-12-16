@@ -128,10 +128,7 @@ export class ModalParts extends React.PureComponent {
               <ModalBody>
                 {Content &&
                  <Content
-                   form={form}
-                   dispatch={dispatch}
-                   onUpdate={onUpdate}
-                   status={status} />
+                   onUpdate={onUpdate} />
                 }
               </ModalBody>
               <PlaygroundModalFooter

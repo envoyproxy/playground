@@ -6,7 +6,7 @@ import exact from 'prop-types-exact';
 import CloudLogo from '../app/images/cloud.svg';
 import {connect} from '../app/store';
 import APIResources from '../shared/resources';
-import {NetworkFormModal} from './modals';
+import NetworkFormModal from './modals';
 
 
 export class BaseNetworkResources extends React.PureComponent {
