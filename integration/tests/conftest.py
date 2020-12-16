@@ -47,8 +47,78 @@ class Playground(object):
             await aiodocker.networks.DockerNetwork(
                 self.docker, network).delete()
 
+    async def connect(self, network, target):
+        link = await self.query(
+            '.App-left .accordion-item .card-header a:contains("edit")')
+        assert not await link.click()
+        if target.startswith('service'):
+            service_tab = await self.query(
+                '.modal-body .nav-tabs a:contains("Services")')
+            assert not await service_tab.click()
+            _target = target.split(':')[1]
+            checkbox = await self.query(
+                f'.tab-pane.active form input[name="{_target}"]')
+            assert not await checkbox.click()
+        else:
+            proxy_tab = await self.query(
+                '.modal-body .nav-tabs a:contains("Proxies")')
+            assert not await proxy_tab.click()
+            _target = target.split(':')[1]
+            checkbox = await self.query(
+                f'.tab-pane.active form input[name="{_target}"]')
+            assert not await checkbox.click()
+        close = await self.query(
+            '.modal-footer .btn.btn-secondary:contains("Close")')
+        assert not await close.click()
+
+    async def network_create(self, name):
+        add_network_button = await self.query('*[name="Networks"]')
+        assert not await add_network_button.click()
+        name_input = await self.query(
+            'input[id="envoy.playground.name"]')
+        assert not await self.enter(name_input, name)
+        submit = await self.query('.modal-footer .btn.btn-primary')
+        assert not await submit.click()
+
+    async def proxy_create(self, name):
+        add_proxy_button = await self.query('*[name="Proxies"]')
+        assert not await add_proxy_button.click()
+        name_input = await self.query(
+            'input[id="envoy.playground.name"]')
+        assert not await self.enter(name_input, name)
+        select = await self.query(
+            '.tab-pane.active form select'
+            '#example option[value="Service: HTTP/S echo"]')
+        assert not await select.click()
+        submit = await self.query('.modal-footer .btn.btn-primary')
+        assert not await submit.click()
+
+    async def service_list(self):
+        js_service_list = (
+            "arguments[0]("
+            "Object.keys(playground.store.getState().service_type.value))")
+        return await self.web.command(
+            'POST',
+            '/execute_async',
+            json=dict(
+                args=[],
+                script=js_service_list))
+
+    async def service_create(self, service_type, name):
+        add_service_button = await self.query('*[name="Services"]')
+        assert not await add_service_button.click()
+        name_input = await self.query(
+            'input[id="envoy.playground.name"]')
+        assert not await self.enter(name_input, name)
+        select = await self.query(
+            f'.tab-pane.active form select#service_type '
+            f'[value="{service_type}"]')
+        assert not await select.click()
+        submit = await self.query('.modal-footer .btn.btn-primary')
+        assert not await submit.click()
+
     async def enter(self, element, text):
-        await element.command(
+        return await element.command(
             'POST',
             '/value',
             json=dict(value=list(text)))
