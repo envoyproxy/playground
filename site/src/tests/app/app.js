@@ -6,7 +6,7 @@ import {shallow} from "enzyme";
 import {
     PlaygroundSiteApp, PlaygroundSiteContext,
     store} from '../../app';
-import {Page} from '../../layout';
+import {PlaygroundPage} from '../../layout';
 
 const mockLoad = jest.fn(async () => {});
 
@@ -30,6 +30,12 @@ test('PlaygroundSiteApp render', () => {
     expect(app.text()).toBe('');
     app.setState({site: 'SITE'});
     expect(app.text()).toBe('<Provider />');
+    const provider = app.find(Provider);
+    expect(provider.props().store).toEqual(store);
+    const site = provider.find(PlaygroundSiteContext.Provider);
+    expect(site.props().value).toEqual('SITE');
+    const page = site.find(PlaygroundPage);
+    expect(page.props()).toEqual({});
 });
 
 
