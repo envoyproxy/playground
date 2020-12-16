@@ -38,6 +38,6 @@ export const mapStateToProps = function(state) {
     return {
         proxies: state.proxy.value,
     };
-}
+};
 
 export default connect(mapStateToProps)(BaseProxyResources);
