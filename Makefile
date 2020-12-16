@@ -90,7 +90,7 @@ screenshots-test: screenshots
 	git checkout docs/screenshots/network.create.starting.png
 	git checkout docs/screenshots/proxy.create.started.png
 	git checkout docs/screenshots/service.create.starting.png
-	git diff --quiet HEAD -- docs || (echo -e "\nDid you forget to re-create screenshots?" && exit 1)
+	git diff --quiet HEAD -- docs || (echo -e "\nDid you forget to re-create screenshots?" && git diff --quiet HEAD -- docs)
 
 dev-integration: integration-clean build-image
 	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose up --build -d integration
