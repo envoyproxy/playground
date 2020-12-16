@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import PlaygroundSiteApp from './app';
+import {PlaygroundSiteApp} from './app';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
