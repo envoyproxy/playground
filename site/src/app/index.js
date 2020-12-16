@@ -1,17 +1,5 @@
 
-import React from 'react';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/playground-site.css';
-
-import {PlaygroundPage} from '../layout';
-
-
-export default class PlaygroundSiteApp extends React.PureComponent {
-
-    render () {
-        return (
-            <PlaygroundPage />
-        );
-    }
-}
+export {default as PlaygroundSiteApp} from './app';
+export {default as PlaygroundSite} from './site';
+export {default as store} from './store';
+export {PlaygroundSiteContext} from './context';
