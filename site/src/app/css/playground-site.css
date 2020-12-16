@@ -15,12 +15,12 @@
     color: #FFFFDD;
 }
 
+.App-header nav ul.row {
+}
+
 .App-main {
   background-color: #282c34;
   min-height: calc(100vh - 1.5em);
-  display: flex;
-  flex-direction: column;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
 
