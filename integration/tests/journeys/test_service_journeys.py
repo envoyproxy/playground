@@ -103,6 +103,7 @@ async def test_journey_service_create(playground):
 
     # wait for started
     await asyncio.sleep(60)
+    await playground.move('service:echo0', 230, 230)
 
     link = await playground.query(
         '.App-right .accordion-item .card-header .col-sm-8')

@@ -10,7 +10,6 @@ import pytest
 import pyquery
 
 import aiodocker
-
 import aiohttp
 
 from aioselenium import Remote
@@ -26,6 +25,10 @@ class Playground(object):
     @functools.cached_property
     def docker(self):
         return aiodocker.Docker()
+
+    @functools.cached_property
+    def pq(self):
+        return pyquery.pyquery.JQueryTranslator()
 
     async def clear(self):
         containers = [
@@ -50,12 +53,22 @@ class Playground(object):
             '/value',
             json=dict(value=list(text)))
 
+    async def move(self, item, x, y):
+        js_move_icon = (
+            f"playground.cloud('{item}').then(n => n.move({x}, {y}))")
+        assert not await self.web.command(
+            'POST',
+            '/execute',
+            json=dict(
+                args=[],
+                script=js_move_icon))
+
     async def query(self, q):
-        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        xpath = self.pq.css_to_xpath(q)
         return await self.web.find_element_by_xpath(xpath)
 
     async def query_all(self, q):
-        xpath = pyquery.pyquery.JQueryTranslator().css_to_xpath(q)
+        xpath = self.pq.css_to_xpath(q)
         return await self.web.find_elements_by_xpath(xpath)
 
     async def snap(self, name, wait=0):

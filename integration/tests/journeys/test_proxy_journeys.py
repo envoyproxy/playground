@@ -90,6 +90,7 @@ async def test_journey_proxy_create(playground):
 
     # wait for started
     await asyncio.sleep(60)
+    await playground.move('proxy:proxy0', 230, 230)
 
     link = await playground.query(
         '.App-left .accordion-item .card-header .col-sm-8')
