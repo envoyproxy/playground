@@ -1,3 +1,4 @@
+
 import Yaml from 'js-yaml';
 
 import TimeAgo from 'javascript-time-ago';
@@ -10,6 +11,7 @@ import {updateRepo, updateServices} from './store';
 
 export default class PlaygroundSite {
     repository = "https://github.com/envoyproxy/playground";
+    services = ServiceConfig;
 
     constructor (store) {
         this.store = store;
@@ -17,20 +19,34 @@ export default class PlaygroundSite {
         this.ago = new TimeAgo('en');
     }
 
-    load = async () => {
-        const {dispatch} = this.store;
-        const response = await fetch('https://api.github.com/repos/envoyproxy/playground');
-        const content = await response.json();
-        const {events_url, open_issues_count: issues} = content;
-        const eventsResponse = await fetch(events_url);
+    json = async (url) => {
+        const response = await fetch(url);
         // todo: add etag handling
-        const events = await eventsResponse.json();
+        return await response.json();
+    };
+
+    load = async () => {
+        await this.loadRepository();
+        await this.loadServices();
+    };
+
+    loadRepository = async () => {
+        const {dispatch} = this.store;
+        const {events_url, open_issues_count: issues} = await this.json(this.repository);
+        const events = await this.json(events_url);
         await dispatch(updateRepo({
             events,
             issues}));
-        const response2 = await fetch(ServiceConfig);
-        const content2 = await response2.text();
-        const {services} = Yaml.safeLoad(content2);
+    };
+
+    loadServices = async () => {
+        const {dispatch} = this.store;
+        const {services} = await this.yaml(this.services);
         await dispatch(updateServices(services));
     };
+
+    yaml = async (url) => {
+        const response = await fetch(url);
+        return Yaml.safeLoad(await response.text());
+    }
 }
