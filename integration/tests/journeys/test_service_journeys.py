@@ -11,7 +11,7 @@ async def test_journey_service_create(playground):
 
     # open the service modal
     add_service_button = await playground.query('*[name="Services"]')
-    await add_service_button.click()
+    assert not await add_service_button.click()
     await asyncio.sleep(1)
 
     # find the name input
@@ -28,7 +28,7 @@ async def test_journey_service_create(playground):
     # select a service type
     select = await playground.query(
         '.tab-pane.active form select#service_type [value="http-echo"]')
-    await select.click()
+    assert not await select.click()
     await asyncio.sleep(1)
 
     await playground.snap('service.create.configuration')
@@ -58,7 +58,7 @@ async def test_journey_service_create(playground):
     assert (
         await add_button.text()
         == '+')
-    await add_button.click()
+    assert not await add_button.click()
     await asyncio.sleep(1)
 
     await playground.snap('service.create.env')
@@ -81,7 +81,7 @@ async def test_journey_service_create(playground):
     assert (
         await ports_tab.text()
         == 'Ports')
-    await ports_tab.click()
+    assert not await ports_tab.click()
     await asyncio.sleep(.3)
     await playground.snap('service.create.ports', .3)
 
@@ -91,15 +91,16 @@ async def test_journey_service_create(playground):
     assert (
         await readme_tab.text()
         == 'README')
-    await readme_tab.click()
+    assert not await readme_tab.click()
     await asyncio.sleep(.3)
     await playground.snap('service.create.readme', .3)
 
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
-    await submit.click()
+    assert not await submit.click()
+    await asyncio.sleep(.1)
+    await playground.snap('service.create.starting')
     await asyncio.sleep(1)
-    await playground.snap('service.create.starting', .3)
 
     # wait for started
     await asyncio.sleep(60)
