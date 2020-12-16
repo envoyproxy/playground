@@ -9,6 +9,7 @@ import {updateRepo, updateServices} from './store';
 
 
 export default class PlaygroundSite {
+    repository = "https://github.com/envoyproxy/playground";
 
     constructor (store) {
         this.store = store;
