@@ -1,8 +1,5 @@
 
-import {Provider} from 'react-redux';
-
 import {shallow} from "enzyme";
-
 
 import EnvoyInverseLogo from '../../app/images/logo-inverse.svg';
 import GithubLogo from '../../app/images/github.svg';

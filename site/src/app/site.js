@@ -11,6 +11,7 @@ import {updateRepo, updateServices} from './store';
 
 export default class PlaygroundSite {
     repository = "https://github.com/envoyproxy/playground";
+    repoAPI = 'https://api.github.com/repos/envoyproxy/playground';
     services = ServiceConfig;
 
     constructor (store) {
@@ -32,7 +33,7 @@ export default class PlaygroundSite {
 
     loadRepository = async () => {
         const {dispatch} = this.store;
-        const {events_url, open_issues_count: issues} = await this.json(this.repository);
+        const {events_url, open_issues_count: issues} = await this.json(this.repoAPI);
         const events = await this.json(events_url);
         await dispatch(updateRepo({
             events,

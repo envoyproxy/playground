@@ -20,6 +20,7 @@ test('PlaygroundSite constructor', () => {
     const site = new PlaygroundSite(store);
     expect(site.services).toEqual(ServiceConfig);
     expect(site.repository).toEqual("https://github.com/envoyproxy/playground");
+    expect(site.repoAPI).toEqual('https://api.github.com/repos/envoyproxy/playground');
     expect(site.store).toEqual(store);
     expect(TimeAgo.addDefaultLocale.mock.calls).toEqual([[en]]);
     expect(TimeAgo.mock.calls).toEqual([['en']]);
@@ -67,7 +68,7 @@ test('PlaygroundSite loadRepository', async () => {
     const jsonResponse = {events_url: 'EVENTS URL', open_issues_count: 23};
     site.json = jest.fn(async () => (jsonResponse));
     await site.loadRepository();
-    expect(site.json.mock.calls).toEqual([[site.repository], ['EVENTS URL']]);
+    expect(site.json.mock.calls).toEqual([[site.repoAPI], ['EVENTS URL']]);
     expect(updateRepo.mock.calls).toEqual([[{events: jsonResponse, issues: 23}]]);
     expect(store.dispatch.mock.calls).toEqual([['UPDATED']]);
 });

@@ -1,11 +1,5 @@
 
-import {Provider} from 'react-redux';
-
 import {shallow} from "enzyme";
-
-import {
-    PlaygroundSiteApp, PlaygroundSiteContext,
-    store} from '../../app';
 
 import PlaygroundSiteHeader, {
     PlaygroundSiteRepository,
