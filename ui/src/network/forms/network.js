@@ -11,7 +11,6 @@ class BaseNetworkForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
-        meta: PropTypes.object.isRequired,
         networks: PropTypes.object.isRequired,
     });
 
@@ -25,7 +24,7 @@ class BaseNetworkForm extends React.PureComponent {
     }
 
     get groups () {
-        const {form, meta, networks} = this.props;
+        const {form, networks} = this.props;
         const {errors={}, name} = form;
         return [
             [{title: 'Name*',
@@ -36,7 +35,6 @@ class BaseNetworkForm extends React.PureComponent {
                      placeholder="Enter network name"
                      errors={errors}
                      value={name}
-                     meta={meta}
                      taken={Object.keys(networks)}
                      onChange={this.onNameChange} />]]}]];
     }
@@ -54,7 +52,6 @@ class BaseNetworkForm extends React.PureComponent {
 const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
-        meta: state.meta.value,
         networks: state.network.value,
     };
 };

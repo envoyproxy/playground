@@ -16,7 +16,6 @@ class BaseServiceForm extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
         services: PropTypes.object.isRequired,
-        meta: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
     });
 
@@ -47,7 +46,7 @@ class BaseServiceForm extends React.PureComponent {
     }
 
     get groups () {
-        const {form, services, service_types, meta} = this.props;
+        const {form, services, service_types} = this.props;
         const {service_type='', name='', errors={}} = form;
         return [
             [{title: 'Name*',
@@ -58,7 +57,6 @@ class BaseServiceForm extends React.PureComponent {
                       placeholder="Enter service name"
                       errors={errors}
                       value={name}
-                      meta={meta}
                       taken={Object.keys(services)}
                       onChange={this.onNameChange} />]]}],
             [{title: 'Service type',
@@ -89,7 +87,6 @@ const mapFormStateToProps = function(state) {
         form: state.form.value,
         services: state.service.value,
         service_types: state.service_type.value,
-        meta: state.meta.value,
     };
 };
 
