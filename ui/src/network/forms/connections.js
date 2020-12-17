@@ -93,7 +93,6 @@ const mapNetworkStateToProps = function(state, other) {
         services: state.service.value,
         form: state.form.value,
     };
-}
+};
 
-const NetworkConnectionsForm = connect(mapNetworkStateToProps)(BaseNetworkConnectionsForm);
-export {NetworkConnectionsForm};
+export default connect(mapNetworkStateToProps)(BaseNetworkConnectionsForm);

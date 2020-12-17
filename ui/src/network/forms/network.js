@@ -62,7 +62,6 @@ const mapStateToProps = function(state, other) {
         meta: state.meta.value,
         networks: state.network.value,
     };
-}
+};
 
-const NetworkForm = connect(mapStateToProps)(BaseNetworkForm);
-export {NetworkForm};
+export default connect(mapStateToProps)(BaseNetworkForm);
