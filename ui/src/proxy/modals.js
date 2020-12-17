@@ -40,9 +40,9 @@ export class BaseProxyFormModal extends React.PureComponent {
 
     get tabs () {
         const {form} = this.props;
-        const {name=''} = form;
+        const {errors, name=''} = form;
         let tabs = {Proxy: <ProxyForm />};
-        if (name.length < 3) {
+        if (name.length < 3 || errors.name) {
             return tabs;
         }
         return  {
@@ -67,7 +67,7 @@ export class BaseProxyFormModal extends React.PureComponent {
 }
 
 
-const mapStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
     };
