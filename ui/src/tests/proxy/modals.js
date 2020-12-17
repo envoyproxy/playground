@@ -46,33 +46,23 @@ test('ProxyFormModal activityMessages', () => {
         'volume_create',
         'start',
         'success']);
-    expect(modal.instance().activityMessages.default[0]).toEqual([10, 20]);
-    expect(modal.instance().activityMessages.default[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.default[1].props).toEqual(
-        {"children": ["Creating Envoy proxy (", "PROXYNAME", ")..."]});
 
-    expect(modal.instance().activityMessages.pull_start[0]).toEqual([20, 50]);
-    expect(modal.instance().activityMessages.pull_start[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.pull_start[1].props).toEqual(
-        {"children": ["Pulling container image for Envoy proxy (", "PROXYNAME", ")..."]});
-
-    expect(modal.instance().activityMessages.build_start[0]).toEqual([50, 80]);
-    expect(modal.instance().activityMessages.build_start[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.build_start[1].props).toEqual(
-        {"children": ["Building container image for Envoy proxy (", "PROXYNAME", ")..."]});
-
-    expect(modal.instance().activityMessages.volume_create[0]).toEqual([80, 90]);
-    expect(modal.instance().activityMessages.volume_create[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.volume_create[1].props).toEqual(
-        {"children": ["Creating volumes for Envoy proxy (", "PROXYNAME", ")..."]});
-
-    expect(modal.instance().activityMessages.start[0]).toEqual([90, 100]);
-    expect(modal.instance().activityMessages.start[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.start[1].props).toEqual(
-        {"children": ["Starting Envoy proxy container (", "PROXYNAME", ")..."]});
-
-    expect(modal.instance().activityMessages.success[0]).toEqual([100, 100]);
-    expect(modal.instance().activityMessages.success[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.success[1].props).toEqual(
-        {"children": ["Envoy proxy has started (", "PROXYNAME", ")!"]});
+    const expected = {
+        default: ['Creating Envoy proxy', [10, 20]],
+        pull_start: ['Pulling container image for Envoy proxy', [20, 50]],
+        build_start: ['Building container image for Envoy proxy', [50, 80]],
+        volume_create: ['Creating volumes for Envoy proxy', [80, 90]],
+        start: ['Starting Envoy proxy container', [90, 100]],
+        success: ['Envoy proxy has started', [100, 100]]};
+    for (const [name, [text, progress]] of Object.entries(expected)) {
+        const message = modal.instance().activityMessages[name];
+        let ending = '...';
+        if (progress[0] === 100) {
+            ending = '!';
+        }
+        expect(message[0]).toEqual(progress);
+        expect(message[1].type).toEqual('span');
+        expect(message[1].props).toEqual(
+            {"children": [text + " (", "PROXYNAME", ")" + ending]});
+    }
 });

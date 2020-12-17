@@ -20,12 +20,6 @@ export class BaseServiceFormModal extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
     });
 
-    get failMessage () {
-        const {form} = this.props;
-        const {name, service_type} = form;
-        return `Failed starting ${service_type} service (${name}). See logs for errors.`;
-    }
-
     get activityMessages () {
         const {form} = this.props;
         const {name} = form;
@@ -37,54 +31,107 @@ export class BaseServiceFormModal extends React.PureComponent {
             success: [[100, 100], <span>Service has started ({name})!</span>]};
     }
 
-    get tabs () {
+    get failMessage () {
+        const {form} = this.props;
+        const {name, service_type} = form;
+        return `Failed starting ${service_type} service (${name}). See logs for errors.`;
+    }
+
+    get image () {
+        const {image} = this.service_config;
+        return image;
+    }
+
+    get labels () {
+        const {labels={}} = this.service_config;
+        return labels;
+    }
+
+    get ports () {
+        return this.labels['envoy.playground.ports'];
+    };
+
+    get service_config () {
+        const {service_types} = this.props;
+        return service_types[this.service_type] || {};
+    }
+
+    get service_type () {
+        const {form} = this.props;
+        const {service_type} = form;
+        return service_type;
+    }
+
+    get tabConfiguration () {
         const {dispatch, form, service_types} = this.props;
+        return (
+            <ServiceConfigurationForm
+              service_types={service_types}
+              form={form}
+              dispatch={dispatch}
+            />);
+    }
+
+    get tabEnvironment () {
+        const {dispatch, form, service_types} = this.props;
+        const {service_type} = form;
+        return (
+            <ServiceEnvironmentForm
+              service_type={service_type}
+              service_types={service_types}
+              form={form}
+              dispatch={dispatch}
+            />);
+    }
+
+    get tabPorts () {
+        return (
+            <ServicePorts
+              labels={this.labels}
+              ports={this.ports} />);
+    }
+
+    get tabReadme () {
+        return (
+            <ServiceReadme
+              readme={this.labels['envoy.playground.readme']}
+              title={this.labels['envoy.playground.service']}
+              description={this.labels['envoy.playground.description']}
+              image={this.image}
+              service_type={this.service_type}
+              logo={this.labels['envoy.playground.logo']} />);
+    }
+
+    get tabService () {
+        const {form, service_types} = this.props;
+        return (
+            <ServiceForm
+              service_types={service_types}
+              form={form}
+            />);
+    }
+
+    get tabs () {
+        const {form} = this.props;
         const {errors, name='', service_type} = form;
-        const tabs = {
-            Service: (
-                <ServiceForm
-                  service_types={service_types}
-                  form={form}
-                />)};
-        if (service_type && service_type !== undefined) {
-            const service_config = service_types[service_type];
-            const {image, labels={}} = service_config;
-            if (name.length > 2 && !errors.name) {
-                const configPath  = labels['envoy.playground.config.path'];
-                if (configPath) {
-                    tabs.Configuration = (
-                        <ServiceConfigurationForm
-                          service_types={service_types}
-                          form={form}
-                          dispatch={dispatch}
-                        />);
-                }
-                tabs.Environment = (
-                    <ServiceEnvironmentForm
-                      service_type={service_type}
-                      service_types={service_types}
-                      form={form}
-                      dispatch={dispatch}
-                    />)
-                ;
-                const ports = labels['envoy.playground.ports'];
-                if (ports) {
-                    tabs.Ports = (
-                        <ServicePorts
-                          labels={labels}
-                          ports={ports} />);
-                }
-                if (labels['envoy.playground.readme']) {
-                    tabs.README = (
-                        <ServiceReadme
-                          readme={labels['envoy.playground.readme']}
-                          title={labels['envoy.playground.service']}
-                          description={labels['envoy.playground.description']}
-                          image={image}
-                          service_type={service_type}
-                          logo={labels['envoy.playground.logo']} />);
-                }
-            }
+        const tabs = {Service: this.tabService};
+        const isValid = (
+            service_type
+                && service_type !== undefined
+                && name.length > 2
+                && !errors.name);
+        if (!isValid) {
+            return tabs;
+        }
+        if (this.labels['envoy.playground.config.path']) {
+            tabs.Configuration = this.tabConfiguration;
+        }
+        tabs.Environment = this.tabEnvironment;
+        if (this.ports) {
+            tabs.Ports = this.tabPorts;
+        }
+        if (this.labels['envoy.playground.readme']) {
+            tabs.README = this.tabReadme;
         }
         return tabs;
     }

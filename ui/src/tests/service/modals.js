@@ -13,7 +13,9 @@ test('ServiceFormModal render', () => {
     const service_types = {
         TYPE1: {icon: 'TYPE1ICON', name: 'SERVICETYPE1'},
         TYPE2: {icon: 'TYPE2ICON', name: 'SERVICETYPE2'}};
-    const form = {};
+    const form = {
+        errors: [],
+        name: 'SERVICENAME'};
     const modal = shallow(
         <BaseServiceFormModal
           form={form}
@@ -37,7 +39,7 @@ test('ServiceFormModal activityMessages', () => {
     const dispatch = jest.fn(async () => {});
     const onUpdate = jest.fn(async () => {});
     const form = {
-        errors: [],
+        errors: {},
         service_type: 'TYPE1',
         name: 'SERVICENAME'};
     const service_types = {
@@ -56,28 +58,22 @@ test('ServiceFormModal activityMessages', () => {
         'volume_create',
         'start',
         'success']);
-    expect(modal.instance().activityMessages.default[0]).toEqual([10, 30]);
-    expect(modal.instance().activityMessages.default[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.default[1].props).toEqual(
-        {"children": ["Creating service (", "SERVICENAME", ")..."]});
 
-    expect(modal.instance().activityMessages.pull_start[0]).toEqual([30, 50]);
-    expect(modal.instance().activityMessages.pull_start[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.pull_start[1].props).toEqual(
-        {"children": ["Pulling container image for service (", "SERVICENAME", ")..."]});
-
-    expect(modal.instance().activityMessages.volume_create[0]).toEqual([50, 70]);
-    expect(modal.instance().activityMessages.volume_create[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.volume_create[1].props).toEqual(
-        {"children": ["Creating volumes for service (", "SERVICENAME", ")..."]});
-
-    expect(modal.instance().activityMessages.start[0]).toEqual([70, 100]);
-    expect(modal.instance().activityMessages.start[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.start[1].props).toEqual(
-        {"children": ["Starting service container (", "SERVICENAME", ")..."]});
-
-    expect(modal.instance().activityMessages.success[0]).toEqual([100, 100]);
-    expect(modal.instance().activityMessages.success[1].type).toEqual('span');
-    expect(modal.instance().activityMessages.success[1].props).toEqual(
-        {"children": ["Service has started (", "SERVICENAME", ")!"]});
+    const expected = {
+        default: ['Creating service', [10, 30]],
+        pull_start: ['Pulling container image for service', [30, 50]],
+        volume_create: ['Creating volumes for service', [50, 70]],
+        start: ['Starting service container', [70, 100]],
+        success: ['Service has started', [100, 100]]};
+    for (const [name, [text, progress]] of Object.entries(expected)) {
+        const message = modal.instance().activityMessages[name];
+        let ending = '...';
+        if (progress[0] === 100) {
+            ending = '!';
+        }
+        expect(message[0]).toEqual(progress);
+        expect(message[1].type).toEqual('span');
+        expect(message[1].props).toEqual(
+            {"children": [text + " (", "SERVICENAME", ")" + ending]});
+    }
 });

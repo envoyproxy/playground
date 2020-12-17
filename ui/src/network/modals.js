@@ -29,19 +29,23 @@ export class BaseNetworkFormModal extends React.PureComponent {
         const {name} = form;
         return {
             default: [[30, 100],  <span>Creating network ({name})...</span>],
-            success: [[100, 100],  <span>Network created ({name})...</span>]};
+            success: [[100, 100],  <span>Network created ({name})!</span>]};
     }
 
     get tabs () {
         const {form, onUpdate, proxies, services} = this.props;
         const {
-            name='', errors={},
+            name='',
+            errors={},
             proxies: connectedProxies=[],
             services: connectedServices=[]} = form;
         const tabs = {
             Network: <NetworkForm />,
         };
-        if ((name.length > 2 && !errors.name) && Object.keys(proxies).length > 0){
+        if (name.length < 3 || errors.name) {
+            return tabs;
+        }
+        if (Object.keys(proxies).length > 0){
             const tabTitle = 'Proxies (' + connectedProxies.length + '/' + Object.keys(proxies).length + ')';
             tabs[tabTitle] = (
                 <NetworkConnectionsForm
@@ -51,7 +55,7 @@ export class BaseNetworkFormModal extends React.PureComponent {
                 />);
 
         }
-        if ((name.length > 2 && !errors.name) && Object.keys(services).length > 0){
+        if (Object.keys(services).length > 0){
             const tabTitle = 'Services (' + connectedServices.length + '/' + Object.keys(services).length + ')';
             tabs[tabTitle] = (
                 <NetworkConnectionsForm
@@ -76,7 +80,7 @@ export class BaseNetworkFormModal extends React.PureComponent {
 }
 
 
-const mapStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
         proxies: state.proxy.value,
