@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 
 import {shallow} from "enzyme";
 
-import {Col} from 'reactstrap';
-
-import {updateForm} from '../../../app/store';
 import NetworkForm, {
     BaseNetworkForm} from '../../../network/forms/network';
-import {PlaygroundForm, PlaygroundNameInput} from '../../../shared/forms';
-
 
 BaseNetworkForm.contextTypes = {
     validators: PropTypes.object.isRequired};
