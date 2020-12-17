@@ -4,28 +4,28 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col} from 'reactstrap';
-
 import {
-    PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow,
-    PlaygroundNameInput,
+    PlaygroundForm, PlaygroundNameInput,
     PlaygroundSelectInput} from '../../shared/forms';
 
 import {updateForm} from '../../app/store';
 
 
-class BaseServiceForm extends React.PureComponent {
+export class BaseServiceForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
         services: PropTypes.object.isRequired,
-        meta: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
     });
 
     get messages () {
         return ["Select a service type below, and give the service a name"];
+    }
+
+    get serviceOptions () {
+        const {service_types} = this.props;
+        return Object.entries(service_types).map(([k, v])  => [k, v.title]);
     }
 
     onTypeChange = async (evt) => {
@@ -50,54 +50,49 @@ class BaseServiceForm extends React.PureComponent {
         await dispatch(updateForm({errors, valid, name, service_type}));
     }
 
-    render () {
-        const {form, services, service_types, meta} = this.props;
-        const {service_type='', name='', errors={}} = form;
-        return (
-            <PlaygroundForm messages={this.messages}>
-              <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="name"
-                  title="Name">
-                  <Col sm={9}>
+    get groups () {
+        const {form, services} = this.props;
+        const {service_type='', name, errors={}} = form;
+        return [
+            [{title: 'Name*',
+              label: 'name',
+              cols: [
+                  [9,
 		    <PlaygroundNameInput
                       placeholder="Enter service name"
                       errors={errors}
                       value={name}
-                      meta={meta}
                       taken={Object.keys(services)}
-                      onChange={this.onNameChange} />
-                  </Col>
-                </PlaygroundFormGroupRow>
-              </PlaygroundFormGroup>
-              <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="service_type"
-                  title="Service type">
-                  <Col sm={9}>
+                      onChange={this.onNameChange} />]]}],
+            [{title: 'Service type',
+              label: 'service_type',
+              cols: [
+                  [9,
                     <PlaygroundSelectInput
                       name="service_type"
                       value={service_type}
                       onChange={this.onTypeChange}
                       placeholder="Select a service type"
-                      options={Object.entries(service_types).map(([k, v])  => [k, v.title])}
-                    />
-                  </Col>
-                </PlaygroundFormGroupRow>
-              </PlaygroundFormGroup>
-            </PlaygroundForm>
+                      options={this.serviceOptions}
+                    />]]}]];
+    }
+
+    render () {
+        return (
+            <PlaygroundForm
+              groups={this.groups}
+              messages={this.messages} />
         );
     }
 }
 
 
-const mapFormStateToProps = function(state) {
+export const mapStateToProps = function(state) {
     return {
         form: state.form.value,
         services: state.service.value,
         service_types: state.service_type.value,
-        meta: state.meta.value,
     };
 };
 
-export default connect(mapFormStateToProps)(BaseServiceForm);
+export default connect(mapStateToProps)(BaseServiceForm);

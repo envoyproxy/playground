@@ -51,5 +51,4 @@ test('ProxyResources mapStateToProps', () => {
 
 test('ProxyResources isMapped', () => {
     expect(ProxyResources.WrappedComponent).toEqual(BaseProxyResources);
-    expect(ProxyResources._stateMapper).toEqual(mapStateToProps);
 });

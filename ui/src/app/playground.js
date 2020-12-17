@@ -8,6 +8,7 @@ import {
     updateServiceTypes, updateCloud, updateEdges, updateExamples,
 } from "./store";
 import {CloudItem} from './cloud';
+import {NameValidator} from './validators';
 
 
 export default class Playground {
@@ -18,6 +19,12 @@ export default class Playground {
         loadProxies,
         loadNetworks,
         updateExamples];
+
+    _versions = [
+        ['envoy-dev:latest', 'envoy-dev:latest (default)'],
+        ['envoy:v1.16-latest', 'envoy:v1.16-latest'],
+        ['envoy:v1.15-latest', 'envoy:v1.15-latest'],
+        ['envoy:v1.14-latest', 'envoy:v1.14-latest']];
 
     constructor (store, apiAddress, socketAddress) {
         this.store = store;
@@ -32,10 +39,17 @@ export default class Playground {
         this.urls = new PlaygroundURLs();
         this.modals = {};
         this.toast = {};
+        this.validators = {
+            name: new NameValidator(this.store)
+        };
     };
 
     get updaters () {
         return this._updaters;
+    }
+
+    get versions () {
+        return this._versions;
     }
 
     cloud = async (path) => {

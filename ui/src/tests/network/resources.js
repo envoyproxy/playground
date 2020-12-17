@@ -56,5 +56,4 @@ test('NetworkResources mapStateToProps', () => {
 
 test('NetworkResources isMapped', () => {
     expect(NetworkResources.WrappedComponent).toEqual(BaseNetworkResources);
-    expect(NetworkResources._stateMapper).toEqual(mapStateToProps);
 });

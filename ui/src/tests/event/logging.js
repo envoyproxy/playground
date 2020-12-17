@@ -38,5 +38,4 @@ test('EventLogging mapStateToProps', () => {
 
 test('EventLogging isMapped', () => {
     expect(EventLogging.WrappedComponent).toEqual(BaseEventLogging);
-    expect(EventLogging._stateMapper).toEqual(mapStateToProps);
 });

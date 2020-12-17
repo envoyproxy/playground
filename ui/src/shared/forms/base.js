@@ -31,15 +31,27 @@ export class PlaygroundFormGroup extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         check: PropTypes.bool,
+        rows: PropTypes.array,
     });
 
     render () {
-        const {check=false, children} = this.props;
+        const {check=false, children, rows=[]} = this.props;
         return (
             <FormGroup className="mt-0 pt-0 bg-light" check={check}>
               {children}
+              {rows.map((row, i) => {
+                  const {cols, title, label} = row;
+                  return (
+                      <PlaygroundFormGroupRow
+                        key={i}
+                        title={title}
+                        label={label}
+                        cols={cols} />
+                  );
+              })}
+
             </FormGroup>);
     }
 }
@@ -71,10 +83,11 @@ export class PlaygroundForm extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         messages: PropTypes.array,
         warnings: PropTypes.array,
         onSubmit: PropTypes.func,
+        groups: PropTypes.array,
     });
 
     onSubmit = (evt) => {
@@ -86,7 +99,11 @@ export class PlaygroundForm extends React.PureComponent {
     };
 
     render () {
-        const {children, messages=[], warnings=[]} = this.props;
+        const {
+            children,
+            groups=[],
+            messages=[],
+            warnings=[]} = this.props;
         return (
             <Form className="mt-3" onSubmit={this.onSubmit}>
               <FormIntroMessage>
@@ -104,6 +121,11 @@ export class PlaygroundForm extends React.PureComponent {
                 })}
               </FormIntroMessage>
               {children}
+              {groups.map((rows, i) => {
+                  return (
+                      <PlaygroundFormGroup key={i} rows={rows} />
+                  );
+              })}
             </Form>);
     }
 }
@@ -113,13 +135,14 @@ export class PlaygroundFormGroupRow extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         label: PropTypes.string,
         title: PropTypes.string,
+        cols: PropTypes.array,
     });
 
     render () {
-        const {children, label, title} = this.props;
+        const {children, label, cols=[], title} = this.props;
         return (
             <Row className="mb-1 mt-1 pt-1 pb-1">
               <Label sm={3} for={label}  className="text-right">
@@ -128,6 +151,13 @@ export class PlaygroundFormGroupRow extends React.PureComponent {
                 </div>
               </Label>
               {children}
+              {cols.map(([size, col], i) => {
+                  return (
+                      <Col key={i} sm={size}>
+                        {col}
+                      </Col>
+                  );
+              })}
             </Row>);
     }
 }

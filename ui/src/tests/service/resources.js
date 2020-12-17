@@ -76,5 +76,4 @@ test('ServiceResources mapStateToProps', () => {
 
 test('ServiceResources isMapped', () => {
     expect(ServiceResources.WrappedComponent).toEqual(BaseServiceResources);
-    expect(ServiceResources._stateMapper).toEqual(mapStateToProps);
 });

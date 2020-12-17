@@ -3,8 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import EventsLogo from '../app/images/events.svg';
-import {connect} from '../app/store';
 import {PlaygroundLazyLog} from '../shared/logs';
 import {PlaygroundSection} from '../shared/section';
 
