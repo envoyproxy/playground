@@ -41,7 +41,7 @@ export class BaseServiceFormModal extends React.PureComponent {
         const {form, service_types} = this.props;
         const {errors, name='', service_type} = form;
         const tabs = {Service: <ServiceForm />};
-        const isValid = Boolean(
+        const isValid = (
             service_type
                 && service_type !== undefined
                 && name.length > 2

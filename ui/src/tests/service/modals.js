@@ -15,32 +15,36 @@ import ServiceReadme from '../../service/readme';
 import {PlaygroundFormModal} from '../../shared/modal';
 
 
+const service_types = {
+    TYPE1: {
+        icon: 'TYPE1ICON',
+        name: 'SERVICETYPE1',
+        image: 'TYPE1 image',
+        labels: {
+            'envoy.playground.service': 'TYPE1',
+            'envoy.playground.description': 'TYPE1 description',
+            'envoy.playground.readme': 'TYPE1 README',
+            'envoy.playground.logo': 'TYPE1 LOGO',
+            'envoy.playground.ports': 23,
+        },
+    },
+    TYPE2: {
+        icon: 'TYPE2ICON',
+        name: 'SERVICETYPE2',
+        image: 'TYPE2 image',
+        labels: {
+            'envoy.playground.service': 'TYPE2',
+            'envoy.playground.description': 'TYPE2 description',
+            'envoy.playground.readme': 'TYPE2 README',
+            'envoy.playground.logo': 'TYPE2 LOGO',
+            'envoy.playground.config.path': 'TYPE2 CONFIG',
+            'envoy.playground.ports': '73,113',
+        },
+    }};
+
+
 const _renderModal = (form) => {
     const dispatch = jest.fn(async () => {});
-    const service_types = {
-        TYPE1: {
-            icon: 'TYPE1ICON',
-            name: 'SERVICETYPE1',
-            image: 'TYPE1 image',
-            labels: {
-                'envoy.playground.service': 'TYPE1',
-                'envoy.playground.description': 'TYPE1 description',
-                'envoy.playground.readme': 'TYPE1 README',
-                'envoy.playground.logo': 'TYPE1 LOGO',
-            },
-        },
-        TYPE2: {
-            icon: 'TYPE2ICON',
-            name: 'SERVICETYPE2',
-            image: 'TYPE2 image',
-            labels: {
-                'envoy.playground.service': 'TYPE2',
-                'envoy.playground.description': 'TYPE2 description',
-                'envoy.playground.readme': 'TYPE2 README',
-                'envoy.playground.logo': 'TYPE2 LOGO',
-                'envoy.playground.config.path': 'TYPE2 CONFIG',
-            },
-        }};
     return shallow(
         <BaseServiceFormModal
           form={form}
@@ -122,6 +126,7 @@ each(tabsTest).test('ServiceFormModal tabs', (form) => {
         if (form.service_type === 'TYPE2') {
             tabs.Configuration = <ServiceConfigurationForm />;
         }
+        const {labels} = service_types[service_type];
         tabs.Environment = <ServiceEnvironmentForm />;
         tabs.Ports = (
             <ServicePorts
