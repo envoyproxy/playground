@@ -11,7 +11,7 @@ import {
 import {updateForm} from '../../app/store';
 
 
-class BaseServiceForm extends React.PureComponent {
+export class BaseServiceForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -21,6 +21,11 @@ class BaseServiceForm extends React.PureComponent {
 
     get messages () {
         return ["Select a service type below, and give the service a name"];
+    }
+
+    get serviceOptions () {
+        const {service_types} = this.props;
+        return Object.entries(service_types).map(([k, v])  => [k, v.title]);
     }
 
     onTypeChange = async (evt) => {
@@ -46,8 +51,8 @@ class BaseServiceForm extends React.PureComponent {
     }
 
     get groups () {
-        const {form, services, service_types} = this.props;
-        const {service_type='', name='', errors={}} = form;
+        const {form, services} = this.props;
+        const {service_type='', name, errors={}} = form;
         return [
             [{title: 'Name*',
               label: 'name',
@@ -68,7 +73,7 @@ class BaseServiceForm extends React.PureComponent {
                       value={service_type}
                       onChange={this.onTypeChange}
                       placeholder="Select a service type"
-                      options={Object.entries(service_types).map(([k, v])  => [k, v.title])}
+                      options={this.serviceOptions}
                     />]]}]];
     }
 
@@ -82,7 +87,7 @@ class BaseServiceForm extends React.PureComponent {
 }
 
 
-const mapFormStateToProps = function(state) {
+export const mapStateToProps = function(state) {
     return {
         form: state.form.value,
         services: state.service.value,
@@ -90,4 +95,4 @@ const mapFormStateToProps = function(state) {
     };
 };
 
-export default connect(mapFormStateToProps)(BaseServiceForm);
+export default connect(mapStateToProps)(BaseServiceForm);
