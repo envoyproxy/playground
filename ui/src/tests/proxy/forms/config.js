@@ -93,3 +93,53 @@ test('ProxyConfigForm clearConfig', async () => {
     expect(updateForm.mock.calls).toEqual([[{configuration: ''}]]);
     expect(dispatch.mock.calls).toEqual([['UPDATED CONFIG']]);
 });
+
+
+test('ProxyConfigForm onExampleSelect', async () => {
+    const _fetch = global.fetch;
+    global.fetch = jest.fn(async () => ({text: jest.fn(async () => 'FETCHED CONFIG')}));
+    updateForm.mockImplementation(() => 'UPDATED EXAMPLE CONFIG');
+    const dispatch = jest.fn();
+    const onChange = jest.fn();
+    const _form = {errors: {FOO: 'BAR'}};
+    const examples = {envoy: {example: {path: 'PATH'}}};
+    let form = shallow(
+        <BaseProxyConfigForm
+          examples={examples}
+          form={_form}
+          dispatch={dispatch}
+          onChange={onChange}
+          configWarning="OH NOES!"
+        />);
+
+    await form.instance().onExampleSelect({target: {}});
+    expect(global.fetch.mock.calls).toEqual([]);
+    expect(dispatch.mock.calls).toEqual([['UPDATED EXAMPLE CONFIG']]);
+    expect(updateForm.mock.calls).toEqual([[{
+        valid: false,
+        warning: 'OH NOES!',
+        configuration: code}]]);
+
+    dispatch.mockClear();
+    updateForm.mockClear();
+    await form.instance().onExampleSelect({target: {value: 'FOO'}});
+    expect(dispatch.mock.calls).toEqual([['UPDATED EXAMPLE CONFIG']]);
+    expect(global.fetch.mock.calls).toEqual([]);
+    expect(updateForm.mock.calls).toEqual([[{
+        valid: false,
+        warning: 'OH NOES!',
+        configuration: code}]]);
+
+    dispatch.mockClear();
+    updateForm.mockClear();
+    await form.instance().onExampleSelect({target: {value: 'example'}});
+    expect(dispatch.mock.calls).toEqual([['UPDATED EXAMPLE CONFIG']]);
+    expect(updateForm.mock.calls).toEqual([[{
+        valid: true,
+        errors: {FOO: 'BAR'},
+        warning: undefined,
+        configuration: 'FETCHED CONFIG'}]]);
+    expect(global.fetch.mock.calls).toEqual([['PATH']]);
+
+    global.fetch = _fetch;
+});
