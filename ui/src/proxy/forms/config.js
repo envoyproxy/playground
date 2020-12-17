@@ -6,15 +6,6 @@ import {connect} from 'react-redux';
 
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
-import {PlaygroundFormGroup} from '../../shared/forms';
-
-
-// VALIDATION REQUIRED
-//  - code:
-//      - is set
-//      - valid yaml
-//      - not too long, and not too short
-//      - ideally valid envoy config
 
 
 const code =
@@ -31,6 +22,7 @@ export class BaseProxyConfigForm extends React.PureComponent {
         dispatch: PropTypes.func.isRequired,
         onChange: PropTypes.func.isRequired,
         examples: PropTypes.object.isRequired,
+        form: PropTypes.object.isRequired,
         configWarning: PropTypes.string,
     });
 
@@ -44,8 +36,6 @@ export class BaseProxyConfigForm extends React.PureComponent {
         const {errors: _errors} = form;
         const {envoy} = examples;
         const errors = {..._errors};
-        // todo: implement overwrite button
-        // if (configuration !== code)
         if (envoy[evt.target.value]) {
             const response = await fetch(envoy[evt.target.value].path);
             const text = await response.text();
@@ -62,19 +52,17 @@ export class BaseProxyConfigForm extends React.PureComponent {
         const {configuration=code, errors} = form;
         const {configuration: configErrors=[]} =  errors;
         return (
-            <PlaygroundFormGroup>
-              <PlaygroundEditor
-                title="Configuration*"
-                name="configuration"
-                content={configuration}
-                format="yaml"
-                examples={envoy}
-                clearConfig={this.clearConfig}
-                onChange={onChange}
-                onExampleSelect={this.onExampleSelect}
-                errors={configErrors}
-              />
-            </PlaygroundFormGroup>);
+            <PlaygroundEditor
+              title="Configuration*"
+              name="configuration"
+              content={configuration}
+              format="yaml"
+              examples={envoy}
+              clearConfig={this.clearConfig}
+              onChange={onChange}
+              onExampleSelect={this.onExampleSelect}
+              errors={configErrors}
+            />);
     }
 }
 
