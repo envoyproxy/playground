@@ -30,8 +30,6 @@ export class BaseProxyConfigForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         onChange: PropTypes.func.isRequired,
-        configuration: PropTypes.string,
-        errors: PropTypes.object.isRequired,
         examples: PropTypes.object.isRequired,
         configWarning: PropTypes.string,
     });
@@ -42,7 +40,8 @@ export class BaseProxyConfigForm extends React.PureComponent {
     }
 
     onExampleSelect = async (evt) => {
-        const {configWarning, dispatch, errors: _errors, examples} = this.props;
+        const {configWarning, dispatch, form, examples} = this.props;
+        const {errors: _errors} = form;
         const {envoy} = examples;
         const errors = {..._errors};
         // todo: implement overwrite button
@@ -58,8 +57,9 @@ export class BaseProxyConfigForm extends React.PureComponent {
     }
 
     render ()  {
-        const {configuration=code, examples, errors, onChange} = this.props;
+        const {form, examples, onChange} = this.props;
         const {envoy={}} = examples;
+        const {configuration=code, errors} = form;
         const {configuration: configErrors=[]} =  errors;
         return (
             <PlaygroundFormGroup>
@@ -82,8 +82,8 @@ export class BaseProxyConfigForm extends React.PureComponent {
 export const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
+        examples: state.example.value,
     };
 };
-
 
 export default connect(mapStateToProps)(BaseProxyConfigForm);

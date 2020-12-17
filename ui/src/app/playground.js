@@ -19,6 +19,12 @@ export default class Playground {
         loadNetworks,
         updateExamples];
 
+    _versions = [
+            ['envoy-dev:latest', 'envoy-dev:latest (default)'],
+            ['envoy:v1.16-latest', 'envoy:v1.16-latest'],
+            ['envoy:v1.15-latest', 'envoy:v1.15-latest'],
+            ['envoy:v1.14-latest', 'envoy:v1.14-latest']];
+
     constructor (store, apiAddress, socketAddress) {
         this.store = store;
         this.apiAddress = apiAddress;
@@ -36,6 +42,10 @@ export default class Playground {
 
     get updaters () {
         return this._updaters;
+    }
+
+    get versions () {
+        return this._versions;
     }
 
     cloud = async (path) => {

@@ -3,39 +3,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {PlaygroundContext} from '../../app';
 import {PlaygroundSelectInput} from '../../shared/forms';
-
-import {updateForm} from '../../app/store';
 
 
 export class ProxyVersionField extends React.PureComponent {
+    static contextType = PlaygroundContext;
     static propTypes = exact({
-        form: PropTypes.object.isRequired,
-        dispatch: PropTypes.func.isRequired,
+        version: PropTypes.string,
+        onChange: PropTypes.func.isRequired,
     });
 
-    onChange = async (evt) => {
-        const {dispatch} = this.props;
-        await dispatch(updateForm({version: evt.target.value}));
-    }
-
-    get options () {
-        return [
-            ['envoy-dev:latest', 'envoy-dev:latest (default)'],
-            ['envoy:v1.16-latest', 'envoy:v1.16-latest'],
-            ['envoy:v1.15-latest', 'envoy:v1.15-latest'],
-            ['envoy:v1.14-latest', 'envoy:v1.14-latest']];
-    }
-
     render () {
-        const {form} = this.props;
-        const {version} = form;
+        const {onChange, version} = this.props;
+        const {versions} = this.context;
         return (
             <PlaygroundSelectInput
-              onChange={this.onChange}
+              onChange={onChange}
               value={version}
               name="mapping_type"
               placeholder="Version (optional)"
-              options={this.options} />);
+              options={versions} />);
     }
 }
