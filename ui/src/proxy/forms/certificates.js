@@ -54,4 +54,11 @@ export class BaseProxyCertificatesForm extends React.PureComponent {
 }
 
 
-export default connect()(BaseProxyCertificatesForm);
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+
+export default connect(mapStateToProps)(BaseProxyCertificatesForm);

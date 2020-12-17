@@ -12,7 +12,7 @@ import {updateForm} from '../../app/store';
 
 
 export class BaseNetworkConnectionsForm extends React.PureComponent {
-    static contexType = PlaygroundContext;
+    static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         networks: PropTypes.object.isRequired,
@@ -44,7 +44,7 @@ export class BaseNetworkConnectionsForm extends React.PureComponent {
         if (edit) {
             const {api} = this.context;
             await dispatch(updateForm(update));
-            await api.update({...data, ...update});
+            await api.network.update({...data, ...update});
         } else {
             await dispatch(updateForm(update));
         }

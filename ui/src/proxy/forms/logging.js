@@ -82,4 +82,10 @@ export class BaseProxyLoggingForm extends React.PureComponent {
 }
 
 
-export default connect()(BaseProxyLoggingForm);
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseProxyLoggingForm);

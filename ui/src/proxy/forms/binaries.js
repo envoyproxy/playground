@@ -45,4 +45,11 @@ export class BaseProxyBinariesForm extends React.PureComponent {
     }
 }
 
-export default connect()(BaseProxyBinariesForm);
+
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseProxyBinariesForm);
