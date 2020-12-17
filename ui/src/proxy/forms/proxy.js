@@ -10,7 +10,7 @@ import {updateForm} from '../../app/store';
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow, PlaygroundNameInput} from '../../shared/forms';
-import {ProxyConfigForm} from './config';
+import ProxyConfigForm from './config';
 
 import Yaml from 'js-yaml';
 
