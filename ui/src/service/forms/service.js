@@ -4,12 +4,8 @@ import exact from 'prop-types-exact';
 
 import {connect} from 'react-redux';
 
-import {Col} from 'reactstrap';
-
 import {
-    PlaygroundForm, PlaygroundFormGroup,
-    PlaygroundFormGroupRow,
-    PlaygroundNameInput,
+    PlaygroundForm, PlaygroundNameInput,
     PlaygroundSelectInput} from '../../shared/forms';
 
 import {updateForm} from '../../app/store';
@@ -50,42 +46,39 @@ class BaseServiceForm extends React.PureComponent {
         await dispatch(updateForm({errors, valid, name, service_type}));
     }
 
-    render () {
+    get groups () {
         const {form, services, service_types, meta} = this.props;
         const {service_type='', name='', errors={}} = form;
-        return (
-            <PlaygroundForm messages={this.messages}>
-              <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="name"
-                  title="Name">
-                  <Col sm={9}>
+        return [
+            [{title: 'Name*',
+              label: 'name',
+              cols: [
+                  [9,
 		    <PlaygroundNameInput
                       placeholder="Enter service name"
                       errors={errors}
                       value={name}
                       meta={meta}
                       taken={Object.keys(services)}
-                      onChange={this.onNameChange} />
-                  </Col>
-                </PlaygroundFormGroupRow>
-              </PlaygroundFormGroup>
-              <PlaygroundFormGroup>
-                <PlaygroundFormGroupRow
-                  label="service_type"
-                  title="Service type">
-                  <Col sm={9}>
+                      onChange={this.onNameChange} />]]}],
+            [{title: 'Service type',
+              label: 'service_type',
+              cols: [
+                  [9,
                     <PlaygroundSelectInput
                       name="service_type"
                       value={service_type}
                       onChange={this.onTypeChange}
                       placeholder="Select a service type"
                       options={Object.entries(service_types).map(([k, v])  => [k, v.title])}
-                    />
-                  </Col>
-                </PlaygroundFormGroupRow>
-              </PlaygroundFormGroup>
-            </PlaygroundForm>
+                    />]]}]];
+    }
+
+    render () {
+        return (
+            <PlaygroundForm
+              groups={this.groups}
+              messages={this.messages} />
         );
     }
 }
