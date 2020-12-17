@@ -149,6 +149,62 @@ test('ServiceForm onNameChange', async () => {
 });
 
 
+test('ServiceForm onTypeChange', async () => {
+    updateForm.mockImplementation(() => 'UPDATED');
+    const dispatch = jest.fn(async () => {});
+    const _form = {KEY: 'VALUE'};
+    const context  = {validators: {name: jest.fn()}};
+    let form = shallow(
+        <BaseServiceForm
+          service_types={service_types}
+          services={{SERVICE1: 'service 1'}}
+          dispatch={dispatch}
+          form={_form} />,
+        {context});
+    let event = {target: {}};
+    await form.instance().onTypeChange(event);
+    expect(updateForm.mock.calls).toEqual([[{
+        "service_type": undefined,
+        "valid": false,
+    }]]);
+    expect(dispatch.mock.calls).toEqual([['UPDATED']]);
+
+    dispatch.mockClear();
+    updateForm.mockClear();
+    event = {target: {value: 'TYPE1'}};
+    await form.instance().onTypeChange(event);
+    expect(updateForm.mock.calls).toEqual([[{
+        "service_type": 'TYPE1',
+        "valid": true,
+    }]]);
+    expect(dispatch.mock.calls).toEqual([['UPDATED']]);
+
+    dispatch.mockClear();
+    updateForm.mockClear();
+    form.setProps({
+        form: {errors: {FOO: 'BAR'}}});
+    event = {target: {value: 'TYPE1'}};
+    await form.instance().onTypeChange(event);
+    expect(updateForm.mock.calls).toEqual([[{
+        "service_type": 'TYPE1',
+        "valid": true,
+    }]]);
+    expect(dispatch.mock.calls).toEqual([['UPDATED']]);
+
+    dispatch.mockClear();
+    updateForm.mockClear();
+    form.setProps({
+        form: {errors: {name: 'BAR'}}});
+    event = {target: {value: 'TYPE1'}};
+    await form.instance().onTypeChange(event);
+    expect(updateForm.mock.calls).toEqual([[{
+        "service_type": 'TYPE1',
+        "valid": false,
+    }]]);
+    expect(dispatch.mock.calls).toEqual([['UPDATED']]);
+});
+
+
 test('ServiceFormModal mapStateToProps', () => {
     const state = {
         form: {value: 'FORM'},
