@@ -81,8 +81,7 @@ export class PlaygroundNameInput extends React.PureComponent {
         onChange: PropTypes.func.isRequired,
         errors: PropTypes.object.isRequired,
         placeholder: PropTypes.string.isRequired,
-        taken: PropTypes.array.isRequired,
-
+        taken: PropTypes.array,
         value: PropTypes.string,
     });
 
