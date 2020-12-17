@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {Col} from 'reactstrap';
 
 import {
@@ -44,7 +46,7 @@ export class ProxyLoggingDefaultField extends React.PureComponent {
 }
 
 
-export class ProxyLoggingForm extends React.PureComponent {
+export class BaseProxyLoggingForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -78,3 +80,6 @@ export class ProxyLoggingForm extends React.PureComponent {
         );
     }
 }
+
+
+export default connect()(BaseProxyLoggingForm);

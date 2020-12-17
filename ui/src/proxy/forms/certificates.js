@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {PlaygroundFilesForm} from '../../shared/forms';
 
 import CertificateIcon from '../../app/images/certificate.svg';
@@ -15,8 +17,7 @@ import CertificateIcon from '../../app/images/certificate.svg';
 //      - valid filenames
 
 
-
-export class ProxyCertificatesForm extends React.PureComponent {
+export class BaseProxyCertificatesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -51,3 +52,6 @@ export class ProxyCertificatesForm extends React.PureComponent {
         );
     }
 }
+
+
+export default connect()(BaseProxyCertificatesForm);

@@ -1,7 +1,7 @@
 
 import {shallow} from "enzyme";
 
-import {ProxyCertificatesForm} from '../../../proxy/forms/certificates';
+import {BaseProxyCertificatesForm} from '../../../proxy/forms/certificates';
 import CertificateIcon from '../../../app/images/certificate.svg';
 
 
@@ -9,7 +9,7 @@ test('ProxyCertificatesForm render', () => {
     const dispatch = jest.fn();
     const _form = {KEY: 'VALUE'};
     let form = shallow(
-        <ProxyCertificatesForm
+        <BaseProxyCertificatesForm
           dispatch={dispatch}
           form={_form} />);
     expect(form.text()).toEqual('<PlaygroundFilesForm />');

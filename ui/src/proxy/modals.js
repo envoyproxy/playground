@@ -16,9 +16,9 @@ import EnvoyLogo from '../app/images/envoy.svg';
 
 export class BaseProxyFormModal extends React.PureComponent {
     static propTypes = exact({
-        dispatch: PropTypes.func.isRequired,
         onUpdate: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
+        dispatch: PropTypes.func,
     });
 
     get activityMessages () {
@@ -40,34 +40,18 @@ export class BaseProxyFormModal extends React.PureComponent {
     }
 
     get tabs () {
-        const {dispatch, form} = this.props;
+        const {form} = this.props;
         const {name=''} = form;
-        let tabs = {Proxy: <ProxyForm form={form} />};
-        if (name.length > 2) {
-            tabs = {
-                ...tabs,
-                ...{Logging: (
-                    <ProxyLoggingForm
-                      dispatch={dispatch}
-                      form={form}
-                    />),
-                    Ports: (
-                        <ProxyPortsForm
-                          dispatch={dispatch}
-                          form={form}
-                        />),
-                    Certificates: (
-                        <ProxyCertificatesForm
-                          dispatch={dispatch}
-                          form={form}
-                        />),
-                    Binaries: (
-                        <ProxyBinariesForm
-                          dispatch={dispatch}
-                          form={form}
-                        />)}};
+        let tabs = {Proxy: <ProxyForm />};
+        if (name.length < 3) {
+            return tabs;
         }
-        return tabs;
+        return  {
+            ...tabs,
+            ...{Logging: <ProxyLoggingForm />,
+                Ports: <ProxyPortsForm />,
+                Certificates: <ProxyCertificatesForm />,
+                Binaries: <ProxyBinariesForm />}};
     }
 
     render () {

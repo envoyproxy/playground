@@ -178,5 +178,4 @@ const mapModalStateToProps = function(state) {
 };
 
 
-const ProxyPortsForm = connect(mapModalStateToProps)(BaseProxyPortsForm);
-export {ProxyPortsForm};
+export default connect(mapModalStateToProps)(BaseProxyPortsForm);

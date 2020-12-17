@@ -161,7 +161,6 @@ const mapStateToProps = function(state, other) {
         meta: state.meta.value,
         examples: state.example.value,
     };
-}
+};
 
-const ProxyForm = connect(mapStateToProps)(BaseProxyForm);
-export {ProxyForm};
+export default connect(mapStateToProps)(BaseProxyForm);

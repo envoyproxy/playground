@@ -1,7 +1,7 @@
 
 import {shallow} from "enzyme";
 
-import {ProxyBinariesForm} from '../../../proxy/forms/binaries';
+import {BaseProxyBinariesForm} from '../../../proxy/forms/binaries';
 import BinaryIcon from '../../../app/images/binary.png';
 
 
@@ -9,7 +9,7 @@ test('ProxyBinariesForm render', () => {
     const dispatch = jest.fn();
     const _form = {KEY: 'VALUE'};
     let form = shallow(
-        <ProxyBinariesForm
+        <BaseProxyBinariesForm
           dispatch={dispatch}
           form={_form} />);
     expect(form.text()).toEqual('<PlaygroundFilesForm />');
