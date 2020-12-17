@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
+
 import {connect} from 'react-redux';
 
 import {PlaygroundForm, PlaygroundNameInput} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
-class BaseNetworkForm extends React.PureComponent {
+export class BaseNetworkForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -49,7 +50,7 @@ class BaseNetworkForm extends React.PureComponent {
 }
 
 
-const mapStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
         form: state.form.value,
         networks: state.network.value,

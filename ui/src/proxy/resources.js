@@ -3,8 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import EnvoyLogo from '../app/images/envoy.svg';
-import {connect} from '../app/store';
 import APIResources from '../shared/resources';
 import ProxyFormModal from './modals';
 

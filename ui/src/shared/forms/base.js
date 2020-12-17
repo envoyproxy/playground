@@ -31,7 +31,7 @@ export class PlaygroundFormGroup extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         check: PropTypes.bool,
         rows: PropTypes.array,
     });
@@ -83,7 +83,7 @@ export class PlaygroundForm extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         messages: PropTypes.array,
         warnings: PropTypes.array,
         onSubmit: PropTypes.func,
@@ -135,7 +135,7 @@ export class PlaygroundFormGroupRow extends React.PureComponent {
     static propTypes = exact({
         children: PropTypes.oneOfType([
             PropTypes.array,
-            PropTypes.object]).isRequired,
+            PropTypes.object]),
         label: PropTypes.string,
         title: PropTypes.string,
         cols: PropTypes.array,
