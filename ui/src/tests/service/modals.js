@@ -5,7 +5,8 @@ import {shallow} from "enzyme";
 
 import each from 'jest-each';
 
-import {BaseServiceFormModal} from '../../service/modals';
+import ServiceFormModal, {
+    BaseServiceFormModal, mapStateToProps} from '../../service/modals';
 import {PlaygroundFormModal} from '../../shared/modal';
 
 
@@ -32,6 +33,7 @@ const _renderModal = (form) => {
                 'envoy.playground.description': 'TYPE2 description',
                 'envoy.playground.readme': 'TYPE2 README',
                 'envoy.playground.logo': 'TYPE2 LOGO',
+                'envoy.playground.config.path': 'TYPE2 CONFIG',
             },
         }};
     return shallow(
@@ -93,8 +95,15 @@ test('ServiceFormModal activityMessages', () => {
 
 const tabsTest = [
     [{errors: {}, name: 'a'}],
+    [{errors: {}, name: 'a', service_type: 'TYPE1'}],
     [{errors: {}, name: 'ab'}],
+    [{errors: {}, name: 'ab', service_type: 'TYPE1'}],
     [{errors: {}, name: 'abc'}],
+    [{errors: {}, name: 'abc'}],
+    [{errors: {name: 'X'}, name: 'abc', service_type: 'TYPE1'}],
+
+    [{errors: {}, name: 'abc', service_type: 'TYPE1'}],
+    [{errors: {}, name: 'abc', service_type: 'TYPE2'}],
 ];
 
 
@@ -104,6 +113,27 @@ each(tabsTest).test('ServiceFormModal tabs', (form) => {
     const {errors={}, name, service_type} = form;
     const isValid = (!errors.name && name.length > 2 && service_type);
     if (isValid) {
+        if (form.service_type === 'TYPE2') {
+            tabs.Configuration = modal.instance().tabConfiguration;
+        }
+        tabs.Environment = modal.instance().tabEnvironment;
+        tabs.Ports = modal.instance().tabPorts;
+        tabs.README = modal.instance().tabReadme;
     }
     expect(modal.instance().tabs).toEqual(tabs);
+});
+
+
+test('ServiceFormModal mapStateToProps', () => {
+    const state = {
+        service_type: {value: 'SERVICE TYPES'},
+        form: {value: 'FORM'}};
+    expect(mapStateToProps(state)).toEqual({
+        service_types: 'SERVICE TYPES',
+        form: 'FORM'});
+});
+
+
+test('ServiceFormModal isWrapped', () => {
+    expect(ServiceFormModal.WrappedComponent).toEqual(BaseServiceFormModal);
 });

@@ -147,11 +147,11 @@ export class BaseServiceFormModal extends React.PureComponent {
 }
 
 
-const mapModalStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
         service_types: state.service_type.value,
         form: state.form.value,
     };
 };
 
-export default connect(mapModalStateToProps)(BaseServiceFormModal);
+export default connect(mapStateToProps)(BaseServiceFormModal);
