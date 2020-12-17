@@ -2,7 +2,8 @@
 import {shallow} from "enzyme";
 
 import {updateForm} from '../../../app/store';
-import {BaseProxyConfigForm} from '../../../proxy/forms/config';
+import ProxyConfigForm, {
+    mapStateToProps, BaseProxyConfigForm} from '../../../proxy/forms/config';
 import {PlaygroundEditor} from '../../../shared/editor';
 
 
@@ -142,4 +143,19 @@ test('ProxyConfigForm onExampleSelect', async () => {
     expect(global.fetch.mock.calls).toEqual([['PATH']]);
 
     global.fetch = _fetch;
+});
+
+
+test('ProxyConfigFormModal mapStateToProps', () => {
+    const state = {
+        form: {value: 'FORM'},
+        example: {value: 'EXAMPLES'}};
+    expect(mapStateToProps(state)).toEqual({
+        form: 'FORM',
+        examples: 'EXAMPLES'});
+});
+
+
+test('ProxyConfigForm isWrapped', () => {
+    expect(ProxyConfigForm.WrappedComponent).toEqual(BaseProxyConfigForm);
 });
