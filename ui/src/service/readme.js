@@ -1,27 +1,41 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
+
+import {connect} from 'react-redux';
 
 import ReactMarkdown from 'react-markdown';
 
 import {PlaygroundContext} from '../app';
 
 
-export class ServiceReadme extends React.Component {
+export class BaseServiceReadme extends React.Component {
     static contextType = PlaygroundContext;
     static propTypes = exact({
-        readme: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
-        logo: PropTypes.string.isRequired,
         service_type: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string,
+        service_types: PropTypes.object.isRequired,
     });
 
     state = {content: ''}
 
+    get service_type () {
+        const {service_type, service_types} = this.props;
+        return service_types[service_type] || {};
+    }
+
+    get service_config () {
+        const {image, labels={}} = this.service_type;
+        return {
+            readme: labels['envoy.playground.readme'],
+            title: labels['envoy.playground.service'],
+            description: labels['envoy.playground.description'],
+            image};
+    }
+
     updateReadme = async () => {
-        const {readme, service_type} = this.props;
+        const {service_type} = this.props;
+        const {readme} = this.service_config;
         const {api} = this.context;
         const content = await api.get(
             ['/static', service_type, readme].join('/'),
@@ -34,7 +48,8 @@ export class ServiceReadme extends React.Component {
     }
 
     async componentDidUpdate (prevProps) {
-        const {readme, service_type} = this.props;
+        const {service_type} = this.props;
+        const {readme} = this.service_config;
         if (readme !== prevProps.readme || service_type !== prevProps.service_type) {
             await this.updateReadme();
         }
@@ -43,9 +58,9 @@ export class ServiceReadme extends React.Component {
     render () {
         const {api, urls} = this.context;
         const {content} = this.state;
+        const {service_type} = this.props;
         const {
-            image, logo, title, description,
-            service_type} = this.props;
+            image, logo, title, description} = this.service_config;
         const _logo = api.address(
             ['/static',
              service_type,
@@ -66,3 +81,12 @@ export class ServiceReadme extends React.Component {
         );
     }
 }
+
+
+export const mapStateToProps = function(state, other) {
+    return {
+        service_types: state.service_type.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseServiceReadme);

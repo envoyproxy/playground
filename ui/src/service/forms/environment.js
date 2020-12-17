@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {Button, Col, Input} from 'reactstrap';
 
 import {
@@ -58,12 +60,11 @@ export class ServiceEnvironmentFieldList extends React.PureComponent {
 }
 
 
-export class ServiceEnvironmentForm extends React.Component {
+export class BaseServiceEnvironmentForm extends React.Component {
     static propTypes = exact({
-        dispatch: PropTypes.func,
         form: PropTypes.object.isRequired,
-        service_type: PropTypes.string.isRequired,
         service_types: PropTypes.object.isRequired,
+        dispatch: PropTypes.func,
     });
 
     state = {value: '', key: ''};
@@ -100,8 +101,9 @@ export class ServiceEnvironmentForm extends React.Component {
     }
 
     async componentDidUpdate(prevProps) {
-        const {dispatch, service_type, service_types} = this.props;
-        if (service_type !== prevProps.service_type) {
+        const {dispatch, form, service_types} = this.props;
+        const {service_type} = form;
+        if (service_type !== prevProps.form.service_type) {
             if (service_type && service_type !== undefined) {
                 const {environment: vars} =  service_types[service_type];
                 await dispatch(updateForm({vars}));
@@ -112,7 +114,8 @@ export class ServiceEnvironmentForm extends React.Component {
     }
 
     async componentDidMount () {
-        const {dispatch, service_type, service_types} = this.props;
+        const {dispatch, form, service_types} = this.props;
+        const {service_type} = form;
         if (service_type && service_type !== undefined) {
             const {environment: vars} =  service_types[service_type];
             await dispatch(updateForm({vars}));
@@ -169,3 +172,13 @@ export class ServiceEnvironmentForm extends React.Component {
         );
     }
 }
+
+
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+        service_types: state.service_type.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseServiceEnvironmentForm);

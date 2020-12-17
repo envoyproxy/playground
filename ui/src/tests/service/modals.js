@@ -7,6 +7,11 @@ import each from 'jest-each';
 
 import ServiceFormModal, {
     BaseServiceFormModal, mapStateToProps} from '../../service/modals';
+import {
+    ServiceConfigurationForm, ServiceEnvironmentForm,
+    ServiceForm} from '../../service/forms';
+import ServicePorts from '../../service/ports';
+import ServiceReadme from '../../service/readme';
 import {PlaygroundFormModal} from '../../shared/modal';
 
 
@@ -43,6 +48,7 @@ const _renderModal = (form) => {
           dispatch={dispatch}
         />);
 };
+
 
 test('ServiceFormModal render', () => {
     const form = {
@@ -109,16 +115,19 @@ const tabsTest = [
 
 each(tabsTest).test('ServiceFormModal tabs', (form) => {
     const modal = _renderModal(form);
-    const tabs = {Service: modal.instance().tabService};
+    const tabs = {Service: <ServiceForm />};
     const {errors={}, name, service_type} = form;
     const isValid = (!errors.name && name.length > 2 && service_type);
     if (isValid) {
         if (form.service_type === 'TYPE2') {
-            tabs.Configuration = modal.instance().tabConfiguration;
+            tabs.Configuration = <ServiceConfigurationForm />;
         }
-        tabs.Environment = modal.instance().tabEnvironment;
-        tabs.Ports = modal.instance().tabPorts;
-        tabs.README = modal.instance().tabReadme;
+        tabs.Environment = <ServiceEnvironmentForm />;
+        tabs.Ports = (
+            <ServicePorts
+              labels={labels}
+              ports={labels['envoy.playground.ports'] || ''} />);
+        tabs.README = <ServiceReadme service_type={service_type} />;
     }
     expect(modal.instance().tabs).toEqual(tabs);
 });

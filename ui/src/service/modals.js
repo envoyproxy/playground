@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -8,8 +9,8 @@ import {PlaygroundFormModal} from '../shared/modal';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ServicePorts} from './ports';
-import {ServiceReadme} from './readme';
+import ServicePorts from './ports';
+import ServiceReadme from './readme';
 
 
 export class BaseServiceFormModal extends React.PureComponent {
@@ -36,85 +37,11 @@ export class BaseServiceFormModal extends React.PureComponent {
         return `Failed starting ${service_type} service (${name}). See logs for errors.`;
     }
 
-    get image () {
-        const {image} = this.service_config;
-        return image;
-    }
-
-    get labels () {
-        const {labels={}} = this.service_config;
-        return labels;
-    }
-
-    get ports () {
-        return this.labels['envoy.playground.ports'] || '';
-    };
-
-    get service_config () {
-        const {service_types} = this.props;
-        return service_types[this.service_type] || {};
-    }
-
-    get service_type () {
-        const {form} = this.props;
-        const {service_type} = form;
-        return service_type;
-    }
-
-    get tabConfiguration () {
-        const {dispatch, form, service_types} = this.props;
-        return (
-            <ServiceConfigurationForm
-              service_types={service_types}
-              form={form}
-              dispatch={dispatch}
-            />);
-    }
-
-    get tabEnvironment () {
-        const {dispatch, form, service_types} = this.props;
-        const {service_type} = form;
-        return (
-            <ServiceEnvironmentForm
-              service_type={service_type}
-              service_types={service_types}
-              form={form}
-              dispatch={dispatch}
-            />);
-    }
-
-    get tabPorts () {
-        return (
-            <ServicePorts
-              labels={this.labels}
-              ports={this.ports} />);
-    }
-
-    get tabReadme () {
-        return (
-            <ServiceReadme
-              readme={this.labels['envoy.playground.readme']}
-              title={this.labels['envoy.playground.service']}
-              description={this.labels['envoy.playground.description']}
-              image={this.image}
-              service_type={this.service_type}
-              logo={this.labels['envoy.playground.logo']} />);
-    }
-
-    get tabService () {
-        const {form, service_types} = this.props;
-        return (
-            <ServiceForm
-              service_types={service_types}
-              form={form}
-            />);
-    }
-
     get tabs () {
-        const {form} = this.props;
+        const {form, service_types} = this.props;
         const {errors, name='', service_type} = form;
-        const tabs = {Service: this.tabService};
-        const isValid = (
+        const tabs = {Service: <ServiceForm />};
+        const isValid = Boolean(
             service_type
                 && service_type !== undefined
                 && name.length > 2
@@ -122,12 +49,16 @@ export class BaseServiceFormModal extends React.PureComponent {
         if (!isValid) {
             return tabs;
         }
-        if (this.labels['envoy.playground.config.path']) {
-            tabs.Configuration = this.tabConfiguration;
+        const {labels={}} = service_types[service_type];
+        if (labels['envoy.playground.config.path']) {
+            tabs.Configuration = <ServiceConfigurationForm />;
         }
-        tabs.Environment = this.tabEnvironment;
-        tabs.Ports = this.tabPorts;
-        tabs.README = this.tabReadme;
+        tabs.Environment = <ServiceEnvironmentForm />;
+        tabs.Ports = (
+            <ServicePorts
+              labels={labels}
+              ports={labels['envoy.playground.ports'] || ''} />);
+        tabs.README = <ServiceReadme service_type={service_type} />;
         return tabs;
     }
 
