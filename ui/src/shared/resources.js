@@ -49,7 +49,6 @@ class BaseResources extends React.Component {
             PropTypes.func,
         ]).isRequired,
         title: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
         resources: PropTypes.object.isRequired,
         addModal: PropTypes.object.isRequired,
         editable: PropTypes.bool,

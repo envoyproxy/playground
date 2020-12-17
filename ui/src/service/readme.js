@@ -15,6 +15,7 @@ export class BaseServiceReadme extends React.Component {
     static propTypes = exact({
         service_type: PropTypes.string.isRequired,
         service_types: PropTypes.object.isRequired,
+        dispatch: PropTypes.func,
     });
 
     state = {content: ''}
@@ -50,8 +51,7 @@ export class BaseServiceReadme extends React.Component {
 
     async componentDidUpdate (prevProps) {
         const {service_type} = this.props;
-        const {readme} = this.service_config;
-        if (readme !== prevProps.readme || service_type !== prevProps.service_type) {
+        if (service_type !== prevProps.service_type) {
             await this.updateReadme();
         }
     }
