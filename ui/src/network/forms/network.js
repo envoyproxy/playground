@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 import {connect} from 'react-redux';
 
-import {Col, Label, Row} from 'reactstrap';
-import {
-    PlaygroundForm, PlaygroundFormGroup, PlaygroundNameInput} from '../../shared/forms';
+import {PlaygroundForm, PlaygroundNameInput} from '../../shared/forms';
 import {updateForm} from '../../app/store';
 
 
@@ -26,31 +24,28 @@ class BaseNetworkForm extends React.PureComponent {
         await dispatch(updateForm(evt));
     }
 
-    render () {
+    get groups () {
         const {form, meta, networks} = this.props;
         const {errors={}, name} = form;
+        return [
+            [{title: 'Name*',
+              label: 'name',
+              cols: [
+                  [9,
+	           <PlaygroundNameInput
+                     placeholder="Enter network name"
+                     errors={errors}
+                     value={name}
+                     meta={meta}
+                     taken={Object.keys(networks)}
+                     onChange={this.onNameChange} />]]}]];
+    }
+
+    render () {
         return (
             <PlaygroundForm
-              messages={this.messages}>
-              <PlaygroundFormGroup>
-                <Row>
-                  <Label sm={3}  for="name" className="text-right">
-                    <div>
-                      Name
-                    </div>
-                  </Label>
-                  <Col sm={9}>
-	            <PlaygroundNameInput
-                      placeholder="Enter network name"
-                      errors={errors}
-                      value={name}
-                      meta={meta}
-                      taken={Object.keys(networks)}
-                      onChange={this.onNameChange} />
-                  </Col>
-                </Row>
-              </PlaygroundFormGroup>
-            </PlaygroundForm>
+              groups={this.groups}
+              messages={this.messages} />
         );
     }
 }
