@@ -27,6 +27,7 @@ export class BaseServiceReadme extends React.Component {
     get service_config () {
         const {image, labels={}} = this.service_type;
         return {
+            logo: labels['envoy.playground.logo'],
             readme: labels['envoy.playground.readme'],
             title: labels['envoy.playground.service'],
             description: labels['envoy.playground.description'],
