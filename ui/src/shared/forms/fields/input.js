@@ -89,7 +89,7 @@ export class PlaygroundNameInput extends React.PureComponent {
         const {name: validator} = this.context.validators;
         const {onChange, taken} = this.props;
         const name = evt.target.value.toLowerCase();
-        const {valid, errors} = validator(name, taken);
+        const {valid, errors} = validator.validate(name, taken);
         await onChange({errors, valid, name});
     }
 
