@@ -10,7 +10,7 @@ import {updateForm} from '../../app/store';
 import {
     PlaygroundForm, PlaygroundFormGroup,
     PlaygroundFormGroupRow, PlaygroundNameInput} from '../../shared/forms';
-import {ProxyConfigForm} from './config';
+import ProxyConfigForm from './config';
 
 import Yaml from 'js-yaml';
 
@@ -155,13 +155,13 @@ export class BaseProxyForm extends React.PureComponent {
 }
 
 
-const mapStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
+        form: state.form.value,
         proxies: state.proxy.value,
         meta: state.meta.value,
         examples: state.example.value,
     };
-}
+};
 
-const ProxyForm = connect(mapStateToProps)(BaseProxyForm);
-export {ProxyForm};
+export default connect(mapStateToProps)(BaseProxyForm);

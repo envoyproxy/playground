@@ -171,12 +171,11 @@ export class BaseProxyPortsForm extends React.Component {
 }
 
 
-const mapModalStateToProps = function(state) {
+export const mapModalStateToProps = function(state) {
     return {
         form: state.form.value,
     };
 };
 
 
-const ProxyPortsForm = connect(mapModalStateToProps)(BaseProxyPortsForm);
-export {ProxyPortsForm};
+export default connect(mapModalStateToProps)(BaseProxyPortsForm);

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
@@ -8,23 +9,16 @@ import {PlaygroundFormModal} from '../shared/modal';
 import {
     ServiceConfigurationForm, ServiceEnvironmentForm,
     ServiceForm} from './forms';
-import {ServicePorts} from './ports';
-import {ServiceReadme} from './readme';
+import ServicePorts from './ports';
+import ServiceReadme from './readme';
 
 
 export class BaseServiceFormModal extends React.PureComponent {
     static propTypes = exact({
         form: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
-        onUpdate: PropTypes.func.isRequired,
         dispatch: PropTypes.func.isRequired,
     });
-
-    get failMessage () {
-        const {form} = this.props;
-        const {name, service_type} = form;
-        return `Failed starting ${service_type} service (${name}). See logs for errors.`;
-    }
 
     get activityMessages () {
         const {form} = this.props;
@@ -37,55 +31,34 @@ export class BaseServiceFormModal extends React.PureComponent {
             success: [[100, 100], <span>Service has started ({name})!</span>]};
     }
 
+    get failMessage () {
+        const {form} = this.props;
+        const {name, service_type} = form;
+        return `Failed starting ${service_type} service (${name}). See logs for errors.`;
+    }
+
     get tabs () {
-        const {dispatch, form, service_types} = this.props;
+        const {form, service_types} = this.props;
         const {errors, name='', service_type} = form;
-        const tabs = {
-            Service: (
-                <ServiceForm
-                  service_types={service_types}
-                  form={form}
-                />)};
-        if (service_type && service_type !== undefined) {
-            const service_config = service_types[service_type];
-            const {image, labels={}} = service_config;
-            if (name.length > 2 && !errors.name) {
-                const configPath  = labels['envoy.playground.config.path'];
-                if (configPath) {
-                    tabs.Configuration = (
-                        <ServiceConfigurationForm
-                          service_types={service_types}
-                          form={form}
-                          dispatch={dispatch}
-                        />);
-                }
-                tabs.Environment = (
-                    <ServiceEnvironmentForm
-                      service_type={service_type}
-                      service_types={service_types}
-                      form={form}
-                      dispatch={dispatch}
-                    />)
-                ;
-                const ports = labels['envoy.playground.ports'];
-                if (ports) {
-                    tabs.Ports = (
-                        <ServicePorts
-                          labels={labels}
-                          ports={ports} />);
-                }
-                if (labels['envoy.playground.readme']) {
-                    tabs.README = (
-                        <ServiceReadme
-                          readme={labels['envoy.playground.readme']}
-                          title={labels['envoy.playground.service']}
-                          description={labels['envoy.playground.description']}
-                          image={image}
-                          service_type={service_type}
-                          logo={labels['envoy.playground.logo']} />);
-                }
-            }
+        const tabs = {Service: <ServiceForm />};
+        const isValid = (
+            service_type
+                && service_type !== undefined
+                && name.length > 2
+                && !errors.name);
+        if (!isValid) {
+            return tabs;
         }
+        const {labels={}} = service_types[service_type];
+        if (labels['envoy.playground.config.path']) {
+            tabs.Configuration = <ServiceConfigurationForm />;
+        }
+        tabs.Environment = <ServiceEnvironmentForm />;
+        tabs.Ports = (
+            <ServicePorts
+              labels={labels}
+              ports={labels['envoy.playground.ports'] || ''} />);
+        tabs.README = <ServiceReadme service_type={service_type} />;
         return tabs;
     }
 
@@ -105,11 +78,11 @@ export class BaseServiceFormModal extends React.PureComponent {
 }
 
 
-const mapModalStateToProps = function(state, other) {
+export const mapStateToProps = function(state, other) {
     return {
         service_types: state.service_type.value,
         form: state.form.value,
     };
 };
 
-export default connect(mapModalStateToProps)(BaseServiceFormModal);
+export default connect(mapStateToProps)(BaseServiceFormModal);

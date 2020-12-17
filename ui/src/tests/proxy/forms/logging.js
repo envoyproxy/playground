@@ -5,7 +5,8 @@ import {Col} from 'reactstrap';
 
 import {updateForm} from '../../../app/store';
 import {
-    ProxyLoggingForm, ProxyLoggingDefaultField} from '../../../proxy/forms/logging';
+    BaseProxyLoggingForm,
+    ProxyLoggingDefaultField} from '../../../proxy/forms/logging';
 import {
     PlaygroundSelectInput} from '../../../shared/forms/fields/input';
 
@@ -19,7 +20,7 @@ test('ProxyLoggingForm render', () => {
     const dispatch = jest.fn(async () => {});
     const _form = {KEY: 'VALUE'};
     let form = shallow(
-        <ProxyLoggingForm
+        <BaseProxyLoggingForm
           dispatch={dispatch}
           form={_form} />);
     expect(form.text()).toEqual('<PlaygroundForm />');
@@ -36,7 +37,7 @@ test('ProxyLoggingForm onChange', async () => {
     const dispatch = jest.fn(async () => {});
     const _form = {logging: {KEY: 'VALUE'}};
     let form = shallow(
-        <ProxyLoggingForm
+        <BaseProxyLoggingForm
           dispatch={dispatch}
           form={_form} />);
     await form.instance().onChange({target: {value: 'VALUE'}});

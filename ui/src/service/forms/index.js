@@ -1,4 +1,4 @@
 
-export {ServiceForm} from './service';
-export {ServiceConfigurationForm} from './configuration';
-export {ServiceEnvironmentForm} from './environment';
+export {default as ServiceForm} from './service';
+export {default as ServiceConfigurationForm} from './configuration';
+export {default as ServiceEnvironmentForm} from './environment';

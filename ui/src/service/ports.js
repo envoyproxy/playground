@@ -57,7 +57,7 @@ export class ServicePortsFieldList extends React.PureComponent {
 }
 
 
-export class ServicePorts extends React.Component {
+export default class ServicePorts extends React.Component {
     static propTypes = exact({
         ports: PropTypes.oneOfType([
             PropTypes.string,

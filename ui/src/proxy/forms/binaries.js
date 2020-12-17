@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {PlaygroundFilesForm} from '../../shared/forms';
 
 import BinaryIcon from '../../app/images/binary.png';
@@ -15,7 +17,7 @@ import BinaryIcon from '../../app/images/binary.png';
 //      - valid filenames
 
 
-export class ProxyBinariesForm extends React.PureComponent {
+export class BaseProxyBinariesForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
@@ -42,3 +44,12 @@ export class ProxyBinariesForm extends React.PureComponent {
         );
     }
 }
+
+
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseProxyBinariesForm);

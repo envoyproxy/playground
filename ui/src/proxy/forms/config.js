@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {updateForm} from '../../app/store';
 import {PlaygroundEditor} from '../../shared/editor';
 import {PlaygroundFormGroup} from '../../shared/forms';
@@ -24,7 +26,7 @@ const code =
 `;
 
 
-export class ProxyConfigForm extends React.PureComponent {
+export class BaseProxyConfigForm extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         onChange: PropTypes.func.isRequired,
@@ -75,3 +77,13 @@ export class ProxyConfigForm extends React.PureComponent {
             </PlaygroundFormGroup>);
     }
 }
+
+
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+    };
+};
+
+
+export default connect(mapStateToProps)(BaseProxyConfigForm);

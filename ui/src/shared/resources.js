@@ -91,7 +91,6 @@ class BaseResources extends React.Component {
             title, modal, action,
             editAction, editClose,
             icon: logo,
-            onUpdate: this.api.update,
             onSubmit: this.api.create};
     }
 

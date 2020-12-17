@@ -75,7 +75,6 @@ export class ModalParts extends React.PureComponent {
             PropTypes.func,
         ]).isRequired,
         onSubmit: PropTypes.func.isRequired,
-        onUpdate: PropTypes.func.isRequired,
         errors: PropTypes.object,
         editClose: PropTypes.string,
         editAction: PropTypes.string,
@@ -100,7 +99,7 @@ export class ModalParts extends React.PureComponent {
     render () {
         const {
             actionWarning, modal: Content,
-            onSubmit, onUpdate, form, editAction, editClose,
+            onSubmit, form, editAction, editClose,
             action, title, icon} = this.props;
         let disabled = false;
         const {name, errors={}, edit=false, valid, validation} = form;
@@ -127,8 +126,7 @@ export class ModalParts extends React.PureComponent {
               </ModalHeader>
               <ModalBody>
                 {Content &&
-                 <Content
-                   onUpdate={onUpdate} />
+                 <Content />
                 }
               </ModalBody>
               <PlaygroundModalFooter

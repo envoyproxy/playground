@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {connect} from 'react-redux';
+
 import {highlight, languages} from 'prismjs/components/prism-core';
 
 import {PlaygroundContext} from '../../app';
@@ -15,7 +17,7 @@ import {PlaygroundEditor} from '../../shared/editor';
 //      - not too long
 
 
-export class ServiceConfigurationForm extends React.PureComponent {
+export class BaseServiceConfigurationForm extends React.PureComponent {
     static contextType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
@@ -79,3 +81,13 @@ export class ServiceConfigurationForm extends React.PureComponent {
         );
     }
 }
+
+
+export const mapStateToProps = function(state, other) {
+    return {
+        form: state.form.value,
+        service_types: state.service_type.value,
+    };
+};
+
+export default connect(mapStateToProps)(BaseServiceConfigurationForm);
