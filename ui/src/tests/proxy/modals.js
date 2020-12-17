@@ -25,7 +25,6 @@ const _renderModal = (form) => {
 
 
 test('ProxyFormModal render', () => {
-    const dispatch = jest.fn(async () => {});
     const form = {errors: {}};
     const modal = _renderModal(form);
     expect(modal.text()).toEqual('');
@@ -41,7 +40,6 @@ test('ProxyFormModal render', () => {
 
 
 test('ProxyFormModal activityMessages', () => {
-    const dispatch = jest.fn(async () => {});
     const form = {
         name: 'PROXYNAME',
         errors: {}};
