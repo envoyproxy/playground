@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {shallow} from "enzyme";
 
-import NetworkForm, {
+import {
     BaseNetworkForm} from '../../../network/forms/network';
 
 BaseNetworkForm.contextTypes = {
