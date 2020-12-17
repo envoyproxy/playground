@@ -3,18 +3,12 @@ import PropTypes from 'prop-types';
 
 import {shallow} from "enzyme";
 
-import {updateForm} from '../../../app/store';
 import {ProxyVersionField} from '../../../proxy/forms/version';
 import {PlaygroundSelectInput} from '../../../shared/forms/fields';
 
 
 ProxyVersionField.contextTypes = {
     versions:  PropTypes.array.isRequired};
-
-
-jest.mock('../../../app/store', () => {
-    return {updateForm: jest.fn()};
-});
 
 
 test('ProxyVersionField render', () => {
