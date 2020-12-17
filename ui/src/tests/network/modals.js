@@ -12,9 +12,8 @@ import {PlaygroundFormModal} from '../../shared/modal';
 import {NetworkForm, NetworkConnectionsForm} from '../../network/forms';
 
 
-const _renderModal = (form, proxies, services, onUpdate) => {
+const _renderModal = (form, proxies, services) => {
     const dispatch = jest.fn(async () => {});
-    const _onUpdate = jest.fn(async () => {});
     const _proxies = {
         PROXY1: 'PROXYFOO',
         PROXY2: 'PROXYBAR'};
@@ -27,7 +26,6 @@ const _renderModal = (form, proxies, services, onUpdate) => {
           dispatch={dispatch}
           proxies={proxies || _proxies}
           services={services || _services}
-          onUpdate={onUpdate || _onUpdate}
         />);
 };
 
@@ -107,8 +105,7 @@ const tabsTest = [
 
 
 each(tabsTest).test('NetworkFormModal tabs', (form, proxies, services) => {
-    const onUpdate = jest.fn();
-    const modal = _renderModal(form, proxies, services, onUpdate);
+    const modal = _renderModal(form, proxies, services);
     const tabs = {Network: <NetworkForm />};
     const {errors={}, name, proxies: cProxies, services: cServices} = form;
     const isValid = (!errors.name && name.length > 2);
@@ -118,7 +115,6 @@ each(tabsTest).test('NetworkFormModal tabs', (form, proxies, services) => {
             <NetworkConnectionsForm
               messages={modal.instance().messages.proxies}
               type="proxies"
-              onUpdate={onUpdate}
             />);
     }
     if (isValid && Object.keys(services).length > 0) {
@@ -127,7 +123,6 @@ each(tabsTest).test('NetworkFormModal tabs', (form, proxies, services) => {
             <NetworkConnectionsForm
               messages={modal.instance().messages.services}
               type="services"
-              onUpdate={onUpdate}
             />);
     }
     expect(modal.instance().tabs).toEqual(tabs);

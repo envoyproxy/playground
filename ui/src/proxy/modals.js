@@ -16,7 +16,6 @@ import EnvoyLogo from '../app/images/envoy.svg';
 
 export class BaseProxyFormModal extends React.PureComponent {
     static propTypes = exact({
-        onUpdate: PropTypes.func.isRequired,
         form: PropTypes.object.isRequired,
         dispatch: PropTypes.func,
     });

@@ -16,7 +16,6 @@ export class BaseServiceFormModal extends React.PureComponent {
     static propTypes = exact({
         form: PropTypes.object.isRequired,
         service_types: PropTypes.object.isRequired,
-        onUpdate: PropTypes.func.isRequired,
         dispatch: PropTypes.func.isRequired,
     });
 
@@ -48,7 +47,7 @@ export class BaseServiceFormModal extends React.PureComponent {
     }
 
     get ports () {
-        return this.labels['envoy.playground.ports'];
+        return this.labels['envoy.playground.ports'] || '';
     };
 
     get service_config () {
@@ -127,12 +126,8 @@ export class BaseServiceFormModal extends React.PureComponent {
             tabs.Configuration = this.tabConfiguration;
         }
         tabs.Environment = this.tabEnvironment;
-        if (this.ports) {
-            tabs.Ports = this.tabPorts;
-        }
-        if (this.labels['envoy.playground.readme']) {
-            tabs.README = this.tabReadme;
-        }
+        tabs.Ports = this.tabPorts;
+        tabs.README = this.tabReadme;
         return tabs;
     }
 

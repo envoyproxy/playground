@@ -9,13 +9,11 @@ import {PlaygroundFormModal} from '../../shared/modal';
 
 test('ProxyFormModal render', () => {
     const dispatch = jest.fn(async () => {});
-    const onUpdate = jest.fn(async () => {});
     const form = {};
     const modal = shallow(
         <BaseProxyFormModal
           form={form}
           dispatch={dispatch}
-          onUpdate={onUpdate}
         />);
     expect(modal.text()).toEqual('');
     const formModal = modal.find(PlaygroundFormModal);
@@ -31,13 +29,11 @@ test('ProxyFormModal render', () => {
 
 test('ProxyFormModal activityMessages', () => {
     const dispatch = jest.fn(async () => {});
-    const onUpdate = jest.fn(async () => {});
     const form = {name: 'PROXYNAME'};
     const modal = shallow(
         <BaseProxyFormModal
           form={form}
           dispatch={dispatch}
-          onUpdate={onUpdate}
         />);
     expect(Object.keys(modal.instance().activityMessages)).toEqual([
         'default',

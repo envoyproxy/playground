@@ -7,23 +7,24 @@ import {connect} from 'react-redux';
 import {Col, Label, Input, Row} from 'reactstrap';
 
 import {PlaygroundForm, PlaygroundFormGroup} from '../../shared/forms';
+import {PlaygroundContext} from '../../app';
 import {updateForm} from '../../app/store';
 
 
 export class BaseNetworkConnectionsForm extends React.PureComponent {
+    static contexType = PlaygroundContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         networks: PropTypes.object.isRequired,
         services: PropTypes.object.isRequired,
         proxies: PropTypes.object.isRequired,
         form: PropTypes.object.isRequired,
-        onUpdate: PropTypes.func.isRequired,
         type: PropTypes.string.isRequired,
         messages: PropTypes.array.isRequired,
     });
 
     onChange = async (evt) => {
-        const {dispatch, form, networks, onUpdate, type} = this.props;
+        const {dispatch, form, networks, type} = this.props;
         const {edit, ...data} = form;
         const {name} =  data;
         const connections = form[type] || [];
@@ -41,8 +42,9 @@ export class BaseNetworkConnectionsForm extends React.PureComponent {
         const update = {};
         update[type] = _connections;
         if (edit) {
+            const {api} = this.context;
             await dispatch(updateForm(update));
-            await onUpdate({...data, ...update});
+            await api.update({...data, ...update});
         } else {
             await dispatch(updateForm(update));
         }

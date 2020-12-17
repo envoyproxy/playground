@@ -12,7 +12,6 @@ import CloudLogo from '../app/images/cloud.svg';
 export class BaseNetworkFormModal extends React.PureComponent {
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
-        onUpdate: PropTypes.func.isRequired,
         proxies: PropTypes.object.isRequired,
         services: PropTypes.object.isRequired,
         form: PropTypes.object.isRequired,
