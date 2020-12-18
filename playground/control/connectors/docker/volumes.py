@@ -2,8 +2,6 @@
 
 import logging
 import os
-from collections import OrderedDict
-from typing import Union
 
 import aiodocker
 
@@ -49,7 +47,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             container_type: str,
             name: str,
             mount: str,
-            files: Union[dict, OrderedDict]) -> aiodocker.volumes.DockerVolume:
+            files: dict) -> aiodocker.volumes.DockerVolume:
         volume = await self.create(container_type, name, mount)
         if volume and files:
             await self.write(
@@ -66,7 +64,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             volume: str,
             mount: str,
             container_type: str,
-            files: Union[dict, OrderedDict]) -> None:
+            files: dict) -> None:
         await self.connector.images.pull(self._mount_image)
         for fname, content in files.items():
             mount = os.path.join(os.path.sep, mount)

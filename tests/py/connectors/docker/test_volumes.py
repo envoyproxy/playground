@@ -12,6 +12,7 @@ class DummyPlaygroundClient(client.PlaygroundDockerClient):
 
     def __init__(self):
         self.docker = MagicMock()
+        self.images = MagicMock()
 
 
 @pytest.mark.asyncio
@@ -324,3 +325,61 @@ async def test_docker_volumes_write_volume(patch_playground):
                         assert (
                             list(_create.return_value.delete.call_args)
                             == [(), {}])
+
+
+@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.asyncio
+async def test_docker_volumes_write(patch_playground, raises):
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+
+    _patch_write = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._write_volume',
+        new_callable=AsyncMock)
+    _patch_logger = patch_playground(
+        'connectors.docker.volumes.logger')
+    _volumes.connector.images.pull = AsyncMock()
+
+    with _patch_write as m_write:
+        with _patch_logger as m_logger:
+            if raises:
+                m_write.side_effect = aiodocker.DockerError(
+                    'STATUS', dict(message='MESSAGE'))
+            await _volumes.write(
+                'NAME',
+                'VOLUME',
+                'MOUNT',
+                'CONTAINER_TYPE',
+                files=dict(FILE1='content1', FILE2='content2'))
+            assert (
+                list(_volumes.connector.images.pull.call_args)
+                == [('busybox',), {}])
+            assert (
+                list(m_logger.debug.call_args)
+                == [('Writing volume (CONTAINER_TYPE/NAME): /MOUNT/FILE2',),
+                    {}])
+            assert (
+                list(list(c) for c in m_write.call_args_list)
+                == [[('NAME',
+                      'VOLUME',
+                      '/MOUNT',
+                      'CONTAINER_TYPE',
+                      'FILE1',
+                      'content1'),
+                     {}],
+                    [('NAME',
+                      'VOLUME',
+                      '/MOUNT',
+                      'CONTAINER_TYPE',
+                      'FILE2',
+                      'content2'),
+                     {}]])
+            if raises:
+                assert (
+                    list(list(c) for c in m_logger.error.call_args_list)
+                    == [[("Failed writing to volume (CONTAINER_TYPE/NAME): "
+                          "/MOUNT/FILE1 DockerError(STATUS, 'MESSAGE')",), {}],
+                        [("Failed writing to volume (CONTAINER_TYPE/NAME): "
+                          "/MOUNT/FILE2 DockerError(STATUS, 'MESSAGE')",), {}]])
+            else:
+                assert not m_logger.error.called
