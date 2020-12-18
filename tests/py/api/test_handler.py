@@ -13,9 +13,6 @@ class DummyPlaygroundAPI(api.PlaygroundAPI):
     def __init__(self):
         self._publisher = AsyncMock()
 
-    async def publish_network(self, event):
-        await self._publisher(event)
-
 
 class DummyEvent(event.PlaygroundEvent):
 
