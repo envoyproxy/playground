@@ -23,7 +23,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         logger.info(
             f'Building image: {image_tag} from {build_from}')
         try:
-            result = await self._build(build_from, image_tag)
+            await self._build(build_from, image_tag)
         except aiodocker.DockerError as e:
             logger.error(
                 f'Failed building image: {image_tag} from {build_from} \n {e}')
@@ -32,7 +32,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
             await self.docker.images.inspect(name=image_tag)
         except aiodocker.DockerError as e:
             logger.error(
-                f'Failed inspecting built image: {image_tag} {result} \n {e}')
+                f'Failed inspecting built image: {image_tag} \n {e}')
         else:
             return True
 

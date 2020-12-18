@@ -21,62 +21,88 @@ def test_docker_images():
     assert _images.docker == connector.docker
 
 
-@pytest.mark.parametrize("force", [True, False])
-@pytest.mark.parametrize("exists", [True, False])
-@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.parametrize("inspect_raises", [True, False])
+@pytest.mark.parametrize("build_raises", [True, False])
 @pytest.mark.asyncio
-async def test_docker_images_pull(patch_playground, force, exists, raises):
+async def test_docker_images_pull(
+        patch_playground, build_raises, inspect_raises):
     connector = DummyPlaygroundClient()
     _images = images.PlaygroundDockerImages(connector)
 
     _patch_tag = patch_playground(
         'connectors.docker.images.PlaygroundDockerImages._image_tag')
-    _patch_exists = patch_playground(
-        'connectors.docker.images.PlaygroundDockerImages.exists',
+    _patch_build = patch_playground(
+        'connectors.docker.images.PlaygroundDockerImages._build',
         new_callable=AsyncMock)
     _patch_logger = patch_playground(
         'connectors.docker.images.logger')
-    if raises:
-        _images.docker.images.pull = AsyncMock(
+    if inspect_raises:
+        _images.docker.images.inspect = AsyncMock(
             side_effect=aiodocker.DockerError(
                 'STATUS', dict(message='MESSAGE')))
     else:
-        _images.docker.images.pull = AsyncMock()
+        _images.docker.images.inspect = AsyncMock()
 
     with _patch_tag as m_tag:
-        with _patch_exists as m_exists:
+        with _patch_build as m_build:
             with _patch_logger as m_logger:
-                m_exists.return_value = exists
-                response = await _images.pull('IMAGE', force=force)
-
-                assert (
-                    list(m_tag.call_args)
-                    == [('IMAGE',), {}])
-
-                if force:
-                    assert not m_exists.called
+                if build_raises:
+                    m_build.side_effect = aiodocker.DockerError(
+                        'STATUS', dict(message='MESSAGE'))
+                if build_raises or inspect_raises:
+                    assert not await _images.build('BUILD_FROM', 'IMAGE_TAG')
                 else:
-                    assert (
-                        list(m_exists.call_args)
-                        == [(m_tag.return_value,), {}])
-                if not force and exists:
-                    assert not m_logger.info.called
-                    assert not m_logger.error.called
-                    assert not _images.docker.images.pull.called
-                    assert response
-                    return
+                    assert await _images.build('BUILD_FROM', 'IMAGE_TAG')
                 assert (
                     list(m_logger.info.call_args)
-                    == [(f"Pulling image {m_tag.return_value}",), {}])
+                    == [(f"Building image: {m_tag.return_value} from "
+                         f"{m_tag.return_value}",), {}])
                 assert (
-                    list(_images.docker.images.pull.call_args)
-                    == [(m_tag.return_value,), {}])
-                if raises:
-                    assert not response
+                    list(m_build.call_args)
+                    == [(m_tag.return_value, m_tag.return_value), {}])
+                assert (
+                    list(list(c) for c in m_tag.call_args_list)
+                    == [[('IMAGE_TAG',), {}],
+                        [('BUILD_FROM',), {}]])
+                if build_raises:
                     assert (
-                        list(m_logger.error.call_args)
-                        == [(f"Failed pulling image: {m_tag.return_value} "
-                             "DockerError(STATUS, 'MESSAGE')",), {}])
+                        list(list(c) for c in m_logger.error.call_args_list)
+                        == [[(f"Failed building image: {m_tag.return_value} "
+                              f"from {m_tag.return_value} "
+                              "\n DockerError(STATUS, 'MESSAGE')",), {}]])
+                    assert not _images.docker.images.inspect.called
                 else:
-                    assert response
-                    assert not m_logger.error.called
+                    assert (
+                        list(_images.docker.images.inspect.call_args)
+                        == [(),
+                            {'name': m_tag.return_value}])
+                    if inspect_raises:
+                        assert (
+                            list(list(c)
+                                 for c
+                                 in m_logger.error.call_args_list)
+                            == [[("Failed inspecting built image: "
+                                  f"{m_tag.return_value} "
+                                  "\n DockerError(STATUS, 'MESSAGE')",),
+                                 {}]])
+                    else:
+                        assert not m_logger.error.called
+
+
+TEST_IMAGES = (
+    'foo',
+    'foo:bar',
+    'foo/latest',
+    'foo:latest',
+    'foo/bar',
+    'foo/bar:latest')
+
+
+@pytest.mark.parametrize("image", TEST_IMAGES)
+def test_docker_images_image_tag(patch_playground, image):
+    connector = DummyPlaygroundClient()
+    _images = images.PlaygroundDockerImages(connector)
+    result = _images._image_tag(image)
+    assert ':' in result
+    if ':' not in image:
+        assert result.endswith(':latest')
