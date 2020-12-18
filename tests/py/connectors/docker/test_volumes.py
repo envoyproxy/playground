@@ -3,8 +3,6 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-import aiodocker
-
 from playground.control.connectors.docker import client, volumes
 
 

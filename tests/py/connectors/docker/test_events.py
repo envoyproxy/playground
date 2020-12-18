@@ -1,8 +1,6 @@
 
 import pytest
 
-import aiodocker
-
 from playground.control.connectors.docker import client, events
 
 
