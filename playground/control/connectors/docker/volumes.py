@@ -47,7 +47,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             container_type: str,
             name: str,
             mount: str,
-            files: dict) -> aiodocker.volumes.DockerVolume:
+            files: dict) -> str:
         volume = await self.create(container_type, name, mount)
         if volume and files:
             await self.write(
