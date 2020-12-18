@@ -100,3 +100,38 @@ async def test_docker_client_clear():
     assert (
         list(client.services.clear.call_args)
         == [(), {}])
+
+
+@pytest.mark.asyncio
+async def test_docker_dump_resources():
+    client = DummyPlaygroundClient()
+    client.networks.list = AsyncMock(
+        return_value=[dict(name=f"NET{i}", foo=i) for i in range(3)])
+    client.proxies.list = AsyncMock(
+        return_value=[dict(name=f"CLIENT{i}", foo=i) for i in range(3)])
+    client.services.list = AsyncMock(
+        return_value=[dict(name=f"SERVICE{i}", foo=i) for i in range(3)])
+    response = await client.dump_resources.__wrapped__(client)
+    assert (
+        list(client.proxies.list.call_args)
+        == [(), {}])
+    assert (
+        list(client.networks.list.call_args)
+        == [(), {}])
+    assert (
+        list(client.services.list.call_args)
+        == [(), {}])
+    assert (
+        response
+        == {'networks':
+            {'NET0': {'name': 'NET0', 'foo': 0},
+             'NET1': {'name': 'NET1', 'foo': 1},
+             'NET2': {'name': 'NET2', 'foo': 2}},
+            'proxies':
+            {'CLIENT0': {'name': 'CLIENT0', 'foo': 0},
+             'CLIENT1': {'name': 'CLIENT1', 'foo': 1},
+             'CLIENT2': {'name': 'CLIENT2', 'foo': 2}},
+            'services':
+            {'SERVICE0': {'name': 'SERVICE0', 'foo': 0},
+             'SERVICE1': {'name': 'SERVICE1', 'foo': 1},
+             'SERVICE2': {'name': 'SERVICE2', 'foo': 2}}})

@@ -41,17 +41,18 @@ class PlaygroundDockerClient(object):
 
     @method_decorator(cmd(sync=True))
     async def dump_resources(self) -> list:
-        proxies = OrderedDict()
-        for proxy in await self.proxies.list():
-            proxies[proxy["name"]] = proxy
-
-        networks = OrderedDict()
-        for network in await self.networks.list():
-            networks[network["name"]] = network
-
-        services = OrderedDict()
-        for service in await self.services.list():
-            services[service["name"]] = service
+        proxies = {
+            proxy['name']: proxy
+            for proxy
+            in await self.proxies.list()}
+        services = {
+            service['name']: service
+            for service
+            in await self.services.list()}
+        networks = {
+            network['name']: network
+            for network
+            in await self.networks.list()}
         return dict(
             networks=networks,
             proxies=proxies,
