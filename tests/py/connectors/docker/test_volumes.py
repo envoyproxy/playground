@@ -137,7 +137,7 @@ async def test_docker_volumes_delete(patch_playground, raises):
                         'STATUS', dict(message='MESSAGE')))
             else:
                 _DockerVolume.return_value.delete = AsyncMock()
-            response = await _volumes.delete(['A', 'B', 'C'])
+            await _volumes.delete(['A', 'B', 'C'])
             assert (
                 list(list(c) for c in _DockerVolume.call_args_list)
                 == [[(_volumes.docker, 'A'), {}],
