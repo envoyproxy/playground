@@ -1,0 +1,16 @@
+{
+    "playground.resource.title.proxies": "Proxys",
+    "playground.resource.title.services": "Prestations de service",
+    "playground.resource.title.networks": "Réseaux",
+    "playground.resource.title.events": "Événements",
+
+    "playground.form.proxy.create.title": "Créer un proxy d'Envoy",
+    "playground.form.proxy.create.action.create": "Créer un proxy",
+
+    "playground.form.service.create.title": "Créer un service",
+    "playground.form.service.create.action.create": "Créer un service",
+
+    "playground.form.network.create.title": "Créer un réseau",
+    "playground.form.network.create.action.create": "Créer un réseau",
+    "playground.form.network.create.action.close": "Fermer"
+}
