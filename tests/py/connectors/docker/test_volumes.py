@@ -115,3 +115,46 @@ async def test_docker_volumes_create(patch_playground, raises):
                              "MOUNT DockerError(STATUS, 'MESSAGE')",), {}])
                 else:
                     assert not m_logger.error.called
+
+
+@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.asyncio
+async def test_docker_volumes_delete(patch_playground, raises):
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+
+    _patch_docker = patch_playground(
+        'connectors.docker.volumes.aiodocker.volumes')
+    _patch_logger = patch_playground(
+        'connectors.docker.volumes.logger')
+
+    with _patch_docker as m_docker:
+        with _patch_logger as m_logger:
+            _DockerVolume = m_docker.DockerVolume
+            if raises:
+                _DockerVolume.return_value.delete = AsyncMock(
+                    side_effect=aiodocker.DockerError(
+                        'STATUS', dict(message='MESSAGE')))
+            else:
+                _DockerVolume.return_value.delete = AsyncMock()
+            response = await _volumes.delete(['A', 'B', 'C'])
+            assert (
+                list(list(c) for c in _DockerVolume.call_args_list)
+                == [[(_volumes.docker, 'A'), {}],
+                    [(_volumes.docker, 'B'), {}],
+                    [(_volumes.docker, 'C'), {}]])
+            _delete = _DockerVolume.return_value.delete
+            assert (
+                list(list(c) for c in _delete.call_args_list)
+                == [[(), {}], [(), {}], [(), {}]])
+            if raises:
+                msg = (
+                    "Failed deleting volume: "
+                    "{name} DockerError(STATUS, 'MESSAGE')")
+                assert (
+                    list(list(c) for c in m_logger.error.call_args_list)
+                    == [[(msg.format(name='A'),), {}],
+                        [(msg.format(name='B'),), {}],
+                        [(msg.format(name='C'),), {}]])
+            else:
+                assert not m_logger.error.called
