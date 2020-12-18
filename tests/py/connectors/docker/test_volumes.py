@@ -1,7 +1,9 @@
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
+import aiodocker
 
 from playground.control.connectors.docker import client, volumes
 
@@ -9,7 +11,7 @@ from playground.control.connectors.docker import client, volumes
 class DummyPlaygroundClient(client.PlaygroundDockerClient):
 
     def __init__(self):
-        self.docker = 'DOCKER'
+        self.docker = MagicMock()
 
 
 @pytest.mark.asyncio
@@ -60,3 +62,56 @@ async def test_docker_volumes_populate(patch_playground, created, files):
                          'CONTAINER_TYPE',
                          files), {}])
             assert response == created
+
+
+@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.asyncio
+async def test_docker_volumes_create(patch_playground, raises):
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+
+    _patch_config = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_volume_config')
+    _patch_labels = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_volume_labels')
+    _patch_logger = patch_playground(
+        'connectors.docker.volumes.logger')
+
+    if raises:
+        connector.docker.volumes.create = AsyncMock(
+            side_effect=aiodocker.DockerError(
+                'STATUS', dict(message='MESSAGE')))
+    else:
+        connector.docker.volumes.create = AsyncMock()
+
+    with _patch_config as m_config:
+        with _patch_labels as m_labels:
+            with _patch_logger as m_logger:
+                response = await _volumes.create(
+                    'CONTAINER_TYPE', 'NAME', 'MOUNT')
+                if raises:
+                    assert not response
+                else:
+                    assert (
+                        response
+                        == connector.docker.volumes.create.return_value.name)
+                assert (
+                    list(connector.docker.volumes.create.call_args)
+                    == [(m_config.return_value,), {}])
+                assert (
+                    list(m_config.call_args)
+                    == [(m_labels.return_value,), {}])
+                assert (
+                    list(m_labels.call_args)
+                    == [('CONTAINER_TYPE', 'NAME', 'MOUNT'), {}])
+                assert (
+                    list(m_logger.debug.call_args)
+                    == [('Creating volume: (CONTAINER_TYPE/NAME): MOUNT',),
+                        {}])
+                if raises:
+                    assert (
+                        list(m_logger.error.call_args)
+                        == [("Failed creating volume: (CONTAINER_TYPE/NAME): "
+                             "MOUNT DockerError(STATUS, 'MESSAGE')",), {}])
+                else:
+                    assert not m_logger.error.called

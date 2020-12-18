@@ -20,16 +20,17 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             self,
             container_type: str,
             name: str,
-            mount: str) -> aiodocker.volumes.DockerVolume:
+            mount: str) -> str:
         info = f'({container_type}/{name}): {mount}'
         logger.debug(f'Creating volume: {info}')
         try:
-            return await self.docker.volumes.create(
+            volume = await self.docker.volumes.create(
                 self._get_volume_config(
                     self._get_volume_labels(
                         container_type,
                         name,
-                        mount))).name
+                        mount)))
+            return volume.name
         except aiodocker.DockerError as e:
             logger.error(f'Failed creating volume: {info} {e}')
 
