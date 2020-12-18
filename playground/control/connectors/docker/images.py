@@ -69,6 +69,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
 
     async def _build(self, build_from, image_tag):
         tar_obj = mktar_from_docker_context('context')
+        result = None
         try:
             result = await self.docker.images.build(
                 fileobj=tar_obj,
@@ -77,3 +78,4 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 tag=image_tag)
         finally:
             tar_obj.close()
+        return result

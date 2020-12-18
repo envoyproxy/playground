@@ -265,7 +265,8 @@ async def test_docker_volumes_write_volume(patch_playground):
     _patch_command = patch_playground(
         'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_command')
     _patch_host = patch_playground(
-        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_host_config')
+        'connectors.docker.volumes.PlaygroundDockerVolumes'
+        '._get_mount_host_config')
     _patch_env = patch_playground(
         'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_env')
     _patch_labels = patch_playground(
