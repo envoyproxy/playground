@@ -7,24 +7,22 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_proxy_create(playground):
-    await playground.snap('proxy.create.open')
+    await playground.snap('proxy.create.open', .3)
 
     # open the proxy modal
-    add_proxy_button = await playground.query('*[name="Proxies"]')
+    add_proxy_button = await playground.query('*[name="Proxies"]', 1)
     assert not await add_proxy_button.click()
-    await asyncio.sleep(1)
 
     # find the name input
     name_input = await playground.query(
-        'input[id="envoy.playground.name"]')
+        'input[id="envoy.playground.name"]', 1)
     assert (
         await name_input.command('GET', '/attribute/placeholder')
         == 'Enter proxy name')
 
     # add first 2 keys of name
     await playground.enter(name_input, 'pr')
-    await asyncio.sleep(1)
-    await playground.snap('proxy.create.name')
+    await playground.snap('proxy.create.name', .5)
 
     # add rest of name and open configuration
     await playground.enter(name_input, 'oxy0')
@@ -33,18 +31,16 @@ async def test_journey_proxy_create(playground):
         '.tab-pane.active form select'
         '#example option[value="Service: HTTP/S echo"]')
     assert not await select.click()
-    await asyncio.sleep(.3)
-    await playground.snap('proxy.create.configuration')
+    await playground.snap('proxy.create.configuration', .3)
 
     # add a port
     ports_tab = await playground.query(
-        '.modal-body .nav-tabs a:contains("Ports")')
+        '.modal-body .nav-tabs a:contains("Ports")', 1)
     assert (
         await ports_tab.text()
         == 'Ports')
     assert not await ports_tab.click()
-    await asyncio.sleep(.3)
-    port_button = await playground.query('.tab-pane.active form button')
+    port_button = await playground.query('.tab-pane.active form button', 1)
     assert not await port_button.click()
     await playground.snap('proxy.create.ports', .3)
 
@@ -55,12 +51,10 @@ async def test_journey_proxy_create(playground):
         await log_tab.text()
         == 'Logging')
     assert not await log_tab.click()
-    await asyncio.sleep(.3)
     select = await playground.query(
-        '.tab-pane.active form select [value="trace"]')
+        '.tab-pane.active form select [value="trace"]', 1)
     assert not await select.click()
-    await asyncio.sleep(.3)
-    await playground.snap('proxy.create.logging')
+    await playground.snap('proxy.create.logging', .3)
 
     # open certs tab
     certs_tab = await playground.query(
@@ -69,8 +63,7 @@ async def test_journey_proxy_create(playground):
         await certs_tab.text()
         == 'Certificates')
     assert not await certs_tab.click()
-    await asyncio.sleep(.3)
-    await playground.snap('proxy.create.certificates')
+    await playground.snap('proxy.create.certificates', .3)
 
     # open binaries tab
     binary_tab = await playground.query(
@@ -79,25 +72,21 @@ async def test_journey_proxy_create(playground):
         await binary_tab.text()
         == 'Binaries')
     assert not await binary_tab.click()
-    await asyncio.sleep(.3)
-    await playground.snap('proxy.create.binaries')
+    await playground.snap('proxy.create.binaries', .3)
 
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')
     assert not await submit.click()
-    await asyncio.sleep(.1)
     await playground.snap('proxy.create.starting', .3)
-    await asyncio.sleep(1)
-
-    # wait for started
-    await asyncio.sleep(60)
-    await playground.move('proxy:proxy0', 230, 230)
 
     link = await playground.query(
-        '.App-left .accordion-item .card-header .col-sm-8')
+        '.App-left .accordion-item .card-header .col-sm-8', 60)
+    await playground.move('proxy:proxy0', 230, 230)
     assert (
         await link.text()
         == 'proxy0')
+    # todo: we need to wait for the modal to close
+    await asyncio.sleep(10)
     await playground.snap('proxy.create.started')
     assert [
         container

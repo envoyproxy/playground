@@ -7,41 +7,37 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_service_create(playground):
-    await playground.snap('service.create.open')
+    await playground.snap('service.create.open', .3)
 
     # open the service modal
-    add_service_button = await playground.query('*[name="Services"]')
+    add_service_button = await playground.query('*[name="Services"]', 1)
     assert not await add_service_button.click()
-    await asyncio.sleep(1)
 
     # find the name input
-    name_input = await playground.query('input[id="envoy.playground.name"]')
+    name_input = await playground.query('input[id="envoy.playground.name"]', 1)
     assert (
         await name_input.command('GET', '/attribute/placeholder')
         == 'Enter service name')
 
     # enter service name
     await playground.enter(name_input, 'echo0')
-    await asyncio.sleep(1)
-    await playground.snap('service.create.name')
+    await playground.snap('service.create.name', .5)
 
     # select a service type
     select = await playground.query(
         '.tab-pane.active form select#service_type [value="http-echo"]')
     assert not await select.click()
-    await asyncio.sleep(1)
 
-    await playground.snap('service.create.configuration')
+    await playground.snap('service.create.configuration', .3)
 
     # add an environment var
     env_tab = await playground.query(
-        '.modal-body .nav-tabs a:contains("Environment")')
+        '.modal-body .nav-tabs a:contains("Environment")', 1)
     assert (
         await env_tab.text()
         == 'Environment')
     assert not await env_tab.click()
-    await asyncio.sleep(.3)
-    key = await playground.query('#key')
+    key = await playground.query('#key', 1)
     assert (
         await key.command('GET', '/attribute/placeholder')
         == 'Variable name')
@@ -59,9 +55,8 @@ async def test_journey_service_create(playground):
         await add_button.text()
         == '+')
     assert not await add_button.click()
-    await asyncio.sleep(1)
 
-    await playground.snap('service.create.env')
+    await playground.snap('service.create.env', .3)
 
     key = await playground.query(
         '.modal-body .tab-pane.active .col-sm-5  div:contains("MYVAR")')
@@ -82,7 +77,6 @@ async def test_journey_service_create(playground):
         await ports_tab.text()
         == 'Ports')
     assert not await ports_tab.click()
-    await asyncio.sleep(.3)
     await playground.snap('service.create.ports', .3)
 
     # view readme
@@ -92,25 +86,22 @@ async def test_journey_service_create(playground):
         await readme_tab.text()
         == 'README')
     assert not await readme_tab.click()
-    await asyncio.sleep(.3)
     await playground.snap('service.create.readme', .3)
 
     # submit the form
-    submit = await playground.query('.modal-footer .btn.btn-primary')
+    submit = await playground.query('.modal-footer .btn.btn-primary', 1)
     assert not await submit.click()
-    await asyncio.sleep(.1)
-    await playground.snap('service.create.starting')
-    await asyncio.sleep(1)
-
-    # wait for started
-    await asyncio.sleep(60)
-    await playground.move('service:echo0', 230, 230)
+    await playground.snap('service.create.starting', .1)
 
     link = await playground.query(
-        '.App-right .accordion-item .card-header .col-sm-8')
+        '.App-right .accordion-item .card-header .col-sm-8', 10)
+    await playground.move('service:echo0', 230, 230)
     assert (
         await link.text()
         == 'echo0')
+
+    # wait for started
+    await asyncio.sleep(10)
     await playground.snap('service.create.started')
     assert [
         container

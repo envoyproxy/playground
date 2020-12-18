@@ -133,9 +133,16 @@ class Playground(object):
                 args=[],
                 script=js_move_icon))
 
-    async def query(self, q):
+    async def query(self, q, timeout=0):
         xpath = self.pq.css_to_xpath(q)
-        return await self.web.find_element_by_xpath(xpath)
+        el = await self.web.find_element_by_xpath(xpath)
+        if el.element.endswith('unknown'):
+            if timeout > 0:
+                print('WAITING', timeout)
+                await asyncio.sleep(.1)
+                return await self.query(q, timeout - .1)
+            return
+        return el
 
     async def query_all(self, q):
         xpath = self.pq.css_to_xpath(q)
@@ -200,7 +207,6 @@ async def playground(pytestconfig):
                 screenshots=pytestconfig.getoption('screenshots'))
             await playground.clear()
             await driver.get("http://localhost:8000")
-            await asyncio.sleep(.3)
             yield playground
             await playground.clear()
             await playground.docker.close()
