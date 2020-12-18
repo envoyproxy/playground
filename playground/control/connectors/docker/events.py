@@ -98,7 +98,7 @@ class PlaygroundDockerEvents(object):
         _data = {}
         _data['action'] = 'volume_create'
         _data['status'] = 'volume_create'
-        name =  data['attributes'].get(
+        name = data['attributes'].get(
             'envoy.playground.temp.name', '')
         if ':' in name:
             _data['service_type'] = name.split(':')[0]
