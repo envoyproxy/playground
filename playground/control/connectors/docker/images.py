@@ -27,13 +27,14 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         except aiodocker.DockerError as e:
             logger.error(
                 f'Failed building image: {image_tag} from {build_from} \n {e}')
-            return e.args
+            return
         try:
             await self.docker.images.inspect(name=image_tag)
         except aiodocker.DockerError as e:
             logger.error(
                 f'Failed inspecting built image: {image_tag} {result} \n {e}')
-            return result
+        else:
+            return True
 
     async def exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
@@ -53,13 +54,14 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
     async def pull(self, image_tag: str, force: bool = False) -> None:
         image_tag = self._image_tag(image_tag)
         if not force and await self.exists(image_tag):
-            return
+            return True
         logger.info(f'Pulling image {image_tag}')
         try:
             await self.docker.images.pull(image_tag)
         except aiodocker.DockerError as e:
             logger.error(f'Failed pulling image: {image_tag} {e}')
-            return e
+        else:
+            return True
 
     def _image_tag(self, image_tag):
         return (

@@ -15,8 +15,7 @@ class DummyPlaygroundClient(client.PlaygroundDockerClient):
         self.images = MagicMock()
 
 
-@pytest.mark.asyncio
-async def test_docker_volumes():
+def test_docker_volumes():
     connector = DummyPlaygroundClient()
     _volumes = volumes.PlaygroundDockerVolumes(connector)
     assert _volumes.connector == connector
