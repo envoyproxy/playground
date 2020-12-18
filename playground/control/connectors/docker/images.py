@@ -61,9 +61,8 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
     async def pull(self, image_tag: str, force: bool=False) -> None:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
-        if not force:
-            if await self.exists(image_tag):
-                return
+        if not force and await self.exists(image_tag):
+            return
         logger.info(f'Pulling image {image_tag}')
         try:
             await self.docker.images.pull(image_tag)
