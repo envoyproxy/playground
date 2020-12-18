@@ -46,7 +46,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 _result
                 for _result
                 in images
-                if image_tag in _result['RepoTags']])
+                if image_tag in (_result['RepoTags'] or [])])
         except aiodocker.DockerError as e:
             logger.error(
                 f'Failed checking for image ({image_tag}): {e}')
