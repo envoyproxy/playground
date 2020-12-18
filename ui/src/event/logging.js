@@ -19,15 +19,18 @@ export class BaseEventLogging extends React.PureComponent {
         events: PropTypes.array.isRequired,
     });
 
-    render () {
+    get title () {
         const {formatMessage} = this.context;
-        const {events} = this.props;
-        const title = formatMessage({
+        return formatMessage({
             id: 'playground.resource.title.events',
             defaultMessage: "Events"});
+    }
+
+    render () {
+        const {events} = this.props;
         return (
             <PlaygroundSection
-              title={title}
+              title={this.title}
               name="events"
               icon={EventsLogo}>
               <PlaygroundLazyLog

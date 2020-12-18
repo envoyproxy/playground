@@ -20,9 +20,16 @@ export class BaseNetworkResources extends React.PureComponent {
     });
 
     addModalTitle = (name, edit) => {
+        const {formatMessage} = this.context;
         if (edit) {
-            return "Update network (" +  name + ")";
+            return formatMessage({
+                id: 'playground.form.network.update.action.title',
+                defaultMessage: "Update network ({network})"
+            }, {network: name});
         }
+        return formatMessage({
+            id: 'playground.form.network.create.action.title',
+            defaultMessage: "Create a network"});
         return "Create a network";
     }
 
