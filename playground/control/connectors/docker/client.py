@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from collections import OrderedDict
-
 import aiodocker
 
 from playground.control.connectors.docker.events import (
