@@ -84,7 +84,7 @@ class PlaygroundRunner(object):
 
     def run(self) -> None:
         # todo: get log level from command line
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.DEBUG)
         # todo: add on_cleanup ?
         self.app.on_startup.append(self.api.listen)
         web.run_app(self.app)

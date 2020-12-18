@@ -84,7 +84,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             "Labels": labels,
             "HostConfig": {
                 "Binds": [
-                    '%s:%s' % (v.name, k)
+                    '%s:%s' % (v, k)
                     for k, v
                     in mounts.items()]}}
 

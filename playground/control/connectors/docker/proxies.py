@@ -142,7 +142,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             "HostConfig": {
                 "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
-                    '%s:%s' % (v.name, k)
+                    '%s:%s' % (v, k)
                     for k, v
                     in mounts.items()]}}
 

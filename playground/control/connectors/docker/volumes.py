@@ -20,7 +20,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             self,
             container_type: str,
             name: str,
-            mount: str) -> None:
+            mount: str) -> aiodocker.volumes.DockerVolume:
         info = f'({container_type}/{name}): {mount}'
         logger.debug(f'Creating volume: {info}')
         try:
@@ -29,7 +29,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
                     self._get_volume_labels(
                         container_type,
                         name,
-                        mount)))
+                        mount))).name
         except aiodocker.DockerError as e:
             logger.error(f'Failed creating volume: {info} {e}')
 
@@ -48,12 +48,12 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             container_type: str,
             name: str,
             mount: str,
-            files: Union[dict, OrderedDict]):
+            files: Union[dict, OrderedDict]) -> aiodocker.volumes.DockerVolume:
         volume = await self.create(container_type, name, mount)
         if volume and files:
             await self.write(
                 name,
-                volume.name,
+                volume,
                 mount,
                 container_type,
                 files)
