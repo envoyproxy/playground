@@ -218,3 +218,42 @@ async def test_docker_images_exists(patch_playground, exists, raises):
                          "DockerError(STATUS, 'MESSAGE')",), {}])
             else:
                 assert not m_logger.error.called
+
+
+@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.asyncio
+async def test_docker_images_dunder_build(patch_playground, raises):
+    connector = DummyPlaygroundClient()
+    _images = images.PlaygroundDockerImages(connector)
+
+    _patch_tar = patch_playground(
+        'connectors.docker.images.mktar_from_docker_context')
+    if raises:
+        _images.docker.images.build = AsyncMock(
+            side_effect=aiodocker.DockerError(
+                'STATUS', dict(message='MESSAGE')))
+    else:
+        _images.docker.images.build = AsyncMock()
+    with _patch_tar as m_tar:
+        errored = False
+        try:
+            await _images._build('BUILD_FROM', 'IMAGE_TAG')
+        except aiodocker.DockerError:
+            errored = True
+        if raises:
+            assert errored
+        else:
+            assert not errored
+        assert (
+            list(m_tar.call_args)
+            == [('context',), {}])
+        assert (
+            list(_images.docker.images.build.call_args)
+            == [(),
+                {'fileobj': m_tar.return_value,
+                 'encoding': 'gzip',
+                 'buildargs': {'BUILD_FROM': 'BUILD_FROM'},
+                 'tag': 'IMAGE_TAG'}])
+        assert (
+            list(m_tar.return_value.close.call_args)
+            == [(), {}])
