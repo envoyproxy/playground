@@ -47,19 +47,18 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
                 'proxy',
                 command.data.name,
                 base_image)
-            errors = await self.connector.images.pull(base_image)
-            if not errors:
+            if await self.connector.images.pull(base_image):
                 await self.connector.events.publish(
                     'image_build',
                     command.data.name,
                     base_image,
                     envoy_image)
-                errors = await self.connector.images.build(
+                built = await self.connector.images.build(
                     base_image, envoy_image)
-            if errors:
-                # todo: publish failure
-                print('FAILED BUILDING IMAGE')
-                print(errors)
+            if not built:
+                # todo: publish failure ?
+                logger.error(
+                    f'Failed building proxy image for {base_image}')
                 return
         _mappings = [
             [m['mapping_from'], m['mapping_to']]
@@ -142,7 +141,7 @@ class PlaygroundDockerProxies(PlaygroundDockerResources):
             "HostConfig": {
                 "PortBindings": self._get_port_bindings(port_mappings),
                 "Binds": [
-                    '%s:%s' % (v.name, k)
+                    '%s:%s' % (v, k)
                     for k, v
                     in mounts.items()]}}
 

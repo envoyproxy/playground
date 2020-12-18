@@ -27,14 +27,17 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
         if not command.data.image:
             # todo: add build logic
             return
-        exists = await self.connector.images.exists(command.data.image)
-        if not exists:
+        if not await self.connector.images.exists(command.data.image):
             await self.connector.events.publish(
                 'image_pull',
                 'service',
                 command.data.name,
                 command.data.image)
-            await self.connector.images.pull(command.data.image)
+            if not await self.connector.images.pull(command.data.image):
+                logger.debug(
+                    f'Failed pulling image ({command.data.image}) '
+                    f'for {command.data.name}')
+                return
         _environment = [
             "%s=%s" % (k, v)
             for k, v
@@ -85,7 +88,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             "Labels": labels,
             "HostConfig": {
                 "Binds": [
-                    '%s:%s' % (v.name, k)
+                    '%s:%s' % (v, k)
                     for k, v
                     in mounts.items()]}}
 
