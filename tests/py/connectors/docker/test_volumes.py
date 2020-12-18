@@ -378,8 +378,10 @@ async def test_docker_volumes_write(patch_playground, raises):
                 assert (
                     list(list(c) for c in m_logger.error.call_args_list)
                     == [[("Failed writing to volume (CONTAINER_TYPE/NAME): "
-                          "/MOUNT/FILE1 DockerError(STATUS, 'MESSAGE')",), {}],
+                          "/MOUNT/FILE1 DockerError(STATUS, 'MESSAGE')",),
+                         {}],
                         [("Failed writing to volume (CONTAINER_TYPE/NAME): "
-                          "/MOUNT/FILE2 DockerError(STATUS, 'MESSAGE')",), {}]])
+                          "/MOUNT/FILE2 DockerError(STATUS, 'MESSAGE')",),
+                         {}]])
             else:
                 assert not m_logger.error.called
