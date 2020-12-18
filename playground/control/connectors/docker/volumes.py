@@ -6,7 +6,6 @@ from collections import OrderedDict
 from typing import Union
 
 import aiodocker
-from aiodocker import DockerError
 
 from playground.control.connectors.docker.base import PlaygroundDockerContext
 
@@ -22,57 +21,27 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
             container_type: str,
             name: str,
             mount: str) -> None:
-        config = await self._get_config(
-            container_type, name, mount)
-        info = {
-            k.split(".").pop(): v
-            for k, v
-            in config["Labels"].items()}
-        logger.debug(
-            f'Creating volume: '
-            f'{info}')
+        info = f'({container_type}/{name}): {mount}'
+        logger.debug(f'Creating volume: {info}')
         try:
-            return await self.docker.volumes.create(config)
-        except DockerError as e:
-            logger.error(f'Error creating volume: {info} {e}')
+            return await self.docker.volumes.create(
+                self._get_volume_config(
+                    self._get_volume_labels(
+                        container_type,
+                        name,
+                        mount)))
+        except aiodocker.DockerError as e:
+            logger.error(f'Failed creating volume: {info} {e}')
 
     async def delete(
             self,
-            names: list):
+            names: list) -> None:
         for name in names:
-            await aiodocker.volumes.DockerVolume(
-                self.docker, name).delete()
-
-    async def write(
-            self,
-            name: str,
-            volume: str,
-            mount: str,
-            container_type: str,
-            files: Union[dict, OrderedDict]) -> None:
-
-        if not await self.connector.images.exists(self._mount_image):
-            await self.connector.images.pull(self._mount_image)
-
-        for k, v in files.items():
-            mount = os.path.join(os.path.sep, mount)
-            config = self._get_mount_config(
-                name, container_type, volume, v, mount, k)
-            info = {
-                k.split(".").pop(): v
-                for k, v
-                in config["Labels"].items()}
-            logger.debug(f'Writing volume: {info}')
             try:
-                container = await self.docker.containers.create_or_replace(
-                    config=config,
-                    name=volume)
-                await container.start()
-                await container.wait()
-                await container.delete()
-            except DockerError as e:
-                logger.error(
-                    f'Error writing  to volume {info} {e}')
+                await aiodocker.volumes.DockerVolume(
+                    self.docker, name).delete()
+            except aiodocker.DockerError as e:
+                logger.error(f'Failed deleting volume: {name}')
 
     async def populate(
             self,
@@ -90,53 +59,110 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
                 files)
         return volume
 
-    async def _get_config(
+    async def write(
             self,
-            container_type: str,
             name: str,
-            mount: str) -> dict:
-        return {
-            "Labels": {
-                "envoy.playground.volume": name,
-                "envoy.playground.volume.type": container_type,
-                "envoy.playground.volume.mount": mount,
-                "envoy.playground.volume.name": name,
-            },
-            "Driver": "local"
-        }
+            volume: str,
+            mount: str,
+            container_type: str,
+            files: Union[dict, OrderedDict]) -> None:
+        await self.connector.images.pull(self._mount_image)
+        for fname, content in files.items():
+            mount = os.path.join(os.path.sep, mount)
+            info = f'({container_type}/{name}): {mount}/{fname}'
+            logger.debug(f'Writing volume {info}')
+            try:
+                await self._write_volume(
+                    name,
+                    volume,
+                    mount,
+                    container_type,
+                    fname,
+                    content)
+            except aiodocker.DockerError as e:
+                logger.error(
+                    f'Failed writing to volume {info} {e}')
+
+    def _get_mount_command(self, target: str) -> str:
+        return f'echo \"$MOUNT_CONTENT\" | base64 -d > {target}'
 
     def _get_mount_config(
             self,
-            name,
-            container_type: str,
-            volume: str,
-            content: str,
-            mount: str,
-            target: str) -> dict:
-        target = os.path.join(mount, target)
+            name: str,
+            command: str,
+            host_config: dict,
+            env: list,
+            labels: dict) -> dict:
         return {
             'Image': self._mount_image,
-            'Name': volume,
-            "Cmd": [
-                'sh', '-c',
-                f'echo \"$MOUNT_CONTENT\" | base64 -d > {target}'],
-            "Env": [
-                f"MOUNT_CONTENT={content}"],
+            'Name': name,
+            "Cmd": ['sh', '-c', command],
+            "Env": env,
             "AttachStdin": False,
             "AttachStdout": False,
             "AttachStderr": False,
             "Tty": False,
             "OpenStdin": False,
             "NetworkDisabled": True,
-            'HostConfig': {
-                'AutoRemove': False,
-                "Binds": [
-                    f"{volume}:{mount}"
-                ],
-            },
-            "Labels": {
-                "envoy.playground.temp.resource": container_type,
-                "envoy.playground.temp.mount": mount,
-                "envoy.playground.temp.target": target,
-                "envoy.playground.temp.name": name,
-            }}
+            'HostConfig': host_config,
+            "Labels": labels}
+
+    def _get_mount_env(self, content: str) -> list:
+        return [f"MOUNT_CONTENT={content}"]
+
+    def _get_mount_host_config(self, volume: str, mount: str) -> dict:
+        return {
+            'AutoRemove': False,
+            "Binds": [
+                f"{volume}:{mount}"]}
+
+    def _get_mount_labels(
+            self,
+            container_type: str,
+            name: str,
+            mount: str,
+            target: str) -> dict:
+        return {
+            "envoy.playground.temp.resource": container_type,
+            "envoy.playground.temp.mount": mount,
+            "envoy.playground.temp.target": os.path.join(mount, target),
+            "envoy.playground.temp.name": name}
+
+    def _get_volume_config(
+            self,
+            labels: str) -> dict:
+        return {
+            "Labels": labels,
+            "Driver": "local"}
+
+    def _get_volume_labels(
+            self,
+            container_type: str,
+            name: str,
+            mount: str) -> dict:
+        return {
+            "envoy.playground.volume": name,
+            "envoy.playground.volume.type": container_type,
+            "envoy.playground.volume.mount": mount,
+            "envoy.playground.volume.name": name}
+
+    async def _write_volume(
+            self,
+            name: str,
+            volume: str,
+            mount: str,
+            container_type: str,
+            fname: str,
+            content: str) -> None:
+        container = await self.docker.containers.create_or_replace(
+            name=volume,
+            config=self._get_mount_config(
+                volume,
+                self._get_mount_command(os.path.join(mount, fname)),
+                self._get_mount_host_config(volume, mount),
+                self._get_mount_env(content),
+                self._get_mount_labels(
+                    container_type, name, mount, fname)))
+        await container.start()
+        await container.wait()
+        await container.delete()
