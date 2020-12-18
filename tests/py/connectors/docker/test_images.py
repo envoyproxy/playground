@@ -167,3 +167,54 @@ def test_docker_images_image_tag(patch_playground, image):
     assert ':' in result
     if ':' not in image:
         assert result.endswith(':latest')
+
+
+@pytest.mark.parametrize("exists", [True, False])
+@pytest.mark.parametrize("raises", [True, False])
+@pytest.mark.asyncio
+async def test_docker_images_exists(patch_playground, exists, raises):
+    connector = DummyPlaygroundClient()
+    _images = images.PlaygroundDockerImages(connector)
+
+    _patch_tag = patch_playground(
+        'connectors.docker.images.PlaygroundDockerImages._image_tag')
+    _patch_logger = patch_playground(
+        'connectors.docker.images.logger')
+    if raises:
+        _images.docker.images.list = AsyncMock(
+            side_effect=aiodocker.DockerError(
+                'STATUS', dict(message='MESSAGE')))
+    elif exists:
+        m_result = MagicMock()
+        m_result.__getitem__.return_value.__contains__.return_value = True
+        _images.docker.images.list = AsyncMock(
+            return_value=[m_result])
+    else:
+        m_result = MagicMock()
+        m_result.__getitem__.return_value.__contains__.return_value = False
+        _images.docker.images.list = AsyncMock(
+            return_value=[m_result])
+
+    with _patch_tag as m_tag:
+        with _patch_logger as m_logger:
+            if exists and not raises:
+                assert await _images.exists('IMAGE') is True
+            else:
+                assert await _images.exists('IMAGE') is False
+            assert (
+                list(m_tag.call_args)
+                == [('IMAGE',), {}])
+            assert (
+                list(m_logger.debug.call_args)
+                == [(f"Checking for image ({m_tag.return_value})",),
+                    {}])
+            assert (
+                list(_images.docker.images.list.call_args)
+                == [(), {}])
+            if raises:
+                assert (
+                    list(m_logger.error.call_args)
+                    == [(f"Failed checking for image ({m_tag.return_value}): "
+                         "DockerError(STATUS, 'MESSAGE')",), {}])
+            else:
+                assert not m_logger.error.called
