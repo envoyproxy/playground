@@ -158,3 +158,88 @@ async def test_docker_volumes_delete(patch_playground, raises):
                         [(msg.format(name='C'),), {}]])
             else:
                 assert not m_logger.error.called
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_mount_command():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+
+    assert (
+        _volumes._get_mount_command('TARGET')
+        == 'echo "$MOUNT_CONTENT" | base64 -d > TARGET')
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_mount_config():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    host_config = dict(CONF1='v1', CONF2='v2')
+    env = ['ENV1', 'ENV2', 'ENV3']
+    labels = dict(LABEL1='l1', LABEL2='l2')
+    assert (
+        _volumes._get_mount_config(
+            'NAME',
+            'COMMAND',
+            host_config,
+            env,
+            labels)
+        == {'Image': _volumes._mount_image,
+            'Name': 'NAME',
+            "Cmd": ['sh', '-c', 'COMMAND'],
+            "Env": env,
+            "AttachStdin": False,
+            "AttachStdout": False,
+            "AttachStderr": False,
+            "Tty": False,
+            "OpenStdin": False,
+            "NetworkDisabled": True,
+            'HostConfig': host_config,
+            "Labels": labels})
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_mount_env():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    assert (
+        _volumes._get_mount_env('CONTENT')
+        == ["MOUNT_CONTENT=CONTENT"])
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_mount_labels():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    assert (
+        _volumes._get_mount_labels(
+            'CONTAINER_TYPE', 'NAME', 'MOUNT', 'TARGET')
+        == {"envoy.playground.temp.resource": 'CONTAINER_TYPE',
+            "envoy.playground.temp.mount": 'MOUNT',
+            "envoy.playground.temp.target": 'MOUNT/TARGET',
+            "envoy.playground.temp.name": 'NAME'})
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_volume_config():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    labels = dict(LABEL1='l1', LABEL2='l2')
+    assert (
+        _volumes._get_volume_config(labels)
+        == {"Labels": labels,
+            "Driver": "local"})
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_get_volume_labels():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    labels = dict(LABEL1='l1', LABEL2='l2')
+    assert (
+        _volumes._get_volume_labels(
+            'CONTAINER_TYPE', 'NAME', 'MOUNT')
+        == {"envoy.playground.volume": 'NAME',
+            "envoy.playground.volume.type": 'CONTAINER_TYPE',
+            "envoy.playground.volume.mount": 'MOUNT',
+            "envoy.playground.volume.name": 'NAME'})

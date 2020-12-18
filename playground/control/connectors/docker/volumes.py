@@ -131,7 +131,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
 
     def _get_volume_config(
             self,
-            labels: str) -> dict:
+            labels: dict) -> dict:
         return {
             "Labels": labels,
             "Driver": "local"}
