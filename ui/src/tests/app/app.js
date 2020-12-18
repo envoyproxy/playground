@@ -1,6 +1,8 @@
 
 import {Provider} from 'react-redux';
 
+import {IntlProvider} from 'react-intl';
+
 import {shallow} from "enzyme";
 
 import {ShortcutProvider} from 'react-keybind';
@@ -30,13 +32,19 @@ class DummyPlaygroundApp extends PlaygroundApp {
 test('PlaygroundApp render', () => {
     const app = shallow(<DummyPlaygroundApp />);
     expect(app.text()).toBe('');
-    app.setState({playground: 'PLAYGROUND'});
-    expect(app.text()).toBe('<h />');
-    const shortcuts = app.find(ShortcutProvider);
-    const provider = shortcuts.find(Provider);
+    const playground = {
+        locale: 'FOO',
+        messages: 'MESSAGES'};
+    app.setState({playground});
+    expect(app.text()).toBe('<Provider />');
+    const provider = app.find(Provider);
     expect(provider.props().store).toEqual(store);
-    const context = provider.find(PlaygroundContext.Provider);
-    expect(context.props().value).toEqual('PLAYGROUND');
+    const shortcuts = provider.find(ShortcutProvider);
+    const intl = shortcuts.find(IntlProvider);
+    expect(intl.props().messages).toEqual('MESSAGES');
+    expect(intl.props().locale).toEqual('FOO');
+    const context = intl.find(PlaygroundContext.Provider);
+    expect(context.props().value).toEqual(playground);
     const div = context.find('div');
     expect(div.props().className).toEqual('App');
     const page = div.find(Page);
