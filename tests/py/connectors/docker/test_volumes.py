@@ -235,7 +235,6 @@ async def test_docker_volumes_get_volume_config():
 async def test_docker_volumes_get_volume_labels():
     connector = DummyPlaygroundClient()
     _volumes = volumes.PlaygroundDockerVolumes(connector)
-    labels = dict(LABEL1='l1', LABEL2='l2')
     assert (
         _volumes._get_volume_labels(
             'CONTAINER_TYPE', 'NAME', 'MOUNT')
