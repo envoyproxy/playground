@@ -208,6 +208,17 @@ async def test_docker_volumes_get_mount_env():
 
 
 @pytest.mark.asyncio
+async def test_docker_volumes_get_mount_host_config():
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+    assert (
+        _volumes._get_mount_host_config('VOLUME', 'MOUNT')
+        == {'AutoRemove': False,
+            "Binds": [
+                "VOLUME:MOUNT"]})
+
+
+@pytest.mark.asyncio
 async def test_docker_volumes_get_mount_labels():
     connector = DummyPlaygroundClient()
     _volumes = volumes.PlaygroundDockerVolumes(connector)
@@ -242,3 +253,73 @@ async def test_docker_volumes_get_volume_labels():
             "envoy.playground.volume.type": 'CONTAINER_TYPE',
             "envoy.playground.volume.mount": 'MOUNT',
             "envoy.playground.volume.name": 'NAME'})
+
+
+@pytest.mark.asyncio
+async def test_docker_volumes_write_volume(patch_playground):
+    connector = DummyPlaygroundClient()
+    _volumes = volumes.PlaygroundDockerVolumes(connector)
+
+    _patch_config = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_config')
+    _patch_command = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_command')
+    _patch_host = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_host_config')
+    _patch_env = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_env')
+    _patch_labels = patch_playground(
+        'connectors.docker.volumes.PlaygroundDockerVolumes._get_mount_labels')
+
+    _volumes.docker.containers.create_or_replace = AsyncMock()
+    _create = _volumes.docker.containers.create_or_replace
+
+    with _patch_config as m_config:
+        with _patch_command as m_command:
+            with _patch_host as m_host:
+                with _patch_env as m_env:
+                    with _patch_labels as m_labels:
+                        await _volumes._write_volume(
+                            'NAME',
+                            'VOLUME',
+                            'MOUNT',
+                            'CONTAINER_TYPE',
+                            'FNAME',
+                            'CONTENT')
+                        assert (
+                            list(m_labels.call_args)
+                            == [('CONTAINER_TYPE',
+                                 'NAME',
+                                 'MOUNT',
+                                 'FNAME'), {}])
+                        assert (
+                            list(m_env.call_args)
+                            == [('CONTENT',), {}])
+                        assert (
+                            list(m_host.call_args)
+                            == [('VOLUME', 'MOUNT'), {}])
+                        assert (
+                            list(m_command.call_args)
+                            == [('MOUNT/FNAME',), {}])
+                        assert (
+                            list(m_config.call_args)
+                            == [('VOLUME',
+                                 m_command.return_value,
+                                 m_host.return_value,
+                                 m_env.return_value,
+                                 m_labels.return_value, ),
+                                {}])
+                        assert (
+                            list(_create.call_args)
+                            == [(),
+                                {'name': 'VOLUME',
+                                 'config': m_config.return_value}])
+                        assert (
+                            list(_create.return_value.start.call_args)
+                            == [(), {}])
+                        assert (
+                            list(_create.return_value.wait.call_args)
+                            == [(), {}])
+                        assert (
+                            list(_create.return_value.delete.call_args)
+                            == [(), {}])

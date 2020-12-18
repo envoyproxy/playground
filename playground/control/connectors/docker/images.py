@@ -18,35 +18,27 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
             self,
             build_from: str,
             image_tag: str) -> Union[list, None]:
-        if ":" not in image_tag:
-            image_tag = f"{image_tag}:latest"
+        image_tag = self._image_tag(image_tag)
+        build_from = self._image_tag(build_from)
         logger.info(
             f'Building image: {image_tag} from {build_from}')
         try:
-            tar_obj = mktar_from_docker_context('context')
-            result = await self.docker.images.build(
-                fileobj=tar_obj,
-                encoding="gzip",
-                buildargs=dict(BUILD_FROM=build_from),
-                tag=image_tag)
-            tar_obj.close()
+            result = await self._build(build_from, image_tag)
         except aiodocker.DockerError as e:
             logger.error(
-                f'Failed building image: {image_tag} {e}')
+                f'Failed building image: {image_tag} from {build_from} \n {e}')
             return e.args
         try:
             await self.docker.images.inspect(name=image_tag)
         except aiodocker.DockerError as e:
             logger.error(
-                f'Failed inspecting built image: {image_tag} {result} {e}')
+                f'Failed inspecting built image: {image_tag} {result} \n {e}')
             return result
 
     async def exists(self, image_tag: str) -> bool:
         # this is not v efficient, im wondering if there is a way to search.
-        if ":" not in image_tag:
-            image_tag = f"{image_tag}:latest"
-        logger.debug(
-            f'Checking for image ({image_tag})')
+        image_tag = self._image_tag(image_tag)
+        logger.debug(f'Checking for image ({image_tag})')
         try:
             images = await self.docker.images.list(filter=image_tag)
             return bool([
@@ -59,8 +51,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
                 f'Failed checking for image ({image_tag}): {e}')
 
     async def pull(self, image_tag: str, force: bool = False) -> None:
-        if ":" not in image_tag:
-            image_tag = f"{image_tag}:latest"
+        image_tag = self._image_tag(image_tag)
         if not force and await self.exists(image_tag):
             return
         logger.info(f'Pulling image {image_tag}')
@@ -69,3 +60,20 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
         except aiodocker.DockerError as e:
             logger.error(f'Failed pulling image: {image_tag} {e}')
             return e
+
+    def _image_tag(self, image_tag):
+        return (
+            image_tag
+            if ":" in image_tag
+            else f"{image_tag}:latest")
+
+    async def _build(self, build_from, image_tag):
+        tar_obj = mktar_from_docker_context('context')
+        try:
+            result = await self.docker.images.build(
+                fileobj=tar_obj,
+                encoding="gzip",
+                buildargs=dict(BUILD_FROM=build_from),
+                tag=image_tag)
+        finally:
+            tar_obj.close()
