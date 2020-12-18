@@ -61,7 +61,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
             mounts[os.path.dirname(data.config_path)] = (
                 await self.connector.volumes.populate(
                     'service',
-                    data.name,
+                    f'{data.service_type}:{data.name}',
                     'config',
                     {os.path.basename(data.config_path): config}))
         return mounts

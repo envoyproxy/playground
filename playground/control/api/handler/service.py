@@ -25,3 +25,11 @@ class PlaygroundServiceEventHandler(PlaygroundContainerEventHandler):
         _data = dict(
             service_type=event.data.service_type)
         await self._publish(event, _data)
+
+    async def volume_create(
+            self,
+            event: PlaygroundEvent) -> None:
+        await self._publish(
+            event,
+            dict(service_type=event.data.service_type,
+                 status='volume_create'))
