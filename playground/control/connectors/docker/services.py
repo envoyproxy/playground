@@ -27,7 +27,7 @@ class PlaygroundDockerServices(PlaygroundDockerResources):
         if not command.data.image:
             # todo: add build logic
             return
-        if not await self.connector.images.exists(command.data.image)
+        if not await self.connector.images.exists(command.data.image):
             await self.connector.events.publish(
                 'image_pull',
                 'service',

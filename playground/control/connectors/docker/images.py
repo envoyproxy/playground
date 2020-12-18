@@ -58,7 +58,7 @@ class PlaygroundDockerImages(PlaygroundDockerContext):
             logger.error(
                 f'Failed checking for image ({image_tag}): {e}')
 
-    async def pull(self, image_tag: str, force: bool=False) -> None:
+    async def pull(self, image_tag: str, force: bool = False) -> None:
         if ":" not in image_tag:
             image_tag = f"{image_tag}:latest"
         if not force and await self.exists(image_tag):

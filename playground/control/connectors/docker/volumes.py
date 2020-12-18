@@ -41,7 +41,7 @@ class PlaygroundDockerVolumes(PlaygroundDockerContext):
                 await aiodocker.volumes.DockerVolume(
                     self.docker, name).delete()
             except aiodocker.DockerError as e:
-                logger.error(f'Failed deleting volume: {name}')
+                logger.error(f'Failed deleting volume: {name} {e}')
 
     async def populate(
             self,
