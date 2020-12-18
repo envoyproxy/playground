@@ -22,7 +22,7 @@ async def test_journey_proxy_create(playground):
 
     # add first 2 keys of name
     await playground.enter(name_input, 'pr')
-    await playground.snap('proxy.create.name', .5)
+    await playground.snap('proxy.create.name', .7)
 
     # add rest of name and open configuration
     await playground.enter(name_input, 'oxy0')

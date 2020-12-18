@@ -21,7 +21,7 @@ async def test_journey_network_create(playground):
 
     # input the network name
     await playground.enter(name_input, 'net0')
-    await playground.snap('network.create.name', .5)
+    await playground.snap('network.create.name', .7)
 
     # submit the form
     submit = await playground.query('.modal-footer .btn.btn-primary')

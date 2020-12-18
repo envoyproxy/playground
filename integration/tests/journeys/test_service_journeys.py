@@ -21,7 +21,7 @@ async def test_journey_service_create(playground):
 
     # enter service name
     await playground.enter(name_input, 'echo0')
-    await playground.snap('service.create.name', .5)
+    await playground.snap('service.create.name', .7)
 
     # select a service type
     select = await playground.query(
