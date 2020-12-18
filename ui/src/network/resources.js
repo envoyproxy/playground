@@ -30,7 +30,6 @@ export class BaseNetworkResources extends React.PureComponent {
         return formatMessage({
             id: 'playground.form.network.create.action.title',
             defaultMessage: "Create a network"});
-        return "Create a network";
     }
 
     get action () {
