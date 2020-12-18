@@ -11,6 +11,15 @@ import {CloudItem} from './cloud';
 import {NameValidator} from './validators';
 
 
+function loadLocaleData(locale: string) {
+    switch (locale) {
+    case 'fr':
+        return import('../lang/fr.json');
+    default:
+        return import('../lang/en.json');
+    }
+}
+
 export default class Playground {
     _updaters = [
         updateMeta,
@@ -52,6 +61,10 @@ export default class Playground {
         return this._versions;
     }
 
+    get locale () {
+        return navigator.language.split(/[-_]/)[0];
+    }
+
     cloud = async (path) => {
         const {value: ui} = this.store.getState().ui;
         const {resources} = ui;
@@ -69,11 +82,16 @@ export default class Playground {
 
     load = async () => {
         await this.loadData(await this.api.get("/resources"));
+        this.messages = await this.loadL10n();
     };
 
     loadData = async (data) => {
         await this.loadResources(data);
         await this.loadUI(data);
+    };
+
+    loadL10n = async () => {
+        return await loadLocaleData(this.locale);
     };
 
     loadResources = async (data) => {

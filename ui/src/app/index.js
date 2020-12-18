@@ -4,6 +4,8 @@ import exact from 'prop-types-exact';
 
 import {Provider} from 'react-redux';
 
+import {IntlProvider} from 'react-intl';
+
 import {ShortcutProvider} from 'react-keybind';
 
 import PlaygroundAPI from './api';
@@ -18,6 +20,7 @@ import store from "./store";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/prism.css';
 import './css/app.css';
+
 
 export class PlaygroundApp extends React.Component {
     static propTypes = exact({});
@@ -37,15 +40,20 @@ export class PlaygroundApp extends React.Component {
             return '';
         }
         return (
-            <ShortcutProvider>
-              <Provider store={store}>
-                <PlaygroundContext.Provider value={playground}>
-                  <div className="App">
-                    <Page />
-                  </div>
-                </PlaygroundContext.Provider>
-              </Provider>
-            </ShortcutProvider>
+            <Provider store={store}>
+              <ShortcutProvider>
+                <IntlProvider
+                  messages={playground.messages}
+                  locale={playground.locale}
+                  defaultLocale="en">
+                  <PlaygroundContext.Provider value={playground}>
+                    <div className="App">
+                      <Page />
+                    </div>
+                  </PlaygroundContext.Provider>
+                </IntlProvider>
+              </ShortcutProvider>
+            </Provider>
         );
     }
 }

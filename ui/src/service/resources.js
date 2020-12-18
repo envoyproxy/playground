@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import exact from 'prop-types-exact';
 
+import {IntlContext} from 'react-intl';
+
 import {connect} from 'react-redux';
 
 import ServiceLogo from '../app/images/service.png';
@@ -11,6 +13,7 @@ import ServiceFormModal from './modals';
 
 
 export class BaseServiceResources extends React.PureComponent {
+    static contextType = IntlContext;
     static propTypes = exact({
         dispatch: PropTypes.func.isRequired,
         services: PropTypes.object.isRequired,
@@ -27,8 +30,25 @@ export class BaseServiceResources extends React.PureComponent {
         return icon;
     };
 
+    get action () {
+        const {formatMessage} = this.context;
+        return formatMessage({
+            id: 'playground.form.service.create.action.create',
+            defaultMessage: "Create service"});
+    }
+
+    get title () {
+        const {formatMessage} = this.context;
+        return formatMessage({
+            id: 'playground.resource.title.services',
+            defaultMessage: "Services"});
+    }
+
     addModalTitle = (name) => {
-        return "Create a service";
+        const {formatMessage} = this.context;
+        return formatMessage({
+            id: 'playground.form.service.create.title',
+            defaultMessage: "Create a service"});
     }
 
     render () {
@@ -36,13 +56,13 @@ export class BaseServiceResources extends React.PureComponent {
         return (
             <APIResources
               api="service"
-              title="Services"
+              title={this.title}
               resources={services}
               logo={this.getLogo}
               addModal={{
                   modal: ServiceFormModal,
                   title: this.addModalTitle,
-                  action: 'Create service'}} />);
+                  action: this.action}} />);
     }
 }
 
