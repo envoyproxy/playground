@@ -161,13 +161,20 @@ class Playground(object):
                 args=[],
                 script=js_command))
 
+    async def console_command(self, command, wait_after=0):
+        command = command.replace("\\", "\\\\").replace('"', '\\"')
+        result = await self.exec_async(
+            f'term.paste("{command}\\n")')
+        await asyncio.sleep(wait_after)
+        return result
+
     async def open_windows(self):
         await self.web.get('http://localhost:3000/wetty')
         await self.open("http://localhost:8000")
         await self.exec_async('term.setOption("fontSize", 22)')
-        response = await self.exec_async(
-            'term.paste("export PS1=\\"\\\e[0;36mplayground-host \\\$ \\\e[m\\"\\n")')
-        await self.exec_async('term.paste("clear\\n")')
+        response = await self.console_command(
+            'export PS1="\e[0;36mplayground-host \$ \e[m"')
+        await self.console_command('clear')
         handles = await self.web.command('GET', endpoint='/window_handles')
         handle = await self.web.command('GET', endpoint='/window_handle')
         self._handles = dict(playground=handles[1], console=handles[0])
