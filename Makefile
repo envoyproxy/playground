@@ -87,6 +87,7 @@ integration-test: integration-clean build-image
 	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec -T integration sh -c "CI=1 ./bin/runtests.sh"
 
 screenshots-test: screenshots
+	git checkout docs/screenshots/journey.front_proxy.console.png
 	git checkout docs/screenshots/network.create.starting.png
 	git checkout docs/screenshots/network.create.started.png
 	git checkout docs/screenshots/proxy.create.started.png
