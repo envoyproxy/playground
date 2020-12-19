@@ -115,23 +115,10 @@ Network created
 
 .. rst-class::  clearfix
 
-Open a console and curl upstream ``HTTP`` on port ``10000``
------------------------------------------------------------
+Open a console and curl upstream ``HTTP/S`` on port ``10000``
+-------------------------------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.http.png
-    :figclass: screenshot with-shadow
-    :figwidth: 40%
-    :align: right
-
-
-.. _journey_front_proxy_console_http_https:
-
-.. rst-class::  clearfix
-
-Open a console and curl upstream ``HTTPS`` on port ``10000``
-------------------------------------------------------------
-
-..  figure:: ../screenshots/journey.front_proxy.console.https.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right

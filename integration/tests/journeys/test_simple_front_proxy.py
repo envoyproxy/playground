@@ -31,10 +31,7 @@ async def test_journey_simple_front_proxy(playground):
     await playground.switch_to('console')
     await asyncio.sleep(2)
     await playground.console_command(
-        "curl -s http://localhost:10000/http | jq '.'", 1)
-    await playground.snap('journey.front_proxy.console.http', 1)
-    await playground.console_command("clear")
-    await asyncio.sleep(1)
+        "curl -s http://localhost:10000/80 | jq '.protocol'", 1)
     await playground.console_command(
-        "curl -s http://localhost:10000/https | jq '.'", 2)
-    await playground.snap('journey.front_proxy.console.https')
+        "curl -s http://localhost:10000/443 | jq '.protocol'", 2)
+    await playground.snap('journey.front_proxy.console.http')

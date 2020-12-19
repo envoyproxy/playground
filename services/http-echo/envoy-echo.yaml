@@ -19,11 +19,11 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/https"
+                  prefix: "/443"
                 route:
                   cluster: echo-https
               - match:
-                  prefix: "/http"
+                  prefix: "/80"
                 route:
                   cluster: echo-http
           http_filters:
