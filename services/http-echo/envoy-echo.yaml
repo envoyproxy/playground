@@ -19,13 +19,13 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/http"
-                route:
-                  cluster: echo-http
-              - match:
                   prefix: "/https"
                 route:
                   cluster: echo-https
+              - match:
+                  prefix: "/http"
+                route:
+                  cluster: echo-http
           http_filters:
           - name: envoy.filters.http.router
 
