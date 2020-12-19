@@ -138,7 +138,6 @@ class Playground(object):
         el = await self.web.find_element_by_xpath(xpath)
         if el.element.endswith('unknown'):
             if timeout > 0:
-                print('WAITING', timeout)
                 await asyncio.sleep(.1)
                 return await self.query(q, timeout - .1)
             return
