@@ -81,15 +81,24 @@ class Playground(object):
         assert not await submit.click()
 
     async def proxy_create(self, name):
-        add_proxy_button = await self.query('*[name="Proxies"]')
+        add_proxy_button = await self.query('*[name="Proxies"]', 5)
         assert not await add_proxy_button.click()
         name_input = await self.query(
-            'input[id="envoy.playground.name"]')
+            'input[id="envoy.playground.name"]', 5)
         assert not await self.enter(name_input, name)
         select = await self.query(
             '.tab-pane.active form select'
-            '#example option[value="Service: HTTP/S echo"]')
+            '#example option[value="Service: HTTP/S echo"]', 5)
         assert not await select.click()
+
+        # add a port
+        ports_tab = await self.query(
+            '.modal-body .nav-tabs a:contains("Ports")', 1)
+        assert not await ports_tab.click()
+        port_button = await self.query('.tab-pane.active form button', 1)
+        assert not await port_button.click()
+
+        # submit the form
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
 
@@ -141,9 +150,24 @@ class Playground(object):
                 args=[],
                 script=f"window.open('{url}', '_blank');"))
 
+    async def exec_async(self, command):
+        js_command = (
+            "arguments[0]("
+            f"{command})")
+        return await self.web.command(
+            'POST',
+            '/execute_async',
+            json=dict(
+                args=[],
+                script=js_command))
+
     async def open_windows(self):
-        await self.web.get('http://localhost:4444/wetty')
-        response = await self.open("http://localhost:8000")
+        await self.web.get('http://localhost:3000/wetty')
+        await self.open("http://localhost:8000")
+        await self.exec_async('term.setOption("fontSize", 22)')
+        response = await self.exec_async(
+            'term.paste("export PS1=\\"\\\e[0;36mplayground-host \\\$ \\\e[m\\"\\n")')
+        await self.exec_async('term.paste("clear\\n")')
         handles = await self.web.command('GET', endpoint='/window_handles')
         handle = await self.web.command('GET', endpoint='/window_handle')
         self._handles = dict(playground=handles[1], console=handles[0])
@@ -166,9 +190,19 @@ class Playground(object):
             return
         return el
 
-    async def query_all(self, q):
+    async def query_all(self, q, timeout=0):
         xpath = self.pq.css_to_xpath(q)
-        return await self.web.find_elements_by_xpath(xpath)
+        els = [
+            el
+            for el
+            in await self.web.find_elements_by_xpath(xpath)
+            if not el.element.endswith('unknown')]
+        if not els:
+            if timeout > 0:
+                await asyncio.sleep(.1)
+                return await self.query_all(q, timeout - .1)
+            return
+        return els
 
     async def snap(self, name, wait=0):
         if not self.screenshots:
