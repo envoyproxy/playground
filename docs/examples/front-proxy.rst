@@ -60,7 +60,7 @@ Start the proxy
 
 
 Create an ``HTTP/S echo`` service called ``echo``
------------------------------------------------
+-------------------------------------------------
 
 ..  figure:: ../screenshots/proxy.create.name.png
     :figclass: screenshot with-shadow
