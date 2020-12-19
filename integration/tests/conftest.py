@@ -133,6 +133,29 @@ class Playground(object):
                 args=[],
                 script=js_move_icon))
 
+    async def open(self, url):
+        await self.web.command(
+            'POST',
+            '/execute',
+            json=dict(
+                args=[],
+                script=f"window.open('{url}', '_blank');"))
+
+    async def open_windows(self):
+        await self.web.get('http://localhost:4444/wetty')
+        response = await self.open("http://localhost:8000")
+        handles = await self.web.command('GET', endpoint='/window_handles')
+        handle = await self.web.command('GET', endpoint='/window_handle')
+        self._handles = dict(playground=handles[1], console=handles[0])
+        await self.switch_to('playground')
+
+    async def switch_to(self, tab):
+        assert not await self.web.command(
+            'POST',
+            '/window',
+            json=dict(
+                handle=self._handles[tab]))
+
     async def query(self, q, timeout=0):
         xpath = self.pq.css_to_xpath(q)
         el = await self.web.find_element_by_xpath(xpath)
@@ -205,26 +228,7 @@ async def playground(pytestconfig):
                 driver,
                 screenshots=pytestconfig.getoption('screenshots'))
             await playground.clear()
-            await driver.get("http://localhost:8000")
-            await driver.command(
-                'POST',
-                '/execute',
-                json=dict(
-                    args=[],
-                    script="window.open('http://localhost:3000/wetty', '_blank');"))
-            handles = await driver.command('GET', endpoint='/window_handles')
-            response = await driver.command(
-                'POST',
-                '/window',
-                json=dict(
-                    handle=handles[1]))
-            await playground.snap('newtab', 1)
-            response = await driver.command(
-                'POST',
-                '/window',
-                json=dict(
-                    handle=handles[0]))
-            await playground.snap('newtab2')
+            await playground.open_windows()
             yield playground
             await playground.clear()
             await playground.docker.close()

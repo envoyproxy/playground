@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_service_create(playground):
-    await playground.snap('service.create.open', .3)
+    await playground.snap('service.create.open', .5)
 
     # open the service modal
     add_service_button = await playground.query('*[name="Services"]', 1)
