@@ -12,7 +12,7 @@ import pyquery
 import aiodocker
 import aiohttp
 
-from aioselenium import Remote
+from aioselenium import Keys, Remote
 
 
 class Playground(object):
@@ -206,6 +206,25 @@ async def playground(pytestconfig):
                 screenshots=pytestconfig.getoption('screenshots'))
             await playground.clear()
             await driver.get("http://localhost:8000")
+            await driver.command(
+                'POST',
+                '/execute',
+                json=dict(
+                    args=[],
+                    script="window.open('http://localhost:3000/wetty', '_blank');"))
+            handles = await driver.command('GET', endpoint='/window_handles')
+            response = await driver.command(
+                'POST',
+                '/window',
+                json=dict(
+                    handle=handles[1]))
+            await playground.snap('newtab', 1)
+            response = await driver.command(
+                'POST',
+                '/window',
+                json=dict(
+                    handle=handles[0]))
+            await playground.snap('newtab2')
             yield playground
             await playground.clear()
             await playground.docker.close()
