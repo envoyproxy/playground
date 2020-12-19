@@ -5,6 +5,7 @@ ADD ui .
 RUN yarn install && yarn run build
 
 FROM python:3.8-slim
+ENV NODE_ENV=production
 COPY --from=builder /app/build /code/build
 ADD ./playground /code/playground
 ADD ./setup.py /code
