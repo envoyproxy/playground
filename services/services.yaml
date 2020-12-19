@@ -22,7 +22,7 @@ services:
         Exposes `HTTPS` on ports `10001`, and `10002`, proxying to the ACME endpoint and admin ports.
 
   http-echo:
-    image: mendhak/http-https-echo
+    image: phlax/aioecho
     labels:
       envoy.playground.service: "HTTP/S echo"
       envoy.playground.description: |
@@ -31,7 +31,7 @@ services:
       envoy.playground.readme: README
       envoy.playground.example.name: "Service: HTTP/S echo"
       envoy.playground.example.description: |
-        Connects to an `HTTP/S echo` service named `echo`.
+        Connects to an `HTTP/S echo` service named `http-echo0`.
 
         Exposes `HTTP` on port `10000`, and `HTTPS` on ports `10001`, and `10002`.
       envoy.playground.example.config: envoy-echo.yaml
@@ -43,8 +43,8 @@ services:
       envoy.playground.port.443.info: |
         Echos request headers and content
     environment:
-      HTTP_PORT: 80
-      HTTPS_PORT: 443
+      HTTP_PORT: 8080
+      HTTPS_PORT: 8443
 
   jaeger:
     image: jaegertracing/all-in-one

@@ -19,11 +19,11 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/443"
+                  prefix: "/8443"
                 route:
                   cluster: echo-https
               - match:
-                  prefix: "/80"
+                  prefix: "/8080"
                 route:
                   cluster: echo-http
           http_filters:
@@ -48,11 +48,11 @@ static_resources:
               - "*"
               routes:
               - match:
-                  prefix: "/http"
+                  prefix: "/8080"
                 route:
                   cluster: echo-http
               - match:
-                  prefix: "/https"
+                  prefix: "/8443"
                 route:
                   cluster: echo-https
           http_filters:
@@ -145,8 +145,8 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: echo
-                port_value: 80
+                address: http-echo0
+                port_value: 8080
 
   - name: echo-https
     connect_timeout: 0.25s
@@ -159,8 +159,8 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: echo
-                port_value: 443
+                address: http-echo0
+                port_value: 8443
     transport_socket:
       name: envoy.transport_sockets.tls
       typed_config:
