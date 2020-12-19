@@ -99,6 +99,7 @@ dev-integration: integration-clean build-image
 	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose up --build -d integration
 	sleep 5
 	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration ./bin/start-playground.sh
+	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration ./bin/start-wetty.sh
 	COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration ./bin/start-selenium.sh
 	COMMAND="./bin/run-testenv.sh /bin/sh -c \"PLAYGROUND_VERSION=$$(cat VERSION) /bin/bash\"" && COMPOSE_FILE=./integration/composition/docker-compose.yaml docker-compose exec integration sh -c "$$COMMAND"
 
