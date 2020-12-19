@@ -20,10 +20,10 @@ async def test_journey_simple_front_proxy(playground):
     await asyncio.sleep(1)
 
     # create the service
-    await playground.service_create('http-echo', "echo")
+    await playground.service_create('http-echo', "http-echo0")
     await asyncio.sleep(5)
-    await playground.move('service:echo', 500, 200)
-    await playground.connect('net0', 'service:echo')
+    await playground.move('service:http-echo0', 500, 200)
+    await playground.connect('net0', 'service:http-echo0')
     await asyncio.sleep(1)
     await playground.snap('journey.front_proxy.all')
 
@@ -31,7 +31,7 @@ async def test_journey_simple_front_proxy(playground):
     await playground.switch_to('console')
     await asyncio.sleep(2)
     await playground.console_command(
-        "curl -s http://localhost:10000/80 | jq '.protocol'", 1)
+        "curl -s http://localhost:10000/8080 | jq '.protocol'", 1)
     await playground.console_command(
-        "curl -s http://localhost:10000/443 | jq '.protocol'", 2)
+        "curl -s http://localhost:10000/8443 | jq '.protocol'", 2)
     await playground.snap('journey.front_proxy.console.http')
