@@ -59,6 +59,11 @@ Start the proxy
     :align: right
 
 
+.. _journey_front_proxy_service_create:
+
+.. rst-class::  clearfix
+
+
 Create an ``HTTP/S echo`` service called ``echo``
 -------------------------------------------------
 
@@ -106,14 +111,27 @@ Network created
     :align: right
 
 
-.. _journey_front_proxy_console:
+.. _journey_front_proxy_console_http_http:
 
 .. rst-class::  clearfix
 
-Open a console and curl port ``10000``
---------------------------------------
+Open a console and curl upstream `HTTP` on port ``10000``
+---------------------------------------------------------
 
-..  figure:: ../screenshots/journey.front_proxy.console.png
+..  figure:: ../screenshots/journey.front_proxy.console.http.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
+
+.. _journey_front_proxy_console_http_https:
+
+.. rst-class::  clearfix
+
+Open a console and curl upstream `HTTPS` on port ``10000``
+----------------------------------------------------------
+
+..  figure:: ../screenshots/journey.front_proxy.console.https.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
