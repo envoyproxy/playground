@@ -37,8 +37,8 @@ Once you have added the name, you will be able to configure the proxy.
 
 .. rst-class::  clearfix
 
-Map port `10000` -> `10000`
----------------------------
+Map port ``10000`` -> ``10000``
+-------------------------------
 
 ..  figure:: ../screenshots/proxy.create.ports.png
     :figclass: screenshot with-shadow
@@ -90,8 +90,8 @@ Start the service
 
 .. rst-class::  clearfix
 
-Create a network and add `proxy0` and `echo` to it
---------------------------------------------------
+Create a network and add ``proxy0`` and ``echo`` to it
+------------------------------------------------------
 
 ..  figure:: ../screenshots/service.create.starting.png
     :figclass: screenshot with-shadow
@@ -115,8 +115,8 @@ Network created
 
 .. rst-class::  clearfix
 
-Open a console and curl upstream `HTTP` on port ``10000``
----------------------------------------------------------
+Open a console and curl upstream ``HTTP`` on port ``10000``
+-----------------------------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.http.png
     :figclass: screenshot with-shadow
@@ -128,8 +128,8 @@ Open a console and curl upstream `HTTP` on port ``10000``
 
 .. rst-class::  clearfix
 
-Open a console and curl upstream `HTTPS` on port ``10000``
-----------------------------------------------------------
+Open a console and curl upstream ``HTTPS`` on port ``10000``
+------------------------------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.https.png
     :figclass: screenshot with-shadow
