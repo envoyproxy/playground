@@ -31,7 +31,13 @@ async def test_journey_simple_front_proxy(playground):
     await playground.switch_to('console')
     await asyncio.sleep(2)
     await playground.console_command(
+        "curl -s http://localhost:10000/8080", 1)
+    await playground.console_command(
         "curl -s http://localhost:10000/8080 | jq '.protocol'", 1)
     await playground.console_command(
-        "curl -s http://localhost:10000/8443 | jq '.protocol'", 2)
+        "curl -s http://localhost:10000/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
+    await playground.console_command(
+        "curl -s http://localhost:10000/8443 | jq '.protocol'", 1)
+    await playground.console_command(
+        "curl -s http://localhost:10000/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
     await playground.snap('journey.front_proxy.console.http')
