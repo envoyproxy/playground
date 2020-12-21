@@ -113,15 +113,38 @@ Once the network has been created, the example should be set up, and ready to te
 
 .. rst-class::  clearfix
 
-Open a console and curl upstream ``HTTP/S`` on port ``10000``
--------------------------------------------------------------
+Open a console and curl ``HTTP`` on port ``10000``
+--------------------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.http.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
 
-Open a console and query the ``HTTP`` interface on port ``10000``
+The example exposes two endpoints on port ``10000``.
+
+- http://localhost:10000/8080 - proxies to upstream ``HTTP``.
+- http://localhost:10000/8443 - proxies to upstream ``HTTPS``.
+
+If you query the first you should see that both the ``protocol`` and the ``X-Forwarded-Proto`` header
+are showing ``http``
+
+.. code-block::  console
+
+   $ curl -s http://localhost:10000/8080 | jq '.protocol'
+   "http"
+   $ curl -s http://localhost:10000/8080 | jq '.headers["X-Forwarded-Proto"]'
+   "http"
+
+Querying the second endpoint, the ``X-Forwarded-Proto``
+remains ``http``, but the ``protocol`` should now show ``https``.
+
+.. code-block::  console
+
+   $ curl -s http://localhost:10000/8080 | jq '.protocol'
+   "https"
+   $ curl -s http://localhost:10000/8080 | jq '.headers["X-Forwarded-Proto"]'
+   "http"
 
 .. _journey_front_proxy_console_https:
 
