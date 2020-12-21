@@ -240,7 +240,7 @@ Querying the endpoint, the ``protocol`` should be ``https``, and there should be
 
 .. code-block::  console
 
-   $ curl -sk https://localhost:10001/8443 | jq '.protocol'
+   $ curl -sk https://localhost:10002/8443 | jq '.protocol'
    "https"
-   $ curl -sk https://localhost:10001/8443 | jq '.headers["X-Forwarded-Proto"]'
+   $ curl -sk https://localhost:10002/8443 | jq '.headers["X-Forwarded-Proto"]'
    null
