@@ -4,7 +4,15 @@
 Front proxy with ``http-echo``
 ==============================
 
-This is one of the simplest setups.
+Envoy proxy can be used both as a "front" proxy, proxying between end users and upstream services,
+or as a "middle" proxy, proxying between services not exposed to end users.
+
+This example demonstrates some of the ways that Envoy can be used as a "front" proxy.
+
+It demonstrates Envoy terminating both ``HTTP`` and ``HTTPS`` and proxying to both ``HTTP`` and ``HTTPS`` upstream  services.
+
+It  also  demonstrates Envoy in passthrough mode in which Envoy acts a simple TCP server proxying to an upstream ``HTTPS`` service
+without doing any ``HTTP`` termination itself.
 
 .. _journey_front_proxy_start:
 
@@ -42,6 +50,7 @@ This example exposes three internal ports ``10000``, ``10000`` and ``10002``.
 
 Click on the "Ports" tab, and map each of these to the corresponding external port.
 
+Once you have added the ports, click the "Create proxy" button.
 
 .. _journey_front_proxy_service_create:
 
@@ -117,8 +126,8 @@ Once the network has been created, the example should be set up, and ready to te
 
 .. rst-class::  clearfix
 
-Open a console and curl ``HTTP`` on port ``10000``
---------------------------------------------------
+Test the connections on port ``10000``
+--------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.http.png
     :figclass: screenshot with-shadow
@@ -156,8 +165,8 @@ Querying the second endpoint, the ``X-Forwarded-Proto`` remains ``http``, but th
 
 .. rst-class::  clearfix
 
-Open a console and curl ``HTTPS`` on port ``10001``
----------------------------------------------------
+Test the connections on port ``10001``
+--------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.https.png
     :figclass: screenshot with-shadow
@@ -171,6 +180,11 @@ The example exposes two endpoints on port ``10001``.
 
 While the first endpoint proxies to an ``HTTP`` upstream, the endpoints exposed on this port are
 ``HTTPS``.
+
+The ``TLS`` termination that you see when querying this port is done by the Envoy proxy.
+
+When connecting to the upstream ``HTTPS`` the connection is again encrypted and the upstream ``TLS``
+termination is provided by the echo server.
 
 .. tip::
 
