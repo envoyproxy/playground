@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_network_create(playground):
-    await playground.snap('network.create.open', .3)
+    await playground.snap('network.create.open', .5)
 
     # open the network modal
     add_network_button = await playground.query('*[name="Networks"]', 1)

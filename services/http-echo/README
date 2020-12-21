@@ -18,8 +18,8 @@ To make use of it you should:
   - 10000 -> 10000
   - 10001 -> 10001
   - 10002 -> 10002
-- create an `HTTP/S echo` service called `echo`
-- connect the proxy and the `echo` service together on a network
+- create an `HTTP/S echo` service called `http-echo0`
+- connect the proxy and the `http-echo0` service together on a network
 
 With this setup you should be able to view the following endpoints:
 
@@ -30,12 +30,12 @@ With this setup you should be able to view the following endpoints:
 - [https://localhost:10002](https://localhost:10002)
 
 Port `10000` is an `HTTP` port that routes the paths `/http` and `/https`
-to the respective ports on the `echo` service.
+to the respective ports on the `http-echo0` service.
 
 Port `10001` is an `HTTPS` port that does the same.
 
 Port `10002` is a `TCP` passthrough port that proxies to the `HTTPS` port
-on the `echo` service.
+on the `http-echo0` service.
 
 All `HTTPS` certificates are "snake-oil" so you will need to use `-k` with `curl`
 or accept untrusted certificates if viewing in a browser.

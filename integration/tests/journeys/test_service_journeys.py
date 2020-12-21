@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_service_create(playground):
-    await playground.snap('service.create.open', .3)
+    await playground.snap('service.create.open', .5)
 
     # open the service modal
     add_service_button = await playground.query('*[name="Services"]', 1)
@@ -94,7 +94,7 @@ async def test_journey_service_create(playground):
     await playground.snap('service.create.starting', .1)
 
     link = await playground.query(
-        '.App-right .accordion-item .card-header .col-sm-8', 10)
+        '.App-right .accordion-item .card-header .col-sm-8', 60)
     await playground.move('service:echo0', 230, 230)
     assert (
         await link.text()

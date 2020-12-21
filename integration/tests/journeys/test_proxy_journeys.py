@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.screenshots
 @pytest.mark.asyncio
 async def test_journey_proxy_create(playground):
-    await playground.snap('proxy.create.open', .3)
+    await playground.snap('proxy.create.open', .5)
 
     # open the proxy modal
     add_proxy_button = await playground.query('*[name="Proxies"]', 1)
@@ -80,7 +80,7 @@ async def test_journey_proxy_create(playground):
     await playground.snap('proxy.create.starting', .3)
 
     link = await playground.query(
-        '.App-left .accordion-item .card-header .col-sm-8', 60)
+        '.App-left .accordion-item .card-header .col-sm-8', 120)
     await playground.move('proxy:proxy0', 230, 230)
     assert (
         await link.text()

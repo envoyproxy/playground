@@ -15,4 +15,5 @@ It is not intended to be exposed on the internet or other network.
     proxy/index
     service/index
     network/index
+    examples/index
     developers/index

@@ -9,6 +9,7 @@ services:
     working_dir: /code
     ports:
       - 8000:8000
+      - 9000-9020:10000-10020
     volumes:
     - ../../.cache/integration/docker:/var/lib/docker
     - ../tests:/code/tests
