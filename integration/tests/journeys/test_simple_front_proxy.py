@@ -27,7 +27,7 @@ async def test_journey_simple_front_proxy(playground):
 
     # switch to console and curl http
     await playground.switch_to('console')
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
     await playground.console_command(
         "curl -s http://localhost:10000/8080 | jq '.protocol'", 1)
     await playground.console_command(
