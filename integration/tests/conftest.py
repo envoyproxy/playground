@@ -118,6 +118,15 @@ class Playground(object):
         await self.enter(mapping_to, Keys.UP_ARROW)
         port_button = await self.query('.tab-pane.active form button', 1)
         assert not await port_button.click()
+
+        # adds 10002 -> 10002
+        mapping_from = await self.query('#mapping_from', 1)
+        await self.enter(mapping_from, [Keys.UP_ARROW, Keys.UP_ARROW])
+        mapping_to = await self.query('#mapping_to', 1)
+        await self.enter(mapping_to, [Keys.UP_ARROW, Keys.UP_ARROW])
+        port_button = await self.query('.tab-pane.active form button', 1)
+        assert not await port_button.click()
+
         await self.snap('journey.front_proxy.ports')
 
         # submit the form
