@@ -91,8 +91,8 @@ In this example, the network is named ``net0``.
 
 .. rst-class::  clearfix
 
-Add the proxy and service to the network and create
----------------------------------------------------
+Add the proxy and service to the network
+----------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.network.proxies.png
     :figclass: screenshot with-shadow
@@ -105,20 +105,19 @@ Click on the "Proxies" tab and select "proxy0".
 
 Now do the same for the service you added.
 
-Once you have added the proxy and the service, click the "Create network" button.
-
-
 .. _journey_front_proxy_network_started:
 
 .. rst-class::  clearfix
 
-Network created and example is set up
--------------------------------------
+Create the network
+------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.all.png
     :figclass: screenshot with-shadow
     :figwidth: 30%
     :align: right
+
+With the proxy and service added, click the "Create network" button.
 
 Once the network has been created, the example should be set up, and ready to test.
 
@@ -188,8 +187,8 @@ termination is provided by the echo server.
 
 .. tip::
 
-   As the certificates used for this example are not issued by a known authority, you will need to use the
-   the ``-k`` flag with ``curl``.
+   As the certificates used for this example are for demonstration only and not issued by a known authority,
+   you will need to use the ``-k`` flag with ``curl``.
 
 Querying the first endpoint, the ``X-Forwarded-Proto`` should show ``https``, but the ``protocol`` should be ``http``.
 
