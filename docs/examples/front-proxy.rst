@@ -83,6 +83,8 @@ Create a network
     :figwidth: 30%
     :align: right
 
+Click on the "+" next to "Networks" to create a new network.
+
 The name given to the network is arbitrary.
 
 In this example, the network is named ``net0``.
@@ -99,7 +101,7 @@ Add the proxy and service to the network
     :figwidth: 30%
     :align: right
 
-The proxy and service need to be connected to this network.
+The proxy and service need to be connected to the network you are creating.
 
 Click on the "Proxies" tab and select "proxy0".
 
