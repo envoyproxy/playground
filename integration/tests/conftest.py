@@ -12,7 +12,7 @@ import pyquery
 import aiodocker
 import aiohttp
 
-from aioselenium import Keys, Remote
+from aioselenium import Remote
 
 
 class Playground(object):
