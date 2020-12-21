@@ -85,7 +85,7 @@ In this example  we call the network ``net0``.
 Add the proxy and service to the network and create
 ---------------------------------------------------
 
-..  figure:: ../screenshots/journey.front_proxy.network.proxy.png
+..  figure:: ../screenshots/journey.front_proxy.network.proxies.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
