@@ -91,12 +91,23 @@ class Playground(object):
             '#example option[value="Service: HTTP/S echo"]', 5)
         assert not await select.click()
 
-        # add a port
+        # add ports
         ports_tab = await self.query(
             '.modal-body .nav-tabs a:contains("Ports")', 1)
         assert not await ports_tab.click()
+
+        # adds default port
         port_button = await self.query('.tab-pane.active form button', 1)
         assert not await port_button.click()
+
+        # adds 10001 -> 10001
+        mapping_from = await self.query('#mapping_from', 1)
+        await self.enter(mapping_from, Keys.UP_ARROW)
+        mapping_to = await self.query('#mapping_to', 1)
+        await self.enter(mapping_to, Keys.UP_ARROW)
+        port_button = await self.query('.tab-pane.active form button', 1)
+        assert not await port_button.click()
+        await self.snap('journey.front_proxy.ports')
 
         # submit the form
         submit = await self.query('.modal-footer .btn.btn-primary')

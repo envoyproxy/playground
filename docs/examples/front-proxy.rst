@@ -40,7 +40,7 @@ Once you have added the name, you will be able to configure the proxy.
 Map port ``10000`` -> ``10000``
 -------------------------------
 
-..  figure:: ../screenshots/proxy.create.ports.png
+..  figure:: ../screenshots/journey.front_proxy.ports.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right
@@ -85,7 +85,6 @@ Start the service
     :figwidth: 40%
     :align: right
 
-
 .. _journey_front_proxy_network_start:
 
 .. rst-class::  clearfix
@@ -110,7 +109,6 @@ Network created
     :figwidth: 40%
     :align: right
 
-
 .. _journey_front_proxy_console_http_http:
 
 .. rst-class::  clearfix
@@ -119,6 +117,18 @@ Open a console and curl upstream ``HTTP/S`` on port ``10000``
 -------------------------------------------------------------
 
 ..  figure:: ../screenshots/journey.front_proxy.console.http.png
+    :figclass: screenshot with-shadow
+    :figwidth: 40%
+    :align: right
+
+.. _journey_front_proxy_console_http_http:
+
+.. rst-class::  clearfix
+
+Open a console and curl upstream ``HTTP/S`` on port ``10001``
+-------------------------------------------------------------
+
+..  figure:: ../screenshots/journey.front_proxy.console.https.png
     :figclass: screenshot with-shadow
     :figwidth: 40%
     :align: right

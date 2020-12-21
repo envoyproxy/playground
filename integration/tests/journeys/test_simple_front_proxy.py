@@ -27,11 +27,9 @@ async def test_journey_simple_front_proxy(playground):
     await asyncio.sleep(1)
     await playground.snap('journey.front_proxy.all')
 
-    # switch to console and curl
+    # switch to console and curl http
     await playground.switch_to('console')
-    await asyncio.sleep(2)
-    await playground.console_command(
-        "curl -s http://localhost:10000/8080", 1)
+    await asyncio.sleep(1)
     await playground.console_command(
         "curl -s http://localhost:10000/8080 | jq '.protocol'", 1)
     await playground.console_command(
@@ -41,3 +39,15 @@ async def test_journey_simple_front_proxy(playground):
     await playground.console_command(
         "curl -s http://localhost:10000/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
     await playground.snap('journey.front_proxy.console.http')
+
+    # curl https
+    await playground.console_command('clear')
+    await playground.console_command(
+        "curl -sk https://localhost:10001/8080 | jq '.protocol'", 1)
+    await playground.console_command(
+        "curl -sk https://localhost:10001/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
+    await playground.console_command(
+        "curl -sk https://localhost:10001/8443 | jq '.protocol'", 1)
+    await playground.console_command(
+        "curl -sk https://localhost:10001/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
+    await playground.snap('journey.front_proxy.console.https')
