@@ -208,3 +208,37 @@ are showing ``http``
    "https"
    $ curl -sk https://localhost:10001/8443 | jq '.headers["X-Forwarded-Proto"]'
    "https"
+
+
+.. _journey_front_proxy_console_passthrough:
+
+.. rst-class::  clearfix
+
+Test the connections on port ``10002``
+--------------------------------------
+
+..  figure:: ../screenshots/journey.front_proxy.console.passthrough.png
+    :figclass: screenshot with-shadow
+    :figwidth: 30%
+    :align: right
+
+The example exposes an endpoint on port ``10002`` that proxies to the ``HTTPS`` port
+of the upstream echo service.
+
+The only available path on this service is ``/8443``.
+
+The ``TLS`` termination that you see when querying this port is provided by the upstream service.
+
+.. tip::
+
+   As the certificates used for this example are for demonstration only and not issued by a known authority,
+   you will need to use the ``-k`` flag with ``curl``.
+
+Querying the endpoint, the ``protocol`` should be ``https``, and there should be no ``X-Forwarded-Proto`` header set.
+
+.. code-block::  console
+
+   $ curl -sk https://localhost:10001/8443 | jq '.protocol'
+   "https"
+   $ curl -sk https://localhost:10001/8443 | jq '.headers["X-Forwarded-Proto"]'
+   null
