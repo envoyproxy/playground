@@ -109,7 +109,7 @@ Network created
     :figwidth: 40%
     :align: right
 
-.. _journey_front_proxy_console_http_http:
+.. _journey_front_proxy_console_http:
 
 .. rst-class::  clearfix
 
@@ -121,7 +121,7 @@ Open a console and curl upstream ``HTTP/S`` on port ``10000``
     :figwidth: 40%
     :align: right
 
-.. _journey_front_proxy_console_http_http:
+.. _journey_front_proxy_console_https:
 
 .. rst-class::  clearfix
 
