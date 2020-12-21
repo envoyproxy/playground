@@ -24,8 +24,8 @@ stages:
           displayName: 'Run integration tests against the built image'
         - script: make screenshots-test
           displayName: 'Recreate screenshots and ensure nothing has changed'
-          continueOnError: true
         - task: PublishBuildArtifacts@1
           inputs:
-            pathtoPublish: "$(Build.StagingDirectory)/screenshots"
+            pathtoPublish: "$(Build.SourcesDirectory)/screenshots"
             artifactName: screenshots
+          condition: always()
