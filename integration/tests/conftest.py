@@ -77,6 +77,16 @@ class Playground(object):
         name_input = await self.query(
             'input[id="envoy.playground.name"]')
         assert not await self.enter(name_input, name)
+        await self.snap('journey.front_proxy.network.name', 1)
+
+        proxies_tab = await self.query('.modal-body .nav-tabs a:contains("Proxies")', 1)
+        assert not await proxies_tab.click()
+        _target = 'proxy0'
+        checkbox = await self.query(
+            f'.tab-pane.active form input[name="{_target}"]')
+        assert not await checkbox.click()
+        await self.snap('journey.front_proxy.network.proxies', 1)
+
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
 
@@ -90,6 +100,7 @@ class Playground(object):
             '.tab-pane.active form select'
             '#example option[value="Service: HTTP/S echo"]', 5)
         assert not await select.click()
+        await self.snap('journey.front_proxy.proxy', 1)
 
         # add ports
         ports_tab = await self.query(
@@ -134,6 +145,7 @@ class Playground(object):
             f'.tab-pane.active form select#service_type '
             f'[value="{service_type}"]')
         assert not await select.click()
+        await self.snap('journey.front_proxy.service', 1)
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
 
