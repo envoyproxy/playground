@@ -39,6 +39,22 @@ class Playground(object):
             return
         return response
 
+    async def doubleclick(self, element, timeout=10):
+
+        response = await self.web.command(
+            'POST',
+            endpoint='/moveto',
+            json=dict(element=element.element))
+        if not response:
+            response = await self.web.command(
+                'POST',
+                endpoint='/doubleclick')
+        if response:
+            if timeout > 0:
+                await asyncio.sleep(.1)
+                return await self.doubleclick(element, timeout - .1)
+        return response
+
     async def clear(self):
         containers = [
             container
@@ -89,19 +105,27 @@ class Playground(object):
         assert not await self.enter(name_input, name)
         await self.snap('journey.front_proxy.network.name', 1)
 
-        proxies_tab = await self.query('.modal-body .nav-tabs a:contains("Proxies")', 1)
-        assert not await proxies_tab.click()
-        _target = 'proxy0'
-        checkbox = await self.query(
-            f'.tab-pane.active form input[name="{_target}"]')
-        assert not await checkbox.click()
-        await self.snap('journey.front_proxy.network.proxies', 1)
+        if proxies:
+            proxies_tab = await self.query('.modal-body .nav-tabs a:contains("Proxies")', 1)
+            assert not await proxies_tab.click()
+            for _target in proxies:
+                checkbox = await self.query(
+                    f'.tab-pane.active form input[name="{_target}"]', 5)
+                assert not await checkbox.click()
+            await self.snap('journey.front_proxy.network.proxies', 1)
+
+        if services:
+            services_tab = await self.query('.modal-body .nav-tabs a:contains("Services")', 1)
+            assert not await services_tab.click()
+            for _target in services:
+                checkbox = await self.query(
+                    f'.tab-pane.active form input[name="{_target}"]', 5)
+                assert not await checkbox.click()
+            await self.snap('journey.front_service.network.services', 1)
 
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
         await asyncio.sleep(5)
-        await self.connect('net0', 'service:http-echo0')
-        await asyncio.sleep(1)
         if position:
             await self.move('network:net0', *position)
         await self.snap('journey.front_proxy.all', 1)
@@ -119,37 +143,34 @@ class Playground(object):
         await asyncio.sleep(5)
         await self.snap('journey.front_proxy.proxy', 1)
 
-        # add ports
-        ports_tab = await self.query(
-            '.modal-body .nav-tabs a:contains("Ports")', 1)
-        assert not await ports_tab.click()
+        if ports:
+            ports_tab = await self.query(
+                '.modal-body .nav-tabs a:contains("Ports")', 1)
+            assert not await ports_tab.click()
 
-        # adds default port
-        port_button = await self.query('.tab-pane.active form button', 1)
-        assert not await port_button.click()
+        for _from, _to in (ports or {}).items():
+            selector = '#mapping_from'
+            response = await self.exec_async(
+                f'document.querySelector(\"{selector}\").select()')
+            mapping_from = await self.query('#mapping_from', 5)
+            assert not await self.enter(mapping_from, str(_from))
 
-        # adds 10001 -> 10001
-        mapping_from = await self.query('#mapping_from', 1)
-        await self.enter(mapping_from, Keys.UP_ARROW)
-        mapping_to = await self.query('#mapping_to', 1)
-        await self.enter(mapping_to, Keys.UP_ARROW)
-        port_button = await self.query('.tab-pane.active form button', 1)
-        assert not await port_button.click()
+            selector = '#mapping_to'
+            mapping_to = await self.query('#mapping_to', 5)
+            response = await self.exec_async(
+                f'document.querySelector(\"{selector}\").select()')
+            mapping_to = await self.query('#mapping_to', 5)
+            assert not await self.enter(mapping_to, str(_to))
+            port_button = await self.query('.tab-pane.active form button', 5)
+            assert not await port_button.click()
 
-        # adds 10002 -> 10002
-        mapping_from = await self.query('#mapping_from', 1)
-        await self.enter(mapping_from, [Keys.UP_ARROW, Keys.UP_ARROW])
-        mapping_to = await self.query('#mapping_to', 1)
-        await self.enter(mapping_to, [Keys.UP_ARROW, Keys.UP_ARROW])
-        port_button = await self.query('.tab-pane.active form button', 1)
-        assert not await port_button.click()
-
-        await self.snap('journey.front_proxy.ports')
+        if ports:
+            await self.snap('journey.front_proxy.ports')
 
         # submit the form
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
-        await asyncio.sleep(5)
+        await asyncio.sleep(20)
         if position:
             await self.move('proxy:proxy0', *position)
 
@@ -177,7 +198,7 @@ class Playground(object):
         await self.snap('journey.front_proxy.service', 1)
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
         if position:
             await self.move('service:http-echo0', *position)
 
