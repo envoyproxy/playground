@@ -56,7 +56,7 @@ Create an "HTTP/S echo" service called ``http-echo0``
     :figwidth: 30%
     :align: right
 
-The name given to the service *must match* the name used in the ref:`example configuration <journey_front_proxy_start>`.
+The name given to the service *must match* the name used in the :ref:`example configuration <journey_front_proxy_start>`.
 
 By default the "Service: HTTP/S echo" example configuration uses the the name ``http-echo0``.
 
@@ -147,9 +147,9 @@ Querying the second endpoint, the ``X-Forwarded-Proto`` remains ``http``, but th
 
 .. code-block::  console
 
-   $ curl -s http://localhost:10000/8080 | jq '.protocol'
+   $ curl -s http://localhost:10000/8443 | jq '.protocol'
    "https"
-   $ curl -s http://localhost:10000/8080 | jq '.headers["X-Forwarded-Proto"]'
+   $ curl -s http://localhost:10000/8443 | jq '.headers["X-Forwarded-Proto"]'
    "http"
 
 .. _journey_front_proxy_console_https:
@@ -191,7 +191,7 @@ are showing ``http``
 
 .. code-block::  console
 
-   $ curl -sk https://localhost:10001/8080 | jq '.protocol'
+   $ curl -sk https://localhost:10001/8443 | jq '.protocol'
    "https"
-   $ curl -sk https://localhost:10001/8080 | jq '.headers["X-Forwarded-Proto"]'
+   $ curl -sk https://localhost:10001/8443 | jq '.headers["X-Forwarded-Proto"]'
    "https"
