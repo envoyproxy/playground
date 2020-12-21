@@ -30,6 +30,15 @@ class Playground(object):
     def pq(self):
         return pyquery.pyquery.JQueryTranslator()
 
+    async def click(self, element, timeout=10):
+        response = await element.click()
+        if response:
+            if timeout > 0:
+                await asyncio.sleep(.1)
+                return await self.click(element, timeout - .1)
+            return
+        return response
+
     async def clear(self):
         containers = [
             container
@@ -71,9 +80,10 @@ class Playground(object):
             '.modal-footer .btn.btn-secondary:contains("Close")')
         assert not await close.click()
 
-    async def network_create(self, name):
-        add_network_button = await self.query('*[name="Networks"]')
-        assert not await add_network_button.click()
+    async def network_create(
+            self, name=None, proxies=None, services=None, position=None):
+        add_network_button = await self.query('*[name="Networks"]', 60)
+        assert not await self.click(add_network_button)
         name_input = await self.query(
             'input[id="envoy.playground.name"]')
         assert not await self.enter(name_input, name)
@@ -89,8 +99,14 @@ class Playground(object):
 
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
+        await asyncio.sleep(5)
+        await self.connect('net0', 'service:http-echo0')
+        await asyncio.sleep(1)
+        if position:
+            await self.move('network:net0', *position)
+        await self.snap('journey.front_proxy.all', 1)
 
-    async def proxy_create(self, name):
+    async def proxy_create(self, name=None, ports=None, position=None):
         add_proxy_button = await self.query('*[name="Proxies"]', 5)
         assert not await add_proxy_button.click()
         name_input = await self.query(
@@ -100,6 +116,7 @@ class Playground(object):
             '.tab-pane.active form select'
             '#example option[value="Service: HTTP/S echo"]', 5)
         assert not await select.click()
+        await asyncio.sleep(5)
         await self.snap('journey.front_proxy.proxy', 1)
 
         # add ports
@@ -132,6 +149,9 @@ class Playground(object):
         # submit the form
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
+        await asyncio.sleep(5)
+        if position:
+            await self.move('proxy:proxy0', *position)
 
     async def service_list(self):
         js_service_list = (
@@ -144,19 +164,22 @@ class Playground(object):
                 args=[],
                 script=js_service_list))
 
-    async def service_create(self, service_type, name):
-        add_service_button = await self.query('*[name="Services"]')
-        assert not await add_service_button.click()
+    async def service_create(self, service=None, name=None, position=None):
+        add_service_button = await self.query('*[name="Services"]', 120)
+        assert not await self.click(add_service_button)
         name_input = await self.query(
-            'input[id="envoy.playground.name"]')
+            'input[id="envoy.playground.name"]', 10)
         assert not await self.enter(name_input, name)
         select = await self.query(
-            f'.tab-pane.active form select#service_type '
-            f'[value="{service_type}"]')
-        assert not await select.click()
+            '.tab-pane.active form select#service_type '
+            f'[value="{service}"]', 60)
+        assert not await self.click(select)
         await self.snap('journey.front_proxy.service', 1)
         submit = await self.query('.modal-footer .btn.btn-primary')
         assert not await submit.click()
+        await asyncio.sleep(5)
+        if position:
+            await self.move('service:http-echo0', *position)
 
     async def enter(self, element, text):
         return await element.command(

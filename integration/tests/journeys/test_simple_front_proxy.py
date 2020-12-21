@@ -1,59 +1,53 @@
 
 import asyncio
+import functools
 
 import pytest
 
+import yaml
 
+
+class IntegrationTest(object):
+
+    def __init__(self, playground, config):
+        self.playground = playground
+        self._config = config
+
+    @functools.cached_property
+    def steps(self):
+        with open(self._config) as f:
+            content = f.read()
+        return [
+            list(s.items())[0]
+            for s
+            in yaml.safe_load(content)['steps']]
+
+    async def run(self):
+        for name, _step in self.steps:
+            await self.run_step(name, _step)
+
+    async def run_step(self, name, config):
+        if name == 'console':
+            await self.playground.switch_to('console')
+            await asyncio.sleep(2)
+            if config.get('clear', True):
+                await self.playground.console_command('clear')
+            for command in config['commands'].split("\n"):
+                if not command.strip():
+                    continue
+                await self.playground.console_command(command)
+                await asyncio.sleep(1)
+            if config.get('snap'):
+                await self.playground.snap(config['snap'])
+        else:
+            await getattr(self.playground, name)(**config)
+
+
+@pytest.mark.parametrize("example", ['front-proxy'])
 @pytest.mark.screenshots
 @pytest.mark.asyncio
-async def test_journey_simple_front_proxy(playground):
-    # create the proxy
-    await playground.proxy_create('proxy0')
-    await asyncio.sleep(5)
-    await playground.move('proxy:proxy0', 61, 200)
-
-    # create the service
-    await playground.service_create('http-echo', "http-echo0")
-    await asyncio.sleep(5)
-    await playground.move('service:http-echo0', 500, 200)
-
-    # create the network
-    await playground.network_create('net0')
-    await asyncio.sleep(5)
-    await playground.move('network:net0', 300, 200)
-    await playground.connect('net0', 'service:http-echo0')
-    await asyncio.sleep(1)
-    await playground.snap('journey.front_proxy.all', 1)
-
-    # switch to console and curl http
-    await playground.switch_to('console')
-    await asyncio.sleep(2)
-    await playground.console_command(
-        "curl -s http://localhost:10000/8080 | jq '.protocol'", 1)
-    await playground.console_command(
-        "curl -s http://localhost:10000/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
-    await playground.console_command(
-        "curl -s http://localhost:10000/8443 | jq '.protocol'", 1)
-    await playground.console_command(
-        "curl -s http://localhost:10000/8443 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
-    await playground.snap('journey.front_proxy.console.http')
-
-    # curl https
-    await playground.console_command('clear')
-    await playground.console_command(
-        "curl -sk https://localhost:10001/8080 | jq '.protocol'", 1)
-    await playground.console_command(
-        "curl -sk https://localhost:10001/8080 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
-    await playground.console_command(
-        "curl -sk https://localhost:10001/8443 | jq '.protocol'", 1)
-    await playground.console_command(
-        "curl -sk https://localhost:10001/8443 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
-    await playground.snap('journey.front_proxy.console.https')
-
-    # curl passthrough
-    await playground.console_command('clear')
-    await playground.console_command(
-        "curl -sk https://localhost:10002/8443 | jq '.protocol'", 1)
-    await playground.console_command(
-        "curl -sk https://localhost:10002/8443 | jq '.headers[\"X-Forwarded-Proto\"]'", 1)
-    await playground.snap('journey.front_proxy.console.passthrough')
+async def test_journey_simple_front_proxy(playground, example):
+    itest = IntegrationTest(
+        playground,
+        f'tests/journeys/{example}.yaml')
+    await itest.run()
