@@ -1,8 +1,0 @@
-FROM python:3.8-slim
-
-RUN mkdir /code
-ADD ./playground /code/playground
-ADD ./setup.py /code
-WORKDIR /code
-ENTRYPOINT ["./composition/docs-entrypoint.sh"]
-CMD ["sphinx-build", "-W", "--keep-going", "-b", "dirhtml", "docs", "build/site/docs"]
