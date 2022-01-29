@@ -1,5 +1,0 @@
-
-Developers
-==========
-
-Information about contributing.
